@@ -9,9 +9,6 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
-    @observable
-    ObservableFuture {{ fqVariable relation.name }}StoreFuture;
-
     {{# if (validatableFlagNeed relation)}}
     bool validatable = true;
     {{/if}}

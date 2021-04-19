@@ -45,7 +45,7 @@
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{ else }}
             var temporaryList = List<{{ fqClass relation.target.name }}Store>.from(target{{ className relation.owner.name }}Store.{{ variable relation.name }})
-                ..addAll([selected]); // Need to revise after LIST selection
+                ..addAll(selected);
             target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}(temporaryList);
         {{/ if }}
             }
@@ -60,7 +60,7 @@
                 {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{ else }}
-                target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}([selected]); // Need to revise after LIST selection
+                target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}(selected);
         {{/ if }}
             }
         }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
