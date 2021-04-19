@@ -13,7 +13,7 @@ part of {{ variable ap.name }}.store;
     {{# if (isEnumType dataType) }}
 enum {{ className dataType.name }} {
 {{# each dataType.members as |member| }}
-    {{ className member.name }},
+    {{ member.name }},
 {{/each}}
 }
     {{/ if }}

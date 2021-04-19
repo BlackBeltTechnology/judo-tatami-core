@@ -9,20 +9,20 @@
 // Application: {{ application.name }}
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 
 /// A responsive scaffold for our application.
 /// Displays the navigation drawer alongside the [Scaffold] if the screen/window size is large enough
 class {{ fqClass application.name }}Scaffold extends StatelessWidget {
-    const {{ fqClass application.name }}Scaffold({@required this.body, @required this.pageTitle, this.floatingActionButton, Key key}) : super(key: key);
+    const {{ fqClass application.name }}Scaffold({@required this.body, this.floatingActionButton, Key key}) : super(key: key);
 
     final Widget body;
-
-    final String pageTitle;
 
     final Widget floatingActionButton;
 
@@ -40,54 +40,38 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
                         Column(
                             children: [
                                 Padding(
-                                    padding: EdgeInsets.fromLTRB(115, 16, 0, 10),
-                                    child:
-                                    AppBar(
+                                  padding: EdgeInsets.fromLTRB(new AppDesignCustomizer().getContentMargin(context), 16, 0, 10),
+                                  child: AppBar(
                                         automaticallyImplyLeading: drawer != null,
-                                        title:
-                                        Theme(
-                                            child:
-                                            Container(child:
-                                            PreferredSize(
+                                        toolbarHeight: 62,
+                                        title: Theme(
+                                            child: PreferredSize(
                                                 preferredSize: Size.fromHeight(105),
-                                                child:
-                                                Column(
+                                                child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
                                                         Padding(
                                                             padding: EdgeInsets.symmetric(vertical: 1),
-                                                            child:
-                                                            // navigation.stack.length > 0 ?
-                                                            BreadCrumb(
-                                                                items:
-                                                                navigation.breadcumbItems,
-                                                                divider: Icon(Icons.chevron_right, size: 16, color: Color(0xffdcdcdc),),
-                                                                overflow: ScrollableOverflow(
-                                                                    keepLastDivider: false,
-                                                                    direction: Axis.horizontal,
-                                                                )
+                                                            child: Observer(
+                                                                builder: (_) => BreadCrumb(
+                                                                  items: navigation.breadcumbItems,
+                                                                  divider: Icon(Icons.chevron_right, size: 20, color: Color(0xffdcdcdc),),
+                                                                  overflow: ScrollableOverflow(
+                                                                      keepLastDivider: false,
+                                                                      direction: Axis.horizontal,
+                                                                  )
+                                                              ),
                                                             )
-                                                            // : Container(),
                                                         ),
-                                                        Text(pageTitle, style: Theme.of(context).textTheme.headline4,),
-                                                        /*
-                                                            Row(
-                                                                children: [
-                                                                    Expanded(
-                                                                        child: new Container(
-                                                                            margin: const EdgeInsets.only(left: 116.0, right: 116.0),
-                                                                            child: Divider(
-                                                                                color: Colors.black,
-                                                                                height: 1,
-                                                                            )),
-                                                                    )
-                                                                ]
-                                                            )
-                     */
+                                                        Observer(
+                                                          builder: (_) => Text(
+                                                                  navigation.currentTitle,
+                                                                  style: Theme.of(context).textTheme.headline4,
+                                                          ),
+                                                        ),
                                                     ]
                                                 )
-                                            ),
                                             ),
                                             data: JudoComponentCustomizer.get().getBreadcumbThemeCustomizer(Theme.of(context)),
                                         ),
@@ -108,7 +92,7 @@ class {{ fqClass application.name }}Scaffold extends StatelessWidget {
                 body: GestureDetector(
                     onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
                     child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 116),
+                            padding: EdgeInsets.symmetric(horizontal: new AppDesignCustomizer().getContentMargin(context)),
                             child: body,
 //                    child: Column(
 //                        children: [

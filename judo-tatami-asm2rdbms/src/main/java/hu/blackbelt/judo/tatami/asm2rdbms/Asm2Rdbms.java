@@ -26,6 +26,7 @@ import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContex
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.excel.ExcelModelContext.excelModelContextBuilder;
+import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.LoadArguments.rdbmsLoadArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace.resolveAsm2RdbmsTrace;
 import static hu.blackbelt.judo.tatami.core.TransformationTraceUtil.*;
 
@@ -37,22 +38,11 @@ public class Asm2Rdbms {
 
     public static final String ASM_2_RDBMS_URI_POSTFIX = "asm2rdbms";
 
-    public static final String DIALECT_HSQLDB = "hsqldb";
-    public static final String DIALECT_POSTGRESQL = "postgresql";
-    public static final String DIALECT_ORACLE = "oracle";
-
-    static Map<String, String> dialectTypeFileNames = ImmutableMap.of(
-            DIALECT_HSQLDB, "RDBMS_Data_Types_Hsqldb.xlsx",
-            DIALECT_POSTGRESQL, "RDBMS_Data_Types_Postgres.xlsx",
-            DIALECT_ORACLE, "RDBMS_Data_Types_Oracle.xlsx"
-    );
-
     private static MD5Utils MD5_UTILS = new MD5Utils();
 
 
     public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(AsmModel asmModel, RdbmsModel rdbmsModel, String dialect) throws Exception {
         return executeAsm2RdbmsTransformation(asmModel, rdbmsModel, new Slf4jLog(log), calculateAsm2RdbmsTransformationScriptURI(), calculateAsm2RdbmsModelURI(), dialect);
-
     }
 
     public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(AsmModel asmModel, RdbmsModel rdbmsModel, Log log,  String dialect) throws Exception {
@@ -61,6 +51,16 @@ public class Asm2Rdbms {
 
     public static Asm2RdbmsTransformationTrace executeAsm2RdbmsTransformation(AsmModel asmModel, RdbmsModel rdbmsModel, Log log,
                                                                               java.net.URI scriptUri, java.net.URI excelModelUri, String dialect) throws Exception {
+
+        RdbmsModel mappingModel = RdbmsModel.loadRdbmsModel(
+                rdbmsLoadArgumentsBuilder()
+                        .validateModel(false)
+                        .name("mapping-" + dialect)
+                        .uri(org.eclipse.emf.common.util.URI.createURI("mem:mapping-" + dialect + "-rdbms"))
+                        .inputStream(UriUtil.resolve("mapping-" + dialect + "-rdbms.model", excelModelUri)
+                                .toURL()
+                                .openStream()));
+        rdbmsModel.getResource().getContents().addAll(mappingModel.getResource().getContents());
 
         // Execution context
         ExecutionContext executionContext = executionContextBuilder()
@@ -75,21 +75,6 @@ public class Asm2Rdbms {
                                 .log(log)
                                 .name("RDBMS")
                                 .resource(rdbmsModel.getResource())
-                                .build(),
-                        excelModelContextBuilder()
-                                .name("TYPEMAPPING")
-                                .excel(UriUtil.resolve(dialectTypeFileNames.get(dialect), excelModelUri).toString())
-                                .excelConfiguration(UriUtil.resolve("typemapping.xml", excelModelUri).toString())
-                                .build(),
-                        excelModelContextBuilder()
-                                .name("RULEMAPPING")
-                                .excel(UriUtil.resolve("RDBMS_Table_Mapping_Rules.xlsx", excelModelUri).toString())
-                                .excelConfiguration(UriUtil.resolve("rulemapping.xml", excelModelUri).toString())
-                                .build(),
-                        excelModelContextBuilder()
-                                .name("NAMEMAPPING")
-                                .excel(UriUtil.resolve("RDBMS_Sql_Name_Mapping.xlsx", excelModelUri).toString())
-                                .excelConfiguration(UriUtil.resolve("namemapping.xml", excelModelUri).toString())
                                 .build()
                         )
                 )
@@ -103,20 +88,6 @@ public class Asm2Rdbms {
         // run the model / metadata loading
         executionContext.load();
 
-
-        EtlExecutionContext nameMappingExecutionContext = etlExecutionContextBuilder()
-                .source(UriUtil.resolve("excelToNameMapping.etl", scriptUri))
-                .build();
-
-        EtlExecutionContext typeMappingExecutionContext = etlExecutionContextBuilder()
-                .source(UriUtil.resolve("excelToTypeMapping.etl", scriptUri))
-                .build();
-
-
-        EtlExecutionContext rulesExecutionContext = etlExecutionContextBuilder()
-                .source(UriUtil.resolve("excelToRules.etl", scriptUri))
-                .build();
-
         EtlExecutionContext asm2rdbmsExecutionContext = etlExecutionContextBuilder()
                 .source(UriUtil.resolve("asmToRdbms.etl", scriptUri))
                 .parameters(ImmutableList.of(
@@ -128,9 +99,6 @@ public class Asm2Rdbms {
                 .build();
 
         // Transformation script
-        executionContext.executeProgram(nameMappingExecutionContext);
-        executionContext.executeProgram(typeMappingExecutionContext);
-        executionContext.executeProgram(rulesExecutionContext);
         executionContext.executeProgram(asm2rdbmsExecutionContext);
 
         executionContext.commit();
@@ -154,15 +122,15 @@ public class Asm2Rdbms {
 
     @SneakyThrows(URISyntaxException.class)
     public static URI calculateURI(String path) {
-        URI psmRoot = Asm2Rdbms.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-        if (psmRoot.toString().endsWith(".jar")) {
-            psmRoot = new URI("jar:" + psmRoot.toString() + "!/" + path);
-        } else if (psmRoot.toString().startsWith("jar:bundle:")) {
-            psmRoot = new URI(psmRoot.toString().substring(4, psmRoot.toString().indexOf("!")) + path);
+        URI root = Asm2Rdbms.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        if (root.toString().endsWith(".jar")) {
+            root = new URI("jar:" + root.toString() + "!/" + path);
+        } else if (root.toString().startsWith("jar:bundle:")) {
+            root = new URI(root.toString().substring(4, root.toString().indexOf("!")) + path);
         } else {
-            psmRoot = new URI(psmRoot.toString() + "/" + path);
+            root = new URI(root.toString() + "/" + path);
         }
-        return psmRoot;
+        return root;
     }
 
     public static class MD5Utils {

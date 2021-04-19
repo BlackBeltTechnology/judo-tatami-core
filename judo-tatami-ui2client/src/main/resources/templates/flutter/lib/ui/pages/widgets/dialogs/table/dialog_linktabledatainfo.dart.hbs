@@ -1,0 +1,88 @@
+{{log 'Dialog table data info generation for' (variable application.name) '-' (fqClass table.pageDefinition.name) (variable table.dataElement.target.name) level='debug'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+part of {{ variable application.name }}.ui.pages.dialogs.tables;
+
+class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable implements JudoTableDataInfo {
+
+    const {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable(this.context, {this.disabled = false});
+
+    final BuildContext context;
+    final bool disabled;
+
+    @override
+    List<DataColumn> getColumns(Function onAdd, Function onSort) {
+        return [
+            {{# each parts}}
+            DataColumn(
+                label: Text('{{label}}'),
+                {{# unless (isBooleanDataType dataType) }}
+                    {{# unless (isEnumType dataType) }}
+                onSort: onSort,
+                    {{/ unless }}
+                {{/ unless }}
+            ),
+            {{/each}}
+        ];
+    }
+
+    @override
+    Comparator getSortComparator(int columnIndex, bool asc) {
+        {{# each parts}}
+            {{# unless (isBooleanDataType dataType) }}
+                {{# unless (isEnumType dataType) }}
+        if (columnIndex == {{@index}}) {
+            if (asc) {
+                return (a, b) => a.{{ variable attributeType.name }}.compareTo(b.{{ variable attributeType.name }});
+            } else {
+                return (a, b) => b.{{ variable attributeType.name }}.compareTo(a.{{ variable attributeType.name }});
+            }
+                {{/ unless }}
+            {{/ unless }}
+        }
+        {{/each}}
+    }
+
+    @override
+    String getColumnFieldByIndex(int columnIndex, bool asc) {
+    {{# each parts}}
+        {{# unless (isBooleanDataType dataType) }}
+            {{# unless (isEnumType dataType) }}
+        if (columnIndex == {{@index}}) {
+            return "{{ variable attributeType.name }}";
+        }
+            {{/ unless }}
+        {{/ unless }}
+    {{/each}}
+    }
+
+    @override
+    Function getRow({BuildContext context,
+            Function navigateToEditPageAction,
+            Function navigateToViewPageAction,
+            Function navigateToCreatePageAction,
+            Function removeAction,
+            Function unsetAction,
+            Function deleteAction}) {
+
+        ThemeData theme =  Theme.of(context);
+        return (target{{ className table.dataElement.target.name }}) => DataRow(
+            cells: [
+                {{# each parts as |column|}}
+                DataCell(
+                    {{#if column}}
+                    {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name)}}
+                    {{/if}}
+                ),
+                {{/each}}
+            ],
+        );
+    }
+}

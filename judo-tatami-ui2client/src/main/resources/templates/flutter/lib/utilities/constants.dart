@@ -20,3 +20,16 @@ const API_DEFAULT_BASE_URL = String.fromEnvironment('API_DEFAULT_BASE_URL', defa
 const API_RELATIVE_PATH = String.fromEnvironment('API_RELATIVE_PATH', defaultValue: '/api/{{ baseUrl application.name }}');
 
 const SHOW_TABLE_ROW_ACTIONS = bool.fromEnvironment('SHOW_TABLE_ROW_ACTIONS', defaultValue: false);
+
+const Map<String, String> filterOperationLabels= {
+  'equal' : 'Equal',
+  'equals' : 'Equals',
+  'notEqual' : 'Not equal',
+  'notEquals' : 'Not equals',
+  'lessThan' : 'Less than',
+  'greaterThan' : 'Greater than',
+  'lessOrEqual' : 'Less or equal',
+  'greaterOrEqual' : 'Greater or equal',
+  'matches' : 'Matches',
+  'like' : 'Like',
+};

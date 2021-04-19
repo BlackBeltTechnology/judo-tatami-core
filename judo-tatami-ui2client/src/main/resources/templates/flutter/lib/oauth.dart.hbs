@@ -10,9 +10,7 @@
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:convert';
-import 'dart:html' as html;
 
-import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
@@ -20,9 +18,10 @@ import 'package:flutter_appauth_platform_interface/flutter_appauth_platform_inte
 import 'package:flutter_appauth_web/flutter_appauth_web.dart';
 import 'package:mobx/mobx.dart';
 import 'package:openapi_dart_common/openapi.dart';
+import 'package:universal_html/html.dart' as html;
+
 import 'injector/injector.dart';
 import 'dart:async';
-import 'package:http/http.dart' as http;
 
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/rest/lib/api.dart';
 
@@ -73,16 +72,19 @@ class Oauth {
        //     print("security settings: $securitySettings");
        // }
    // }
+        print("Load client metadata");
         try {
             await DefaultApi(
             locator<ApiClient>()).{{ modelNameVariable application.name }}{{ packageName application.name }}{{ className application.name }}Metadata();
         } on ArgumentError catch (error) {
+            print("Could not get metadata: " + error.message);
+            // Very nice way to determinate REALM
             var realm = error.message.toString().substring(26);
             locator<ApiClient>().setAuthentication(realm, NoopAuth());
         }
 
-            {{ modelName application.name }}{{ packageName application.name }}MetadataFor{{ className application.name }} meta = await DefaultApi(
-            locator<ApiClient>()).{{ modelNameVariable application.name }}{{ packageName application.name }}{{ className application.name }}Metadata();
+        {{ modelName application.name }}{{ packageName application.name }}MetadataFor{{ className application.name }} meta = await DefaultApi(locator<ApiClient>())
+            .{{ modelNameVariable application.name }}{{ packageName application.name }}{{ className application.name }}Metadata();
         if (meta.security.isNotEmpty) {
             securitySettings = meta.security.first;
         }

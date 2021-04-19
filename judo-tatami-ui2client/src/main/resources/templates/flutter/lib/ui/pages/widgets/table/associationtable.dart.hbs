@@ -1,17 +1,24 @@
 {{ log 'Table generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
 //START associationtable.dart.hbs-----{{dataElement.name}}---------------------------------------------------------------------------------
+Observer(
+    builder: (_) => JudoColumn(
+        col: 1,
+        row: {{ fqVariable page.name }}PageStore.getPlusRowSize as double,
+        children: getInputFilterWidgetsForTablePage(filterStoreWidgetMap, {{ table.col }}, () => {{ fqVariable page.name }}PageStore.get{{ className page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.relationType.owner.name }}Store{{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message))),
+    ),
+),
 // ignore: missing_return
 Observer(builder: (_) {
-    switch({{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreFuture.status){
+    switch({{ fqVariable page.name }}PageStore.{{ variable page.relationType.owner.name}}{{ fqClass page.relationType.name }}StoreFuture.status){
         case FutureStatus.pending:
             return JudoLoadingProgress();
         case FutureStatus.rejected:
             return Container();
         case FutureStatus.fulfilled:
-            var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(disabled: {{disabled}});
+            var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{disabled}});
             return JudoTable(
                 disabled: {{disabled}},
-                col: {{ multiplyCol col }},
+                col: {{ col }},
                 row: {{row}},
                 dataInfo: dataInfo,
                 rowList: {{# if page.dataElement.isAccess}}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList.asObservable(){{else}}[{{ fqVariable page.name }}PageStore.{{variable page.relationType.name}}Store].asObservable(){{/ if}}{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},
@@ -40,7 +47,7 @@ Observer(builder: (_) {
                         {{# unless relation.isMemberTypeTransient }}
                         if (response != null) {
                             {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}})
-                                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         }
                         {{/ unless }}
                     }
@@ -52,7 +59,7 @@ Observer(builder: (_) {
                     var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page);
                     if (created != null) {
                         {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store ,{{/ unless}}created)
-                            .catchError((error) => ErrorHandler.errorDialog(context, error));
+                            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                     }
                 }{{# unless page.dataElement.isAccess}} : null{{/ unless}},
                 {{/if}}
@@ -65,11 +72,11 @@ Observer(builder: (_) {
                     if (res != null) {
                         element.updateWith(cloned);
                         var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(element)
-                            .catchError((error) => ErrorHandler.errorDialog(context, error));
+                            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         if (updated != null) {
                             element.updateWith(updated);
                             {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store{{/ unless}})
-                                .catchError((error) => ErrorHandler.errorDialog(context, error));
+                                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         }
                     }
                 }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
@@ -80,17 +87,33 @@ Observer(builder: (_) {
                 {{#if relationAction.isUnsetAction}}
                 unsetAction:{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} target{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
                     {{fqVariable page.name}}PageStore.unset{{ fqClass page.dataElement.name }}(target{{ className page.dataElement.owner.name }}Store)
-                        .catchError((error) => ErrorHandler.errorDialog(context, error));
+                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 }{{# unless page.dataElement.isAccess}}{{# unless page.dataElement.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
                 {{/if}}
                 {{#if action.isDeleteAction}}
                 deleteAction:{{# unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
                     {{fqVariable page.name}}PageStore.delete{{ className page.relationType.target.name }}(element{{# unless page.dataElement.isAccess}}, owner{{ className page.dataElement.owner.name }}Store{{/unless}})
-                        .catchError((error) => ErrorHandler.errorDialog(context, error));
+                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 }{{# unless page.dataElement.isAccess}} : null{{/ unless}},
                 {{/if}}
                 {{/each}}
             );
     }
 }),
+Row(
+    children: [
+        Padding(
+            padding: JudoComponentCustomizer.get().getDefaultPadding(),
+            child: Observer(
+                builder: (_) => Text(
+                    AppLocalizations.of(context).lookUpValue(context, 'Showed rows: ') + '${ {{# if page.dataElement.isAccess}}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList.length{{else}}[{{ fqVariable page.name }}PageStore.{{variable page.relationType.name}}Store].length{{/ if}}{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}.length{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].length{{/ if}}{{/ if}} }',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54
+                    ),
+                ),
+            ),
+        ),
+    ],
+),
 //END associationtable.dart.hbs-----{{dataElement.name}}---------------------------------------------------------------------------------

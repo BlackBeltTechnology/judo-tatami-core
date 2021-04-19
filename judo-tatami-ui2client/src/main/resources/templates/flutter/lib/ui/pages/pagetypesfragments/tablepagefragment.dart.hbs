@@ -1,4 +1,5 @@
 //START tablepagefragment.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------------
+{{# with page.relationType as |relation| }}
     {{#unless page.dataElement.isAccess}}
     final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
     {{/unless}}
@@ -18,7 +19,17 @@ class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
 
     final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
 
+    {{# if relation.isFilterable }}
+    Map<FilterStore, Widget> filterStoreWidgetMap;
+    {{/ if }}
+
     _{{fqClass page.name}}PageState({{#unless page.dataElement.isAccess}}{@required this.owner{{ className page.dataElement.owner.name }}Store}{{/unless}}){
-        {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.errorDialog(context, error));
+        final navigation = locator<NavigationState>();
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+        });
+
+        {{fqVariable page.name}}PageStore.get{{ fqClass page.dataElement.name }}({{#unless page.dataElement.isAccess}} owner{{ className page.dataElement.owner.name }}Store {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     }
+{{/ with }}
 //END tablepagefragment.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------

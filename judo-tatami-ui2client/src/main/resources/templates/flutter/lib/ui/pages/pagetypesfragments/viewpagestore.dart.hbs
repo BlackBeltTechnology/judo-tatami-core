@@ -9,9 +9,6 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
-    @observable
-    ObservableFuture {{ fqVariable relation.name }}StoreFuture;
-
     {{# if (validatableFlagNeed relation)}}
     bool validatable = true;
     {{/if}}
@@ -51,6 +48,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     */
     {{# if page.isPageTypeDashboard }}
         {{# if relation.isRelationBehaviourTypeListable }}
+
+    @observable
+    ObservableFuture {{ fqVariable relation.name }}StoreFuture;
 
     @observable
     FutureStatus getterStatus = FutureStatus.pending;
@@ -148,7 +148,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     //OPERATIONS
     {{# each page.dataElement.target.operations as |operation| }}
     @action
-    {{# if operation.output}}Future<{{fqClass operation.output.target.name}}Store>{{else}}Future<void>{{/if}} {{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.input}}{{fqClass operation.input.target.name}}Store {{fqVariable operation.input.target.name}}Store, {{/if}}{{#if operation.isMapped }}{{ fqClass operation.owner.name }}Store {{ fqVariable operation.owner.name }}Store{{/if}}) async {
+    {{# if operation.output}}Future<{{# if operation.output.isCollection }}List<{{fqClass operation.output.target.name}}Store>{{ else }}{{fqClass operation.output.target.name}}Store{{/if}}>{{else}}Future<void>{{/if}} {{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.input}}{{fqClass operation.input.target.name}}Store {{fqVariable operation.input.target.name}}Store, {{/if}}{{#if operation.isMapped }}{{ fqClass operation.owner.name }}Store {{ fqVariable operation.owner.name }}Store{{/if}}) async {
         try {
             errorMessage = null;
             {{# if operation.output}}return {{/if}}await _{{ fqVariable application.actor.name }}Repository.{{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.input}}{{fqVariable operation.input.target.name}}Store, {{/if}}{{#if operation.isMapped }}{{ fqVariable operation.owner.name }}Store{{/if}});

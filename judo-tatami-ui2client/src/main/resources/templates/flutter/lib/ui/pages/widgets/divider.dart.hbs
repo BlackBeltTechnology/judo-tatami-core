@@ -1,7 +1,7 @@
 {{ log 'Divider generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
 //START divider.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------------------
 JudoDivider(
-    col: {{ multiplyCol col }},
+    col: {{ col }},
     row: {{ row }},
 ),
 //END divider.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------------------------

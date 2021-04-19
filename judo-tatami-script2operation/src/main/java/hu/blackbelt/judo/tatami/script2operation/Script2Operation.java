@@ -182,6 +182,8 @@ public class Script2Operation {
         bundle.set( Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set( Constants.BUNDLE_SYMBOLICNAME, modelName + "-script2operation" )
                 .set( Constants.BUNDLE_VERSION, version )
+                .set( Constants.PROVIDE_CAPABILITY,
+                        scrXmlFilesByFqName.entrySet().stream().map(s -> "osgi.service;objectClass:List<String>=\"" + s.getKey() + "\"").collect(Collectors.joining(",")))
                 .set( Constants.REQUIRE_CAPABILITY,
                         "osgi.extender;filter:=\"(&(osgi.extender=osgi.component)(version>=1.3.0)(!(version>=2.0.0)))\"")
                 .set( Constants.IMPORT_PACKAGE,

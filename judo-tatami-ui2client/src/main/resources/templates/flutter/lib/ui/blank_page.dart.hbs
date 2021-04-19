@@ -10,14 +10,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
 class {{ fqClass application.name }}BlankPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return {{ fqClass application.name }}Scaffold(
-      pageTitle: 'Empty',
-      body: CustomScrollView(
+    return CustomScrollView(
           slivers: [
             SliverFillRemaining(
               hasScrollBody: false,
@@ -30,7 +29,6 @@ class {{ fqClass application.name }}BlankPage extends StatelessWidget {
               ),
             )
           ]
-      ),
     );
   }
 }

@@ -1,7 +1,7 @@
 {{~ log 'Tab generation for' (variable application.name) '-' (fqClass page.name)'page' (variable name) level='debug' ~}}
 //START tabcontroller.dart.hbs-----{{name}}------------------------------------------------------------------------------------------------
 JudoTab(
-    col: {{ multiplyCol col }},
+    col: {{ col }},
     row: {{ row }},
     tabContent: [
     {{# each tabs as |tab| }}
@@ -18,7 +18,7 @@ JudoTab(
         {{#if tab.icon }}
             icon: Icon(Icons.{{ tab.icon.name }}),
         {{/if}}
-            text: "{{ tab.element.label }}",
+            text: AppLocalizations.of(context).lookUpValue(context, '{{ tab.element.label }}'),
         ),
     {{/ each }}
     ]

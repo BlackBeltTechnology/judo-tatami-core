@@ -1,0 +1,554 @@
+{{log 'AppLocalizations generation for' (variable application.name) level='info'}}
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/dart/messages_all.dart';
+
+class AppLocalizations {
+    AppLocalizations(this.localeName);
+
+    final String localeName;
+    static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+
+    static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+    ];
+
+    static const List<Locale> supportedLocales = <Locale>[
+        Locale('en', ''),
+        Locale('hu', '')
+    ];
+
+    static Future<AppLocalizations> load(Locale locale) {
+        final String name = locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
+        final String localeName = Intl.canonicalizedLocale(name);
+
+        return initializeMessages(localeName).then((_) {
+            return AppLocalizations(localeName);
+        });
+    }
+
+    static AppLocalizations of(BuildContext context) {
+        return Localizations.of<AppLocalizations>(context, AppLocalizations);
+    }
+
+    String lookUpValue(BuildContext context, String value, {List<String> args}) {
+        switch (value) {
+      {{# each application.allLabels as |label| }}
+          case '{{ label }}':
+            return AppLocalizations.of(context).{{ l10nLabelName label }}();
+      {{/ each }}
+          case 'MISSING_IDENTIFIER_OF_BOUND_OPERATION':
+            return AppLocalizations.of(context).{{ l10nLabelName 'MISSING_IDENTIFIER_OF_BOUND_OPERATION'}}();
+          case 'TOO_FEW_PARAMETERS':
+            return AppLocalizations.of(context).{{ l10nLabelName 'TOO_FEW_PARAMETERS'}}('','');
+          case 'TOO_MANY_PARAMETERS':
+            return AppLocalizations.of(context).{{ l10nLabelName 'TOO_MANY_PARAMETERS'}}('','');
+          case 'NULL_PARAMETER_ITEM_IS_NOT_SUPPORTED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'NULL_PARAMETER_ITEM_IS_NOT_SUPPORTED'}}('');
+          case 'MISSING_REQUIRED_PARAMETER':
+            return AppLocalizations.of(context).{{ l10nLabelName 'MISSING_REQUIRED_PARAMETER'}}('');
+          case 'CONVERSION_FAILED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'CONVERSION_FAILED'}}('','');
+          case 'TOO_FEW_ITEMS':
+            return AppLocalizations.of(context).{{ l10nLabelName 'TOO_FEW_ITEMS'}}('','');
+          case 'TOO_MANY_ITEMS':
+            return AppLocalizations.of(context).{{ l10nLabelName 'TOO_MANY_ITEMS'}}('','');
+          case 'NULL_ITEM_IS_NOT_SUPPORTED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'NULL_ITEM_IS_NOT_SUPPORTED'}}('');
+          case 'INVALID_CONTENT':
+            return AppLocalizations.of(context).{{ l10nLabelName 'INVALID_CONTENT'}}('');
+          case 'MISSING_REQUIRED_RELATION':
+            return AppLocalizations.of(context).{{ l10nLabelName 'MISSING_REQUIRED_RELATION'}}('');
+          case 'MISSING_REQUIRED_ATTRIBUTE':
+            return AppLocalizations.of(context).{{ l10nLabelName 'MISSING_REQUIRED_ATTRIBUTE'}}('');
+          case 'MAX_LENGTH_VALIDATION_FAILED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'MAX_LENGTH_VALIDATION_FAILED'}}('','','');
+          case 'PATTERN_VALIDATION_FAILED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'PATTERN_VALIDATION_FAILED'}}('','','');
+          case 'PRECISION_VALIDATION_FAILED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'PRECISION_VALIDATION_FAILED'}}('','','');
+          case 'SCALE_VALIDATION_FAILED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'SCALE_VALIDATION_FAILED'}}('','','','');
+          case 'INVALID_IDENTIFIER':
+            return AppLocalizations.of(context).{{ l10nLabelName 'INVALID_IDENTIFIER'}}();
+          case 'NOT_ACCEPTED_BY_RANGE':
+            return AppLocalizations.of(context).{{ l10nLabelName 'NOT_ACCEPTED_BY_RANGE'}}('','');
+          case 'AUTHENTICATION_REQUIRED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'AUTHENTICATION_REQUIRED'}}();
+          case 'ACCESS_TOKEN_EXPIRED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'ACCESS_TOKEN_EXPIRED'}}();
+          case 'ACCESS_DENIED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'ACCESS_DENIED'}}();
+          case 'AUTHENTICATED_ENTITY_NOT_FOUND':
+            return AppLocalizations.of(context).{{ l10nLabelName 'AUTHENTICATED_ENTITY_NOT_FOUND'}}('');
+          case 'ACCESS_DENIED_FOR_INSTANCE_OF_BOUND_OPERATION':
+            return AppLocalizations.of(context).{{ l10nLabelName 'ACCESS_DENIED_FOR_INSTANCE_OF_BOUND_OPERATION'}}();
+          case 'PERMISSION_DENIED':
+            return AppLocalizations.of(context).{{ l10nLabelName 'PERMISSION_DENIED'}}('','');
+          case 'ACCESS_DENIED_INVALID_TYPE':
+            return AppLocalizations.of(context).{{ l10nLabelName 'ACCESS_DENIED_INVALID_TYPE'}}();
+          case 'BOUND_OPERATION_INSTANCE_NOT_FOUND':
+            return AppLocalizations.of(context).{{ l10nLabelName 'BOUND_OPERATION_INSTANCE_NOT_FOUND'}}();
+          case 'INTERNAL_SERVER_ERROR':
+            return AppLocalizations.of(context).{{ l10nLabelName 'INTERNAL_SERVER_ERROR'}}('');
+          case 'Equal':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Equal'}}();
+          case 'Equals':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Equals'}}();
+          case 'Not equal':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Not equal'}}();
+          case 'Not equals':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Not equals'}}();
+          case 'Less than':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Less than'}}();
+          case 'Greater than':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Greater than'}}();
+          case 'Less or equal':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Less or equal'}}();
+          case 'Greater or equal':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Greater or equal'}}();
+          case 'Matches':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Matches'}}();
+          case 'Contain':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Contain'}}();
+          case 'Begin with':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Begin with'}}();
+          case 'Like':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Like'}}();
+          case 'Settings':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Settings'}}();
+          case 'Login':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Login'}}();
+          case 'Logout':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Logout'}}();
+          case 'Showed rows: ':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Showed rows: '}}();
+          case 'Something went wrong. Please contact with the system admins.':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Something went wrong. Please contact with the system admins.'}}();
+          default:
+            return value;
+        }
+    }
+
+    //Label getters
+
+    {{# each application.allLabels as |label| }}
+    String {{ l10nLabelName label }}() {
+      return Intl.message(
+        '{{ label }}',
+        name: '{{ l10nLabelName label }}',
+        //desc: ???,
+        locale: localeName,
+      );
+    }
+    {{/ each }}
+
+    //Error message getters
+    String {{ l10nLabelName 'MISSING_IDENTIFIER_OF_BOUND_OPERATION'}}() {
+      return Intl.message(
+        'Missing object ID of operation.',
+        name: '{{ l10nLabelName 'MISSING_IDENTIFIER_OF_BOUND_OPERATION'}}',
+        args: [],
+        desc: 'Missing signed identifier (HTTP header) of bound operation.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'TOO_FEW_PARAMETERS'}}(String feature, String size) {
+      return Intl.message(
+        'Too few items in parameter.',
+        name: '{{ l10nLabelName 'TOO_FEW_PARAMETERS'}}',
+        args: [feature, size],
+        desc: 'Parameter (name is returned in location field) needs a collection, request contains too few items.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'TOO_MANY_PARAMETERS'}}(String feature, String size) {
+      return Intl.message(
+        'Too many items in parameter.',
+        name: '{{ l10nLabelName 'TOO_MANY_PARAMETERS'}}',
+        args: [feature, size],
+        desc: 'Parameter (name is returned in location field) needs a collection, request container too many items.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'NULL_PARAMETER_ITEM_IS_NOT_SUPPORTED'}}(String feature) {
+      return Intl.message(
+        'Null item is not supported.',
+        name: '{{ l10nLabelName 'NULL_PARAMETER_ITEM_IS_NOT_SUPPORTED'}}',
+        args: [feature],
+        desc: 'Null item is not accepted as collection parameter item.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'MISSING_REQUIRED_PARAMETER'}}(String feature) {
+      return Intl.message(
+        'Missing required parameter.',
+        name: '{{ l10nLabelName 'MISSING_REQUIRED_PARAMETER'}}',
+        args: [feature],
+        desc: 'A required single parameter (name is returned in location field) is missing from request.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'CONVERSION_FAILED'}}(String feature, String value) {
+      return Intl.message(
+        'Conversion failed.',
+        name: '{{ l10nLabelName 'CONVERSION_FAILED'}}',
+        args: [feature, value],
+        desc: 'Failed to convert attribute value to the expected type. Path expression is returned in location field.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'TOO_FEW_ITEMS'}}(String feature, String size) {
+      return Intl.message(
+        'Too few items in relation.',
+        name: '{{ l10nLabelName 'TOO_FEW_ITEMS'}}',
+        args: [feature, size],
+        desc: 'Relation (path expression is returned in location field) needs a collection, request contains too few items.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'TOO_MANY_ITEMS'}}(String feature, String size) {
+      return Intl.message(
+        'Too many items in relation.',
+        name: '{{ l10nLabelName 'TOO_MANY_ITEMS'}}',
+        args: [feature, size],
+        desc: 'Relation (path expression is returned in location field) needs a collection, request container too many items.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'NULL_ITEM_IS_NOT_SUPPORTED'}}(String feature) {
+      return Intl.message(
+        'Null item is not supported.',
+        name: '{{ l10nLabelName 'NULL_ITEM_IS_NOT_SUPPORTED'}}',
+        args: [feature],
+        desc: 'Null item is not accepted as collection relation item.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'INVALID_CONTENT'}}(String feature) {
+      return Intl.message(
+        'Invalid content.',
+        name: '{{ l10nLabelName 'INVALID_CONTENT'}}',
+        args: [feature],
+        desc: 'Content is invalid (collection instead of single value or unknown collection).',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'MISSING_REQUIRED_RELATION'}}(String feature) {
+      return Intl.message(
+        'Missing requered relation.',
+        name: '{{ l10nLabelName 'MISSING_REQUIRED_RELATION'}}',
+        args: [feature],
+        desc: 'A required single relation (path expression is returned in location field) is missing from request.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'MISSING_REQUIRED_ATTRIBUTE'}}(String feature) {
+      return Intl.message(
+        'Missing requered attribute.',
+        name: '{{ l10nLabelName 'MISSING_REQUIRED_ATTRIBUTE'}}',
+        args: [feature],
+        desc: 'A required attribute (path expression is returned in location field) is missing from request.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'MAX_LENGTH_VALIDATION_FAILED'}}(String feature, String maxLength, String value) {
+      return Intl.message(
+        'Value is too long.',
+        name: '{{ l10nLabelName 'MAX_LENGTH_VALIDATION_FAILED'}}',
+        args: [feature, maxLength, value],
+        desc: 'Length of value is greater than allowed by model.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'PATTERN_VALIDATION_FAILED'}}(String feature, String pattern, String value) {
+      return Intl.message(
+        'Value does not match pattern.',
+        name: '{{ l10nLabelName 'PATTERN_VALIDATION_FAILED'}}',
+        args: [feature, pattern, value],
+        desc: 'Value must match a regular expression defined by model.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'PRECISION_VALIDATION_FAILED'}}(String feature, String precision, String value) {
+      return Intl.message(
+        'Too many digits.',
+        name: '{{ l10nLabelName 'PRECISION_VALIDATION_FAILED'}}',
+        args: [feature, precision, value],
+        desc: 'Number of digits of value is greater than defined by model.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'SCALE_VALIDATION_FAILED'}}(String feature, String precision, String scale, String value) {
+      return Intl.message(
+        'Invalid scale.',
+        name: '{{ l10nLabelName 'SCALE_VALIDATION_FAILED'}}',
+        args: [feature, precision, scale, value],
+        desc: 'Scale of decimal value is not supported.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'INVALID_IDENTIFIER'}}() {
+      return Intl.message(
+        'Invalid identifier.',
+        name: '{{ l10nLabelName 'INVALID_IDENTIFIER'}}',
+        args: [],
+        desc: 'Signed identifier (signature) is invalid.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'NOT_ACCEPTED_BY_RANGE'}}(String identifier, String signedIdentifier) {
+      return Intl.message(
+        'Invalid reference.',
+        name: '{{ l10nLabelName 'NOT_ACCEPTED_BY_RANGE'}}',
+        args: [identifier, signedIdentifier],
+        desc: 'Reference is not accepted because of range expression defined for the given relation.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'AUTHENTICATION_REQUIRED'}}() {
+      return Intl.message(
+        'Authentication required.',
+        name: '{{ l10nLabelName 'AUTHENTICATION_REQUIRED'}}',
+        args: [],
+        desc: 'OAuth 2.0 access token to call an operation is not sent or incorrect. The same services are exposed to all actors so token data (Client ID) is used to detect the client application so invalid access tokens (missing "Bearer " prefix, invalid content) are ignored (causing this fault).',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'ACCESS_TOKEN_EXPIRED'}}() {
+      return Intl.message(
+        'Token expired.',
+        name: '{{ l10nLabelName 'ACCESS_TOKEN_EXPIRED'}}',
+        args: [],
+        desc: 'OAuth 2.0 access token expired, need to refresh it.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'ACCESS_DENIED'}}() {
+      return Intl.message(
+        'Access denied.',
+        name: '{{ l10nLabelName 'ACCESS_DENIED'}}',
+        args: [],
+        desc: 'Operation is not exposed to the given actor.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'AUTHENTICATED_ENTITY_NOT_FOUND'}}(String actor) {
+      return Intl.message(
+        'User not exists or disabled.',
+        name: '{{ l10nLabelName 'AUTHENTICATED_ENTITY_NOT_FOUND'}}',
+        args: [actor],
+        desc: 'No user found in da	ase by claims returned in access token. User may deleted/disabled or application has been changed.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'ACCESS_DENIED_FOR_INSTANCE_OF_BOUND_OPERATION'}}() {
+      return Intl.message(
+        'Access denied.',
+        name: '{{ l10nLabelName 'ACCESS_DENIED_FOR_INSTANCE_OF_BOUND_OPERATION'}}',
+        args: [],
+        desc: 'Instance of bound operation has type that is not exposed to the given actor. (Actor is resolved by access token that will be changed later to be defined by base path of JAX-RS application.)',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'PERMISSION_DENIED'}}(String missingPrivileges, String modelElement) {
+      return Intl.message(
+        'Permission denied.',
+        name: '{{ l10nLabelName 'PERMISSION_DENIED'}}',
+        args: [missingPrivileges, modelElement],
+        desc: 'Some privileges (CREATE/UPDATE/DELETE) are missing from model element related to the given operation.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'ACCESS_DENIED_INVALID_TYPE'}}() {
+      return Intl.message(
+        'Access denied.',
+        name: '{{ l10nLabelName 'ACCESS_DENIED_INVALID_TYPE'}}',
+        args: [],
+        desc: 'Mapped transfer object type of bound operation does not match type of signed identifier. User might call an operation by identifier of different representation (transfer object type) of the requested instance.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'BOUND_OPERATION_INSTANCE_NOT_FOUND'}}() {
+      return Intl.message(
+        'Not found.',
+        name: '{{ l10nLabelName 'BOUND_OPERATION_INSTANCE_NOT_FOUND'}}',
+        args: [],
+        desc: 'Instance of bound operation not found in da	ase. It might be deleted.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'INTERNAL_SERVER_ERROR'}}(String exception) {
+      return Intl.message(
+        'Internal server error.',
+        name: '{{ l10nLabelName 'INTERNAL_SERVER_ERROR'}}',
+        args: [exception],
+        desc: 'Internat server error that could not fix by user or client, need to analyze by JUDO developers.',
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Equal'}}() {
+      return Intl.message(
+        'Equal',
+        name: '{{ l10nLabelName 'Equal'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Equals'}}() {
+      return Intl.message(
+        'Equals',
+        name: '{{ l10nLabelName 'Equals'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Not equal'}}() {
+      return Intl.message(
+        'Not equal',
+        name: '{{ l10nLabelName 'Not equal'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Not equals'}}() {
+      return Intl.message(
+        'Not equals',
+        name: '{{ l10nLabelName 'Not equals'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Less than'}}() {
+      return Intl.message(
+        'Less than',
+        name: '{{ l10nLabelName 'Less than'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Greater than'}}() {
+      return Intl.message(
+        'Greater than',
+        name: '{{ l10nLabelName 'Greater than'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Less or equal'}}() {
+      return Intl.message(
+        'Less or equal',
+        name: '{{ l10nLabelName 'Less or equal'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Greater or equal'}}() {
+      return Intl.message(
+        'Greater or equal',
+        name: '{{ l10nLabelName 'Greater or equal'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Matches'}}() {
+      return Intl.message(
+        'Matches',
+        name: '{{ l10nLabelName 'Matches'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Contain'}}() {
+      return Intl.message(
+        'Contain',
+        name: '{{ l10nLabelName 'Contain'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Begin with'}}() {
+      return Intl.message(
+        'Begin with',
+        name: '{{ l10nLabelName 'Begin with'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Like'}}() {
+      return Intl.message(
+        'Like',
+        name: '{{ l10nLabelName 'Like'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Settings'}}() {
+      return Intl.message(
+        'Settings',
+        name: '{{ l10nLabelName 'Settings'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Logout'}}() {
+      return Intl.message(
+        'Logout',
+        name: '{{ l10nLabelName 'Logout'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Login'}}() {
+      return Intl.message(
+        'Login',
+        name: '{{ l10nLabelName 'Login'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Showed rows: '}}() {
+      return Intl.message(
+        'Showed rows: ',
+        name: '{{ l10nLabelName 'Showed rows: '}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+    String {{ l10nLabelName 'Something went wrong. Please contact with the system admins.'}}() {
+      return Intl.message(
+        'Something went wrong. Please contact with the system admins.',
+        name: '{{ l10nLabelName 'Something went wrong. Please contact with the system admins.'}}',
+        args: [],
+        locale: localeName,
+      );
+    }
+}
+
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+    const _AppLocalizationsDelegate();
+
+    @override
+    bool isSupported(Locale locale) => ['en', 'hu'].contains(locale.languageCode);
+
+    @override
+    Future<AppLocalizations> load(Locale locale) => AppLocalizations.load(locale);
+
+    @override
+    bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
