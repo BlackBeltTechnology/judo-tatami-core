@@ -211,7 +211,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                   children: [
                     // ignore: missing_return
                     Observer(builder: (_) {
-                      switch(pageStore.{{ fqVariable relation.name }}StoreFuture.status){
+                      switch(pageStore.{{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture.status){
                         case FutureStatus.pending:
                           return JudoLoadingProgress();
                         case FutureStatus.rejected:
