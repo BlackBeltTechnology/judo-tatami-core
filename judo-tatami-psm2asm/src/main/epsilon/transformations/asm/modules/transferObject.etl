@@ -1,4 +1,5 @@
 import "../utils/_importUtils.eol";
+import "namespace.etl";
 
 @abstract
 rule CreateTransferObject
@@ -7,6 +8,14 @@ rule CreateTransferObject
 		t.name = s.name;
 		s.eContainer.asmEquivalent().eClassifiers.add(t);
 	}
+	
+@greedy
+rule CreateDocumentationAnnotationForTransferObjectType
+    transform s : JUDOPSM!TransferObjectType
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        s.asmEquivalent().eAnnotations.add(t);
+    }
 
 @greedy
 rule CreateTransferObjectTypeAnnotationClass
@@ -556,4 +565,17 @@ rule CreateGetRangeInputAnnotationForGetRangeInputClass
 
         s.asmEquivalent().eAnnotations.add(t);
     }
-
+    
+rule CreateDocumentationAnnotationForTransferAttribute
+    transform s : JUDOPSM!TransferAttribute
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        s.asmEquivalent().eAnnotations.add(t);
+    }
+    
+rule CreateDocumentationAnnotationForTransferObjectRelation
+    transform s : JUDOPSM!TransferObjectRelation
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        s.asmEquivalent().eAnnotations.add(t);
+    }

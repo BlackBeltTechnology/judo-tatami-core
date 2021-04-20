@@ -1,4 +1,5 @@
 import "../utils/_importUtils.eol";
+import "namespace.etl";
 
 @abstract
 rule AddPrimitiveAccessorConstraints
@@ -201,3 +202,17 @@ rule CreateNavigationProperty
 	extends CreateReferenceAccessor {
 		s.getEntityType().equivalent("CreateEntityClass").eStructuralFeatures.add(t);
 }
+
+rule CreateDocumentationAnnotationForDataProperty
+    transform s : JUDOPSM!DataProperty
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        s.equivalent("CreateDataProperty").eAnnotations.add(t);
+    }
+    
+rule CreateDocumentationAnnotationForNavigationProperty
+    transform s : JUDOPSM!NavigationProperty
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        s.equivalent("CreateNavigationProperty").eAnnotations.add(t);
+    }

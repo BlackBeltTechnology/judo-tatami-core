@@ -24,3 +24,17 @@ rule PackageToPackage
     t.nsPrefix = s.eContainer.asmEquivalent().nsPrefix + s.name.firstToUpperCase();
     s.eContainer.asmEquivalent().eSubpackages.add(t);
 }
+
+@abstract
+rule CreateDocumentationAnnotation
+    transform s : JUDOPSM!NamedElement
+    to t : ASM!EAnnotation {
+        guard: s.documentation.isDefined() and s.documentation.trim().length() > 0
+
+        t.source = asmUtils.getAnnotationUri("documentation");
+
+        var documentation = new ASM!EStringToStringMapEntry;
+        documentation.key = "value";
+        documentation.value = s.documentation;
+        t.details.add(documentation);
+    }

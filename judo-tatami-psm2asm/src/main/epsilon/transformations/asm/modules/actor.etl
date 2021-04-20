@@ -1,5 +1,6 @@
 import "../utils/_importUtils.eol";
 import "operation.etl";
+import "namespace.etl";
 
 @greedy
 rule CreateActorAnnotation
@@ -67,5 +68,13 @@ rule CreateRealmTypeAnnotation
         realm.value = s.realm;
         t.details.add(realm);
 
+        s.asmEquivalent().eAnnotations.add(t);
+}
+
+@greedy
+rule CreateDocumentationAnnotationForActorType
+    transform s : JUDOPSM!AbstractActorType
+    to t : ASM!EAnnotation
+    extends CreateDocumentationAnnotation {
         s.asmEquivalent().eAnnotations.add(t);
 }
