@@ -1,62 +1,48 @@
 package hu.blackbelt.judo.tatami.rdbms2liquibase;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Lists;
-
-import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
-import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
-import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngine;
 import hu.blackbelt.judo.tatami.core.workflow.flow.WorkFlow;
 import hu.blackbelt.judo.tatami.core.workflow.work.TransformationContext;
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
-import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import static hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder.aNewWorkFlowEngine;
+import static hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow.Builder.aNewSequentialFlow;
+import static hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus.COMPLETED;
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 public class Rdbms2LiquibaseWorkTest {
-	
-	public static final String NORTHWIND = "northwind";
-	public static final List<String> DIALECT_LIST = new LinkedList<String>(Arrays.asList("hsqldb", "oracle"));
-    
-	List<Rdbms2LiquibaseWork> rdbms2LiquibaseWorks = Lists.newArrayList();
-	TransformationContext transformationContext;
 
-	@BeforeEach
-	void setUp() throws IOException, RdbmsModel.RdbmsValidationException {
-		RdbmsModel rdbmsModel = RdbmsModel.buildRdbmsModel().name(NORTHWIND).build();
+    public static final String NORTHWIND = "northwind";
+    public static final List<String> DIALECT_LIST = new LinkedList<>(asList("hsqldb", "oracle"));
 
-		transformationContext = new TransformationContext(NORTHWIND);
-		transformationContext.put("rdbms:hsqldb",rdbmsModel);
-		transformationContext.put("rdbms:oracle",rdbmsModel);
+    @Test
+    void testSimpleWorkflow() {
+        final RdbmsModel rdbmsModel = RdbmsModel.buildRdbmsModel().name(NORTHWIND).build();
 
-		DIALECT_LIST.forEach(dialect -> {
-				new Rdbms2LiquibaseWork(transformationContext, dialect);
-		});
-	}
+        final TransformationContext transformationContext = new TransformationContext(NORTHWIND);
+        DIALECT_LIST.forEach(dialect -> transformationContext.put("rdbms:" + dialect, rdbmsModel));
 
-	@Test
-	void testSimpleWorkflow() {
-		// WorkFlow workflow = aNewParallelFlow().execute(rdbms2LiquibaseWorks.toArray(new Work[rdbms2LiquibaseWorks.size()])).build();
-		WorkFlow workflow = aNewSequentialFlow().execute(rdbms2LiquibaseWorks.toArray(new Work[rdbms2LiquibaseWorks.size()])).build();
+        final List<Rdbms2LiquibaseWork> rdbms2LiquibaseWorks = new ArrayList<>();
+        DIALECT_LIST.forEach(dialect -> rdbms2LiquibaseWorks.add(new Rdbms2LiquibaseWork(transformationContext, dialect)));
 
-		WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
-		WorkReport workReport = workFlowEngine.run(workflow);
+//        WorkFlow workflow = aNewParallelFlow().execute(rdbms2LiquibaseWorks.toArray(new Work[0])).build();
+        WorkFlow workflow = aNewSequentialFlow().execute(rdbms2LiquibaseWorks.toArray(new Work[0])).build();
 
-		log.info("Workflow completed with status {}", workReport.getStatus(), workReport.getError());
-		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
-	}
+        WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
+        WorkReport workReport = workFlowEngine.run(workflow);
+
+        log.info("Workflow completed with status {}", workReport.getStatus(), workReport.getError());
+        assertEquals(COMPLETED, workReport.getStatus());
+    }
 
 }

@@ -33,7 +33,7 @@ public class Rdbms2LiquibaseRdbmsModelTracker extends AbstractModelTracker<Rdbms
     @Deactivate
     protected void deactivate() {
         closeTracker();
-        registrations.forEach((k, v) -> { v.unregister(); });
+        registrations.forEach((k, v) -> v.unregister());
     }
 
     private ComponentContext componentContext;

@@ -52,9 +52,7 @@ public class Rdbms2LiquibaseTranformationSerivce {
                             .toURI()
                             .resolve(".");
 
-            executeRdbms2LiquibaseTransformation(rdbmsModel, liquibaseModel, logger,
-                    scriptUri,
-                    "hsqldb" );
+            executeRdbms2LiquibaseTransformation(rdbmsModel, liquibaseModel, logger, scriptUri, "hsqldb");
 
             log.info("\u001B[33m {}\u001B[0m", logger.getBuffer());
         } catch (Exception e) {

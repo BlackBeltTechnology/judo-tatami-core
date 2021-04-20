@@ -70,7 +70,7 @@ operation RDBMS!RdbmsField fillType(type : String, attribute : ASM!EAttribute) {
     } else if (rdbmsScale.isDefined()) {
         self.scale = rdbmsScale.asFloat().asInteger();
     }
-
+    
     self.storageByte = -1;
 }
 
