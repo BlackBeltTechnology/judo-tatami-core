@@ -15,6 +15,7 @@ rule CreateEntitySequence
     to t : JUDOPSM!EntitySequence
     extends CreateSequence {
         t.name = s.name;
+        t.documentation = s.documentation;
         s.eContainer.getPSMEquivalent().sequences.add(t);
         log.debug("Created entity sequence: " + t.name);
 }
@@ -24,6 +25,7 @@ rule CreateNamespaceSequence
     to t : JUDOPSM!NamespaceSequence
     extends CreateSequence {
         t.name = s.name;
+        t.documentation = s.documentation;
         s.eContainer.getPSMEquivalent().elements.add(t);
         log.debug("Created namespace sequence: " + t.name);
 }

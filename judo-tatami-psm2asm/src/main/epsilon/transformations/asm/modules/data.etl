@@ -1,4 +1,5 @@
 import "../utils/_importUtils.eol";
+import "namespace.etl";
 
 rule CreateEntityAnnotationClass
 	transform s : JUDOPSM!EntityType
@@ -12,6 +13,13 @@ rule CreateEntityAnnotationClass
         
         s.equivalent("CreateEntityClass").eAnnotations.add(t);
 	}
+
+rule CreateDocumentationAnnotationForEntityType
+    transform s : JUDOPSM!EntityType
+    to t : ASM!EAnnotation
+    extends CreateDocumentationAnnotation {
+        s.equivalent("CreateEntityClass").eAnnotations.add(t);
+    }
 
 rule CreateEntityClass
 	transform s : JUDOPSM!EntityType
@@ -45,6 +53,13 @@ rule AddAttributeConstraints
     to t : ASM!EAnnotation {
         t.source = asmUtils.getAnnotationUri("constraints");
         
+        s.equivalent("CreateAttribute").eAnnotations.add(t);
+    }
+
+rule CreateDocumentationAnnotationForAtrributes
+    transform s : JUDOPSM!Attribute
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
         s.equivalent("CreateAttribute").eAnnotations.add(t);
     }
 
@@ -197,4 +212,18 @@ rule AddUnmappedDefaultOnlyReferenceAnnotation
         t.details.add(unmappedDefaultOnly);
 
         s.equivalent("CreateAssociationEndRelation").eAnnotations.add(t);
+    }
+
+rule CreateDocumentationAnnotationForAssociationEndRelation
+    transform s : JUDOPSM!AssociationEnd
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        s.equivalent("CreateAssociationEndRelation").eAnnotations.add(t);
+    }
+
+rule CreateDocumentationAnnotationForContainmentRelation
+    transform s : JUDOPSM!Containment
+    to t : ASM!EAnnotation
+        extends CreateDocumentationAnnotation {
+        s.equivalent("CreateContainmentRelation").eAnnotations.add(t);
     }

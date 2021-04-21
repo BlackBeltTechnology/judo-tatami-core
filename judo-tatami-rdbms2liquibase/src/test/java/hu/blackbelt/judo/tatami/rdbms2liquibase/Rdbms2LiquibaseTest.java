@@ -24,13 +24,11 @@ import java.sql.DriverManager;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.SaveArguments.liquibaseSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseModel.buildLiquibaseModel;
 import static hu.blackbelt.judo.meta.liquibase.runtime.LiquibaseNamespaceFixUriHandler.fixUriOutputStream;
-import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.LoadArguments.rdbmsLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbmsDataTypes.support.RdbmsDataTypesModelResourceSupport.registerRdbmsDataTypesMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsNameMapping.support.RdbmsNameMappingModelResourceSupport.registerRdbmsNameMappingMetamodel;
 import static hu.blackbelt.judo.meta.rdbmsRules.support.RdbmsTableMappingRulesModelResourceSupport.registerRdbmsTableMappingRulesMetamodel;
 import static hu.blackbelt.judo.tatami.asm2rdbms.Asm2Rdbms.executeAsm2RdbmsTransformation;
 import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
-import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.calculateRdbms2LiquibaseTransformationScriptURI;
 import static hu.blackbelt.judo.tatami.rdbms2liquibase.Rdbms2Liquibase.executeRdbms2LiquibaseTransformation;
 
 @Slf4j
@@ -48,7 +46,7 @@ public class Rdbms2LiquibaseTest {
     @BeforeEach
     public void setUp() throws Exception {
 
-    	// Default logger
+        // Default logger
         slf4jlog = new Slf4jLog(log);
 
         final PsmModel psmModel = new Demo().fullDemo();
@@ -59,12 +57,12 @@ public class Rdbms2LiquibaseTest {
                 .build();
 
         executePsm2AsmTransformation(psmModel, asmModel);
-        
+
         // Create empty RDBMS model
         rdbmsModel = RdbmsModel.buildRdbmsModel()
                 .name(NORTHWIND)
                 .build();
-        
+
         registerRdbmsNameMappingMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsDataTypesMetamodel(rdbmsModel.getResourceSet());
         registerRdbmsTableMappingRulesMetamodel(rdbmsModel.getResourceSet());
@@ -83,8 +81,8 @@ public class Rdbms2LiquibaseTest {
         executeRdbms2LiquibaseTransformation(rdbmsModel, liquibaseModel, "hsqldb");
 
         liquibaseModel.saveLiquibaseModel(liquibaseSaveArgumentsBuilder()
-                .outputStream(fixUriOutputStream(
-                        new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND_LIQUIBASE_MODEL)))));
+                                                  .outputStream(fixUriOutputStream(
+                                                          new FileOutputStream(new File(TARGET_TEST_CLASSES, NORTHWIND_LIQUIBASE_MODEL)))));
 
         // Executing on HSQLDB
         Connection connection = DriverManager.getConnection("jdbc:hsqldb:mem:mymemdb", "SA", "");

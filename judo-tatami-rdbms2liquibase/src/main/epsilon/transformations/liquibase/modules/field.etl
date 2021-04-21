@@ -1,3 +1,5 @@
+import "../utils/changeSet.eol";
+
 @abstract
 @greedy
 rule FieldToColumn
@@ -68,27 +70,32 @@ rule FieldToCreateTableAddNotNullConstraint
 		s.table().equivalent("TableToAddNotNullChangeSet").addNotNullConstraint.add(t);
 }
 
+rule IndexToCreateIndex
+    transform s : RDBMS!RdbmsIndex
+    to t : LIQUIBASE!CreateIndex {
+        t.tableName = s.eContainer.sqlName;
+        t.indexName = s.sqlName;
+        for (field in s.fields) {
+            t.column.add(new LIQUIBASE!Column(name = field.sqlName));
+        }
 
-@cached
-operation RDBMS!RdbmsField table() : RDBMS!RdbmsTable {
-    return RDBMS!RdbmsTable.all.selectOne(ta | ta.fields.contains(self));
+        targetModel.getOrCreateChangeSet("create-indexes-in-" + s.eContainer.sqlName, "create-indexes", dialect, context)
+            .createIndex.add(t);
+        log.info("CreateIndex added: " + t.indexName);
 }
 
-@cached
-operation RDBMS!RdbmsField toFieldDefinition () : String {
-	if (self.rdbmsTypeName.isDefined()) {
-		var typedef = self.rdbmsTypeName.toUpperCase();
-		if (self.precision > 0) {
-			typedef += "(" + self.precision;
-			if (self.scale > 0) {
-				typedef += ", " + self.scale;
-			}
-			typedef += ")";	
-		} else if (self.size > 0) {
-			typedef += "(" + self.size + ")";
-		}
-		return typedef;
-	} else if (self.type.isDefined()) {
-		return self.type.toString();
-	}
+rule AddUniqueConstraints
+    transform s : RDBMS!RdbmsUniqueConstraint
+    to t : LIQUIBASE!AddUniqueConstraint {
+        t.tableName = "";
+        t.columnNames = "";
+        for (field in s.fields) {
+            var addUniqueConstraint = new LIQUIBASE!AddUniqueConstraint();
+            addUniqueConstraint.constraintName = s.sqlName;
+            addUniqueConstraint.tableName = field.eContainer.sqlName;
+            addUniqueConstraint.columnNames = field.sqlName;
+            targetModel.getOrCreateChangeSet("add-unique-constraints-to-" + s.eContainer.sqlName, "add-unique-constraints", dialect, context)
+                .addUniqueConstraint.add(addUniqueConstraint);
+            log.info("AddUniqueConstraint added: " + addUniqueConstraint.columnNames + " (" + addUniqueConstraint.tableName + ")");
+        }
 }
