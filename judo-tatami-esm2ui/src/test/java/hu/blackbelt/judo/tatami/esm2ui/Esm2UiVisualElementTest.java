@@ -984,6 +984,7 @@ public class Esm2UiVisualElementTest {
                 .withStretch(Stretch.BOTH).withFit(Fit.LOOSE).build();
         DataField dataFieldRadio = newDataFieldBuilder().withName("radio").withLabel(enumerationAttribute1.getName().toUpperCase())
                 .withIconName(SimpleOrderModel.getIconName(enumerationAttribute1)).withDataFeature(enumerationAttribute1).withEnumWidget(EnumWidget.RADIO).withCol(3)
+                .withShowIcon(false).withShowLabel(false)
                 .withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).build();
         DataField dataFieldCombo = newDataFieldBuilder().withName("combo").withLabel(enumerationAttribute2.getName().toUpperCase())
                 .withIconName(SimpleOrderModel.getIconName(enumerationAttribute2)).withDataFeature(enumerationAttribute2).withEnumWidget(EnumWidget.COMBO).withCol(3)
