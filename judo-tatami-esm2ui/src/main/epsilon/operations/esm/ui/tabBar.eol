@@ -9,6 +9,9 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
         tab.name = t.name;
         tab.element = t.createFlexFromContainer(application, page);
         tab.element.sourceId = self.getID();
+        if (not tab.element.showLabel and not tab.element.showIcon) {
+            tab.element.showLabel = true;
+        }
         ret.tabs.add(tab);
     }
     
