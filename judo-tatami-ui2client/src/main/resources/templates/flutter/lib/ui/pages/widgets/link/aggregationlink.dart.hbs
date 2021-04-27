@@ -3,8 +3,12 @@
 {{# with dataElement as |relation|}}
 Observer(builder: (_) {
     return JudoLink(
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
-        icon: Icon(Icons.{{ safe icon 'texture' }}),
+      {{#if link.isLabelVisible }}
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ link.label }}'),
+      {{/if}}
+      {{#if link.isIconVisible }}
+        icon: Icon(Icons.{{ link.icon.name }}),
+      {{/if}}
         disabled: {{ disabled }},
         {{# if page.isPageTypeView }}
         readOnly: true,

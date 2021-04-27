@@ -205,87 +205,49 @@ operation UI!ui::Table createActionButtonGroupForTable() : UI!ui::Flex {
 
     if (tableContainer.children.size() == 2 and tableContainer.children.get(0).isKindOf(UI!ui::Label)) {
         tableContainer.children.add(1, buttonGroup);
-    } else if (tableContainer.children.size() == 1 and tableContainer.children.get(0).isKindOf(UI!ui::Table)) {
-        tableContainer.children.add(0, buttonGroup);
     } else {
-        tableContainer.children.add(tableIndex, buttonGroup);
+        var wrapper = createVerticalFlex(self.name, self.col, self.row + 1d);
+        wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+        wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
+        wrapper.stretch = self.stretch;
+        self.stretch = UI!ui::Stretch#BOTH;
+        wrapper.children.add(buttonGroup);
+        wrapper.children.add(self);
+        tableContainer.children.add(tableIndex, wrapper);
     }
     
     return buttonGroup;
 }
 
-operation UI!ui::Table isTablePage() : Boolean {
-    
-    var pageDef = self.getPageDefinition();
-    
-    if (pageDef.isDefined()) {
-        var dataElement = self.getPageDefinition().dataElement;
-        if (dataElement.isDefined() and dataElement.isKindOf(UI!ui::data::RelationType)) {
-            return pageDef.pageType == UI!ui::PageType#TABLE or (pageDef.pageType == UI!ui::PageType#DASHBOARD and dataElement.isCollection);
-        }
-        return pageDef.pageType == UI!ui::PageType#TABLE; 
-    }
-    
-    return false;
-}
-
-operation UI!ui::Table wrapAndLabelTable() {
-    var tableContainer : UI!ui::Container = self.eContainer();
-    var tableIndex : Integer = tableContainer.children.indexOf(self);
+operation UI!ui::Table wrapAndLabelTable() : UI!ui::Flex {
     var wrapper = createVerticalFlex(self.name, self.col, self.row + 1d);
-    
-    if (tableContainer.direction == UI!ui::Axis#HORIZONTAL) {
-        if (tableContainer.crossAxisAlignment == UI!ui::CrossAxisAlignment#START) {
-            wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
-        } else if (tableContainer.crossAxisAlignment == UI!ui::CrossAxisAlignment#END) {
-            wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#END;
-        } else {
-            wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
-        }
-        wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
-    } else {
-        if (tableContainer.mainAxisAlignment == UI!ui::MainAxisAlignment#START) {
-            wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
-        } else if (tableContainer.mainAxisAlignment == UI!ui::MainAxisAlignment#END) {
-            wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#END;
-        } else {
-            wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#CENTER;
-        }
-        wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
-    }
-    
+    wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
+    wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
     wrapper.stretch = self.stretch;
-    self.stretch = UI!ui::Stretch#HORIZONTAL;
-    
-    if (not self.dataElement.isCollection or self.row < 2d) {
-        self.row = 2d;
-    }
-    
-    if (self.dataElement.isCollection) {
-        self.stretch = UI!ui::Stretch#BOTH;
-    }
+    self.stretch = UI!ui::Stretch#BOTH;
 
+    var label : UI!ui::Label = new UI!ui::Label();
+    label.row = 1d;
+    label.col = self.col;
+    label.stretch = UI!ui::Stretch#HORIZONTAL;
+    label.name = self.name.anchor("Label"); 
+    
+    if (self.getIsLabelVisible()) {
+        label.label = self.label;
+        label.showLabel = true;
+        label.labelMargin = new UI!ui::Margin();
+    }
+    
+    if (self.getIsIconVisible()) {
+        var icon : UI!ui::Icon = new UI!ui::Icon();
+        icon.name = self.icon.name;
+        label.icon = icon;
+        label.showIcon = true;
+        label.iconMargin = new UI!ui::Margin();
+    }
+    
+    wrapper.children.add(label);
     wrapper.children.add(self);
-    tableContainer.children.add(tableIndex, wrapper);
     
-    if (not self.isTablePage() and (self.label.isDefined() or self.icon.isDefined())) {
-        var tableIndex : Integer = wrapper.children.indexOf(self);
-        var label : UI!ui::Label = new UI!ui::Label();
-        label.row = 1d;
-        label.col = self.col;
-        label.stretch = self.stretch;
-        label.name = self.name.anchor("Label");
-
-        if (self.label.isDefined()) {
-            label.label = self.label;
-        }
-        
-        if (self.icon.isDefined() and self.icon.trim().length() > 0) {
-            var icon : UI!ui::Icon = new UI!ui::Icon();
-            icon.name = self.icon;
-            label.icon = icon;
-        }
-        
-        wrapper.children.add(tableIndex, label);
-    }
+    return wrapper;
 }

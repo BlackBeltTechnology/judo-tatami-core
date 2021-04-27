@@ -1,10 +1,11 @@
-operation ESM!esm::type::NumericType input(dataField : ESM!esm::ui::DataField, application : UI!ui::Application): UI!ui::Input {
-    return self.fillInput(new UI!ui::NumericInput(), dataField.row.asReal(), dataField.col.asReal(), dataField.iconName);
+operation ESM!esm::type::NumericType input(dataField : ESM!esm::ui::DataField, attributeType : UI!ui::data::AttributeType, application : UI!ui::Application): UI!ui::Input {
+    var input = new UI!ui::NumericInput();
+    return input.fillInput(dataField, attributeType, application);
 }
 
 // TODO: sprinf numberic format
-operation ESM!esm::type::NumericType formatted(): UI!ui::Formatted {
-    return self.fillFormatted(new UI!ui::Formatted(), "%s", 1d, 2d);
+operation ESM!esm::type::NumericType formatted(dataField : ESM!esm::ui::DataField, attributeType : UI!ui::data::AttributeType, application : UI!ui::Application): UI!ui::Formatted {
+    return createFormatted(dataField, attributeType, application);
 }
 
 @cached

@@ -9,8 +9,12 @@ Observer(
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         use24HourFormat: true,
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+      {{#if this.isLabelVisible }}
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
+      {{/if}}
+      {{#if this.isIconVisible }}
+        icon: Icon(Icons.{{ this.icon.name }}),
+      {{/if}}
         readOnly: true,
     ),
 ),
@@ -26,8 +30,12 @@ Observer(
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         use24HourFormat: true,
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+      {{#if this.isLabelVisible }}
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
+      {{/if}}
+      {{#if this.isIconVisible }}
+        icon: Icon(Icons.{{ this.icon.name }}),
+      {{/if}}
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
         lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
@@ -46,8 +54,12 @@ Observer(
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         use24HourFormat: true,
         initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+      {{#if this.isLabelVisible }}
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
+      {{/if}}
+      {{#if this.isIconVisible }}
+        icon: Icon(Icons.{{ this.icon.name }}),
+      {{/if}}
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
         lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line

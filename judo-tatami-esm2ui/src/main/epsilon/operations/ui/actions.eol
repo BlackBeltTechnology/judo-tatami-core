@@ -1,198 +1,362 @@
 operation UI!ui::Action setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'texture';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::NavigationToPageAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'navigate_next';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::CreateAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'note_add';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::EditAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'edit';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::ViewAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'visibility';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::BackAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'arrow_back';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::SaveAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'save';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::AddAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'add_link';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::RemoveAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'link_off';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::DeleteAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'delete_forever';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::SetAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'link';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::UnsetAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'link_off';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::CallOperationAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'input';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::RefreshAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'refresh';
     }
-}
-
-operation UI!ui::Action setLabel() {
-    if (self.label.isUndefined()) {
-        self.label = 'Action';
-    } 
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
 operation UI!ui::FilterAction setIcon() {
+    self.showIcon = true;
     if (self.icon.isUndefined()) {
         self.icon = new UI!ui::Icon();
         self.icon.name = 'filter_alt';
     }
+    if (self.eContainer.isKindOf(UI!ui::Button)) {
+        self.eContainer.icon = new UI!ui::Icon();
+        self.eContainer.icon.name = self.icon.name;
+        self.eContainer.showIcon = true;
+    }
 }
 
+operation UI!ui::Action setLabel() {
+    self.showLabel = true;
+    if (self.label.isUndefined()) {
+        self.label = 'Action';
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
+}
 
 operation UI!ui::NavigationToPageAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Navigate to ' + self.target.label;
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::CreateAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Create';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::EditAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Edit';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::ViewAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'View';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 
 operation UI!ui::BackAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Back';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::SaveAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Save';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::AddAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Add';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::RemoveAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Remove';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::DeleteAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Delete';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::SetAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Set';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::UnsetAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Unset';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::RefreshAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Refresh';
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::FilterAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Add Filter';
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
     }
 }
 
 operation UI!ui::CallOperationAction setLabel() {
+    self.showLabel = true;
     if (self.label.isUndefined()) {
         self.label = 'Call ' + self.`operation`.name;
-    } 
+    }
+    if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
+        self.eContainer.label = self.label;
+        self.eContainer.showLabel = true;
+    }
 }
 
 operation UI!ui::Action setIsNested() {

@@ -77,11 +77,11 @@
             arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className action.target.dataElement.owner.name }}Store: target{{ className action.target.dataElement.owner.name }}Store));
         },
     {{/ if }}
-    {{#if label }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
+    {{#if this.isLabelVisible }}
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
     {{/if}}
-    {{#if action.icon }}
-        icon: Icon(Icons.{{ action.icon.name }}),
+    {{#if this.isIconVisible }}
+        icon: Icon(Icons.{{ this.icon.name }}),
     {{/if}}
         rounded: true,
     ){{# if (isObserverButton this page.dataElement action) }}

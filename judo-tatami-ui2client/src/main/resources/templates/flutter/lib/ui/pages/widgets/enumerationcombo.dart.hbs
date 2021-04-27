@@ -6,8 +6,12 @@ Observer(
         key: UniqueKey(),
         col: {{ col }},
         row: {{ row }},
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+      {{#if this.isIconVisible }}
+        icon: Icon(Icons.{{ this.icon.name }}),
+      {{/if}}
+      {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
+      {{/if}}
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
@@ -26,9 +30,12 @@ Observer(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         row: {{ row }},
-        mandatory: {{ attributeType.isRequired }},
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+      {{#if item.isIconVisible }}
+        icon: Icon(Icons.{{ this.icon.name }}),
+      {{/if}}
+      {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
+      {{/if}}
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
@@ -48,9 +55,12 @@ Observer(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         row: {{ row }},
-        mandatory: {{ attributeType.isRequired }},
-        icon: Icon(Icons.{{ this.leadingIcon.name }}),
+      {{#if item.isIconVisible }}
+        icon: Icon(Icons.{{ this.icon.name }}),
+      {{/if}}
+      {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
+      {{/if}}
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},

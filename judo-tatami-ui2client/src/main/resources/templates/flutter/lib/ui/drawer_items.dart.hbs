@@ -20,8 +20,12 @@ class {{ fqClass application.name }}NavigationItems {
         {{#each application.navigationController.items as |item|}}
         NavigationItem(
             route: Routes.{{ fqVariable item.target.name }}Page,
+          {{#if item.isIconVisible }}
             leading: Icon(Icons.{{item.icon.name}}),
+          {{/if}}
+          {{#if item.isLabelVisible }}
             title: '{{ item.label }}',
+          {{/if}}
         ),
 
         {{/each}}

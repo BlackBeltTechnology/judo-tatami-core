@@ -4,11 +4,6 @@ operation ESM!esm::ui::Icon createIconImageFromIcon(application : UI!ui::Applica
     ret.setVisualProperties(self, application);
     ret.sourceId = self.getID();
     
-    if (self.iconName.isDefined() and self.iconName.trim().length() > 0) {
-        ret.icon = new UI!ui::Icon();
-        ret.icon.name = self.iconName;
-    }
-    
     return ret;
 }
 

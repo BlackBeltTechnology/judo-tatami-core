@@ -353,6 +353,7 @@ public class Esm2UiVisualElementTest {
                 .withStretch(Stretch.NONE)
                 .withFit(Fit.LOOSE)
                 .withComponents(newPlaceholderBuilder().withName("ph").build())
+                .withShowLabel(false)
                 .build();
         
         Group group2 = newGroupBuilder().withName("group2").withLabel("G2").withCol(8).withRow(2)
@@ -360,6 +361,7 @@ public class Esm2UiVisualElementTest {
                 .withStretch(Stretch.HORIZONTAL)
                 .withFit(Fit.LOOSE)
                 .withComponents(newPlaceholderBuilder().withName("ph").build())
+                .withShowLabel(false)
                 .build();
         
         Group group3 = newGroupBuilder().withName("group3").withLabel("G3").withCol(4).withRow(6)
@@ -367,6 +369,7 @@ public class Esm2UiVisualElementTest {
                 .withStretch(Stretch.VERTICAL)
                 .withFit(Fit.TIGHT)
                 .withComponents(newPlaceholderBuilder().withName("ph").build())
+                .withShowLabel(false)
                 .build();
         
         Group group4 = newGroupBuilder().withName("group4").withLabel("G4").withCol(8).withRow(2)
@@ -374,6 +377,7 @@ public class Esm2UiVisualElementTest {
                 .withStretch(Stretch.BOTH)
                 .withFit(Fit.TIGHT)
                 .withComponents(newPlaceholderBuilder().withName("ph").build())
+                .withShowLabel(false)
                 .build();
         
         //direction HORIZONTAL / VERTICAL / DEFAULT (gets the root's direction, which is horizontal if default)
@@ -381,22 +385,26 @@ public class Esm2UiVisualElementTest {
         Group group5 = newGroupBuilder().withName("group5").withLabel("G5").withCol(4).withRow(6)
                 .withFrame(true)
                 .withLayout(Layout.HORIZONTAL)
+                .withShowLabel(false)
                 .build();
         
         Group group6 = newGroupBuilder().withName("group6").withLabel("G6").withCol(8).withRow(2)
                 .withFrame(false)
                 .withLayout(Layout.VERTICAL)
+                .withShowLabel(false)
                 .build();
         
         Group group7 = newGroupBuilder().withName("group7").withLabel("G7").withCol(8).withRow(2)
                 .withFrame(false)
                 .withLayout(Layout.DEFAULT)
+                .withShowLabel(false)
                 .build();
         
         Group group8 = newGroupBuilder().withName("group8").withLabel("G8").withCol(8).withRow(2)
                 .withFrame(false)
                 .withLayout(Layout.VERTICAL)
                 .withComponents(newGroupBuilder().withName("group").withLayout(Layout.DEFAULT).build())
+                .withShowLabel(false)
                 .build();
         
         TransferObjectView view2 = newTransferObjectViewBuilder().withName("VIEW").withLabel(e2.getName())
@@ -414,6 +422,7 @@ public class Esm2UiVisualElementTest {
                 .withLayout(Layout.HORIZONTAL)
                 .withHorizontal(Horizontal.LEFT)
                 .withVertical(Vertical.TOP)
+                .withShowLabel(false)
                 .build();
         
         Group group10 = newGroupBuilder().withName("group10").withLabel("G10").withCol(8).withRow(2)
@@ -421,6 +430,7 @@ public class Esm2UiVisualElementTest {
                 .withLayout(Layout.VERTICAL)
                 .withHorizontal(Horizontal.RIGHT)
                 .withVertical(Vertical.BOTTOM)
+                .withShowLabel(false)
                 .build();
         
         Group group11 = newGroupBuilder().withName("group11").withLabel("G11").withCol(8).withRow(2)
@@ -428,6 +438,7 @@ public class Esm2UiVisualElementTest {
                 .withLayout(Layout.DEFAULT)
                 .withHorizontal(Horizontal.CENTER)
                 .withVertical(Vertical.CENTER)
+                .withShowLabel(false)
                 .build();
         
         Group group12 = newGroupBuilder().withName("group12").withLabel("G12").withCol(8).withRow(2)
@@ -436,6 +447,7 @@ public class Esm2UiVisualElementTest {
                 .withHorizontal(Horizontal.CENTER)
                 .withVertical(Vertical.CENTER)
                 .withComponents(dataField1, dataField2, dataField3)
+                .withShowLabel(false)
                 .build();
         
         Group group13 = newGroupBuilder().withName("group13").withLabel("G13").withCol(8).withRow(2)
@@ -443,6 +455,7 @@ public class Esm2UiVisualElementTest {
                 .withLayout(Layout.VERTICAL)
                 .withHorizontal(Horizontal.SPACE_AROUND)
                 .withVertical(Vertical.SPACE_AROUND)
+                .withShowLabel(false)
                 .build();
         
         Group group14 = newGroupBuilder().withName("group14").withLabel("G14").withCol(8).withRow(2)
@@ -450,6 +463,7 @@ public class Esm2UiVisualElementTest {
                 .withLayout(Layout.HORIZONTAL)
                 .withHorizontal(Horizontal.SPACE_BETWEEN)
                 .withVertical(Vertical.SPACE_BETWEEN)
+                .withShowLabel(false)
                 .build();
         
         TransferObjectView view1 = newTransferObjectViewBuilder().withName("VIEW").withLabel(e1.getName())
@@ -777,12 +791,14 @@ public class Esm2UiVisualElementTest {
         TabularReferenceField tabular7 = newTabularReferenceFieldBuilder().withName(compositionNotTargetDefined.getName())
                 .withLabel(compositionNotTargetDefined.getName().toUpperCase()).withRelationFeature(compositionNotTargetDefined).withCol(12)
                 .withTargetDefinedTabular(false)
+                .withShowLabel(true)
                 .withColumns(newDataColumnBuilder().withName(idE4.getName()).withDataFeature(idE4).build(),
                         newDataColumnBuilder().withName(nameE4.getName()).withDataFeature(nameE4).build())
                 .build();
         TabularReferenceField tabular8 = newTabularReferenceFieldBuilder().withName(compositionTargetDefined.getName())
                 .withLabel(compositionTargetDefined.getName().toUpperCase()).withRelationFeature(compositionTargetDefined).withCol(12)
                 .withTargetDefinedTabular(true)
+                .withShowLabel(true)
                 .build();
         
         useEntityType(e4).withTable(
@@ -968,6 +984,7 @@ public class Esm2UiVisualElementTest {
                 .withStretch(Stretch.BOTH).withFit(Fit.LOOSE).build();
         DataField dataFieldRadio = newDataFieldBuilder().withName("radio").withLabel(enumerationAttribute1.getName().toUpperCase())
                 .withIconName(SimpleOrderModel.getIconName(enumerationAttribute1)).withDataFeature(enumerationAttribute1).withEnumWidget(EnumWidget.RADIO).withCol(3)
+                .withShowIcon(false).withShowLabel(false)
                 .withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).build();
         DataField dataFieldCombo = newDataFieldBuilder().withName("combo").withLabel(enumerationAttribute2.getName().toUpperCase())
                 .withIconName(SimpleOrderModel.getIconName(enumerationAttribute2)).withDataFeature(enumerationAttribute2).withEnumWidget(EnumWidget.COMBO).withCol(3)
@@ -979,10 +996,13 @@ public class Esm2UiVisualElementTest {
                 .withRow(1).withCol(2).withFit(Fit.LOOSE).withStretch(Stretch.NONE)
                 .build();
         
-        Divider divider = newDividerBuilder().withName("divider").withCol(4).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).withLabel("label").build();
+        Divider divider = newDividerBuilder().withName("divider").withCol(4).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.TIGHT).withLabel("label")
+                .withShowIcon(false).withShowLabel(false).build();
         Icon icon = newIconBuilder().withName("icon").withCol(2).withRow(2).withIconName("basket").withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
-        Placeholder placeholder = newPlaceholderBuilder().withName("placeholder").withCol(4).withRow(2).withStretch(Stretch.BOTH).withFit(Fit.TIGHT).build();
-        TextField textField = newTextFieldBuilder().withName("textField").withText("hello").withCol(3).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
+        Placeholder placeholder = newPlaceholderBuilder().withName("placeholder").withCol(4).withRow(2).withStretch(Stretch.BOTH).withFit(Fit.TIGHT)
+                .withShowIcon(false).withShowLabel(false).build();
+        TextField textField = newTextFieldBuilder().withName("textField").withText("hello").withCol(3).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE)
+                .withShowIcon(false).withShowLabel(false).build();
         
         useEntityType(e1).withView(
                     newTransferObjectViewBuilder().withName("View")
@@ -1003,6 +1023,7 @@ public class Esm2UiVisualElementTest {
         final Optional<Application> application = allUi(Application.class).filter(a -> a.getName().equals(actor.getFQName()))
                 .findAny();
         assertTrue(application.isPresent());
+        
         final Optional<ClassType> uiE1 = application.get().getDataElements().stream().filter(e -> e instanceof ClassType && e.getName().equals(e1.getFQName()))
                 .map(e -> (ClassType) e).findAny();
         assertTrue(uiE1.isPresent());
@@ -1266,11 +1287,11 @@ public class Esm2UiVisualElementTest {
         Placeholder placeholder = newPlaceholderBuilder().withName("placeholder").withCol(4).withRow(2).withStretch(Stretch.BOTH).withFit(Fit.TIGHT).build();
         TextField textField = newTextFieldBuilder().withName("textField").withText("hello").withCol(3).withRow(2).withStretch(Stretch.HORIZONTAL).withFit(Fit.LOOSE).build();
         
-        Group group1 = newGroupBuilder().withName("Tab1").withLabel("Tab1").withIconName("gesture")
+        Group group1 = newGroupBuilder().withName("Tab1").withLabel("Tab1").withIconName("gesture").withShowLabel(false).withShowIcon(false)
             .withComponents(dataFieldTextInput, dataFieldText, dataFieldTextAreaInput, dataFieldTextArea).build();
-        Group group2 = newGroupBuilder().withName("Tab2").withLabel("Tab2").withIconName(" ")
+        Group group2 = newGroupBuilder().withName("Tab2").withLabel("Tab2").withIconName(" ").withShowLabel(false).withShowIcon(false)
             .withComponents(dataFieldNumeric, dataFieldPassword, divider).build();
-        Group group3 = newGroupBuilder().withName("Tab3").withLabel("Tab3")
+        Group group3 = newGroupBuilder().withName("Tab3").withLabel("Tab3").withShowLabel(false).withShowIcon(false)
             .withComponents(icon, placeholder, textField).build();
         
         TabBar tabBar = newTabBarBuilder().withName("tabbar").withCol(8).withRow(10)
@@ -1315,18 +1336,18 @@ public class Esm2UiVisualElementTest {
         final Optional<Flex> tab1 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
                 .filter(t -> t.getName().equals("Tab1")).findAny();
         assertTrue(tab1.isPresent());
-        assertNotNull(((hu.blackbelt.judo.meta.ui.Tab) tab1.get().eContainer()).getIcon());
-        assertEquals(group1.getIconName(), ((hu.blackbelt.judo.meta.ui.Tab) tab1.get().eContainer()).getIcon().getName());
+        assertNotNull(tab1.get().getIcon());
+        assertEquals(group1.getIconName(), tab1.get().getIcon().getName());
         assertEquals(4, tab1.get().getChildren().size());
         final Optional<Flex> tab2 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
                 .filter(t -> t.getName().equals("Tab2")).findAny();
         assertTrue(tab2.isPresent());
-        assertNull(((hu.blackbelt.judo.meta.ui.Tab) tab2.get().eContainer()).getIcon());
+        assertNull(tab2.get().getIcon());
         assertEquals(3, tab2.get().getChildren().size());
         final Optional<Flex> tab3 = tabController.get().getTabs().stream().map(t -> (Flex) t.getElement())
                 .filter(t -> t.getName().equals("Tab3")).findAny();
         assertTrue(tab3.isPresent());
-        assertNull(((hu.blackbelt.judo.meta.ui.Tab) tab3.get().eContainer()).getIcon());
+        assertNull(tab3.get().getIcon());
         assertEquals(3, tab3.get().getChildren().size());
     }
     

@@ -23,6 +23,9 @@ operation ESM!esm::structure::ReferenceTypedElement createViewPage(application :
     page.name = self.fqName().anchor("View");
     page.pageType = UI!ui::PageType#VIEW;
     page.label = target.view.getUiLabel();
+    page.createIconForLabeledElement(target.view.iconName);
+    page.showLabel = target.view.showLabel;
+    page.showIcon = target.view.showIcon;
 
     var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -64,6 +67,9 @@ operation ESM!esm::structure::ReferenceTypedElement createCreatePage(application
          "(?<=[^A-Z])(?=[A-Z])|" +
          "(?<=[A-Za-z \\u0080-\\u9fff])(?=[^A-Za-z \\u0080-\\u9fff])",
       " ");
+    page.icon = page.createIconForLabeledElement(target.form.iconName);
+    page.showLabel = target.form.showLabel;
+    page.showIcon = target.form.showIcon;
 
     var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -100,6 +106,9 @@ operation ESM!esm::structure::ReferenceTypedElement createUpdatePage(application
     page.name = self.fqName().anchor("Edit");
     page.pageType = UI!ui::PageType#UPDATE;
     page.label = target.view.getUiLabel();
+    page.createIconForLabeledElement(target.view.iconName);
+    page.showLabel = target.view.showLabel;
+    page.showIcon = target.view.showIcon;
 
     var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;
@@ -138,6 +147,9 @@ operation ESM!esm::structure::ReferenceTypedElement mapTablePage(application : U
          "(?<=[^A-Z])(?=[A-Z])|" +
          "(?<=[A-Za-z \\u0080-\\u9fff])(?=[^A-Za-z \\u0080-\\u9fff])",
       " ");
+    page.createIconForLabeledElement(target.table.iconName);
+    page.showLabel = target.table.showLabel;
+    page.showIcon = target.table.showIcon;
 
     var pageContainer = new UI!ui::PageContainer();
     pageContainer.layoutType = application.layoutTypes.first;

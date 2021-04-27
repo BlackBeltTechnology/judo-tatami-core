@@ -24,6 +24,10 @@ post {
         application.calculatePageActions(false); //resolve generated actions
     }
     
+    for (navigation : UI!ui::NavigationController in UI!ui::NavigationController.all()) {
+        navigation.addMissingIcons();
+    }
+    
     for (action : UI!ui::Action in UI!ui::Action.all()) {
         action.setIcon();
         action.setLabel();
@@ -39,9 +43,9 @@ post {
     }
     
     for (application : UI!ui::Application in UI!ui::Application.all()) {
-        uiUtils.organizeApplication(application, "mobile", 4);
-        uiUtils.organizeApplication(application, "tablet", 8);
-        uiUtils.organizeApplication(application, "desktop", 12);
+        uiUtils.organizeApplication(application, "mobile", 4, 56);
+        uiUtils.organizeApplication(application, "tablet", 8, 56);
+        uiUtils.organizeApplication(application, "desktop", 12, 56);
 
         var mobile = application.layoutTypes.selectOne(l | l.name == "mobile");
         mobile.minimumResolution = 0;

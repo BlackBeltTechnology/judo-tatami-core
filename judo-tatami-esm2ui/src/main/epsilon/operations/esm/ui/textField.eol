@@ -1,12 +1,18 @@
-operation ESM!esm::ui::TextField createTextFromTextField(application : UI!ui::Application) : UI!ui::Text {
+operation ESM!esm::ui::TextField createTextFromTextField(application : UI!ui::Application) : UI!ui::VisualElement {
     var ret : UI!ui::Text = new UI!ui::Text();
     
     ret.setVisualProperties(self, application);
     ret.sourceId = self.getID();
     
+    ret.text = self.text;
+    
+    if (ret.getIsLabelVisible() or ret.getIsIconVisible()) {
+        return ret.wrapAndLabelVisualElement();
+    }
+    
     return ret;
 }
 
-operation ESM!esm::ui::TextField map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::Text {
+operation ESM!esm::ui::TextField map(application : UI!ui::Application, page : UI!ui::PageDefinition) : UI!ui::VisualElement {
     return self.createTextFromTextField(application);
 }

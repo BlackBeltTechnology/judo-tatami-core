@@ -7,12 +7,11 @@ operation ESM!esm::ui::TabBar createTabController(application : UI!ui::Applicati
     for (t in self.tabs) {
         var tab : UI!ui::Tab = new UI!ui::Tab();
         tab.name = t.name;
-        if (t.iconName.isDefined() and t.iconName.trim().length() > 0) {
-            tab.icon = new UI!ui::Icon();
-            tab.icon.name = t.iconName;
+        tab.element = t.createFlexFromContainer(application, page);
+        tab.element.sourceId = self.getID();
+        if (not tab.element.showLabel and not tab.element.showIcon) {
+            tab.element.showLabel = true;
         }
-        
-        tab.element = t.map(application, page);
         ret.tabs.add(tab);
     }
     

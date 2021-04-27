@@ -10,17 +10,9 @@ operation ESM!esm::ui::DataField createInputFromDataField(application : UI!ui::A
 	        ret.sourceId = self.getID();
 	        return ret;
     } if (dataType.isKindOf(ESM!esm::type::StringType) and self.textWidget == ESM!esm::ui::TextWidget#TEXT) {
-	        var ret = dataType.formatted(self);
-	        ret.setVisualProperties(self, application);
-	        ret.attributeType = attributeType;
-	        ret.sourceId = self.getID();
-	        return ret;
+	        return dataType.formatted(self, attributeType, application);
     } else {
-	        var ret = self.dataFeature.getMember().getDataType().input(self, application);
-	        ret.setVisualProperties(self, application);
-	        ret.attributeType = attributeType;
-	        ret.sourceId = self.getID();
-	        return ret;
+	        return self.dataFeature.getMember().getDataType().input(self, attributeType, application);
     }
 }
 
