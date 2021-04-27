@@ -22,7 +22,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
         return [
             {{# each columns}}
             DataColumn(
-                label: Text('{{label}}'),
+                label: Text(AppLocalizations.of(context).lookUpValue(context, '{{ label }}')),
                 {{# unless (isBooleanDataType dataType) }}
                     {{# unless (isEnumType dataType) }}
                 onSort: onSort,
