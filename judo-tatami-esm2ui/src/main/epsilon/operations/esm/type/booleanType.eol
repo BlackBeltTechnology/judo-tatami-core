@@ -1,6 +1,14 @@
 operation ESM!esm::type::BooleanType input(dataField : ESM!esm::ui::DataField, attributeType : UI!ui::data::AttributeType, application : UI!ui::Application): UI!ui::Input {
     var input = new UI!ui::Switch();
-    return input.fillInput(dataField, attributeType, application);
+    input.fillInput(dataField, attributeType, application);
+    if (not input.getIsLabelVisible()) {
+        if (not input.label.isDefined()) {
+            input.label = "";
+        }
+        input.showLabel = true;
+    }
+    
+    return input;
 }
 
 operation ESM!esm::type::BooleanType formatted(dataField : ESM!esm::ui::DataField, attributeType : UI!ui::data::AttributeType, application : UI!ui::Application): UI!ui::Formatted {
