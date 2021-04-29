@@ -4,7 +4,7 @@ Observer(
     builder: (_) => JudoColumn(
         col: 1,
         row: {{ fqVariable page.name }}PageStore.getPlusRowSize as double,
-        children: getInputFilterWidgetsForTablePage(filterStoreWidgetMap, {{ table.col }}, () => {{ fqVariable page.name }}PageStore.get{{ className page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.relationType.owner.name }}Store{{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message))),
+        children: getInputFilterWidgetsForTablePage(context, {{ fqVariable page.name }}PageStore.availableFilterList, {{ table.col }}, () => {{ fqVariable page.name }}PageStore.get{{ className page.relationType.name }}({{# unless page.dataElement.isAccess}}owner{{ className page.relationType.owner.name }}Store{{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message))),
     ),
 ),
 // ignore: missing_return

@@ -10,70 +10,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
-Future<FilterStore> judoShowMenu({@required BuildContext context, @required List<PopupMenuEntry<FilterStore>> items, @required GlobalKey buttonKey}) async {
-  final RenderBox button = buttonKey.currentContext.findRenderObject() as RenderBox;
-  final RenderBox overlay = Navigator.of(context).overlay.context.findRenderObject() as RenderBox;
-  final RelativeRect position = RelativeRect.fromLTRB(
-    button.localToGlobal(button.size.topCenter(Offset.zero), ancestor: overlay).dx,
-    button.localToGlobal(button.size.topCenter(Offset.zero), ancestor: overlay).dy,
-    button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay).dx,
-    button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay).dy,
-  );
+Future<T> judoShowMenu<T>({@required BuildContext context, @required List<PopupMenuEntry<T>> items, @required GlobalKey buttonKey}) async {
+    final RenderBox button = buttonKey.currentContext.findRenderObject() as RenderBox;
+    final RenderBox overlay = Navigator.of(context).overlay.context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromLTRB(
+        button.localToGlobal(button.size.topCenter(Offset.zero), ancestor: overlay).dx,
+        button.localToGlobal(button.size.topCenter(Offset.zero), ancestor: overlay).dy,
+        button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay).dx,
+        button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay).dy,
+    );
 
-  return await showMenu<FilterStore>(
-    context: context,
-    position: position,
-    items: items,
-  );
+    return await showMenu<T>(
+        context: context,
+        position: position,
+        items: items,
+    );
+}
+
+List<PopupMenuEntry<T>> getPopupMenuFilterOperationItems<T>(List<T> filerOperationList, Function getFilterOperationLabel){
+    return filerOperationList.map<PopupMenuEntry<T>>( (element) {
+        return PopupMenuItem<T>(
+            value: element,
+            child: Text(getFilterOperationLabel(element)),
+        );
+    }).toList();
 }
 
 List<PopupMenuEntry<FilterStore>> getPopupMenuAttributeItems(context, List<FilterStore> filterStoreList){
-  var copiedList = List.from(filterStoreList);
-  var attributeList = copiedList.map((e) => e.attributeName).toSet();
-  copiedList.retainWhere((e) => attributeList.remove(e.attributeName));
-  return copiedList.map<PopupMenuEntry<FilterStore>>( (filterStore) {
-    return PopupMenuItem<FilterStore>(
-      value: filterStore,
-      child: Text(AppLocalizations.of(context).lookUpValue(context, filterStore.attributeLabel)),
-    );
-  }).toList();
+    return filterStoreList.map<PopupMenuEntry<FilterStore>>( (filterStore) {
+        return PopupMenuItem<FilterStore>(
+            value: filterStore,
+            child: Text(AppLocalizations.of(context).lookUpValue(context, filterStore.attributeName)),
+        );
+    }).toList();
 }
 
-List<PopupMenuEntry<FilterStore>> getPopupMenuOperationItemsByAttribute(context, List<FilterStore> filterStoreList, FilterStore selectedAttribute){
-  var operationListByAttribute = filterStoreList.where((element) => element.attributeName == selectedAttribute.attributeName);
-  return operationListByAttribute.map<PopupMenuEntry<FilterStore>>( (filterStore) {
-    return PopupMenuItem<FilterStore>(
-      value: filterStore,
-      enabled: !filterStore.filterEnabled,
-      child: Text(AppLocalizations.of(context).lookUpValue(context, filterStore.filterOperationLabel)),
-    );
-  }).toList();
-}
-
-List<Widget> getInputFilterWidgets(Map<FilterStore, Widget> filterStoreWidgetMap, Function getRangeAction){
-  return filterStoreWidgetMap.keys.map<Widget>( (filterStore) {
-    return Observer(
-      builder: (_) => filterStore.filterEnabled ?  Row(
+List<Widget> getInputFilterWidgetsForDialog(BuildContext context, List<FilterStore> filterStoreList, Function getRangeAction){
+  return filterStoreList.map<Widget>( (filterStore) {
+    return Row(
         children: [
-          filterStoreWidgetMap[filterStore],
+          getOperationsIconButton(context, filterStore),
+          getFilterInputWidget(context: context, filterStore: filterStore, getAction: getRangeAction),
           IconButton(
             icon: Icon(Icons.close),
             tooltip: 'Remove filter field',
-            onPressed: () {
-              filterStore.changeFilterEnabled();
-              getRangeAction();
+            onPressed: () async {
+              filterStoreList.remove(filterStore);
+              await getRangeAction();
             },
           )
         ],
-      ) : Container(),
     );
   }).toList();
 }
 
-List<Widget> getInputFilterWidgetsForTablePage(Map<FilterStore, Widget> filterStoreWidgetMap, double layoutMaxCols, Function getAction){
+List<Widget> getInputFilterWidgetsForTablePage(BuildContext context, List<FilterStore> filterStoreList, double layoutMaxCols, Function getAction){
     double colSize;
     if(layoutMaxCols >= 12) {
         colSize = 2;
@@ -84,25 +79,137 @@ List<Widget> getInputFilterWidgetsForTablePage(Map<FilterStore, Widget> filterSt
     } else {
         colSize = 0;
     }
-    return filterStoreWidgetMap.keys.map<Widget>( (filterStore) {
-        return Observer(
-            builder: (_) => filterStore.filterEnabled ?  JudoRow(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                col: 1,
-                row: 1,
-                children: [
-                    filterStoreWidgetMap[filterStore],
-                    IconButton(
-                        icon: Icon(Icons.close),
-                        tooltip: 'Remove filter field',
-                        onPressed: () {
-                            filterStore.changeFilterEnabled();
-                            getAction();
-                        },
-                    ),
-                    JudoSpacer(col: colSize, row: 1),
-                ],
-            ) : Container(),
+    return filterStoreList.map<Widget>( (filterStore) {
+        return JudoRow(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            col: 1,
+            row: 1,
+            children: [
+              getOperationsIconButton(context, filterStore),
+              getFilterInputWidget(context: context, filterStore: filterStore, col: 3, getAction: getAction),
+                IconButton(
+                    icon: Icon(Icons.close),
+                    tooltip: 'Remove filter field',
+                    onPressed: () async {
+                        filterStoreList.remove(filterStore);
+                        await getAction();
+                    },
+                ),
+                JudoSpacer(col: colSize, row: 1),
+            ],
         );
     }).toList();
+}
+
+Widget getOperationsIconButton(BuildContext context, FilterStore filterStore) {
+  var filterOperationDropdownKey = GlobalKey();
+
+  switch(filterStore.filterType){
+    {{# each (getDistinctDataTypes application.dataTypes) as |dataType|}}
+    case FilterType.{{ filterDataType dataType }}:
+        return iconDropDownWidget<{{ dataTypeToOperationType dataType }}>(context, filterOperationDropdownKey, filterStore, {{ dataTypeToOperationType dataType }}.values);
+    {{/ each }}
+    default:
+      return Container();
+  }
+}
+
+Widget iconDropDownWidget<T>(BuildContext context, GlobalKey operationButtonKey, FilterStore filterStore, List<T> operationValues){
+  return Observer(
+    builder: (_) => Container(
+      padding: JudoComponentCustomizer.get().getDefaultPadding(),
+      decoration: ShapeDecoration(
+          color: Theme.of(context).primaryColor,
+          shape: CircleBorder()
+      ),
+      child: IconButton(
+          key: operationButtonKey,
+          icon: filterStore.getOperationIcon,
+          color: Colors.white,
+          onPressed: () async {
+            var filterOperation = await judoShowMenu<T>(
+              buttonKey: operationButtonKey,
+              items: getPopupMenuFilterOperationItems(operationValues, (element) => AppLocalizations.of(context).lookUpValue(context, element.toString().split('.').last) ),
+              context: context,
+            );
+            if (filterOperation != null){
+              filterStore.setFilterOperation(filterOperation.toString().split('.').last);
+              filterStore.setWidgetLabel(context);
+            }
+          }
+      ),
+    ),
+  );
+}
+
+Widget getFilterInputWidget({
+  @required BuildContext context,
+  @required FilterStore filterStore,
+  Function getAction,
+  double col = 1,
+}){
+  switch(filterStore.filterType){
+    case FilterType.string:
+      return Observer(builder: (_) => JudoInputText(
+            col: col,
+            label: filterStore.widgetLabel,
+            onChanged: (value) => filterStore.setFilterValue(value),
+            onSubmitted: (_) => getAction(),
+        ),
+      );
+    case FilterType.numeric:
+      return Observer(builder: (_) => JudoNumericInput(
+          col: col,
+          label: filterStore.widgetLabel,
+          onChanged: (value) => filterStore.setFilterValue(value),
+          onSubmitted: (_) => getAction(),
+        ),
+      );
+    case FilterType.date:
+      return Observer(builder: (_) => JudoDateInput(
+          col: col,
+          label: filterStore.widgetLabel,
+          onChanged: (value) => filterStore.setFilterValue(value),
+          onSubmitted: (_) => getAction(),
+        ),
+      );
+    case FilterType.dateTime:
+      return Observer(builder: (_) => JudoDateTimeInput(
+          col: col,
+          label: filterStore.widgetLabel,
+          onChanged: (value) => filterStore.setFilterValue(value),
+          onSubmitted: (_) => getAction(),
+        ),
+      );
+    case FilterType.boolean:
+      return Observer(
+          builder: (_) => JudoSwitch(
+              col: 1,
+              label: filterStore.widgetLabel,
+              initialValue: filterStore.filterValue,
+              onChanged: (value) {
+                filterStore.setFilterValue(value);
+                getAction();
+              },
+          )
+      );
+    case FilterType.enumeration:
+      return Observer(
+          builder: (_) => JudoComboBox<dynamic>(
+              col: 1,
+              label: filterStore.widgetLabel,
+              onChanged: (value) {
+                filterStore.setFilterValue(value);
+                getAction();
+              },
+              items: filterStore.enumValues,
+              dropdownMenuShow: (value) => new DropdownMenuItem<dynamic>(
+                  value: value,
+                  child: new Text(value.toString().split('.').last)
+              ),
+          )
+      );
+    default:
+      return Container();
+  }
 }
