@@ -102,17 +102,33 @@ class {{ fqClass class.name }}Repository {
             {{# if relation.isFilterable }}
       if (filterStoreList != null && filterStoreList.isNotEmpty) {
           filterStoreList.forEach((element) {
+            if (element.filterValue == null ) return;
                 {{# each relation.target.attributes as |attribute| }}
                     {{# if attribute.isFilterable}}
             if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
                 var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
+                        {{# if (isStringType attribute.dataType) }}
+                if(element.filterOperation == 'contain'){
+                    filter.value = '%' + (element.filterValue ?? '') + '%';
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
+                } else if (element.filterOperation == 'beginWith') {
+                    filter.value = (element.filterValue ?? '') + '%';
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
+                } else {
+                    filter.value = element.filterValue as String;
+                    filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                }
+                        {{/if}}
                         {{# if (isEnumType attribute.dataType) }}
                 filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
-                        {{ else }}
+                        {{/if}}
+                        {{#unless (isStringType attribute.dataType) }}
+                            {{#unless (isEnumType attribute.dataType) }}
                 filter.value = element.filterValue as {{ dartType attribute.dataType }};
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
-                        {{/if}}
+                            {{/ unless }}
+                        {{/ unless }}
                 queryCustomizer.{{ variable attribute.name }}.add(filter);
             }
                     {{/ if }}
@@ -168,17 +184,33 @@ class {{ fqClass class.name }}Repository {
             {{# if relation.isFilterable }}
       if (filterStoreList != null && filterStoreList.isNotEmpty) {
           filterStoreList.forEach((element) {
+            if (element.filterValue == null ) return;
                 {{# each relation.target.attributes as |attribute| }}
                     {{# if attribute.isFilterable }}
             if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
                 var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
+                        {{# if (isStringType attribute.dataType) }}
+                if(element.filterOperation == 'contain'){
+                    filter.value = '%' + (element.filterValue ?? '') + '%';
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
+                } else if (element.filterOperation == 'beginWith') {
+                    filter.value = (element.filterValue ?? '') + '%';
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
+                } else {
+                    filter.value = element.filterValue as String;
+                    filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                }
+                        {{/if}}
                         {{# if (isEnumType attribute.dataType) }}
                 filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
-                        {{ else }}
+                        {{/if}}
+                        {{#unless (isStringType attribute.dataType) }}
+                            {{#unless (isEnumType attribute.dataType) }}
                 filter.value = element.filterValue as {{ dartType attribute.dataType }};
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
-                        {{/if}}
+                            {{/ unless }}
+                        {{/ unless }}
                 queryCustomizer.{{ variable attribute.name }}.add(filter);
             }
                     {{/ if }}

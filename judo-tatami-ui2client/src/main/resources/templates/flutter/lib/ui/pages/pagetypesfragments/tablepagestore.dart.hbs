@@ -9,21 +9,22 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
-
     {{# each page.containers.[0].tables as |table| }}
         {{# if table.pageDefinition.relationType.isFilterable }}
     final Map<String, FilterStore> stringFilterStoreMap = {
             {{# each table.filters as |filter|}}
-                {{# each filter.attributeType.dataType.operator.members as |filterOperator|}}
-                    {{# each (likeOperationHelperList filterOperator) as |likeOperator| }}
-        '{{ variable filter.attributeType.name }}{{# if (isFilterOperationLike filterOperator)}}{{ fqClass likeOperator }}{{ else }}{{ className filterOperator.name }}{{/ if }}Filter' : FilterStore(attributeLabel: '{{ filter.label }}', filterOperationLabel: {{# if (isFilterOperationLike filterOperator)}}'{{ labelName likeOperator }}'{{ else }}filterOperationLabels['{{ variable filterOperator.name }}']{{/ if }}, filterOperation: '{{ variable filterOperator.name }}', attributeName: '{{ className filter.attributeType.name }}'),
-                    {{/each}}
-                {{/each}}
+        '{{ variable filter.attributeType.name }}' : FilterStore(attributeName: '{{ filter.label }}', filterType: FilterType.{{ filterDataType filter.attributeType.dataType }}{{# if (isEnumType filter.attributeType.dataType)}}, enumValues: {{ className filter.attributeType.dataType.name }}.values{{/if}}),
             {{/ each }}
     };
 
     @computed
-    int get getPlusRowSize => stringFilterStoreMap.values.where((element) => element.filterEnabled).toList().length;
+    int get getPlusRowSize => availableFilterList.length;
+
+    @observable
+    ObservableList<FilterStore> availableFilterList = <FilterStore>[].asObservable();
+
+    @action
+    void addNewFilter(FilterStore newFilterStore) => availableFilterList.add(FilterStore.clone(newFilterStore));
 
         {{/if}}
     @observable
@@ -146,9 +147,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                 sortColumn: {{ fqVariable relation.name }}SortColumnName,
                 sortAscending: {{ fqVariable relation.name }}SortAsc,
                     {{# if relation.isFilterable }}
-                filterStoreList: stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
-                queryLimit: {{ fqVariable relation.name }}QueryLimit,
+                filterStoreList: availableFilterList,
                     {{/ if }}
+                queryLimit: {{ fqVariable relation.name }}QueryLimit,
             ));
             {{ fqVariable relation.name }}StoreList.clear();
             {{ fqVariable relation.name }}StoreList.addAll(await {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture);
@@ -172,7 +173,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                 sortColumn: {{ fqVariable relation.name }}SortColumnName,
                 sortAscending: {{ fqVariable relation.name }}SortAsc,
                     {{# if relation.isFilterable }}
-                filterStoreList: stringFilterStoreMap.values.where((element) => element.filterEnabled).toList(),
+                filterStoreList: availableFilterList,
                 queryLimit: {{ fqVariable relation.name }}QueryLimit,
                     {{/ if }}
             ));

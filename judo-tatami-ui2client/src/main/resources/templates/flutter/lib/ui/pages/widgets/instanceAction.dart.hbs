@@ -113,20 +113,14 @@
     {{/ if }}
     {{# if action.isFilterAction }}
         onPressed: () async {
-            FilterStore selectedAttribute = await judoShowMenu(
+            FilterStore selectedAttribute = await judoShowMenu<FilterStore>(
                 buttonKey: addFilterButtonKey,
                 items: getPopupMenuAttributeItems(context, {{ fqVariable page.name }}PageStore.stringFilterStoreMap.values.toList()),
                 context: context,
             );
             if (selectedAttribute != null) {
-                FilterStore result = await judoShowMenu(
-                    buttonKey: addFilterButtonKey,
-                    items: getPopupMenuOperationItemsByAttribute(context, {{ fqVariable page.name }}PageStore.stringFilterStoreMap.values.toList(), selectedAttribute),
-                    context: context,
-                );
-                if (result != null) {
-                    result.changeFilterEnabled();
-                }
+                selectedAttribute.setWidgetLabel(context);
+                {{ fqVariable page.name }}PageStore.addNewFilter(selectedAttribute);
             }
         },
     {{/if}}

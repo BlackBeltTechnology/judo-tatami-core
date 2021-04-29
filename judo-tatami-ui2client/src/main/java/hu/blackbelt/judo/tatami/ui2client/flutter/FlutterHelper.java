@@ -15,6 +15,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -127,6 +128,8 @@ public class FlutterHelper {
         context.registerFunction("mainAxisSize", FlutterHelper.class.getDeclaredMethod("mainAxisSize", new Class[]{Flex.class}));
         context.registerFunction("dartType", FlutterHelper.class.getDeclaredMethod("dartType", new Class[]{DataType.class}));
         context.registerFunction("filterDataType", FlutterHelper.class.getDeclaredMethod("filterDataType", new Class[]{DataType.class}));
+        context.registerFunction("dataTypeToOperationType", FlutterHelper.class.getDeclaredMethod("dataTypeToOperationType", new Class[]{DataType.class}));
+        context.registerFunction("getDistinctDataTypes", FlutterHelper.class.getDeclaredMethod("getDistinctDataTypes", new Class[]{EList.class}));
         context.registerFunction("isTransientAttribute", FlutterHelper.class.getDeclaredMethod("isTransientAttribute", new Class[]{AttributeType.class}));
         context.registerFunction("multiplyCol", FlutterHelper.class.getDeclaredMethod("multiplyCol", new Class[]{Double.class}));
         context.registerFunction("validatableFlagNeed", FlutterHelper.class.getDeclaredMethod("validatableFlagNeed", new Class[]{RelationType.class}));
@@ -151,9 +154,7 @@ public class FlutterHelper {
         context.registerFunction("safe", FlutterHelper.class.getDeclaredMethod("safe", new Class[]{String.class, String.class}));
         context.registerFunction("dart", FlutterHelper.class.getDeclaredMethod("dart", new Class[]{String.class}));
         context.registerFunction("isObserverButton", FlutterHelper.class.getDeclaredMethod("isObserverButton", new Class[]{VisualElement.class, DataElement.class, Action.class}));
-        context.registerFunction("isFilterOperationLike", FlutterHelper.class.getDeclaredMethod("isFilterOperationLike", new Class[]{EnumerationMember.class}));
-        context.registerFunction("likeOperationHelperList", FlutterHelper.class.getDeclaredMethod("likeOperationHelperList", new Class[]{EnumerationMember.class}));
-        context.registerFunction("isFilterOperationTypeLikeContain", FlutterHelper.class.getDeclaredMethod("isFilterOperationTypeLikeContain", new Class[]{String.class}));
+        context.registerFunction("isFilterOperationLike", FlutterHelper.class.getDeclaredMethod("isFilterOperationLike", new Class[]{EnumerationMember.class, String.class}));
         context.registerFunction("labelName", FlutterHelper.class.getDeclaredMethod("labelName", new Class[]{String.class}));
         context.registerFunction("l10nLabelName", FlutterHelper.class.getDeclaredMethod("l10nLabelName", new Class[]{String.class}));
     }
@@ -360,25 +361,44 @@ public class FlutterHelper {
 
     public static String filterDataType(DataType dataType) {
         if (dataType instanceof NumericType) {
-            NumericType numericType = (NumericType) dataType;
-            if (numericType.getScale() > 0) {
-                return "Double";
-            } else {
-                return "Integer";
-            }
+            return "numeric";
         } else if (dataType instanceof BooleanType) {
-            return "Boolean";
+            return "boolean";
         } else if (dataType instanceof DateType) {
-            return "Date";
+            return "date";
         } else if (dataType instanceof TimestampType) {
-            return "Timestamp";
+            return "dateTime";
         } else if (dataType instanceof StringType) {
-            return "String";
+            return "string";
         } else if (dataType instanceof EnumerationType) {
-            return "Enumeration";
+            return "enumeration";
         } else {
-            return "String";
+            return "string";
         }
+    }
+
+    public static String dataTypeToOperationType(DataType dataType){
+        if (dataType instanceof NumericType) {
+            return "NumericOperation";
+        } else if (dataType instanceof BooleanType) {
+            return "BooleanOperation";
+        } else if (dataType instanceof DateType) {
+            return "NumericOperation";
+        } else if (dataType instanceof TimestampType) {
+            return "NumericOperation";
+        } else if (dataType instanceof StringType) {
+            return "StringOperation";
+        } else if (dataType instanceof EnumerationType) {
+            return "EnumerationOperation";
+        } else {
+            return "StringOperation";
+        }
+    }
+
+    public static List<DataType> getDistinctDataTypes(EList<DataType> dataTypeList) {
+        List<DataType> filteredList = dataTypeList.stream().filter(s -> !className(s.getName()).matches("^(String|Numeric|Boolean|Enumeration)(Operation)$")).collect(Collectors.toList());
+        Collection<DataType> resultList = filteredList.stream().collect(Collectors.toMap(FlutterHelper::filterDataType, Function.identity(),(dataType1, dataType2) -> dataType1)).values();
+        return new ArrayList<>(resultList);
     }
 
     public static boolean validatableFlagNeed (RelationType relationType) {
@@ -544,21 +564,8 @@ public class FlutterHelper {
         return "_" + String.join("", array); // replace need, because minus bytes
     }
 
-    public static boolean isFilterOperationLike(EnumerationMember operator) {
-        return variable(operator.getName()).equals("like");
+    public static boolean isFilterOperationLike(EnumerationMember operator, String enumName) {
+        return variable(operator.getName()).equals("like") && className(enumName).equals("StringOperation");
     }
-
-    public static boolean isFilterOperationTypeLikeContain(String operator) {
-        return operator.equals("Contain");
-    }
-
-    public static List<String> likeOperationHelperList(EnumerationMember operator) {
-        if (isFilterOperationLike(operator)) {
-            return new ArrayList<String>(Arrays.asList("Contain","Begin::with"));
-        } else {
-            return new ArrayList<String>(Arrays.asList("like"));
-        }
-    }
-
 
 }

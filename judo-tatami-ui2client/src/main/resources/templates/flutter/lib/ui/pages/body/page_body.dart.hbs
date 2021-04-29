@@ -20,11 +20,6 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
                 {{~/ if ~}}
             {{~/ unless ~}}
         , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
-            {{~# if (isRefreshTableTypePage page) ~}}
-                {{~# if page.dataElement.isFilterable ~}}
-        , Map<FilterStore, Widget> filterStoreWidgetMap
-                {{~/ if ~}}
-            {{~/ if ~}}
         {{~/ if ~}}
 
         {{~# if page.isPageTypeTable ~}}
@@ -32,9 +27,6 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
         , {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store
             {{~/ unless ~}}
         , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
-            {{~# if page.dataElement.isFilterable ~}}
-        , Map<FilterStore, Widget> filterStoreWidgetMap
-            {{~/ if ~}}
         {{~/ if ~}}
 
         {{~# if page.isPageTypeView ~}}

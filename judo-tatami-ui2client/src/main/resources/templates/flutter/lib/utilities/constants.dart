@@ -21,15 +21,25 @@ const API_RELATIVE_PATH = String.fromEnvironment('API_RELATIVE_PATH', defaultVal
 
 const SHOW_TABLE_ROW_ACTIONS = bool.fromEnvironment('SHOW_TABLE_ROW_ACTIONS', defaultValue: false);
 
-const Map<String, String> filterOperationLabels= {
-  'equal' : 'Equal',
-  'equals' : 'Equals',
-  'notEqual' : 'Not equal',
-  'notEquals' : 'Not equals',
-  'lessThan' : 'Less than',
-  'greaterThan' : 'Greater than',
-  'lessOrEqual' : 'Less or equal',
-  'greaterOrEqual' : 'Greater or equal',
-  'matches' : 'Matches',
-  'like' : 'Like',
+const Map<String, String> filterOperationIcons = {
+  'equal' : 'equal',
+  'equals' : 'equal',
+  'notEqual' : 'notEqualVariant',
+  'notEquals' : 'notEqualVariant',
+  'lessThan' : 'greaterThan',
+  'greaterThan' : 'lessThan',
+  'lessOrEqual' : 'greaterThanOrEqual',
+  'greaterOrEqual' : 'lessThanOrEqual',
+  'matches' : 'formatLetterMatches',
+  'contain' : 'contain',
+  'beginWith' : 'containStart',
+};
+
+const Map<String, String> defaultFilterOperation = {
+  'boolean' : 'equals',
+  'numeric' : 'equal',
+  'string' : 'contain',
+  'enumeration' : 'equals',
+  'date' : 'greaterThan',
+  'dateTime' : 'greaterThan',
 };
