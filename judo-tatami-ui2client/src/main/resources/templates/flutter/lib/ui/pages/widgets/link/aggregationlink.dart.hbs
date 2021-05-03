@@ -9,6 +9,7 @@ Observer(builder: (_) {
       {{#if link.isIconVisible }}
         icon: Icon(Icons.{{ link.icon.name }}),
       {{/if}}
+        inCard: {{ isInCard }},
         disabled: {{ disabled }},
         {{# if page.isPageTypeView }}
         readOnly: true,

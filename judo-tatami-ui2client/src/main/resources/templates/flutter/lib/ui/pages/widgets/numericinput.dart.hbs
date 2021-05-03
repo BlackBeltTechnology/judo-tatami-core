@@ -6,6 +6,7 @@ Observer(
         key: UniqueKey(),
         col: {{ col }},
         row: {{ row }},
+        inCard: {{ isInCard }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),

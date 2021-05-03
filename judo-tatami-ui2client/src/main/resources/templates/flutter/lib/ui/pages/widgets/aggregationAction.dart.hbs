@@ -4,6 +4,7 @@
     builder: (_) => {{/ if }}JudoButton(
         col: {{ col }},
         row: {{ row }},
+        stretch: {{ isFitTight }},
         disabled: {{disabled}}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
     {{# if action.isBackAction }}
         onPressed: () => navigation.close(),

@@ -52,6 +52,7 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
+import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.esm.ui.Horizontal;
 import hu.blackbelt.judo.meta.esm.ui.Layout;
@@ -287,6 +288,55 @@ public class Esm2UiPreviewTest {
         savePrettyJson(json, testName);
         validateUiTestModel();
     }
+    
+    @Test
+    void test() throws Exception {
+
+//        esmModel = EsmModel.loadEsmModel(EsmModel.LoadArguments.esmLoadArgumentsBuilder()
+//                .uri(URI.createFileURI(new File("src/test/resources/TestCardsAndLabels.model").getAbsolutePath()))
+//                .name("test")
+//                .build());
+//        
+//        Optional<TransferObjectView> view = allEsm(TransferObjectView.class).filter(v -> v.getName().equals("View") && ((TransferObjectType)v.eContainer()).getName().equals("ProfessionalInfo2")).findFirst();
+//        
+        
+        EntityType order = newEntityTypeBuilder()
+                .withName("Order")
+                .withCreateable(false)
+                .withUpdateable(false)
+                .withDeleteable(false)
+                .build();
+        order.setMapping(newMappingBuilder().withTarget(order).build());
+        TransferObjectView emptyView = newTransferObjectViewBuilder().withName("empty").withShowIcon(false).withShowLabel(false)
+                .build();
+        useTransferObjectType(order).withView(emptyView).build();
+
+        Access access = newAccessBuilder()
+                .withName("orders")
+                .withLower(0)
+                .withUpper(-1)
+                .withTarget(order)
+                .withTargetDefinedCRUD(false)
+                .build();
+
+        ActorType actor = newActorTypeBuilder()
+                .withName("actor")
+                .withAccesses(access)
+                .withManaged(false)
+                .withMenuItems(newMenuItemAccessBuilder().withName("order").withAccess(access).build())
+                .build();
+
+        // Create model
+        Model model = newModelBuilder()
+                .withName("SimpleOrder")
+                .withElements(order)
+                .withElements(actor)
+                .build();
+        esmModel.addContent(model);
+
+        String json = executeEsm2UiTransformation(esmModel, emptyView, "default", 12, false, uiModel, new Slf4jLog(log));
+        saveJson(json, "cards");
+    }
         
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
         Iterable<T> iterable = () -> sourceIterator;
@@ -299,6 +349,14 @@ public class Esm2UiPreviewTest {
 
     private <T> Stream<T> allUi(final Class<T> clazz) {
         return allUi().filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
+    }
+    
+    <T> Stream<T> allEsm() {
+        return asStream((Iterator<T>) esmModel.getResourceSet().getAllContents(), false);
+    }
+
+    private <T> Stream<T> allEsm(final Class<T> clazz) {
+        return allEsm().filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
     }
     
     private void saveJson(String json, String name) {

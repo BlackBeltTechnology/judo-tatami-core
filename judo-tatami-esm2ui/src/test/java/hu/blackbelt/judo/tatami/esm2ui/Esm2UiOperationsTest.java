@@ -280,7 +280,7 @@ public class Esm2UiOperationsTest {
                 .filter(c -> c instanceof Flex && c.getName().equals(e1.getName() + "View")).findAny();
         assertTrue(viewContainerE1View.isPresent());
         final Optional<VisualElement> uiTable1 = ((Flex)viewContainerE1View.get()).getChildren().stream()
-                .filter(c -> c instanceof Flex && c.getName().equals(relation4.getName())).findAny();
+                .filter(c -> c instanceof Flex && c.getName().startsWith(relation4.getName())).findAny();
         assertTrue(uiTable1.isPresent());
         final Optional<VisualElement> instanceActionsUiTable1 = ((Flex)uiTable1.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
         assertTrue(instanceActionsUiTable1.isPresent());
@@ -315,7 +315,7 @@ public class Esm2UiOperationsTest {
                 .filter(c -> c instanceof Flex && c.getName().equals(e1.getName() + "Form")).findAny();
         assertTrue(viewContainerE1Create.isPresent());
         final Optional<VisualElement> uiTable3 = ((Flex)viewContainerE1Create.get()).getChildren().stream()
-                .filter(c -> c instanceof Flex && c.getName().equals(relation4.getName())).findAny();
+                .filter(c -> c instanceof Flex && c.getName().startsWith(relation4.getName())).findAny();
         assertTrue(uiTable3.isPresent());
         final Optional<VisualElement> instanceActionsUiTable3 = ((Flex)uiTable3.get()).getChildren().stream().filter(c -> c instanceof Flex && c.getName().equals("instanceActions")).findAny();
         assertFalse(instanceActionsUiTable3.isPresent());

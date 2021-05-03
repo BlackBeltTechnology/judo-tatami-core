@@ -7,6 +7,7 @@ Observer(
         col: {{ col }},
         row: {{ row }},
         multiline: true,
+        inCard: {{ isInCard }},
         maxLength: {{attributeType.dataType.maxLength}} ?? 250,
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
@@ -29,6 +30,7 @@ Observer(
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
         multiline: true,
+        inCard: {{ isInCard }},
         maxLength: {{attributeType.dataType.maxLength}} ?? 250,
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
@@ -51,6 +53,7 @@ Observer(
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
         multiline: true,
+        inCard: {{ isInCard }},
         maxLength: {{attributeType.dataType.maxLength}} ?? 250,
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
