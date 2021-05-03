@@ -8,34 +8,32 @@ import 'auth_stub.dart'
   if (dart.library.html) 'web_auth.dart';
 
 abstract class Auth {
-  bool isAuthenticationRequired() {
-    return 1 == 1;
+  bool isAuthenticationRequired(){
+    return false;
   }
 
   bool isLoggedIn() {
-    return 1 == 1;
+    return false;
   }
 
   bool isAccessTokenSet() {
-    return 1 == 1;
+    return false;
   }
 
-  Future<String> getAccessToken() {
-    // processLogin()...
-    return null;
+  Future<String> getAccessToken() async {
+    return Future.delayed(
+      Duration(seconds: 0),
+          () => '',
+    );
   }
 
-  Future<void> init(String url) {
-
-  }
+  Future<void> init(String url) async {}
 
   logout() {
 
   }
 
-  Future<void> login() {
-    // loginAuthorizeAndExchangeCode...
-  }
+  Future<void> login() async {}
 
   DioClientDelegate getDioDelegate() {
     return null;

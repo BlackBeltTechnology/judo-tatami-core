@@ -3,10 +3,10 @@ import 'dart:html' as html;
 import 'package:dio/dio.dart';
 import 'package:flutter_appauth_web/flutter_appauth_web.dart';
 import 'package:openapi_dart_common/openapi.dart';
-import 'package:skill_matrix/hremployee_actor/error/error_handler.dart';
-import 'package:skill_matrix/hremployee_actor/repository/package.dart';
-import 'package:skill_matrix/hremployee_actor/rest/lib/api.dart';
-import 'package:skill_matrix/hremployee_actor/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/rest/lib/api.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:flutter_appauth_platform_interface/flutter_appauth_platform_interface.dart';
 
 import '../injector/injector.dart';
@@ -24,7 +24,7 @@ class WebAuth implements Auth {
   static const GRANT_AUTHORIZATION = "authorization_code";
   static const GRANT_REFRESH = "refresh_token";
 
-  SkillMatrixActorHrEmployeeMetadataSecurityForHREmployeeActor _securitySettings = SkillMatrixActorHrEmployeeMetadataSecurityForHREmployeeActor();
+  {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }} _securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
   var _authInfo = AuthInfoStore();
 
   bool isAuthenticationRequired() {
@@ -97,7 +97,7 @@ class WebAuth implements Auth {
     locator<ApiClient>().setAuthentication(_securitySettings.name, null);
     // var logoutUri = LOGOUT_URL + "?redirect_uri=${Uri.encodeQueryComponent(CALLBACK_URL)}";
     html.window.location.assign(_securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(_calculateRedirectUri())}");
-    _securitySettings = SkillMatrixActorHrEmployeeMetadataSecurityForHREmployeeActor();
+    _securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
   }
 
   Future<void> login() async {
@@ -139,13 +139,13 @@ class WebAuth implements Auth {
     var apiClient = locator<ApiClient>();
     try {
       try {
-        await DefaultApi(apiClient).skillMatrixActorHrEmployeeHREmployeeActorMetadata();
+        await DefaultApi(apiClient).{{ modelNameVariable application.name }}{{ packageName application.name }}{{ className application.name }}Metadata();
       } on ArgumentError catch (error) {
         var realm = error.message.toString().substring(26);
         apiClient.setAuthentication(realm, NoopAuth());
       }
 
-      SkillMatrixActorHrEmployeeMetadataForHREmployeeActor meta = await DefaultApi(apiClient).skillMatrixActorHrEmployeeHREmployeeActorMetadata();
+      {{ modelName application.name }}{{ packageName application.name }}MetadataFor{{ className application.name }} meta = {{ modelName application.name }}{{ packageName application.name }}MetadataFor{{ className application.name }}();
       if (meta.security.isNotEmpty) {
         _securitySettings = meta.security.first;
       }
@@ -229,7 +229,7 @@ class WebAuth implements Auth {
   }
 
   Future<void> _updatePrincipalAllowed() async {
-    SkillMatrixActorHrEmployeeHREmployeeActorRepository _actorRepository = locator<SkillMatrixActorHrEmployeeHREmployeeActorRepository>();
+    {{ modelName application.name }}{{ packageName application.name }}{{ className application.name }}Repository _actorRepository = locator<{{ modelName application.name }}{{ packageName application.name }}{{ className application.name }}Repository>();
 
     try {
       var principal = await _actorRepository.getPrincipal();

@@ -5,32 +5,31 @@ import './auth.dart';
 
 class MobileAuth implements Auth {
   bool isAuthenticationRequired() {
-    return 1 == 1;
+    return false;
   }
 
   bool isLoggedIn() {
-    return 1 == 1;
+    return false;
   }
 
   bool isAccessTokenSet() {
-    return 1 == 1;
+    return false;
   }
 
-  Future<String> getAccessToken() {
-    return null;
+  Future<String> getAccessToken() async {
+    return Future.delayed(
+      Duration(seconds: 0),
+          () => '',
+    );
   }
 
-  Future<void> init(String url) {
-
-  }
+  Future<void> init(String url) async {}
 
   logout() {
 
   }
 
-  Future<void> login() {
-
-  }
+  Future<void> login() async {}
 
   DioClientDelegate getDioDelegate() {
     return null;
