@@ -26,6 +26,7 @@ Observer(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         row: {{ row }},
+        inCard: {{ isInCard }},
         mandatory: {{ attributeType.isRequired }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
@@ -46,6 +47,7 @@ Observer(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         row: {{ row }},
+        inCard: {{ isInCard }},
         mandatory: {{ attributeType.isRequired }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{#if this.isLabelVisible }}
