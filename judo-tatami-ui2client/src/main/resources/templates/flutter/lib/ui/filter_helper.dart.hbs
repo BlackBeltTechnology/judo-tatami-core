@@ -69,7 +69,7 @@ List<Widget> getInputFilterWidgetsForDialog(BuildContext context, List<FilterSto
 }
 
 List<Widget> getInputFilterWidgetsForTablePage(BuildContext context, List<FilterStore> filterStoreList, double layoutMaxCols, Function getAction){
-    int colSize;
+    double colSize;
     if(layoutMaxCols >= 12) {
         colSize = 2;
     } else if(layoutMaxCols >= 8) {
