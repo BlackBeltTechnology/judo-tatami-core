@@ -27,8 +27,12 @@ class {{ fqClass class.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // REFRESH (Reload with Signed ID)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass class.name }}Store> {{ fqVariable class.name }}GetByIdentifier({{ fqClass class.name }}Store target) async {
-    {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}RefreshInstance{{ fqClass name }}(target.internal__signedIdentifier);
+  Future<{{ fqClass class.name }}Store> {{ fqVariable class.name }}GetByIdentifier({{ fqClass class.name }}Store target, {String mask}) async {
+    var queryCustomizer = {{ modelName class.name }}Extension{{ packageName class.name}}QueryCustomizer{{ className class.name}}();
+    if (mask != null) {
+        queryCustomizer.mask = mask;
+    }
+    {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}RefreshInstance{{ fqClass name }}(target.internal__signedIdentifier, input: queryCustomizer);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}StoreFrom{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
@@ -69,7 +73,7 @@ class {{ fqClass class.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET CREATE RANGE FOR {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToCreate({{ fqClass class.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit }) async {
+  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToCreate({{ fqClass class.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
     // Use this when JNG-2028 is done
     // {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}From{{ fqClass class.name }}Store(target);
 
@@ -139,6 +143,9 @@ class {{ fqClass class.name }}Repository {
 
     seek.limit = queryLimit != null && queryLimit >= 5 ? queryLimit : 5;
     queryCustomizer.seek = seek;
+    if (mask != null) {
+        queryCustomizer.mask = mask;
+    }
 
     {{ variable class.name }}Request.queryCustomizer = queryCustomizer;
 
@@ -151,7 +158,7 @@ class {{ fqClass class.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET UPDATE RANGE FOR {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToUpdate({{ fqClass class.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit }) async {
+  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToUpdate({{ fqClass class.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
     // Use this when JNG-2028 is done
     // {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}From{{ fqClass class.name }}Store(target);
 
@@ -221,6 +228,9 @@ class {{ fqClass class.name }}Repository {
 
     seek.limit = queryLimit != null && queryLimit >= 5 ? queryLimit : 5;
     queryCustomizer.seek = seek;
+    if (mask != null) {
+        queryCustomizer.mask = mask;
+    }
 
     {{ variable class.name }}Request.queryCustomizer = queryCustomizer;
 

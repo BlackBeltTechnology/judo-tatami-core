@@ -157,6 +157,8 @@ public class FlutterHelper {
         context.registerFunction("isFilterOperationLike", FlutterHelper.class.getDeclaredMethod("isFilterOperationLike", new Class[]{EnumerationMember.class, String.class}));
         context.registerFunction("labelName", FlutterHelper.class.getDeclaredMethod("labelName", new Class[]{String.class}));
         context.registerFunction("l10nLabelName", FlutterHelper.class.getDeclaredMethod("l10nLabelName", new Class[]{String.class}));
+        context.registerFunction("getAttributeTypesFromWidgets", FlutterHelper.class.getDeclaredMethod("getAttributeTypesFromWidgets", new Class[]{Container.class}));
+        context.registerFunction("isEmptyList", FlutterHelper.class.getDeclaredMethod("isEmptyList", new Class[]{List.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -442,9 +444,16 @@ public class FlutterHelper {
     }
 
     public static List<VisualElement> getInputWidgets(Container container) {
-        List<VisualElement> children = container.getChildren();
-
         List<VisualElement> inputList = new ArrayList<VisualElement>();
+
+        getInputWidgetsFromContainers(container, inputList);
+
+        return inputList;
+    }
+
+
+    public static void getInputWidgetsFromContainers(Container container, List<VisualElement> inputList) {
+        List<VisualElement> children = container.getChildren();
 
         for (VisualElement element : children ) {
             if (element instanceof Container ) {
@@ -452,9 +461,7 @@ public class FlutterHelper {
             } else if (element instanceof Input) {
                 inputList.add(element);
             }
-
         }
-        return inputList;
     }
 
     public static boolean isValidateHere(PageDefinition page){
@@ -490,18 +497,6 @@ public class FlutterHelper {
 
     public static boolean isCreateTypePage(PageDefinition page) {
         return page.getIsPageTypeCreate() || page.getIsPageTypeOperationInput();
-    }
-
-    public static void getInputWidgetsFromContainers(Container container, List<VisualElement> inputList) {
-        List<VisualElement> children = container.getChildren();
-
-        for (VisualElement element : children ) {
-            if (element instanceof Container ) {
-                getInputWidgetsFromContainers((Container) element, inputList);
-            } else if (element instanceof Input) {
-                inputList.add(element);
-            }
-        }
     }
 
     public static List<PageDefinition> getPagesByRelation(EList<PageDefinition> pages, DataElement relation){
@@ -566,6 +561,33 @@ public class FlutterHelper {
 
     public static boolean isFilterOperationLike(EnumerationMember operator, String enumName) {
         return variable(operator.getName()).equals("like") && className(enumName).equals("StringOperation");
+    }
+
+    public static List<AttributeType> getAttributeTypesFromWidgets(Container container) {
+
+        List<AttributeType> inputList = new ArrayList<AttributeType>();
+
+        getAttributeTypes(container, inputList);
+
+        return inputList;
+    }
+
+    public static void getAttributeTypes(Container container, List<AttributeType> inputList) {
+        List<VisualElement> children = container.getChildren();
+
+        for (VisualElement element : children ) {
+            if (element instanceof Container ) {
+                getAttributeTypes((Container) element, inputList);
+            } else if (element instanceof Input ) {
+                inputList.add(((Input) element).getAttributeType());
+            } else if (element instanceof Formatted) {
+                inputList.add(((Formatted) element).getAttributeType());
+            }
+        }
+    }
+
+    public static boolean isEmptyList(List list){
+        return list.isEmpty();
     }
 
 }

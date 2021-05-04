@@ -25,7 +25,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({ String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit }) async {
+  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({ String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
 
     var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
 
@@ -93,6 +93,9 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
 
       seek.limit = queryLimit != null && queryLimit >= 5 ? queryLimit : 5;
       queryCustomizer.seek = seek;
+      if (mask != null) {
+        queryCustomizer.mask = mask;
+      }
 
       List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : queryCustomizer);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
@@ -103,7 +106,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({{ fqClass relation.owner.name }}Store owner, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit }) async {
+  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({{ fqClass relation.owner.name }}Store owner, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
 
     var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
 
@@ -170,6 +173,9 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
 
       seek.limit = queryLimit != null && queryLimit >= 5 ? queryLimit : 5;
       queryCustomizer.seek = seek;
+      if (mask != null) {
+        queryCustomizer.mask = mask;
+      }
 
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : queryCustomizer);
     return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
@@ -182,9 +188,13 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get() async {
-    var filter = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
-    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : filter);
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({ String mask }) async {
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
+    if (mask != null) {
+        queryCustomizer.mask = mask;
+    }
+
+    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : queryCustomizer);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
           {{ else }}
@@ -192,9 +202,13 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({{ fqClass relation.owner.name }}Store owner) async {
-    var filter = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
-    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : filter);
+  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({{ fqClass relation.owner.name }}Store owner, { String mask }) async {
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
+    if (mask != null) {
+        queryCustomizer.mask = mask;
+    }
+
+    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : queryCustomizer);
     return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
           {{/ if }}
@@ -292,15 +306,15 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET CREATE RANGE FOR {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass targetRelation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate({{ fqClass relation.target.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit }) async {
-    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit);
+  Future<List<{{ fqClass targetRelation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate({{ fqClass relation.target.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit, mask: mask);
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // GET UPDATE RANGE FOR {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass targetRelation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate({{ fqClass relation.target.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit }) async {
-    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit);
+  Future<List<{{ fqClass targetRelation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate({{ fqClass relation.target.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit, mask: mask);
   }
       {{/ if }}
       {{# if targetRelation.isRelationBehaviourTypeSetable }}

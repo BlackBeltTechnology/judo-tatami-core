@@ -71,7 +71,24 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<{{ fqClass relation.target.name }}Store> get{{ fqClass relation.name }}() async {
         try {
             errorMessage = null;
-            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get());
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
+                mask: '{
+                    {{~# with page.containers.[0] as |container| ~}}
+                        {{~# each (getAttributeTypesFromWidgets container) as |attribute| ~}}
+                            {{~ variable attribute.name }}{{# unless @last }},{{/ unless ~}}
+                        {{~/ each ~}}
+                        {{~# unless (isEmptyList container.tables) }},{{/ unless ~}}
+                        {{~# each container.tables as |table| ~}}
+                            {{ variable table.dataElement.name ~}}
+                            {
+                            {{~# each table.columns as |column| ~}}
+                        {{~ variable column.attributeType.name }}{{# unless @last }},{{/ unless ~}}
+                            {{~/ each ~}}
+                            }{{# unless @last }},{{/ unless ~}}
+                        {{~/ each ~}}
+                    {{~/ with ~}}
+                }',
+            ));
             return await {{ fqVariable relation.name }}StoreFuture;
         } on ApiException catch (error) {
             errorMessage = "Could not load {{ relation.name }}";
@@ -86,7 +103,25 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<void> refresh{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
         try {
             errorMessage = null;
-            target{{ className page.dataElement.target.name }}Store.updateWith(await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}GetByIdentifier(target{{ className page.dataElement.target.name }}Store));
+            target{{ className page.dataElement.target.name }}Store.updateWith(await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}GetByIdentifier(
+                target{{ className page.dataElement.target.name }}Store,
+                mask: '{
+                    {{~# with page.containers.[0] as |container| ~}}
+                        {{~# each (getAttributeTypesFromWidgets container) as |attribute| ~}}
+                            {{~ variable attribute.name }}{{# unless @last }},{{/ unless ~}}
+                        {{~/ each ~}}
+                        {{~# unless (isEmptyList container.tables) }},{{/ unless ~}}
+                        {{~# each container.tables as |table| ~}}
+                            {{ variable table.dataElement.name ~}}
+                            {
+                            {{~# each table.columns as |column| ~}}
+                        {{~ variable column.attributeType.name }}{{# unless @last }},{{/ unless ~}}
+                            {{~/ each ~}}
+                            }{{# unless @last }},{{/ unless ~}}
+                        {{~/ each ~}}
+                    {{~/ with ~}}
+                }',
+            ));
         } on ApiException catch (error) {
             errorMessage = "Could not refresh {{ relation.target.name }}";
             throw error;

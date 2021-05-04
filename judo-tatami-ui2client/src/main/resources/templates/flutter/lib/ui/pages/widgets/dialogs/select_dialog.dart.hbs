@@ -42,8 +42,13 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
 {{# unless (isAccessTablePage page) }}
 {{# unless relation.isMemberTypeTransient }}
     var addFilterButtonKey = GlobalKey();
+    String mask = '{
+    {{~# each tableFilters as |filter| ~}}
+        {{ variable filter.attributeType.name }}{{# unless @last }},{{/ unless }}
+    {{~/ each ~}}
+    }';
     int tableQueryLimit = ({{ table.row }}-1).round();
-    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: tableQueryLimit).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: tableQueryLimit, mask: mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
 
     var dialogHelperStore = {{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{fqClass page.name}}PageHelperStore();
 
@@ -92,6 +97,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                                   ownerStore,
                                   queryLimit: tableQueryLimit,
                                   filterStoreList: dialogHelperStore.availableFilterList,
+                                  mask: mask,
                               ).catchError((error) => ErrorHandler.showErrorSnack(context, error));
                           },
                       ) : JudoSpacer(col: 1),
@@ -110,6 +116,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                             ownerStore,
                             queryLimit: tableQueryLimit,
                             filterStoreList: dialogHelperStore.availableFilterList,
+                            mask: mask,
                         ).catchError((error) => ErrorHandler.showErrorSnack(context, error)), 
                       ),
                     ),
@@ -144,6 +151,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                                   asc,
                                   dataInfo.getSortComparator(columnIndex, asc),
                                   filterStoreList: dialogHelperStore.availableFilterList,
+                                  mask: mask,
                               );
                             },
                             rowList: pageStore.{{ fqVariable relation.name }}StoreRangeList,

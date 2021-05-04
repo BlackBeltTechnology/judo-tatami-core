@@ -23,5 +23,8 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
         SchedulerBinding.instance.addPostFrameCallback((_) {
             navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${target{{ className page.dataElement.target.name }}Store.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
         });
+    {{# if page.dataElement.isRelationBehaviourTypeRefreshable }}
+        {{fqVariable page.name}}PageStore.refresh{{ className page.dataElement.target.name }}(target{{ className page.dataElement.target.name }}Store).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+    {{/ if }}
     }
 //END viewpagefragment.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------
