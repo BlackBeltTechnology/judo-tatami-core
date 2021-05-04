@@ -68,7 +68,7 @@ class AppTheme {
           headline4: theme.textTheme.headline4.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w500, color: Color(0xff17191d)),
           headline5: theme.textTheme.headline5.copyWith(fontFamily: 'SourceSansPro'),
           headline6: theme.textTheme.headline6.copyWith(fontFamily: 'SourceSansPro', color: Color(0xff434448)),
-          subtitle1: theme.textTheme.subtitle1.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w500, color: Color(0xff434448)),
+          subtitle1: theme.textTheme.subtitle1.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w600, color: Color(0xff434448)),
           subtitle2: theme.textTheme.subtitle2.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w300, color: Color(0xff8f8f8f)),
           bodyText1: theme.textTheme.bodyText1.copyWith(fontFamily: 'SourceSansPro'),
           bodyText2: theme.textTheme.bodyText2.copyWith(fontFamily: 'SourceSansPro'),
@@ -301,6 +301,15 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
         fontSize: 16,
         fontFamily: 'SourceSansPro',
         fontWeight: FontWeight.w500
+    );
+  }
+
+  TextStyle getTableHeaderTextStyle() {
+    return TextStyle(
+      color: Color(0xff17191d),
+      fontSize: 16,
+      fontFamily: 'SourceSansPro',
+      fontWeight: FontWeight.w600,
     );
   }
 

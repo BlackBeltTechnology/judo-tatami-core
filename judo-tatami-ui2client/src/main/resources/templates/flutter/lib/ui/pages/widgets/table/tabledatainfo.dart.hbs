@@ -22,7 +22,10 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
         return [
             {{# each columns}}
             DataColumn(
-                label: Text(AppLocalizations.of(context).lookUpValue(context, '{{label}}')),
+                label: Text(
+                  AppLocalizations.of(context).lookUpValue(context, '{{label}}'),
+                  style: JudoComponentCustomizer.get().getTableHeaderTextStyle(),
+                ),
                 {{# unless (isBooleanDataType dataType) }}
                     {{# unless (isEnumType dataType) }}
                 onSort: onSort,

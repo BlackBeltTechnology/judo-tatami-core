@@ -7,6 +7,7 @@ Observer(builder: (_) {
         disabled: {{disabled}},
         col: {{ col }},
         row: {{row}},
+        inCard: {{ isInCard }},
         dataInfo: dataInfo,
         rowList: {{# if relation.isCollection }}target{{ className relation.owner.name }}Store.{{variable relation.name}}{{else}}[target{{ className relation.owner.name }}Store.{{variable relation.name}}].asObservable(){{/ if}},
         /*
