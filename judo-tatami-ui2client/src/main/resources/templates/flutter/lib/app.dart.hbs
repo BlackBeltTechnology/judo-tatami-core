@@ -193,7 +193,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                                     ),
                                                     _auth.isAuthenticationRequired() ? Observer(
                                                         builder: (_) =>
-                                                            _auth.getAuthInfo().loggedIn ? ListTile(
+                                                            _auth.isLoggedIn() ? ListTile(
                                                                 leading: Icon(Icons.logout),
                                                                 title: Text(AppLocalizations.of(context).lookUpValue(context, 'Logout')),
                                                                 onTap: () {
@@ -224,7 +224,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
     }
 
     Widget actorMenuEntries(BuildContext context, NavigationState navigationState, String _selected) {
-        return !_auth.isAuthenticationRequired() || (_auth.getAuthInfo().loggedIn && _auth.getAuthInfo().isPrincipalAllowed) ? Column(
+        return !_auth.isAuthenticationRequired() || (_auth.isLoggedIn() && _auth.getAuthInfo().isPrincipalAllowed) ? Column(
             children: {{ fqClass application.name }}NavigationItems.navigationItems.map(
                 (e) => ListTile(
                     leading: e.leading,

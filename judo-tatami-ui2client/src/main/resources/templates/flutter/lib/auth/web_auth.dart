@@ -23,6 +23,8 @@ class WebAuth implements Auth {
   static const AUTH_DESTINATION_URL = "auth_destination_url";
   static const GRANT_AUTHORIZATION = "authorization_code";
   static const GRANT_REFRESH = "refresh_token";
+  static const APP_NAME_KEY = "judo_ng_app_name";
+  static const APP_NAME = "{{ modelName application.name }}{{ packageName application.name }}";
 
   {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }} _securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
   var _authInfo = AuthInfoStore();
@@ -33,6 +35,10 @@ class WebAuth implements Auth {
 
   bool isLoggedIn() {
     return _authInfo.loggedIn;
+  }
+
+  bool isAuthorized() {
+    return isLoggedIn() && html.window.sessionStorage[APP_NAME_KEY] == APP_NAME;
   }
 
   bool isAccessTokenSet() {
@@ -67,6 +73,12 @@ class WebAuth implements Auth {
       }
     }
 
+    var appNamePresent = html.window.sessionStorage[APP_NAME_KEY];
+    if (appNamePresent != null && appNamePresent != APP_NAME) {
+      logout();
+      return;
+    }
+
     if (isAuthenticationRequired()) {
       locator.unregister(instance: _apiClient);
 
@@ -87,15 +99,9 @@ class WebAuth implements Auth {
   }
 
   logout() {
-    _authInfo.setAuthenticated(false);
-    html.window.sessionStorage.remove(AUTH_CODE_VERIFIER_KEY);
-    html.window.sessionStorage.remove(AUTH_CODE_KEY);
-    html.window.sessionStorage.remove(AUTH_ACCESS_TOKEN_KEY);
-    html.window.sessionStorage.remove(AUTH_ACCESS_TOKEN_EXPIRE);
-    html.window.sessionStorage.remove(AUTH_REFRESH_TOKEN_KEY);
-    html.window.sessionStorage.remove(AUTH_DESTINATION_URL);
+    getAuthInfo().setAuthenticated(false);
+    html.window.sessionStorage.clear();
     locator<ApiClient>().setAuthentication(_securitySettings.name, null);
-    // var logoutUri = LOGOUT_URL + "?redirect_uri=${Uri.encodeQueryComponent(CALLBACK_URL)}";
     html.window.location.assign(_securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(_calculateRedirectUri())}");
     _securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
   }
@@ -141,11 +147,13 @@ class WebAuth implements Auth {
       try {
         await DefaultApi(apiClient).{{ modelNameVariable application.name }}{{ packageName application.name }}{{ className application.name }}Metadata();
       } on ArgumentError catch (error) {
+        print("Could not get metadata: " + error.message);
+        // Very nice way to determinate REALM
         var realm = error.message.toString().substring(26);
         apiClient.setAuthentication(realm, NoopAuth());
       }
 
-      {{ modelName application.name }}{{ packageName application.name }}MetadataFor{{ className application.name }} meta = {{ modelName application.name }}{{ packageName application.name }}MetadataFor{{ className application.name }}();
+      {{ modelName application.name }}{{ packageName application.name }}MetadataFor{{ className application.name }} meta = await DefaultApi(apiClient).{{ modelNameVariable application.name }}{{ packageName application.name }}{{ className application.name }}Metadata();
       if (meta.security.isNotEmpty) {
         _securitySettings = meta.security.first;
       }
@@ -182,6 +190,7 @@ class WebAuth implements Auth {
       html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY] = token.accessToken;
       html.window.sessionStorage[AUTH_ACCESS_TOKEN_EXPIRE] = token.accessTokenExpirationDateTime.toString();
       html.window.sessionStorage[AUTH_REFRESH_TOKEN_KEY] = token.refreshToken;
+      html.window.sessionStorage[APP_NAME_KEY] = APP_NAME;
 
       _updateAuthInfo(token.accessToken);
 

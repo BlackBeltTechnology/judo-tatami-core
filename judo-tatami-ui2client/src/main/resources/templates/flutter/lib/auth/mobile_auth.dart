@@ -8,6 +8,10 @@ class MobileAuth implements Auth {
     return false;
   }
 
+  bool isAuthorized() {
+    return false;
+  }
+
   bool isLoggedIn() {
     return false;
   }
@@ -25,9 +29,7 @@ class MobileAuth implements Auth {
 
   Future<void> init(String url) async {}
 
-  logout() {
-
-  }
+  logout() {}
 
   Future<void> login() async {}
 

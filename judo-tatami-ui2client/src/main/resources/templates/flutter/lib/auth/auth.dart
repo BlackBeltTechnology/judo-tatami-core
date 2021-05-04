@@ -8,11 +8,21 @@ import 'auth_stub.dart'
   if (dart.library.html) 'web_auth.dart';
 
 abstract class Auth {
+  /**
+   * If App is anonymous or not.
+   */
   bool isAuthenticationRequired(){
     return false;
   }
 
   bool isLoggedIn() {
+    return false;
+  }
+
+  /**
+   * Only relevant in a web context where users can open multiple apps.
+   */
+  bool isAuthorized() {
     return false;
   }
 
@@ -29,9 +39,7 @@ abstract class Auth {
 
   Future<void> init(String url) async {}
 
-  logout() {
-
-  }
+  logout() {}
 
   Future<void> login() async {}
 
