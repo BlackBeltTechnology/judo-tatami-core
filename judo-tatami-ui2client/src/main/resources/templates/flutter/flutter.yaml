@@ -747,3 +747,11 @@
   pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/package.dart'"
   templateName: flutter/lib/utilities/package.dart
   copy: true
+
+# ========================================
+# config
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/config.dart'"
+  templateName: flutter/lib/config.dart.hbs
