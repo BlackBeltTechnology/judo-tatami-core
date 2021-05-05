@@ -190,7 +190,10 @@ class WebAuth implements Auth {
       html.window.sessionStorage[AUTH_ACCESS_TOKEN_KEY] = token.accessToken;
       html.window.sessionStorage[AUTH_ACCESS_TOKEN_EXPIRE] = token.accessTokenExpirationDateTime.toString();
       html.window.sessionStorage[AUTH_REFRESH_TOKEN_KEY] = token.refreshToken;
-      html.window.sessionStorage[APP_NAME_KEY] = APP_NAME;
+      
+      if (html.window.sessionStorage[APP_NAME_KEY] == null) {
+        html.window.sessionStorage[APP_NAME_KEY] = APP_NAME;
+      }
 
       _updateAuthInfo(token.accessToken);
 
