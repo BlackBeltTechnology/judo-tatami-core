@@ -11,11 +11,11 @@
 import 'package:flutter/material.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/auth/auth.dart';
 
 import '{{ path application.name }}/app_theme.dart';
 import '{{ path application.name }}/injector/injector.dart';
 import '{{ path application.name }}/app.dart';
-import '{{ path application.name }}/oauth.dart';
 import '{{ path application.name }}/utilities/package.dart';
 
 void main() async {
@@ -27,32 +27,11 @@ void main() async {
 
     // Call the meta data with no token refresh interceptor
     ApiClient _apiClient = ApiClient(basePath: apiUrl, apiClientDelegate: DioClientDelegate());
+    Auth _auth = Auth();
     locator.registerSingleton<ApiClient>(_apiClient);
-    try {
-        await Oauth.loadClientMetaData();
-        Info.serverDown = false;
-    } on ApiException catch (error){
-        if (error.code == 500 && error.message.contains('Connection')) {
-            Info.serverDown = true;
-        }
-    }
+    locator.registerSingleton<Auth>(_auth);
 
-    if (Oauth.isAuthenticationRequired()) {
-        locator.unregister(instance: _apiClient);
-
-        // Add the token refresh interceptor for the rest of the api calls
-        _apiClient = ApiClient(basePath: apiUrl, apiClientDelegate: Oauth.getDioDelegate());
-        locator.registerSingleton<ApiClient>(_apiClient);
-
-        if (!isNavigateToSettingsPage) {
-            Oauth.loginAuthorizeAndExchangeCode();
-        }
-
-        var token = await Oauth.processLogin();
-        Oauth.udpateAuthInfo(token);
-        await Oauth.addTokenToApiClient(token);
-    }
-    await Oauth.checkPrincipal();
+    await _auth.init(apiUrl);
 
     runApp({{ fqClass application.name }}Application());
 }

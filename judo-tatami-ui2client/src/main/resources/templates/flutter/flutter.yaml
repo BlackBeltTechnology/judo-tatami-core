@@ -525,6 +525,41 @@
   templateName: flutter/lib/ui/guards/auth_guard.dart.hbs
 
 # ========================================
+# auth
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/auth/auth.dart'
+  templateName: flutter/lib/auth/auth.dart
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/auth/auth_stub.dart'
+  templateName: flutter/lib/auth/auth_stub.dart
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/auth/mobile_auth.dart'
+  templateName: flutter/lib/auth/mobile_auth.dart
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/auth/web_auth.dart'
+  templateName: flutter/lib/auth/web_auth.dart
+
+# ========================================
 # drawer
 # ========================================
 - overwriteExpression: true
