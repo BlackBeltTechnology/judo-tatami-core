@@ -44,7 +44,7 @@ List<PopupMenuEntry<FilterStore>> getPopupMenuAttributeItems(context, List<Filte
     return filterStoreList.map<PopupMenuEntry<FilterStore>>( (filterStore) {
         return PopupMenuItem<FilterStore>(
             value: filterStore,
-            child: Text(AppLocalizations.of(context).lookUpValue(context, filterStore.attributeName)),
+            child: Text(AppLocalizations.of(context).lookUpValue(context, filterStore.attributeLabel)),
         );
     }).toList();
 }

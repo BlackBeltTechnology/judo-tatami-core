@@ -15,6 +15,8 @@ enum FilterType {
 }
 
 class FilterStore extends _FilterStore with _$FilterStore {
+  String attributeLabel;
+
   String attributeName;
 
   FilterType filterType;
@@ -22,17 +24,18 @@ class FilterStore extends _FilterStore with _$FilterStore {
   /// Just for Enumerations
   List enumValues;
 
-  FilterStore({this.attributeName, this.filterType, this.enumValues}) : super(attributeName, filterType, enumValues: enumValues);
+  FilterStore({this.attributeLabel, this.attributeName, this.filterType, this.enumValues}) : super(attributeLabel, attributeName, filterType, enumValues: enumValues);
 
   FilterStore.clone(FilterStore filterStore) : super.clone(filterStore);
 }
 
 abstract class _FilterStore with Store {
-  _FilterStore(this.attributeName, this.filterType, {this.enumValues}){
+  _FilterStore(this.attributeLabel, this.attributeName, this.filterType, {this.enumValues}){
     filterOperation = defaultFilterOperation[filterType.toString().split('.').last];
   }
 
   _FilterStore.clone(FilterStore filterStore) {
+    this.attributeLabel = filterStore.attributeLabel;
     this.attributeName = filterStore.attributeName;
     this.filterType = filterStore.filterType;
     if (filterStore.enumValues != null) {
@@ -42,6 +45,8 @@ abstract class _FilterStore with Store {
     this.filterValue = filterStore.filterValue;
     this.widgetLabel = filterStore.widgetLabel;
   }
+
+  String attributeLabel;
 
   String attributeName;
 
@@ -59,7 +64,7 @@ abstract class _FilterStore with Store {
   String widgetLabel = '';
 
   @action
-  void setWidgetLabel(BuildContext context) => widgetLabel = AppLocalizations.of(context).lookUpValue(context, attributeName) + ' ' + AppLocalizations.of(context).lookUpValue(context, filterOperation);
+  void setWidgetLabel(BuildContext context) => widgetLabel = AppLocalizations.of(context).lookUpValue(context, attributeLabel) + ' ' + AppLocalizations.of(context).lookUpValue(context, filterOperation);
 
   @action
   void setFilterOperation(String filterOperation) => this.filterOperation = filterOperation;

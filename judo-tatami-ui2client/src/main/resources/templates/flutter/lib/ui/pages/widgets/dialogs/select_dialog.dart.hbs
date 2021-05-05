@@ -20,7 +20,7 @@ abstract class _{{ fqClass relation.name }}{{ className relation.target.name }}D
 
     final Map<String, FilterStore> stringFilterStoreMap = {
     {{# each table.filters as |filter|}}
-        '{{ variable filter.attributeType.name }}' : FilterStore(attributeName: '{{ filter.label }}', filterType: FilterType.{{ filterDataType filter.attributeType.dataType }}{{# if (isEnumType filter.attributeType.dataType)}}, enumValues: {{ className filter.attributeType.dataType.name }}.values{{/if}}),
+        '{{ variable filter.attributeType.name }}' : FilterStore(attributeName: '{{ variable filter.attributeType.name }}', attributeLabel: '{{ filter.label }}', filterType: FilterType.{{ filterDataType filter.attributeType.dataType }}{{# if (isEnumType filter.attributeType.dataType)}}, enumValues: {{ className filter.attributeType.dataType.name }}.values{{/if}}),
     {{/ each }}
     };
 
