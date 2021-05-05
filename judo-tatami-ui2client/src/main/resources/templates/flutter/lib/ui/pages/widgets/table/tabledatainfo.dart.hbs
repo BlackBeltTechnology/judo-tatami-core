@@ -24,7 +24,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
             DataColumn(
                 label: Text(
                   AppLocalizations.of(context).lookUpValue(context, '{{label}}'),
-                  style: JudoComponentCustomizer.get().getTableHeaderTextStyle(),
+                  style: JudoComponentCustomizer.get().getTableHeaderTextStyle(Theme.of(context)),
                 ),
                 {{# unless (isBooleanDataType dataType) }}
                     {{# unless (isEnumType dataType) }}

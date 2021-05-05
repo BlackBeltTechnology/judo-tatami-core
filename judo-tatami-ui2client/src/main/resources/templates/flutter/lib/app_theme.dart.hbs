@@ -15,15 +15,17 @@ import 'package:judo_flutter_components/judo_flutter_components.dart';
 class AppTheme {
 
   static ThemeData of(BuildContext context) {
+
     ThemeData original = Theme.of(context).copyWith(
       primaryColor: Color(0xff3c4166),
     );
 
     final ThemeData theme = Theme.of(context).copyWith(
-        primaryColor: Color(0xff3c4166),
-        backgroundColor: Color(0xffe9e9e9),
+        backgroundColor: Color(0xfffafafa),
         dividerColor: Color(0x13000000),
         cardColor: Color(0xffffffff),
+        disabledColor: Color(0xff3c4166),
+        hintColor: Color(0xff3c4166),
 
         colorScheme: original.colorScheme.copyWith(
           primary: Color(0xff3c4166),
@@ -33,6 +35,13 @@ class AppTheme {
           secondaryVariant: Color(0xc0e7501d),
         )
     );
+
+    Color displayColor = Color(0xff17191d);
+    Color bodyColor = Color(0xff434448);
+    Color inputUnderlineColor = Color(0xfff0f0f0);
+    Color shadowColor = Colors.black12;
+    Color transparentColor = Colors.transparent;
+    Color inputLabelColor = Color(0xff8f8f8f);
 
     return theme.copyWith(
 
@@ -65,11 +74,11 @@ class AppTheme {
           headline1: theme.textTheme.headline1.copyWith(fontFamily: 'SourceSansPro'),
           headline2: theme.textTheme.headline2.copyWith(fontFamily: 'SourceSansPro'),
           headline3: theme.textTheme.headline3.copyWith(fontFamily: 'SourceSansPro'),
-          headline4: theme.textTheme.headline4.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w500, color: Color(0xff17191d)),
+          headline4: theme.textTheme.headline4.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w500, color: displayColor),
           headline5: theme.textTheme.headline5.copyWith(fontFamily: 'SourceSansPro'),
-          headline6: theme.textTheme.headline6.copyWith(fontFamily: 'SourceSansPro', color: Color(0xff434448)),
-          subtitle1: theme.textTheme.subtitle1.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w600, color: Color(0xff434448)),
-          subtitle2: theme.textTheme.subtitle2.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w300, color: Color(0xff8f8f8f)),
+          headline6: theme.textTheme.headline6.copyWith(fontFamily: 'SourceSansPro', color: bodyColor),
+          subtitle1: theme.textTheme.subtitle1.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w600, color: bodyColor),
+          subtitle2: theme.textTheme.subtitle2.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w300, color: inputUnderlineColor),
           bodyText1: theme.textTheme.bodyText1.copyWith(fontFamily: 'SourceSansPro'),
           bodyText2: theme.textTheme.bodyText2.copyWith(fontFamily: 'SourceSansPro'),
           button: theme.textTheme.button.copyWith(fontFamily: 'SourceSansPro'),
@@ -111,11 +120,11 @@ class AppTheme {
         ),
 
         appBarTheme: AppBarTheme(
-            color: Color(0x00151026),
+            color: theme.backgroundColor,
             elevation: 0,
             textTheme: TextTheme(
               headline6: TextStyle(
-                color: Color(0xff17191d),
+                color: displayColor,
                 fontFamily: 'SourceSansPro',
                 fontWeight: FontWeight.bold,
                 fontSize: 32.0,
@@ -139,29 +148,40 @@ class AppTheme {
           filled: true,
           fillColor: theme.cardColor,
           focusColor: theme.colorScheme.secondary,
-          border: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: Colors.transparent)),
-          labelStyle: TextStyle(fontWeight: FontWeight.bold),
-          enabledBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: Colors.transparent)),
+          border: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: transparentColor)),
+          labelStyle: TextStyle(fontWeight: FontWeight.bold, color: inputLabelColor),
+          enabledBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: transparentColor)),
           focusedBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(width: 2.0, color:theme.colorScheme.secondary)),
-          disabledBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(color: Colors.black12)),
+          disabledBorder: UnderlineInputBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10.0)), borderSide: BorderSide(width: 2.0, color: inputUnderlineColor)),
         ),
 
         indicatorColor: Color(0xffe7501d),
 
-        tabBarTheme: theme.tabBarTheme.copyWith(
-          labelColor: Color(0xffe7501d),
-        )
+      tabBarTheme: theme.tabBarTheme.copyWith(
+        labelColor: theme.colorScheme.secondary,
+        labelStyle: theme.textTheme.subtitle1.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w700, color: theme.colorScheme.secondary),
+        unselectedLabelColor: inputLabelColor,
+        unselectedLabelStyle: theme.textTheme.subtitle1.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w600, color: inputLabelColor),
+      ),
+
+      disabledColor: inputLabelColor,
+      toggleableActiveColor: theme.colorScheme.secondary,
+      unselectedWidgetColor: bodyColor,
     );
   }
 
 }
-
 
 class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
 
   @override
   double getLineHeight() {
     return 72;
+  }
+
+  @override
+  double getInputHeight() {
+    return 52;
   }
 
   @override
@@ -175,7 +195,7 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
     BoxDecoration(
         boxShadow: [
           BoxShadow(
-              color: Colors.black12,
+              color: shadowColor,
               blurRadius: 4,
               offset: const Offset(0, 0)
           )
@@ -184,28 +204,37 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
   }
 
   @override
-  InputDecoration getInputDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
-    return InputDecoration(
-        labelText: label,
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        counterText: ""
+  InputDecoration getInputDecoration(String label, Widget prefixIcon, Widget suffixIcon, bool mandatory) {
+    return label != null ?
+    InputDecoration(
+      labelText: mandatory ? label + ' *' : label,
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      counterText: '',
+    ) :
+    InputDecoration(
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      counterText: '',
+      contentPadding:  EdgeInsets.only(left: 10.0, right: 10.0, top: 40.0, bottom: 24.0),
     );
   }
 
   @override
-  InputDecoration getInputTextDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
-    return getInputDecoration(label, prefixIcon, suffixIcon);
+  InputDecoration getInputTextDecoration(String label, Widget prefixIcon, Widget suffixIcon, bool mandatory, bool multiline) {
+    return getInputDecoration(label, prefixIcon, suffixIcon, mandatory).copyWith(
+        floatingLabelBehavior: multiline ? FloatingLabelBehavior.always : null
+    );
   }
 
   @override
-  InputDecoration getInputDateDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
-    return getInputDecoration(label, prefixIcon, suffixIcon);
+  InputDecoration getInputDateDecoration(String label, Widget prefixIcon, Widget suffixIcon, bool mandatory) {
+    return getInputDecoration(label, prefixIcon, suffixIcon, mandatory);
   }
 
   @override
-  InputDecoration getInputDateTimeDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
-    return getInputDecoration(label, prefixIcon, suffixIcon);
+  InputDecoration getInputDateTimeDecoration(String label, Widget prefixIcon, Widget suffixIcon, bool mandatory) {
+    return getInputDecoration(label, prefixIcon, suffixIcon, mandatory);
   }
 
   @override
@@ -217,24 +246,37 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
   }
 
   @override
-  InputDecoration getInputNumericDecoration(String label, Widget prefixIcon, Widget suffixIcon) {
-    return getInputDecoration(label, prefixIcon, suffixIcon);
+  InputDecoration getInputNumericDecoration(String label, Widget prefixIcon, Widget suffixIcon, bool mandatory) {
+    return getInputDecoration(label, prefixIcon, suffixIcon, mandatory);
   }
 
   @override
-  ThemeData getInputThemeCustomizer(ThemeData theme, bool disabled, bool readOnly, bool inCard) {
+  InputDecoration getInputComboboxDecoration(String label, Widget prefixIcon, Widget suffixIcon, bool mandatory) {
+    return label != null ?
+    getInputDecoration(label, prefixIcon, suffixIcon, mandatory) :
+    getInputDecoration(label, prefixIcon, suffixIcon, mandatory).copyWith(
+      contentPadding:  EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+    );
+  }
+
+  @override
+  ThemeData getInputThemeCustomizer(
+      ThemeData theme, bool disabled, bool readOnly, bool inCard) {
     return theme.copyWith(
+        textTheme: theme.textTheme.copyWith(
+          subtitle1: theme.textTheme.subtitle1.copyWith(fontWeight: FontWeight.w500),
+        ),
         primaryColor: (disabled || readOnly)
             ? theme.iconTheme.color
             : theme.colorScheme.secondary,
         inputDecorationTheme: (disabled || readOnly)
             ? theme.inputDecorationTheme.copyWith(
-            labelStyle: theme.inputDecorationTheme.labelStyle
-                .copyWith(color: Colors.black),
-            filled: false)
-            : inCard ? theme.inputDecorationTheme.copyWith(
-          fillColor: Color(0xfffafafa),
-        ) : null );
+                filled: false)
+            : inCard
+            ? theme.inputDecorationTheme.copyWith(
+                fillColor: theme.backgroundColor,
+            )
+            : null);
   }
 
   @override
@@ -256,30 +298,22 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
   }
 
   @override
-  ThemeData getInputLinkThemeCustomizer(ThemeData theme, bool disabled, bool readOnly, bool inCard) {
+  ThemeData getInputLinkThemeCustomizer(
+      ThemeData theme, bool disabled, bool readOnly, bool inCard) {
     return theme.copyWith(
-        primaryColor: theme.colorScheme.secondary,
-        iconTheme: theme.iconTheme.copyWith(
-            color: theme.colorScheme.secondary
+        textTheme: theme.textTheme.copyWith(
+          subtitle1: theme.textTheme.subtitle1.copyWith(fontWeight: FontWeight.w500),
         ),
-        inputDecorationTheme:
-        (disabled || readOnly) ?
-        theme.inputDecorationTheme.copyWith(
-            labelStyle: theme.inputDecorationTheme.labelStyle.copyWith(
-                color: Colors.black
-            ),
-            filled: false
-        ) : inCard ? theme.inputDecorationTheme.copyWith(
-            labelStyle: theme.inputDecorationTheme.labelStyle.copyWith(
-                color: Color(0xdc434448)
-            ),
-            fillColor: Color(0xfffafafa),
-        ) : theme.inputDecorationTheme.copyWith(
-            labelStyle: theme.inputDecorationTheme.labelStyle.copyWith(
-                color: Color(0xdc434448)
-            )
-        )
-    );
+        primaryColor: theme.colorScheme.secondary,
+        iconTheme: theme.iconTheme.copyWith(color: theme.colorScheme.secondary),
+        inputDecorationTheme: (disabled || readOnly)
+            ? theme.inputDecorationTheme.copyWith(
+            filled: false)
+            : inCard
+            ? theme.inputDecorationTheme.copyWith(
+                fillColor: theme.backgroundColor,
+              )
+            : theme.inputDecorationTheme);
   }
 
   @override
@@ -289,28 +323,64 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
   }
 
   @override
-  ThemeData getBreadcumbTheme(ThemeData theme) {
-    return theme.copyWith(
-      primaryColor: Colors.white,
+  ThemeData getInputComboboxThemeCustomizer(
+      ThemeData theme, bool disabled, bool readOnly, bool inCard) {
+    return getInputThemeCustomizer(theme, disabled, readOnly, inCard).copyWith(
+        disabledColor: bodyColor
     );
   }
 
+  @override
+  ThemeData getBreadcumbTheme(ThemeData theme) {
+    return theme.copyWith(
+      primaryColor: theme.cardColor,
+    );
+  }
+
+  @override
+  ThemeData getMenuTheme(ThemeData theme) {
+    return theme.copyWith(
+        colorScheme: theme.colorScheme.copyWith(primary: theme.colorScheme.secondary));
+  }
+
+  @override
   TextStyle getBreadcumbTextStyle() {
     return TextStyle(
-        color: Color(0xff434448),
+        color: bodyColor,
         fontSize: 16,
         fontFamily: 'SourceSansPro',
         fontWeight: FontWeight.w500
     );
   }
 
-  TextStyle getTableHeaderTextStyle() {
-    return TextStyle(
-      color: Color(0xff17191d),
-      fontSize: 16,
-      fontFamily: 'SourceSansPro',
-      fontWeight: FontWeight.w600,
-    );
+  @override
+  TextStyle getTableHeaderTextStyle(ThemeData theme) {
+    return theme.textTheme.subtitle1.copyWith(color: displayColor);
+  }
+
+  @override
+  TextStyle getSwitchTextStyle(ThemeData theme) {
+    return theme.textTheme.subtitle1;
+  }
+
+  @override
+  TextStyle getRadioTextStyle(ThemeData theme) {
+    return theme.textTheme.subtitle1;
+  }
+
+  @override
+  TextStyle getAppNameTextStyle(ThemeData theme) {
+    return theme.textTheme.headline6.copyWith(fontWeight: FontWeight.w900);
+  }
+
+  @override
+  TextStyle getActorNameTextStyle(ThemeData theme) {
+    return theme.textTheme.subtitle1.copyWith(fontWeight: FontWeight.w100);
+  }
+
+  @override
+  TextStyle getUserNameTextStyle(ThemeData theme) {
+    return theme.textTheme.subtitle1.copyWith(fontWeight: FontWeight.w900);
   }
 
   double getContentMargin(BuildContext context) {
