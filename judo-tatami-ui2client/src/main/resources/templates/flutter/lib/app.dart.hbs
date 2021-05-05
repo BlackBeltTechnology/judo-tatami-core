@@ -16,6 +16,7 @@ import 'oauth.dart';
 import 'dart:async';
 import 'package:flutter/scheduler.dart';
 import 'repository/package.dart';
+import 'config.dart';
 
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
@@ -184,13 +185,13 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                         Theme(
                                             child: Column(
                                                 children: [
-                                                    ListTile(
+                                                    Config.isReleaseModeDebug ? ListTile(
                                                         leading: Icon(Icons.settings),
                                                         title: Text(AppLocalizations.of(context).lookUpValue(context, 'Settings')),
                                                         onTap: () {
                                                             navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage);
                                                         },
-                                                    ),
+                                                    ) : Container(),
                                                     Oauth.isAuthenticationRequired() ? Observer(
                                                         builder: (_) =>
                                                             Oauth.authInfo.loggedIn ? ListTile(
