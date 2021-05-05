@@ -1,0 +1,19 @@
+import 'package:flutter/foundation.dart';
+
+enum RELEASE_MODE {
+  RELEASE, DEBUG
+}
+
+class Config {
+  static bool get isReleaseModeDebug {
+    return mode == RELEASE_MODE.DEBUG;
+  }
+
+  static bool get isReleaseModeRelease {
+    return mode == RELEASE_MODE.RELEASE;
+  }
+
+  static RELEASE_MODE get mode {
+    return kReleaseMode ? RELEASE_MODE.RELEASE : RELEASE_MODE.DEBUG;
+  }
+}
