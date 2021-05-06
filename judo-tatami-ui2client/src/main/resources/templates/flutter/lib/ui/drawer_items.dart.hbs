@@ -9,6 +9,7 @@
 // Application: {{ application.name }}
 
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
@@ -21,7 +22,7 @@ class {{ fqClass application.name }}NavigationItems {
         NavigationItem(
             route: Routes.{{ fqVariable item.target.name }}Page,
           {{#if item.isIconVisible }}
-            leading: Icon(Icons.{{item.icon.name}}),
+            leading: Icon(MdiIcons.fromString("{{item.icon.name}}")),
           {{/if}}
           {{#if item.isLabelVisible }}
             title: '{{ item.label }}',
