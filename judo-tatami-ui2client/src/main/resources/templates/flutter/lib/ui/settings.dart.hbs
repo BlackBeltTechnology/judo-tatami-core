@@ -14,7 +14,7 @@ import 'package:mobx/mobx.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
 import 'package:flutter/scheduler.dart';
 
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/auth/auth.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
@@ -79,30 +79,29 @@ class _{{ fqClass application.name }}SettingsPageState extends State<{{ fqClass 
         return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                    Row(
-                        children: [
-                            JudoButton(
-                                col: 1,
-                                onPressed: () => navigation.close(),
-                                label: 'Back',
-                                icon: Icon(Icons.arrow_back_ios),
-                            ),
-                            JudoButton(
-                                col: 1,
-                                onPressed: () async {
-                                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                                    await prefs.setString('apiUrl', store.apiUrl);
+                            Row(
+                                children: [
+                                    JudoButton(
+                                        col: 1,
+                                        onPressed: () => navigation.close(),
+                                        label: 'Back',
+                                        icon: Icon(Icons.arrow_back_ios),
+                                    ),
+                                    JudoButton(
+                                        col: 1,
+                                        onPressed: () async {
+                                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            await prefs.setString('apiUrl', store.apiUrl);
+                                            var auth = locator<Auth>();
 
-                                    ApiClient _apiClient = ApiClient(
-                                    basePath: store.apiUrl + API_RELATIVE_PATH,
-                                    apiClientDelegate: Oauth.getDioDelegate());
-                                    locator.unregister(instance: locator<ApiClient>());
-                                        locator.registerSingleton<ApiClient>(_apiClient);
+                                            ApiClient _apiClient = ApiClient(basePath: store.apiUrl + API_RELATIVE_PATH, apiClientDelegate: auth.getDioDelegate());
+                                            locator.unregister(instance: locator<ApiClient>());
+                                            locator.registerSingleton<ApiClient>(_apiClient);
                                             navigation.close();
-                                },
-                                label: 'Save',
-                                icon: Icon(Icons.save),
-                            ),
+                                		},
+                                		label: 'Save',
+                                		icon: Icon(Icons.save),
+                            		),
                         ],
                     ),
                     Row(

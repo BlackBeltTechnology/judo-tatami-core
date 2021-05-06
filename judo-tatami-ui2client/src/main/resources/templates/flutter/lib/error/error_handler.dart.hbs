@@ -8,8 +8,8 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/auth/auth.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
@@ -183,6 +183,7 @@ class ErrorHandler {
     }
 
     static void navigateToBuiltInPage() {
+        var auth = locator<Auth>();
         NavigationState navigation = locator<NavigationState>();
         if (isNavigateToSettingsPage) {
             navigation.open(router.Routes.{{ fqVariable application.name }}SettingsPage);
@@ -196,8 +197,8 @@ class ErrorHandler {
                     )
                 );
             } else {
-                if(Oauth.isAuthenticationRequired()) {
-                    if (!Oauth.isLoggedIn()) {
+                if(auth.isAuthenticationRequired()) {
+                    if (!auth.isAccessTokenSet()) {
                         navigation.open(router.Routes.{{ fqVariable application.name }}ErrorPage,
                             arguments: router.{{ fqClass application.name }}ErrorPageArguments(
                                 icon: Icon(Icons.login),

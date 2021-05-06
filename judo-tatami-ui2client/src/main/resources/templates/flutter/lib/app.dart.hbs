@@ -12,8 +12,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
-import 'package:openapi_dart_common/openapi.dart';
-import 'oauth.dart';
+import 'auth/auth.dart';
 import 'dart:async';
 import 'package:flutter/scheduler.dart';
 import 'repository/package.dart';
@@ -26,7 +25,6 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/guards/auth_guard.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/oauth.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
 
@@ -118,11 +116,13 @@ class {{ fqClass application.name }}Drawer extends StatefulWidget {
 
 class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass application.name }}Drawer> {
     Future<bool> _hasActorMenuAccess;
+    Auth _auth;
 
     @override
     void initState() {
         super.initState();
         _hasActorMenuAccess = hasActorMenuAccess();
+        _auth = locator<Auth>();
     }
 
     @override
@@ -154,7 +154,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                                                     children: [
                                                                         appNameAndSlogan(context),
                                                                         Container(height: 13.3*3,),
-                                                                        Oauth.isAuthenticationRequired() ? user(context) : Container(),
+                                                                        _auth.isAuthenticationRequired() ? user(context) : Container(),
                                                                         Container(height: 13.3*3,),
                                                                         const Divider(
                                                                             height: 16,
@@ -186,26 +186,26 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                         Theme(
                                             child: Column(
                                                 children: [
-                                                    ListTile(
+                                                    isReleaseModeDebug ? ListTile(
                                                         leading: Icon(Icons.settings),
                                                         title: Text(AppLocalizations.of(context).lookUpValue(context, 'Settings')),
                                                         onTap: () {
                                                             navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage);
                                                         },
-                                                    ),
-                                                    Oauth.isAuthenticationRequired() ? Observer(
+                                                    ) : Container(),
+                                                    _auth.isAuthenticationRequired() ? Observer(
                                                         builder: (_) =>
-                                                            Oauth.authInfo.loggedIn ? ListTile(
+                                                            _auth.isLoggedIn() ? ListTile(
                                                                 leading: Icon(Icons.logout),
                                                                 title: Text(AppLocalizations.of(context).lookUpValue(context, 'Logout')),
                                                                 onTap: () {
-                                                                    Oauth.logout();
+                                                                    _auth.logout();
                                                                 },
                                                             ) : ListTile(
                                                                 leading: Icon(Icons.login),
                                                                 title: Text(AppLocalizations.of(context).lookUpValue(context, 'Login')),
                                                                 onTap: () {
-                                                                    Oauth.loginAuthorizeAndExchangeCode();
+                                                                    _auth.login();
                                                                 },
                                                             )
                                                     ) : Container(),
@@ -223,27 +223,26 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
     }
 
     Widget actorMenuEntries(BuildContext context, NavigationState navigationState, String _selected) {
-        return !Oauth.isAuthenticationRequired() || (Oauth.authInfo.loggedIn && Oauth.authInfo.isPrincipalAllowed) ? Column(
+        return !_auth.isAuthenticationRequired() || (_auth.isLoggedIn() && _auth.getAuthInfo().isPrincipalAllowed) ? Column(
             children: {{ fqClass application.name }}NavigationItems.navigationItems.map(
                 (e) => Theme(
                     data: JudoComponentCustomizer.get().getMenuTheme(Theme.of(context)),
                     child: ListTile(
-                        leading: e.leading,
-                        title: Text(AppLocalizations.of(context).lookUpValue(context, e.title)),
-                        onTap: () {
-                            if (Info.serverDown) {
-                                ErrorHandler.navigateToBuiltInPage();
+                    leading: e.leading,
+                    title: Text(AppLocalizations.of(context).lookUpValue(context, e.title)),
+                    onTap: () {
+                        if (Info.serverDown) {
+                            ErrorHandler.navigateToBuiltInPage();
+                        } else {
+                            if (_auth.isAuthenticationRequired() && !_auth.isLoggedIn()) {
+                                _auth.login();
                             } else {
-                                if (Oauth.isAuthenticationRequired() && !Oauth.isLoggedIn()) {
-                                    Oauth.loginAuthorizeAndExchangeCode();
-                                } else {
-                                    navigationState.navigateTo(e.route);
-                                    setState(() => {});
-                                }
+                                navigationState.navigateTo(e.route);
+                                setState(() => {});
                             }
-                        },
-                        selected: e.route == _selected,
-                    )
+                        }
+                    },
+                    selected: e.route == _selected,
                 ),
             ).toList(),
         ) : Container();
@@ -276,6 +275,8 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
 
     Widget user(BuildContext context) {
         ThemeData theme = Theme.of(context);
+        var authInfo = _auth.getAuthInfo();
+
         return Row(
             children: [
                 Image(
@@ -288,13 +289,13 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
 
                 Column(children: [
                     Observer(
-                        builder: (_) => Text(Oauth.authInfo.userName == null ? "" : Oauth.authInfo.userName,
+                        builder: (_) => Text(authInfo.userName == null ? "" : authInfo.userName,
                             style: JudoComponentCustomizer.get().getUserNameTextStyle(theme),
                         ),
                     ),
 
                     Observer(
-                        builder: (_) => Text(Oauth.authInfo.email == null ? "" : Oauth.authInfo.email,
+                        builder: (_) => Text(authInfo.email == null ? "" : authInfo.email,
                             style: JudoComponentCustomizer.get().getActorNameTextStyle(theme),
                         ),
                     )
@@ -303,8 +304,9 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
             ],
         );
 
+
         Observer(
-            builder: (_) => Text(Oauth.authInfo.userName == null ? " - " : Oauth.authInfo.userName,
+            builder: (_) => Text(authInfo.userName == null ? " - " : authInfo.userName,
                 style: JudoComponentCustomizer.get().getActorNameTextStyle(theme),
             ),
         );

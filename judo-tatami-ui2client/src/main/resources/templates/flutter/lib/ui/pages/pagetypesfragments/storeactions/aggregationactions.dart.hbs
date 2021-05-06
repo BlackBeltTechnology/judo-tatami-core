@@ -105,7 +105,7 @@ Comparator {{ fqVariable relation.name }}SortCompare;
 int {{ fqVariable relation.name }}QueryLimit = 5;
 
 @action
-void {{ fqVariable relation.name }}SetSortRange({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList}) {
+void {{ fqVariable relation.name }}SetSortRange({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList, String mask}) {
 
     if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
         {{ fqVariable relation.name }}SortAsc = true;
@@ -117,12 +117,12 @@ void {{ fqVariable relation.name }}SetSortRange({{ fqClass relation.owner.name }
     {{ fqVariable relation.name }}SortColumnName = sortColumnName;
     {{ fqVariable relation.name }}SortCompare = sortCompare;
 
-    getRangeFor{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store, filterStoreList: filterStoreList).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+    getRangeFor{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store, filterStoreList: filterStoreList, mask: mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
 
 }
 
 @action
-Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {List<FilterStore> filterStoreList, int queryLimit}) async {
+Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {List<FilterStore> filterStoreList, int queryLimit, String mask}) async {
     try {
         errorMessage = null;
 
@@ -136,6 +136,7 @@ Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relati
             sortAscending: {{ fqVariable relation.name }}SortAsc,
             queryLimit: {{ fqVariable relation.name }}QueryLimit,
             filterStoreList: filterStoreList,
+            mask: mask,
         ));
         {{ fqVariable relation.name }}StoreRangeList.clear();
         {{ fqVariable relation.name }}StoreRangeList.addAll(await {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture);
