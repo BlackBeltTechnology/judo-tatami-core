@@ -13,7 +13,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/if}}
       {{#if this.isIconVisible }}
-        icon: Icon(MdiIcons.fromString("{{ this.icon.name }}")),
+        icon: getIconGuessFavorMaterial(name: "{{ this.icon.name }}") ?? Icon(MdiIcons.fromString("{{ this.icon.name }}")),
       {{/if}}
         initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         readOnly: true,
@@ -35,7 +35,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/if}}
       {{#if this.isIconVisible }}
-        icon: Icon(MdiIcons.fromString("{{ this.icon.name }}")),
+        icon: getIconGuessFavorMaterial(name: "{{ this.icon.name }}") ?? Icon(MdiIcons.fromString("{{ this.icon.name }}")),
       {{/if}}
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
         readOnly: {{attributeType.isReadOnly}},
@@ -57,7 +57,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/if}}
       {{#if this.isIconVisible }}
-        icon: Icon(MdiIcons.fromString("{{ this.icon.name }}")),
+        icon: getIconGuessFavorMaterial(name: "{{ this.icon.name }}") ?? Icon(MdiIcons.fromString("{{ this.icon.name }}")),
       {{/if}}
         initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),

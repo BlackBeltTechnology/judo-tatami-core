@@ -8,7 +8,7 @@ JudoLabel(
     labelMargin: {{ labelMargin.left }},
   {{/if}}
   {{#if isIconVisible }}
-    icon: Icon(MdiIcons.fromString("{{ icon.name }}")),
+    icon: getIconGuessFavorMaterial(name: "{{ icon.name }}") ?? Icon(MdiIcons.fromString("{{ icon.name }}")),
     iconMargin: {{ iconMargin.right }},
   {{/if}}
 ),

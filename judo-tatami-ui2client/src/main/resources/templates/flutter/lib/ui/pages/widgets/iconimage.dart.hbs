@@ -3,6 +3,6 @@
 JudoIcon(
     col: {{ col }},
     row: {{ row }},
-    icon: Icon(MdiIcons.fromString("{{ icon.name }}")),
+    icon: getIconGuessFavorMaterial(name: "{{ icon.name }}") ?? Icon(MdiIcons.fromString("{{ icon.name }}")),
 ),
 //END iconimage.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------------
