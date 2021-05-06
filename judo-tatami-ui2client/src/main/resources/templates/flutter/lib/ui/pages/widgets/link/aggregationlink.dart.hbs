@@ -64,7 +64,6 @@ Observer(builder: (_) {
             IconButton(
                 icon: Icon(
                     Icons.{{ action.icon.name }},
-                    color: false ? JudoComponentsSettings.disabledColor : null,
                 ),
                 onPressed: () async {
                     var response = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
@@ -85,7 +84,6 @@ Observer(builder: (_) {
             IconButton(
                 icon: Icon(
                     Icons.{{ action.icon.name }},
-                    color: false ? JudoComponentsSettings.disabledColor : null,
                 ),
                 onPressed:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} () async {
                     {{ fqClass relationType.target.name }}Store cloned = {{ fqClass relationType.target.name }}Store();
@@ -124,7 +122,6 @@ Observer(builder: (_) {
             IconButton(
                 icon: Icon(
                     Icons.{{ action.icon.name }},
-                    color: false ? JudoComponentsSettings.disabledColor : null,
                 ),
                 onPressed:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} () async {
                     var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless relation.isAccess}},
@@ -158,7 +155,6 @@ Observer(builder: (_) {
             IconButton(
                 icon: Icon(
                     Icons.{{ action.icon.name }},
-                    color: false ? JudoComponentsSettings.disabledColor : null,
                 ),
                 onPressed: {{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} () async => {{fqVariable page.name}}PageStore.remove{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, target{{ className relation.owner.name }}Store.{{variable relation.name}}){{# unless relation.isAccess}} : null{{/ unless}}
             ) : null,
@@ -168,7 +164,6 @@ Observer(builder: (_) {
             IconButton(
                 icon: Icon(
                     Icons.{{ action.icon.name }},
-                    color: false ? JudoComponentsSettings.disabledColor : null,
                 ),
                 onPressed:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} () async {
                     {{fqVariable page.name}}PageStore.delete{{ className relation.name }}{{ className relation.target.name }}(target{{ className relation.owner.name }}Store.{{variable relation.name}}{{# unless relation.isAccess}}, target{{ className relation.owner.name }}Store{{/unless}})
@@ -181,7 +176,6 @@ Observer(builder: (_) {
             IconButton(
                 icon: Icon(
                 Icons.{{ action.icon.name }},
-                    color: false ? JudoComponentsSettings.disabledColor : null,
                 ),
                 onPressed: {{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
                     {{# if relation.isRelationBehaviourTypeUnsetable }}

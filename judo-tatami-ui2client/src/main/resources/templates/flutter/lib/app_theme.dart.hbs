@@ -21,6 +21,7 @@ class AppTheme {
     );
 
     final ThemeData theme = Theme.of(context).copyWith(
+        primaryColor: Color(0xff3c4166),
         backgroundColor: Color(0xfffafafa),
         dividerColor: Color(0x13000000),
         cardColor: Color(0xffffffff),
@@ -80,7 +81,7 @@ class AppTheme {
           subtitle1: theme.textTheme.subtitle1.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w600, color: bodyColor),
           subtitle2: theme.textTheme.subtitle2.copyWith(fontFamily: 'SourceSansPro', fontWeight: FontWeight.w300, color: inputUnderlineColor),
           bodyText1: theme.textTheme.bodyText1.copyWith(fontFamily: 'SourceSansPro'),
-          bodyText2: theme.textTheme.bodyText2.copyWith(fontFamily: 'SourceSansPro'),
+          bodyText2: theme.textTheme.bodyText2.copyWith(fontFamily: 'SourceSansPro', fontSize: 16.0, color: displayColor),
           button: theme.textTheme.button.copyWith(fontFamily: 'SourceSansPro'),
           caption: theme.textTheme.caption.copyWith(fontFamily: 'SourceSansPro'),
           overline: theme.textTheme.caption.copyWith(fontFamily: 'SourceSansPro'),
@@ -382,6 +383,16 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
   TextStyle getUserNameTextStyle(ThemeData theme) {
     return theme.textTheme.subtitle1.copyWith(fontWeight: FontWeight.w900);
   }
+
+    @override
+    ThemeData getBreadcumbThemeCustomizer(ThemeData theme) {
+        return theme;
+    }
+
+    @override
+    ThemeData getFilterThemeCustomizer(ThemeData theme) {
+        return theme;
+    }
 
   double getContentMargin(BuildContext context) {
     double ceil = 2000;

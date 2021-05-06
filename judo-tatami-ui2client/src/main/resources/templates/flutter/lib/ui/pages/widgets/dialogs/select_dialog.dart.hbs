@@ -25,7 +25,7 @@ abstract class _{{ fqClass relation.name }}{{ className relation.target.name }}D
     };
 
     @computed
-    double get getInputWidgetsHeight => availableFilterList.length * JudoComponentsSettings.height;
+    double get getInputWidgetsHeight => availableFilterList.length * JudoComponentCustomizer.get().getLineHeight();
 
     @computed
     bool get searchButtonEnabled => availableFilterList.isNotEmpty;
@@ -163,10 +163,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                             child: Observer(
                                 builder: (_) => Text(
                                     AppLocalizations.of(context).lookUpValue(context, 'Showed rows: ') + '${pageStore.{{ fqVariable relation.name }}StoreRangeList.length}',
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black54
-                                    ),
+                                    style: JudoComponentCustomizer.get().getRowCounterTextStyle(Theme.of(context)),
                                 ),
                             ),
                         ),

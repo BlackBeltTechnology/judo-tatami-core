@@ -79,33 +79,31 @@ class _{{ fqClass application.name }}SettingsPageState extends State<{{ fqClass 
         return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                    Card(
-                        color: Colors.black12,
-                        child:
-                            Row(
-                                children: [
-                                    JudoButton(
-                                        col: 1,
-                                        onPressed: () => navigation.close(),
-                                        label: 'Back',
-                                        icon: Icon(Icons.arrow_back_ios),
-                                    ),
-                                    JudoButton(
-                                        col: 1,
-                                        onPressed: () async {
-                                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                                            await prefs.setString('apiUrl', store.apiUrl);
-
-                                            ApiClient _apiClient = ApiClient(basePath: store.apiUrl + API_RELATIVE_PATH, apiClientDelegate: Oauth.getDioDelegate());
-                                            locator.unregister(instance: locator<ApiClient>());
-                                            locator.registerSingleton<ApiClient>(_apiClient);
-                                            navigation.close();
-                                        },
-                                        label: 'Save',
-                                        icon: Icon(Icons.save),
-                                    ),
-                                ],
+                    Row(
+                        children: [
+                            JudoButton(
+                                col: 1,
+                                onPressed: () => navigation.close(),
+                                label: 'Back',
+                                icon: Icon(Icons.arrow_back_ios),
                             ),
+                            JudoButton(
+                                col: 1,
+                                onPressed: () async {
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    await prefs.setString('apiUrl', store.apiUrl);
+
+                                    ApiClient _apiClient = ApiClient(
+                                    basePath: store.apiUrl + API_RELATIVE_PATH,
+                                    apiClientDelegate: Oauth.getDioDelegate());
+                                    locator.unregister(instance: locator<ApiClient>());
+                                        locator.registerSingleton<ApiClient>(_apiClient);
+                                            navigation.close();
+                                },
+                                label: 'Save',
+                                icon: Icon(Icons.save),
+                            ),
+                        ],
                     ),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.start,
