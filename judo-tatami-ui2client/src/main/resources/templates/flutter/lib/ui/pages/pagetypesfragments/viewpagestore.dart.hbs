@@ -74,8 +74,8 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
                 mask: '{
                     {{~# with page.containers.[0] as |container| ~}}
-                        {{~# each (getAttributeTypesFromWidgets container) as |attribute| ~}}
-                            {{~ variable attribute.name }}{{# unless @last }},{{/ unless ~}}
+                        {{~# each (getAttributeTypeNamesFromWidgets container) as |attributeName| ~}}
+                            {{~ variable attributeName }}{{# unless @last }},{{/ unless ~}}
                         {{~/ each ~}}
                         {{~# unless (isEmptyList container.tables) }},{{/ unless ~}}
                         {{~# each container.tables as |table| ~}}
@@ -107,8 +107,8 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                 target{{ className page.dataElement.target.name }}Store,
                 mask: '{
                     {{~# with page.containers.[0] as |container| ~}}
-                        {{~# each (getAttributeTypesFromWidgets container) as |attribute| ~}}
-                            {{~ variable attribute.name }}{{# unless @last }},{{/ unless ~}}
+                        {{~# each (getAttributeTypeNamesFromWidgets container) as |attributeName| ~}}
+                            {{~ variable attributeName }}{{# unless @last }},{{/ unless ~}}
                         {{~/ each ~}}
                         {{~# unless (isEmptyList container.tables) }},{{/ unless ~}}
                         {{~# each container.tables as |table| ~}}
