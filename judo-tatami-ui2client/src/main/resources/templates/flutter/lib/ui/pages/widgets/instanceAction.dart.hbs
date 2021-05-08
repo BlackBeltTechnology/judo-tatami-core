@@ -7,7 +7,6 @@
         {{/ if }}
         row: {{ row }},
         col: {{ col }},
-        stretch: {{ isFitTight }},
         disabled: {{disabled}}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
     {{# unless disabled }}
         {{# if action.isSaveAction }}

@@ -1,14 +1,14 @@
 operation UI!ui::PageContainer createGroupForInstanceActionButtons() : UI!ui::Flex {
-    var newGroupForButtons : UI!ui::Flex = createHorizontalFlex("instanceActions", 0d, 1d);
+    var newGroupForButtons : UI!ui::Flex = createHorizontalFlex("instanceActions", applicationColumns.asReal(), 1d);
     newGroupForButtons.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
     newGroupForButtons.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
-    newGroupForButtons.stretch = UI!ui::Stretch#NONE;
+    newGroupForButtons.stretch = UI!ui::Stretch#BOTH;
     
     if (self.direction == UI!ui::Axis#HORIZONTAL) {
         var newGroup : UI!ui::Flex = createVerticalFlex(self.name.anchor("Wrapper"), applicationColumns.asReal(), self.row + 1d);
         newGroupForButtons.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
         newGroupForButtons.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
-        newGroupForButtons.stretch = UI!ui::Stretch#NONE;
+        newGroupForButtons.stretch = UI!ui::Stretch#BOTH;
         var newGroupForChildren : UI!ui::Flex = createHorizontalFlex(self.name.anchor("WrapperForChildren"), self.col, self.row);
         newGroupForChildren.mainAxisAlignment = self.mainAxisAlignment;
         newGroupForChildren.crossAxisAlignment = self.crossAxisAlignment;

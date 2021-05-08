@@ -1,7 +1,6 @@
 operation UI!ui::PageDefinition calculateActions(application : UI!ui::Application, preview : Boolean) {
     var relationType = self.getRelationType();
     var dashboard = relationType.isDefined() and self.pageType == UI!ui::PageType#DASHBOARD;
-    var colForButtons : Real = 1.125d;
 
     if (self.pageType == UI!ui::PageType#CREATE or self.pageType == UI!ui::PageType#UPDATE) {
         
@@ -9,7 +8,6 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
             var buttonGroup : UI!ui::Flex = container.createGroupForInstanceActionButtons();
             buttonGroup.children.add(createGeneratedActionButton("back", "Back", new UI!ui::BackAction()));
             buttonGroup.children.add(createGeneratedActionButton("save", "Save", new UI!ui::SaveAction()));
-            buttonGroup.col = 2 * colForButtons;
         }
     }
     
@@ -20,15 +18,12 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
             
             if (self.pageType == UI!ui::PageType#VIEW) {
                 buttonGroup.children.add(createGeneratedActionButton("back", "Back", new UI!ui::BackAction()));
-                buttonGroup.col = buttonGroup.col + colForButtons;
             }
             
             buttonGroup.children.add(createGeneratedActionButton("refresh", "Refresh", new UI!ui::RefreshAction()));
-            buttonGroup.col = buttonGroup.col + colForButtons;
-            
+
             if (relationType.getIsRelationBehaviourTypeDeletable()) {
                 buttonGroup.children.add(createGeneratedActionButton("delete", "Delete", new UI!ui::DeleteAction()));
-                buttonGroup.col = buttonGroup.col + colForButtons;
             }
             
             if (relationType.getIsRelationBehaviourTypeUpdatable()) {
@@ -36,7 +31,6 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
                     var button : UI!ui::Button = createGeneratedActionButton("edit", "Edit", new UI!ui::EditAction());
                     button.action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
                     buttonGroup.children.add(button);
-                    buttonGroup.col = buttonGroup.col + colForButtons;
                 } else {
                     var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#UPDATE and p.getRelationType() == relationType);
                     if (page.isDefined()) {
@@ -44,7 +38,6 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
                         var button : UI!ui::Button = createGeneratedActionButton("edit", "Edit", new UI!ui::EditAction());
                         button.action.target = page;
                         buttonGroup.children.add(button);
-                        buttonGroup.col = buttonGroup.col + colForButtons;
                     } else {
                         log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
                     }
@@ -64,14 +57,11 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
 
             if (not relationType.isAccess and self.pageType == UI!ui::PageType#TABLE) {
                 buttonGroup.children.add(createGeneratedActionButton("back", "Back", new UI!ui::BackAction()));
-                buttonGroup.col = buttonGroup.col + colForButtons;
             }
             buttonGroup.children.add(createGeneratedActionButton("refresh", "Refresh", new UI!ui::RefreshAction()));
-            buttonGroup.col = buttonGroup.col + colForButtons;
-            
+
             if (relationType.isFilterable) {
                 buttonGroup.children.add(createGeneratedActionButton("filter", "Filter", new UI!ui::FilterAction()));
-                buttonGroup.col = buttonGroup.col + colForButtons;
             }
             
             if (relationType.getIsRelationBehaviourTypeCreatable()) {
@@ -79,7 +69,6 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
                     var button : UI!ui::Button = createGeneratedActionButton("create", "Create", new UI!ui::CreateAction());
                     button.action.target = application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD);
                     buttonGroup.children.add(button);
-                    buttonGroup.col = buttonGroup.col + colForButtons;
                 } else {
                     var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
                     if (page.isDefined()) {
@@ -87,7 +76,6 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
                         var button : UI!ui::Button = createGeneratedActionButton("create", "Create", new UI!ui::CreateAction());
                         button.action.target = page;
                         buttonGroup.children.add(button);
-                        buttonGroup.col = buttonGroup.col + colForButtons;
                     } else {
                         log.warn("No create page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
                     }
@@ -96,15 +84,12 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
             
             if (relationType.getIsRelationBehaviourTypeSetable()) {
                 buttonGroup.children.add(createGeneratedActionButton("set", "Set", new UI!ui::SetAction()));
-                buttonGroup.col = buttonGroup.col + colForButtons;
             }
             if (relationType.getIsRelationBehaviourTypeUnsetable()) {
                 buttonGroup.children.add(createGeneratedActionButton("unset", "Unset", new UI!ui::UnsetAction()));
-                buttonGroup.col = buttonGroup.col + colForButtons;
             }
             if (relationType.getIsRelationBehaviourTypeAddable()) {
                 buttonGroup.children.add(createGeneratedActionButton("add", "Add", new UI!ui::AddAction()));
-                buttonGroup.col = buttonGroup.col + colForButtons;
             }
         }
     }
@@ -116,7 +101,6 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
             okAction.icon = new UI!ui::Icon();
             okAction.icon.name = 'check';
             buttonGroup.children.add(createGeneratedActionButton("ok", "Ok", okAction));
-            buttonGroup.col = buttonGroup.col + colForButtons;
         }
     }
     

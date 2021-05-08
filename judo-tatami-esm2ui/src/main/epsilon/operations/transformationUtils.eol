@@ -77,11 +77,10 @@ operation createGeneratedActionButton(name : String, label : String, action : UI
     var ret : UI!ui::Button = new UI!ui::Button();
     ret.name = name;
     ret.label = label;
-    ret.col = 1d;
+    ret.col = 2d;
     ret.row = 1d;
     ret.action = action;
-    ret.stretch = UI!ui::Stretch#BOTH;
-    ret.fit = UI!ui::Fit#TIGHT;
+    ret.stretch = UI!ui::Stretch#NONE;
     ret.showLabel = true;
     ret.showIcon = true;
     return ret;

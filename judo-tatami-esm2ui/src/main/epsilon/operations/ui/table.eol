@@ -2,7 +2,6 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
     var relationType = self.getRelationType();
     var pageDefinition = self.getPageDefinition();
     var pageType = pageDefinition.pageType;
-    var colForButtons : Real = 1.125d;
 
     if (relationType.isDefined()) {
 
@@ -15,7 +14,6 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
             if (relationType.getIsRelationBehaviourTypeCreatable()){
                  var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
                  self.createCreateAction(relationType, application, preview, buttonGroup);
-                 buttonGroup.col = buttonGroup.col + colForButtons;
             }
             
             if (allRowActions) {
@@ -29,7 +27,6 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
                 self.createRemoveAction();
                 self.createSetAction(relationType, buttonGroup);
                 self.createAddAction(relationType, buttonGroup);
-                buttonGroup.col = 2 * colForButtons;
             }
         }
         
@@ -45,7 +42,6 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
                 self.createRemoveAction();
                 self.createSetAction(relationType, buttonGroup);
                 self.createAddAction(relationType, buttonGroup);
-                buttonGroup.col = 2 * colForButtons;
             }
             //TODO: review behaviour of transient relations on input pages
             /*if (relationType.memberType == UI!ui::data::MemberType#TRANSIENT) {
@@ -83,16 +79,11 @@ operation UI!ui::Table createRemoveAddSetActions(relationType : UI!ui::data::Rel
     }
     if (relationType.getIsRelationBehaviourTypeSetable() or relationType.getIsRelationBehaviourTypeAddable()){
         var buttonGroup : UI!ui::Flex = self.createActionButtonGroupForTable();
-        var buttonGroupCol : Real = 0d;
         if (relationType.getIsRelationBehaviourTypeSetable()) {
             self.createSetAction(relationType, buttonGroup);
-            buttonGroupCol = buttonGroupCol + 1d;
-            buttonGroup.col = buttonGroupCol;
         }
         if (relationType.getIsRelationBehaviourTypeAddable()) {
             self.createAddAction(relationType, buttonGroup);
-            buttonGroupCol = buttonGroupCol + 1d;
-            buttonGroup.col = buttonGroupCol;
         }
     }
 }
@@ -207,7 +198,7 @@ operation UI!ui::Table createActionButtonGroupForTable() : UI!ui::Flex {
     var tableContainer : UI!ui::Flex = self.eContainer();
     var tableIndex : Integer = tableContainer.children.indexOf(self);
     
-    var buttonGroup : UI!ui::Flex = createHorizontalFlex("instanceActions", 0d, 1d);
+    var buttonGroup : UI!ui::Flex = createHorizontalFlex("instanceActions", self.col, 1d);
     buttonGroup.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
     buttonGroup.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
     buttonGroup.stretch = UI!ui::Stretch#NONE;
@@ -216,7 +207,7 @@ operation UI!ui::Table createActionButtonGroupForTable() : UI!ui::Flex {
         tableContainer.children.add(1, buttonGroup);
     } else {
         var wrapper = createVerticalFlex(self.name.anchor("Wrapper"), self.col, self.row + 1d);
-        wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#START;
+        wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
         wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
         wrapper.stretch = self.stretch;
         self.stretch = UI!ui::Stretch#BOTH;

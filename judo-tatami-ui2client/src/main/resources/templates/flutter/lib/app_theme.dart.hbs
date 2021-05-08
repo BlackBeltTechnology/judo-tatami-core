@@ -188,11 +188,6 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
     }
 
     @override
-    double getInputHeight() {
-        return 52;
-    }
-
-    @override
     double getMenuWidth() {
         return 304.0;
     }
@@ -200,19 +195,6 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
     @override
     double getGeneratedButtonWidth() {
         return 130.0;
-    }
-
-    @override
-    double getLayoutCols(BuildContext context) {
-        if (MediaQuery.of(context).size.width >= 0 && MediaQuery.of(context).size.width <= 599) {
-            return 4.0;
-        }
-        if (MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width <= 839) {
-            return 8.0;
-        }
-        if (MediaQuery.of(context).size.width >= 840 && MediaQuery.of(context).size.width <= 32767) {
-            return 12.0;
-        }
     }
 
     @override
@@ -247,7 +229,6 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             counterText: '',
-            contentPadding: EdgeInsets.only(left: 10.0, right: 10.0, top: 40.0, bottom: 24.0),
         );
     }
 
@@ -283,11 +264,7 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
 
     @override
     InputDecoration getInputComboboxDecoration(String label, Widget prefixIcon, Widget suffixIcon, bool mandatory) {
-        return label != null ?
-        getInputDecoration(label, prefixIcon, suffixIcon, mandatory) :
-        getInputDecoration(label, prefixIcon, suffixIcon, mandatory).copyWith(
-            contentPadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-        );
+        return getInputDecoration(label, prefixIcon, suffixIcon, mandatory);
     }
 
     @override
