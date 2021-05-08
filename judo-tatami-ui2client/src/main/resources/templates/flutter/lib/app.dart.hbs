@@ -131,7 +131,9 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
         ThemeData theme = Theme.of(context);
 
         String _selected = navigationState.currentRoute; //widget.navigationState.currentRoute;
-        return Drawer(
+        return Container(
+        width: JudoComponentCustomizer.get().getMenuWidth(),
+        child: Drawer(
             child: Container(
                 color: theme.cardColor,
                 child: Padding(
@@ -156,12 +158,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                                                         Container(height: 13.3*3,),
                                                                         _auth.isAuthenticationRequired() ? user(context) : Container(),
                                                                         Container(height: 13.3*3,),
-                                                                        const Divider(
-                                                                            height: 16,
-                                                                            thickness: 1,
-                                                                            indent: 10,
-                                                                            endIndent: 10,
-                                                                        ),
+                                                                        const Divider(),
                                                                     ],
                                                                 ),
                                                         ),
@@ -177,12 +174,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                                             child: actorMenuEntries(context, navigationState, _selected),
                                             data: Theme.of(context).copyWith(primaryColor: theme.colorScheme.secondary)
                                         ),
-                                        const Divider(
-                                            height: 16,
-                                            thickness: 1,
-                                            indent: 10,
-                                            endIndent: 10,
-                                        ),
+                                        const Divider(),
                                         Theme(
                                             child: Column(
                                                 children: [
@@ -219,7 +211,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                     ]),
                 ),
             )
-        );
+        ));
     }
 
     Widget actorMenuEntries(BuildContext context, NavigationState navigationState, String _selected) {
@@ -244,7 +236,7 @@ class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass applic
                     },
                     selected: e.route == _selected,
                 ),
-            ).toList(),
+            )).toList(),
         ) : Container();
     }
 
