@@ -8,7 +8,6 @@ import hu.blackbelt.judo.meta.ui.data.*;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -157,7 +156,7 @@ public class FlutterHelper {
         context.registerFunction("isFilterOperationLike", FlutterHelper.class.getDeclaredMethod("isFilterOperationLike", new Class[]{EnumerationMember.class, String.class}));
         context.registerFunction("labelName", FlutterHelper.class.getDeclaredMethod("labelName", new Class[]{String.class}));
         context.registerFunction("l10nLabelName", FlutterHelper.class.getDeclaredMethod("l10nLabelName", new Class[]{String.class}));
-        context.registerFunction("getAttributeTypesFromWidgets", FlutterHelper.class.getDeclaredMethod("getAttributeTypesFromWidgets", new Class[]{Container.class}));
+        context.registerFunction("getAttributeTypeNamesFromWidgets", FlutterHelper.class.getDeclaredMethod("getAttributeTypeNamesFromWidgets", new Class[]{Container.class}));
         context.registerFunction("isEmptyList", FlutterHelper.class.getDeclaredMethod("isEmptyList", new Class[]{List.class}));
     }
 
@@ -563,25 +562,34 @@ public class FlutterHelper {
         return variable(operator.getName()).equals("like") && className(enumName).equals("StringOperation");
     }
 
-    public static List<AttributeType> getAttributeTypesFromWidgets(Container container) {
+    public static List<String> getAttributeTypeNamesFromWidgets(Container container) {
 
-        List<AttributeType> inputList = new ArrayList<AttributeType>();
+        List<String> inputList = new ArrayList<>();
 
-        getAttributeTypes(container, inputList);
+        getAttributeTypeNames(container, inputList);
 
         return inputList;
     }
 
-    public static void getAttributeTypes(Container container, List<AttributeType> inputList) {
+    public static void getAttributeTypeNames(Container container, List<String> inputList) {
         List<VisualElement> children = container.getChildren();
 
         for (VisualElement element : children ) {
+            if(element.getEnabledBy() != null){
+                if(!inputList.contains(element.getEnabledBy().getName())) {
+                    inputList.add((element).getEnabledBy().getName());
+                }
+            }
             if (element instanceof Container ) {
-                getAttributeTypes((Container) element, inputList);
+                getAttributeTypeNames((Container) element, inputList);
             } else if (element instanceof Input ) {
-                inputList.add(((Input) element).getAttributeType());
+                if(!inputList.contains(((Input) element).getAttributeType().getName())) {
+                    inputList.add(((Input) element).getAttributeType().getName());
+                }
             } else if (element instanceof Formatted) {
-                inputList.add(((Formatted) element).getAttributeType());
+                if(!inputList.contains(((Formatted) element).getAttributeType().getName())) {
+                    inputList.add(((Formatted) element).getAttributeType().getName());
+                }
             }
         }
     }

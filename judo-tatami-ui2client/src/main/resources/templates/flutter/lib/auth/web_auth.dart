@@ -241,7 +241,8 @@ class WebAuth implements Auth {
   }
 
   Future<void> _updatePrincipalAllowed() async {
-    {{ modelName application.name }}{{ packageName application.name }}{{ className application.name }}Repository _actorRepository = locator<{{ modelName application.name }}{{ packageName application.name }}{{ className application.name }}Repository>();
+    {{# if application.principal }}
+    {{ fqClass application.name }}Repository _actorRepository = locator<{{ fqClass application.name }}Repository>();
 
     try {
       var principal = await _actorRepository.getPrincipal();
@@ -249,6 +250,9 @@ class WebAuth implements Auth {
     } catch (error) {
       _authInfo.setIsPrincipalAllowed(false);
     }
+    {{else}}
+    _authInfo.setIsPrincipalAllowed(true);
+    {{/if}}
   }
 }
 
