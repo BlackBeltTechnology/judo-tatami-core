@@ -343,7 +343,8 @@ class AppDesignCustomizer with DefaultJudoComponentsCustomizer {
     @override
     ThemeData getMenuTheme(ThemeData theme) {
         return theme.copyWith(
-                colorScheme: theme.colorScheme.copyWith(primary: theme.colorScheme.secondary));
+            primaryColor: theme.colorScheme.secondary,
+            colorScheme: theme.colorScheme.copyWith(primary: theme.colorScheme.secondary));
     }
 
     @override
