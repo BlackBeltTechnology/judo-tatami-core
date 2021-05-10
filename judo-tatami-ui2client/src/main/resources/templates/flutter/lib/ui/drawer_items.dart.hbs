@@ -9,8 +9,7 @@
 // Application: {{ application.name }}
 
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:icons_helper/icons_helper.dart';
+import 'package:judo_icon_helper/icons_helper.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
@@ -23,7 +22,7 @@ class {{ fqClass application.name }}NavigationItems {
         NavigationItem(
             route: Routes.{{ fqVariable item.target.name }}Page,
           {{#if item.isIconVisible }}
-            leading: getIconGuessFavorMaterial(name: "{{item.icon.name}}") ?? Icon(MdiIcons.fromString("{{item.icon.name}}")),
+            leading: Icon(getIconByString("{{item.icon.name}}")),
           {{/if}}
           {{#if item.isLabelVisible }}
             title: '{{ item.label }}',

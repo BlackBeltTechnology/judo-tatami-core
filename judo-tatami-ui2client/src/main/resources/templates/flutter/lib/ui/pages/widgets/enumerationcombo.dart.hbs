@@ -7,7 +7,7 @@ Observer(
         col: {{ col }},
         row: {{ row }},
       {{#if this.isIconVisible }}
-        icon: getIconGuessFavorMaterial(name: "{{ this.icon.name }}") ?? Icon(MdiIcons.fromString("{{ this.icon.name }}")),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
@@ -31,7 +31,7 @@ Observer(
         col: {{ col }},
         row: {{ row }},
       {{#if item.isIconVisible }}
-        icon: getIconGuessFavorMaterial(name: "{{ this.icon.name }}") ?? Icon(MdiIcons.fromString("{{ this.icon.name }}")),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
@@ -56,7 +56,7 @@ Observer(
         col: {{ col }},
         row: {{ row }},
       {{#if item.isIconVisible }}
-        icon: getIconGuessFavorMaterial(name: "{{ this.icon.name }}") ?? Icon(MdiIcons.fromString("{{ this.icon.name }}")),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
