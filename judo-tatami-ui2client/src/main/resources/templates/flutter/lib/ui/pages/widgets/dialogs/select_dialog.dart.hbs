@@ -59,10 +59,10 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
             .toList()
             .asObservable()
     );
-    List<String> alreadyAddedItems = List.of(selected);
     {{ else }}
     ObservableList<String> selected = <String>[].asObservable();
     {{/ if }}
+    List<String> alreadyAddedItems = List.of(selected);
     var dialogHelperStore = {{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{fqClass page.name}}PageHelperStore();
 
     var tableHelperStore = TableHelperStore(selected, ({{ fqClass relation.target.name }}Store value) => value.internal__identifier);
@@ -207,7 +207,7 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
               builder: (_) => ElevatedButton(
                 child: Text('Select'),
                 onPressed: tableHelperStore.selectButtonEnabled ? () {
-                  var result;
+                {{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Store>{{ else }}{{ fqClass relation.target.name }}Store{{/ if }} result;
                 {{# if relation.isCollection }}
                   if (dialogTypeAdder) {
                     result = pageStore.{{ fqVariable relation.name }}StoreRangeList
