@@ -20,6 +20,7 @@ Observer(builder: (_) {
                 disabled: {{disabled}},
                 col: {{ col }},
                 row: {{row}},
+                inCard: {{ isInCard }},
                 dataInfo: dataInfo,
                 rowList: {{# if page.dataElement.isAccess}}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList.asObservable(){{else}}[{{ fqVariable page.name }}PageStore.{{variable page.relationType.name}}Store].asObservable(){{/ if}}{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].asObservable(){{/ if}}{{/ if}},
                 {{# if page.relationType.isCollection }}
@@ -107,10 +108,7 @@ Row(
             child: Observer(
                 builder: (_) => Text(
                     AppLocalizations.of(context).lookUpValue(context, 'Showed rows: ') + '${ {{# if page.dataElement.isAccess}}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList.length{{else}}[{{ fqVariable page.name }}PageStore.{{variable page.relationType.name}}Store].length{{/ if}}{{else}}{{# if page.relationType.isCollection }}owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}.length{{else}}[owner{{ className page.relationType.owner.name }}Store.{{variable page.relationType.name}}].length{{/ if}}{{/ if}} }',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54
-                    ),
+                    style: JudoComponentCustomizer.get().getRowCounterTextStyle(Theme.of(context)),
                 ),
             ),
         ),

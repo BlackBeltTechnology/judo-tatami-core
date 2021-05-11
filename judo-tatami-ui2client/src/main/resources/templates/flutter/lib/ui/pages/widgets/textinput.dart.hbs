@@ -14,6 +14,7 @@ Observer(
       {{#if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
+        inCard: {{ isInCard }},
         initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         readOnly: true,
     )
@@ -35,6 +36,7 @@ Observer(
       {{#if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
+        inCard: {{ isInCard }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
         readOnly: {{attributeType.isReadOnly}},
     ){{# if enabledBy }}
@@ -56,6 +58,7 @@ Observer(
       {{#if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
+        inCard: {{ isInCard }},
         initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
         readOnly: {{attributeType.isReadOnly}},

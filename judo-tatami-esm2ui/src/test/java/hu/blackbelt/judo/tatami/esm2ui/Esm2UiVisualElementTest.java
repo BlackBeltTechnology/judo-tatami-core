@@ -845,8 +845,8 @@ public class Esm2UiVisualElementTest {
         assertEquals(2, flexFromView3.getChildren().size());
         assertTrue(flexFromView3.getChildren().stream().allMatch(c -> c instanceof Flex));
         
-        Optional<VisualElement> uiTable1opt = flexFromView3.getChildren().stream().filter(c -> c.getName().equals(tabular7.getName())).findAny();
-        Optional<VisualElement> uiTable2opt = flexFromView3.getChildren().stream().filter(c -> c.getName().equals(tabular8.getName())).findAny();
+        Optional<VisualElement> uiTable1opt = flexFromView3.getChildren().stream().filter(c -> c.getName().startsWith(tabular7.getName())).findAny();
+        Optional<VisualElement> uiTable2opt = flexFromView3.getChildren().stream().filter(c -> c.getName().startsWith(tabular8.getName())).findAny();
         assertTrue(uiTable1opt.isPresent());
         Flex uiTable1 = (Flex) uiTable1opt.get();
         assertTrue(uiTable2opt.isPresent());

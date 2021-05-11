@@ -77,7 +77,7 @@ operation UI!ui::VisualElement setVisualProperties(component : ESM!esm::ui::Comp
 }
 
 operation UI!ui::VisualElement wrapAndLabelVisualElement() : UI!ui::Flex {
-    var wrapper = createVerticalFlex(self.name, self.col, self.row + 1d);
+    var wrapper = createVerticalFlex(self.name.anchor("LabelWrapper"), self.col, self.row + 1d);
     wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
     wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
     

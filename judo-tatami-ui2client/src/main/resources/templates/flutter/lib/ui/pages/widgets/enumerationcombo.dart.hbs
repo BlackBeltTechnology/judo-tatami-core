@@ -12,6 +12,7 @@ Observer(
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
       {{/if}}
+        inCard: {{ isInCard }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
@@ -36,6 +37,7 @@ Observer(
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
       {{/if}}
+        inCard: {{ isInCard }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
@@ -61,6 +63,7 @@ Observer(
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
       {{/if}}
+        inCard: {{ isInCard }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         items: {{ className attributeType.dataType.name }}.values,
         value: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
