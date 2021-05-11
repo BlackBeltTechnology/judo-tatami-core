@@ -7,7 +7,7 @@ Observer(
         col: {{ col }},
         row: {{ row }},
       {{#if this.isIconVisible }}
-        icon: Icon(Icons.{{ this.icon.name }}),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
@@ -32,7 +32,7 @@ Observer(
         col: {{ col }},
         row: {{ row }},
       {{#if item.isIconVisible }}
-        icon: Icon(Icons.{{ this.icon.name }}),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
@@ -58,7 +58,7 @@ Observer(
         col: {{ col }},
         row: {{ row }},
       {{#if item.isIconVisible }}
-        icon: Icon(Icons.{{ this.icon.name }}),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
       {{#if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),

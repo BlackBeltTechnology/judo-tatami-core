@@ -13,7 +13,7 @@ Observer(
       {{/if}}
         inCard: {{ isInCard }},
       {{#if this.isIconVisible }}
-        icon: Icon(Icons.{{ this.icon.name }}),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
         readOnly: true,
     ),
@@ -33,7 +33,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/if}}
       {{#if this.isIconVisible }}
-        icon: Icon(Icons.{{ this.icon.name }}),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
         inCard: {{ isInCard }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
@@ -57,7 +57,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/if}}
       {{#if this.isIconVisible }}
-        icon: Icon(Icons.{{ this.icon.name }}),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
         inCard: {{ isInCard }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
