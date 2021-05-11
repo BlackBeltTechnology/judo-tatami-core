@@ -16,7 +16,39 @@ import '../blank_page.dart';
 import '../error_page.dart';
 import '../settings.dart';
 
-@MaterialAutoRouter(preferRelativeImports: true, routes: <AutoRoute>[
+const List<AutoRoute> bookmarkableRoutes = [
+    {{# each layout.pageContainers as |container| }}
+    {{# if (isBookmarkablePage container.owner) }}
+    CustomRoute(
+        {{# if container.owner.isPageTypeDashboard }}
+        initial: true,
+        path: '/',
+        {{ else if container.owner.isPageTypeView }}
+        path: '/{{ uriPathWithIdParam container.owner.name }}',
+        {{ else }}
+        path: '/{{ uriPath container.owner.name }}',
+        {{/ if }}
+        page: {{ fqClass container.owner.name }}Page,
+        transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        guards: [AuthGuard],
+    ),
+    {{/ if }}
+    {{/ each }}
+];
+
+const List<AutoRoute> otherRoutes = [
+    {{# each layout.pageContainers as |container| }}
+    {{# unless (isBookmarkablePage container.owner) }}
+    CustomRoute(
+        page: {{ fqClass container.owner.name }}Page,
+        transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+        guards: [AuthGuard],
+    ),
+    {{/ unless }}
+    {{/ each }}
+];
+
+const List<AutoRoute> genericRoutes = [
     CustomRoute(
         page: {{ fqClass application.name }}SettingsPage,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
@@ -29,17 +61,9 @@ import '../settings.dart';
         page: {{ fqClass application.name }}BlankPage,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
     ),
-    {{# each layout.pageContainers as |container| }}
-    CustomRoute(
-        page: {{ fqClass container.owner.name }}Page,
-        {{# if container.owner.isPageTypeDashboard }}
-        initial: true,
-        {{/ if }}
-        {{# unless container.owner.isPageTypeUpdate }}
-        transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
-        {{/ unless }}
-        guards: [AuthGuard],
-    ),
-    {{/ each }}
-])
-    class $Router {}
+];
+
+const List<AutoRoute> allRoutes = [...bookmarkableRoutes, ...otherRoutes, ...genericRoutes];
+
+@MaterialAutoRouter(preferRelativeImports: true, routes: allRoutes)
+class $Router {}

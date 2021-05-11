@@ -28,7 +28,7 @@ Observer(builder: (_) {
         {{#if rowAction.isViewAction}}
         navigateToViewPageAction: (element) async {
             if (element != null) {
-                var response = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,
+                var response = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page(id: element.internal__signedIdentifier),
                 arguments: {{ fqClass rowAction.target.name }}PageArguments({{# unless relation.isAccess }}ownerStore: targetStore, {{/ unless }}targetStore: element));
                 {{# unless relation.isMemberTypeTransient }}
                     {{# unless page.isPageTypeOperationOutput }}

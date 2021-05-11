@@ -44,7 +44,7 @@ Observer(builder: (_) {
                 {{# if action.isViewAction }}
                 navigateToViewPageAction: (element) async {
                     if (element != null) {
-                        var response = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+                        var response = await navigation.open(Routes.{{ fqVariable action.target.name }}Page(id: element.internal__signedIdentifier),
                             arguments: {{ fqClass action.target.name }}PageArguments({{# unless relation.isAccess }}ownerStore: ownerStore, {{/ unless }}targetStore: element));
                         {{# unless relation.isMemberTypeTransient }}
                         if (response != null) {

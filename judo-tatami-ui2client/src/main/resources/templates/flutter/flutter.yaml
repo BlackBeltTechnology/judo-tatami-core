@@ -612,6 +612,17 @@
   templateName: flutter/lib/ui/navigation/navigation_state.dart.hbs
 
 # ========================================
+# navigation custom observer
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'lib/' +
+    #path(#application.actor.name) +
+    '/ui/navigation/custom_navigation_observer.dart'
+  templateName: flutter/lib/ui/navigation/custom_navigation_observer.dart.hbs
+
+# ========================================
 # scaffold
 # ========================================
 - overwriteExpression: true

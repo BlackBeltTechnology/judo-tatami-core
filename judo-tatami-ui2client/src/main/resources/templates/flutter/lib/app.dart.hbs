@@ -16,6 +16,7 @@ import 'auth/auth.dart';
 import 'dart:async';
 import 'package:flutter/scheduler.dart';
 import 'repository/package.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
@@ -27,6 +28,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/custom_navigation_observer.dart';
 
 Future<bool> hasActorMenuAccess() async {
 {{# if application.principal }}
@@ -47,6 +49,7 @@ Future<bool> hasActorMenuAccess() async {
     return true;
 {{/ if }}
 }
+
 
 class {{ fqClass application.name }}Application extends StatelessWidget {
 
@@ -76,6 +79,13 @@ class {{ fqClass application.name }}ApplicationPage extends StatefulWidget {
 
 class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClass application.name }}ApplicationPage> {
 
+    String getInitialRoute() {
+        if (!kIsWeb) {
+            return '/';
+        }
+        return Uri.base.fragment;
+    }
+
     @override
     Widget build(BuildContext context) {
         final navigation = locator<NavigationState>();
@@ -94,9 +104,11 @@ class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClas
                     child: {{ fqClass application.name }}Scaffold(
                         key: navigation.scaffoldKey,
                         body: ExtendedNavigator(
+                            initialRoute: getInitialRoute(),
                             key: navigation.navigatorKey,
                             router: router.Router(),
                             guards: [AuthGuard()],
+                            observers: [CustomNavigationObserver(navigationState: navigation)],
                         ),
                     ),
                 ),
