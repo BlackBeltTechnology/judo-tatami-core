@@ -4,5 +4,8 @@ await judoSelect{{ fqClass relation.name }}{{ className relation.target.name }}D
     context: context,
     ownerStore: {{~# if page.isPageTypeTable ~}}{{~# unless page.dataElement.isAccess ~}}owner{{ else }}target{{/ unless }}{{ else }}target{{/ if }}{{ className relation.owner.name }}Store,
     pageStore: {{ fqVariable page.name }}PageStore,
+    {{# if addDialog }}
+    dialogTypeAdder: true,
+    {{/if}}
 );
 //END dialog.dart.hbs-----{{relation.name}}----------------------------------------------------------------------------------------------

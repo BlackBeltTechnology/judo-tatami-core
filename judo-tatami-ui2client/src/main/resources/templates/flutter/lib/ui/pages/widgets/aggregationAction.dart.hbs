@@ -38,7 +38,7 @@
     {{#if action.isAddAction}}
         onPressed:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
             var selected =
-            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
+            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation addDialog=true}}
             if (selected != null) {
         {{# if relation.isRelationBehaviourTypeAddable }}
                 {{fqVariable page.name}}PageStore.add{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
