@@ -10,7 +10,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/if}}
       {{#if this.isIconVisible }}
-        icon: Icon(Icons.{{ this.icon.name }}),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
         initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         readOnly: {{attributeType.isReadOnly}},
@@ -29,7 +29,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/if}}
       {{#if this.isIconVisible }}
-        icon: Icon(Icons.{{ this.icon.name }}),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
         initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
@@ -49,7 +49,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/if}}
       {{#if this.isIconVisible }}
-        icon: Icon(Icons.{{ this.icon.name }}),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
       {{/if}}
         initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
         onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),

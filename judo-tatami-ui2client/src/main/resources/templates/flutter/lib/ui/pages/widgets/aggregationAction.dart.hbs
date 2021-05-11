@@ -81,7 +81,7 @@
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
     {{/if}}
     {{#if this.isIconVisible }}
-        icon: Icon(Icons.{{ this.icon.name }}),
+        icon: Icon(getIconByString("{{ this.icon.name }}")),
     {{/if}}
         rounded: true,
     ){{# if (isObserverButton this page.dataElement action) }}

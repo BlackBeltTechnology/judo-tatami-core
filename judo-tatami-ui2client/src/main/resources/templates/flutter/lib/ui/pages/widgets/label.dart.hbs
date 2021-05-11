@@ -8,7 +8,7 @@ JudoLabel(
     labelMargin: {{ labelMargin.left }},
   {{/if}}
   {{#if isIconVisible }}
-    icon: Icon(Icons.{{ icon.name }}),
+    icon: Icon(getIconByString("{{ icon.name }}")),
     iconMargin: {{ iconMargin.right }},
   {{/if}}
 ),

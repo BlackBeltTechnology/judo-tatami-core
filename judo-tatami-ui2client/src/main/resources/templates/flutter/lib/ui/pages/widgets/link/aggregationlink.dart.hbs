@@ -7,7 +7,7 @@ Observer(builder: (_) {
         label: AppLocalizations.of(context).lookUpValue(context, '{{ link.label }}'),
       {{/if}}
       {{#if link.isIconVisible }}
-        icon: Icon(Icons.{{ link.icon.name }}),
+        icon: Icon(getIconByString("{{ link.icon.name }}")),
       {{/if}}
         disabled: {{ disabled }},
         {{# if page.isPageTypeView }}
