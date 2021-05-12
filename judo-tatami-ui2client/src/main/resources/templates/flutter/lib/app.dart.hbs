@@ -28,7 +28,6 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/custom_navigation_observer.dart';
 
 Future<bool> hasActorMenuAccess() async {
 {{# if application.principal }}
@@ -108,7 +107,6 @@ class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClas
                             key: navigation.navigatorKey,
                             router: router.Router(),
                             guards: [AuthGuard()],
-                            observers: [CustomNavigationObserver(navigationState: navigation)],
                         ),
                     ),
                 ),
