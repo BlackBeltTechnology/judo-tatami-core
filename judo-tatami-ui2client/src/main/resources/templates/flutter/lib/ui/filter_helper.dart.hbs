@@ -123,9 +123,10 @@ Widget iconDropDownWidget<T>(BuildContext context, GlobalKey operationButtonKey,
           shape: CircleBorder()
       ),
       child: IconButton(
+          iconSize: 20.0,
           key: operationButtonKey,
           icon: filterStore.getOperationIcon,
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           onPressed: () async {
             var filterOperation = await judoShowMenu<T>(
               buttonKey: operationButtonKey,

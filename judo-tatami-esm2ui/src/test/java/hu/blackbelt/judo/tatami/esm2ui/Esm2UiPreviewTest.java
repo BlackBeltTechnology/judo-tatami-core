@@ -52,6 +52,7 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.structure.DataMember;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.MemberType;
+import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.esm.ui.Horizontal;
 import hu.blackbelt.judo.meta.esm.ui.Layout;
@@ -287,7 +288,7 @@ public class Esm2UiPreviewTest {
         savePrettyJson(json, testName);
         validateUiTestModel();
     }
-        
+
     static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
         Iterable<T> iterable = () -> sourceIterator;
         return StreamSupport.stream(iterable.spliterator(), parallel);

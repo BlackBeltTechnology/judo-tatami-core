@@ -73,11 +73,12 @@ operation createVerticalFlex(name : String, col : Real, row : Real) : UI!ui::Fle
     return ret;
 }
 
-operation createButton(name : String, label : String, col : Real, action : UI!ui::Action) : UI!ui::Button {
+operation createGeneratedActionButton(name : String, label : String, action : UI!ui::Action) : UI!ui::Button {
     var ret : UI!ui::Button = new UI!ui::Button();
     ret.name = name;
     ret.label = label;
-    ret.col = col;
+    ret.col = 2d;
+    ret.row = 1d;
     ret.action = action;
     ret.stretch = UI!ui::Stretch#NONE;
     ret.showLabel = true;

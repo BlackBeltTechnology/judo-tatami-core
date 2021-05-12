@@ -79,9 +79,6 @@ class _{{ fqClass application.name }}SettingsPageState extends State<{{ fqClass 
         return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                    Card(
-                        color: Colors.black12,
-                        child:
                             Row(
                                 children: [
                                     JudoButton(
@@ -105,8 +102,7 @@ class _{{ fqClass application.name }}SettingsPageState extends State<{{ fqClass 
                                         label: 'Save',
                                         icon: Icon(Icons.save),
                                     ),
-                                ],
-                            ),
+                        ],
                     ),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.start,

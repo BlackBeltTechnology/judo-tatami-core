@@ -4,7 +4,7 @@ operation UI!ui::Table calculateActions(application : UI!ui::Application, previe
     var pageType = pageDefinition.pageType;
 
     if (relationType.isDefined()) {
-        
+
         // **** VIEW: view, create, update, delete (add, set, remove - optional) ****
         if (pageType == UI!ui::PageType#VIEW or
             (pageType == UI!ui::PageType#DASHBOARD and not relationType.isCollection)) {
@@ -95,14 +95,14 @@ operation UI!ui::Table createRemoveAction() {
 
 //adding set action to table
 operation UI!ui::Table createSetAction(relationType : UI!ui::data::RelationType, buttonGroup : UI!ui::Flex) {
-    var button : UI!ui::Button = createButton("set", "Set", 2d, new UI!ui::SetAction());
+    var button : UI!ui::Button = createGeneratedActionButton("set", "Set", new UI!ui::SetAction());
     button.action.dataElement = relationType;
     buttonGroup.children.add(button);
 }
 
 //adding add action to table
 operation UI!ui::Table createAddAction(relationType : UI!ui::data::RelationType, buttonGroup : UI!ui::Flex) {
-    var button : UI!ui::Button = createButton("add", "Add", 2d, new UI!ui::AddAction());
+    var button : UI!ui::Button = createGeneratedActionButton("add", "Add", new UI!ui::AddAction());
     button.action.dataElement = relationType;
     buttonGroup.children.add(button);
 }
@@ -177,14 +177,14 @@ operation UI!ui::Table createCreateAction(relationType : UI!ui::data::RelationTy
     if (preview) {
         var action = createCreateAction(application.pages.selectOne(p | p.pageType = UI!ui::PageType#DASHBOARD),
                 relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
-        var button : UI!ui::Button = createButton("create", "Create", 2d, action);
+        var button : UI!ui::Button = createGeneratedActionButton("create", "Create", action);
         buttonGroup.children.add(button);
     } else {
         var page = application.pages.selectOne(p | p.pageType = UI!ui::PageType#CREATE and p.getRelationType() == relationType);
         if (page.isDefined()) {
             log.debug(" ========= Found create page for TABLE " + relationType.name + " - " + page.name);
             var action = createCreateAction(page, relationType, relationType.memberType == UI!ui::data::MemberType#TRANSIENT);
-            var button : UI!ui::Button = createButton("create", "Create", 2d, action);
+            var button : UI!ui::Button = createGeneratedActionButton("create", "Create", action);
             buttonGroup.children.add(button);
         } else {
             log.warn("No update page defined for: " + self.name + " - " + relationType.eContainer.name + "." + relationType.name);
@@ -201,12 +201,12 @@ operation UI!ui::Table createActionButtonGroupForTable() : UI!ui::Flex {
     var buttonGroup : UI!ui::Flex = createHorizontalFlex("instanceActions", self.col, 1d);
     buttonGroup.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
     buttonGroup.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
-    buttonGroup.stretch = UI!ui::Stretch#BOTH;
+    buttonGroup.stretch = UI!ui::Stretch#NONE;
 
     if (tableContainer.children.size() == 2 and tableContainer.children.get(0).isKindOf(UI!ui::Label)) {
         tableContainer.children.add(1, buttonGroup);
     } else {
-        var wrapper = createVerticalFlex(self.name, self.col, self.row + 1d);
+        var wrapper = createVerticalFlex(self.name.anchor("Wrapper"), self.col, self.row + 1d);
         wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
         wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
         wrapper.stretch = self.stretch;
@@ -220,7 +220,7 @@ operation UI!ui::Table createActionButtonGroupForTable() : UI!ui::Flex {
 }
 
 operation UI!ui::Table wrapAndLabelTable() : UI!ui::Flex {
-    var wrapper = createVerticalFlex(self.name, self.col, self.row + 1d);
+    var wrapper = createVerticalFlex(self.name.anchor("LabelWrapper"), self.col, self.row + 1d);
     wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
     wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
     wrapper.stretch = self.stretch;
