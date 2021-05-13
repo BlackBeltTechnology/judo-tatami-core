@@ -37,22 +37,34 @@ abstract class _{{ fqClass relation.name }}{{ className relation.target.name }}D
     void addNewFilter(FilterStore newFilterStore) => availableFilterList.add(FilterStore.clone(newFilterStore));
 }
 
-Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Store>{{ else }}{{ fqClass relation.target.name }}Store{{/ if }}> judoSelect{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{fqClass page.name}}Page({@required BuildContext context, {{fqClass page.name}}PageStore pageStore,{{# unless (isAccessTablePage page) }} {{ fqClass relation.owner.name }}Store ownerStore{{/ unless }} }) async {
+Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Store>{{ else }}{{ fqClass relation.target.name }}Store{{/ if }}> judoSelect{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{fqClass page.name}}Page({@required BuildContext context, {{fqClass page.name}}PageStore pageStore{{# unless (isAccessTablePage page) }}, {{ fqClass relation.owner.name }}Store ownerStore{{/ unless }}, bool dialogTypeAdder = false }) async {
 {{# if relation.isRelationBehaviourTypeRangeable }}
 {{# unless (isAccessTablePage page) }}
 {{# unless relation.isMemberTypeTransient }}
     var addFilterButtonKey = GlobalKey();
+
     String mask = '{
     {{~# each tableFilters as |filter| ~}}
         {{ variable filter.attributeType.name }}{{# unless @last }},{{/ unless }}
     {{~/ each ~}}
     }';
     int tableQueryLimit = ({{ table.row }}-1).round();
+
     pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: tableQueryLimit, mask: mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
 
+    {{# if relation.isCollection }}
+    ObservableList<String> selected = ObservableList.of(
+        ownerStore.{{ variable relation.name }}
+            .map<String>((element) => element.internal__identifier)
+            .toList()
+            .asObservable()
+    );
+    {{ else }}
+    ObservableList<String> selected = <String>[].asObservable();
+    {{/ if }}
+    List<String> alreadyAddedItems = List.of(selected);
     var dialogHelperStore = {{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{fqClass page.name}}PageHelperStore();
 
-    ObservableList<String> selected = <String>[].asObservable();
     var tableHelperStore = TableHelperStore(selected, ({{ fqClass relation.target.name }}Store value) => value.internal__identifier);
 
   return await showDialog<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Store>{{ else }}{{ fqClass relation.target.name }}Store{{/ if }}>(
@@ -155,6 +167,10 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
                               );
                             },
                             rowList: pageStore.{{ fqVariable relation.name }}StoreRangeList,
+                            dialogTypeAdder: dialogTypeAdder,
+                            {{# if relation.isCollection }}
+                            alreadyAddedItemsComparator: ({{ fqClass relation.target.name }}Store element) => alreadyAddedItems.contains(tableHelperStore.getId(element)),
+                            {{/ if }}
                             multiSelectAction: ({{ fqClass relation.target.name }}Store element) => tableHelperStore.selectRow(element),
                             singleSelectAction: ({{ fqClass relation.target.name }}Store element) => tableHelperStore.singleSelectRow(element),
                             multiSelectedComparator: ({{ fqClass relation.target.name }}Store element) => tableHelperStore.selected.contains(tableHelperStore.getId(element)),
@@ -188,13 +204,24 @@ Future<{{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Sto
               builder: (_) => ElevatedButton(
                 child: Text('Select'),
                 onPressed: tableHelperStore.selectButtonEnabled ? () {
-                  var result = pageStore.{{ fqVariable relation.name }}StoreRangeList
-                        {{# if relation.isCollection }}
-                        .where((element) => selected.contains(element.internal__identifier))
+                {{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Store>{{ else }}{{ fqClass relation.target.name }}Store{{/ if }} result;
+                {{# if relation.isCollection }}
+                  if (dialogTypeAdder) {
+                    result = pageStore.{{ fqVariable relation.name }}StoreRangeList
+                        .where((element) => selected.contains(element.internal__identifier) && !alreadyAddedItems.contains(element.internal__identifier))
                         .toList();
-                        {{ else }}
-                        .firstWhere((element) => tableHelperStore.singleSelected == element.internal__identifier, orElse: () => null);
-                        {{/ if }}
+                  } else {
+                {{/ if }}
+                    result = pageStore.{{ fqVariable relation.name }}StoreRangeList
+                          {{# if relation.isCollection }}
+                          .where((element) => selected.contains(element.internal__identifier))
+                          .toList();
+                          {{ else }}
+                          .firstWhere((element) => tableHelperStore.singleSelected == element.internal__identifier, orElse: () => null);
+                          {{/ if }}
+                {{# if relation.isCollection }}
+                  }
+                {{/ if }}
                   Navigator.of(context).pop(result);
                 } : null,
               ),
