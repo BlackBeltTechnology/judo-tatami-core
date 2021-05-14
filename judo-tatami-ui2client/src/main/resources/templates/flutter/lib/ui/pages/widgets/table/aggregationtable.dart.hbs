@@ -10,20 +10,19 @@ Observer(builder: (_) {
         inCard: {{ isInCard }},
         dataInfo: dataInfo,
         rowList: {{# if relation.isCollection }}target{{ className relation.owner.name }}Store.{{variable relation.name}}{{else}}[target{{ className relation.owner.name }}Store.{{variable relation.name}}].asObservable(){{/ if}},
-        /*
         {{# if relation.isCollection }}
-        sortAscending: target{{ className relation.owner.name }}Store.{{ fqVariable relation.name }}__sortAsc,
-        sortColumnIndex: target{{ className relation.owner.name }}Store.{{ fqVariable relation.name }}__sortColumnIndex,
+        sortAscending: {{ fqVariable page.name }}PageStore.{{ fqVariable relation.name }}SortAsc,
+        sortColumnIndex: {{ fqVariable page.name }}PageStore.{{ fqVariable relation.name }}SortColumnIndex,
         onSort: (int columnIndex, bool asc) {
-            target{{ className relation.owner.name }}Store.{{ fqVariable relation.name }}SetSort(
+          {{ fqVariable page.name }}PageStore.{{ fqVariable relation.name }}SetSort(
             context,
             dataInfo.getColumnFieldByIndex(columnIndex, asc),
             columnIndex,
             asc,
-            dataInfo.getSortComparator(columnIndex, asc)
+            dataInfo.getSortComparator(columnIndex, asc),
+            target{{ className relation.owner.name }}Store
           );
         },
-        */
         {{/if}}
         {{#each table.rowActions as |rowAction|}}
         {{#if rowAction.isViewAction}}

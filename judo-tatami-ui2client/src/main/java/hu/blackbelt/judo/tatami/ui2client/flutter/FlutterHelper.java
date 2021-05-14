@@ -590,6 +590,12 @@ public class FlutterHelper {
                 if(!inputList.contains(((Formatted) element).getAttributeType().getName())) {
                     inputList.add(((Formatted) element).getAttributeType().getName());
                 }
+            } else if (element instanceof Button) {
+                if(((Button) element).getAction().getConfirmationCondition() != null) {
+                    if(!inputList.contains(((Button) element).getAction().getConfirmationCondition().getName())) {
+                        inputList.add(((Button) element).getAction().getConfirmationCondition().getName());
+                    }
+                }
             }
         }
     }
