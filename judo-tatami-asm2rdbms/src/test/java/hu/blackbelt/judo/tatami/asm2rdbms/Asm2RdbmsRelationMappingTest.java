@@ -185,10 +185,24 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         tables.add(RDBMS_TABLE_NAME_1);
         fields1.add(RDBMS_TABLE_NAME_1 + "#_type");
         fields1.add(RDBMS_TABLE_NAME_1 + "#_id");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_version");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_create_username");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_create_user_id");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_create_timestamp");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_update_username");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_update_user_id");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_update_timestamp");
         if (!isSelf) {
             tables.add(RDBMS_TABLE_NAME_2);
             fields2.add(RDBMS_TABLE_NAME_2 + "#_type");
             fields2.add(RDBMS_TABLE_NAME_2 + "#_id");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_version");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_create_username");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_create_user_id");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_create_timestamp");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_update_username");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_update_user_id");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_update_timestamp");
         }
 
         if (upperCardinality == -1 && !isContainment) {
@@ -400,10 +414,24 @@ public class Asm2RdbmsRelationMappingTest extends Asm2RdbmsMappingTestBase {
         tables.add(RDBMS_TABLE_NAME_1);
         fields1.add(RDBMS_TABLE_NAME_1 + "#_type");
         fields1.add(RDBMS_TABLE_NAME_1 + "#_id");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_version");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_create_username");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_create_user_id");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_create_timestamp");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_update_username");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_update_user_id");
+        fields1.add(RDBMS_TABLE_NAME_1 + "#_update_timestamp");
         if (!isSelf) {
             tables.add(RDBMS_TABLE_NAME_2);
             fields2.add(RDBMS_TABLE_NAME_2 + "#_type");
             fields2.add(RDBMS_TABLE_NAME_2 + "#_id");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_version");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_create_username");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_create_user_id");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_create_timestamp");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_update_username");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_update_user_id");
+            fields2.add(RDBMS_TABLE_NAME_2 + "#_update_timestamp");
         }
 
         if (upperCardinality1 == -1 && upperCardinality2 == -1) {
