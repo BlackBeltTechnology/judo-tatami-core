@@ -1,8 +1,8 @@
-{{ log 'Icon generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
+{{log 'Icon generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug'~}}
 //START iconimage.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------------
 JudoIcon(
-    col: {{ col }},
-    row: {{ row }},
-    icon: Icon(getIconByString("{{ icon.name }}")),
+    col: {{col}},
+    row: {{row}},
+    icon: Icon(getIconByString("{{icon.name}}")),
 ),
 //END iconimage.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------------

@@ -1,17 +1,17 @@
-{{ log 'Confirmation dialog generation for' (variable application.name) '-' (fqClass page.name)'page' (fqClass container.layoutType.name) level='debug' ~}}
+{{log 'Confirmation dialog generation for' (variable application.name) '-' (fqClass page.name)'page' (fqClass container.layoutType.name) level='debug'~}}
 //START confirmationDialog.dart.hbs---------------------------------------------------------------------------------------------------
-{{# if action.isConfirmationTypeMandatory }}
+{{#if action.isConfirmationTypeMandatory}}
 bool confirmation = await judoConfirmationDialog(context: context, confirmationMessage: AppLocalizations.of(context).lookUpValue(context, '{{action.confirmationMessage}}'));
 if(!confirmation) {
     return;
 }
-{{/ if }}
-{{# if action.isConfirmationTypeConditional }}
-if(target{{ className page.dataElement.target.name }}Store.{{ variable action.confirmationCondition.name }}) {
+{{/if}}
+{{#if action.isConfirmationTypeConditional}}
+if(targetStore.{{variable action.confirmationCondition.name}}) {
     bool confirmation = await judoConfirmationDialog(context: context, confirmationMessage: AppLocalizations.of(context).lookUpValue(context, '{{action.confirmationMessage}}'));
     if(!confirmation) {
         return;
     }
 }
-{{/ if }}
+{{/if}}
 //END confirmationDialog.dart.hbs---------------------------------------------------------------------------------------------------

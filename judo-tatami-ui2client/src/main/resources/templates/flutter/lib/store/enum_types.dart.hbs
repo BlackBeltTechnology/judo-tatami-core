@@ -1,25 +1,25 @@
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{ cleanup template.factoryExpression }}}
-// Path expression: {{{ cleanup template.pathExpression }}}
-// Overwrite: {{{ cleanup template.overwriteExpression }}}
-// Template name: {{ template.templateName }}
-// Application: {{ application.name }}
+// Factory expression: {{{cleanup template.factoryExpression}}}
+// Path expression: {{{cleanup template.pathExpression}}}
+// Overwrite: {{{cleanup template.overwriteExpression}}}
+// Template name: {{template.templateName}}
+// Application: {{application.name}}
 
-part of {{ variable ap.name }}.store;
+part of {{variable ap.name}}.store;
 
-{{# each dataTypes as |dataType| }}
-    {{# if (isEnumType dataType) }}
-enum {{ className dataType.name }} {
-{{# each dataType.members as |member| }}
-    {{# if (isFilterOperationLike member dataType.name)}}
+{{#each dataTypes as |dataType|}}
+    {{#if (isEnumType dataType)}}
+enum {{className dataType.name}} {
+{{#each dataType.members as |member|}}
+    {{#if (isFilterOperationLike member dataType.name)}}
     contain,
     beginWith,
-    {{ else }}
-    {{ member.name }},
-    {{/ if }}
+    {{else}}
+    {{member.name}},
+    {{/if}}
 {{/each}}
 }
-    {{/ if }}
+    {{/if}}
 {{/each}}

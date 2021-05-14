@@ -1,30 +1,30 @@
 //START viewpagefragment.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
-    final {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store;
+    final {{storeClassName page.dataElement.target.name}} targetStore;
     {{#unless page.dataElement.isAccess}}
-    final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
+    final {{storeClassName page.dataElement.owner.name}} ownerStore;
     {{/unless}}
     
-    const {{fqClass page.name}}Page({Key key, @required this.target{{ className page.dataElement.target.name }}Store{{#unless page.dataElement.isAccess}}, @required this.owner{{ className page.dataElement.owner.name }}Store{{/unless}} }) : super(key: key);
+    const {{fqClass page.name}}Page({Key key, @required this.targetStore{{#unless page.dataElement.isAccess}}, @required this.ownerStore{{/unless}} }) : super(key: key);
     
     @override
-    State<StatefulWidget> createState() => _{{fqClass page.name}}PageState(target{{ className page.dataElement.target.name }}Store: target{{ className page.dataElement.target.name }}Store{{#unless page.dataElement.isAccess}}, owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store{{/unless}});
+    State<StatefulWidget> createState() => _{{fqClass page.name}}PageState(targetStore: targetStore{{#unless page.dataElement.isAccess}}, ownerStore: ownerStore{{/unless}});
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
-    final {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store;
-    {{#unless page.dataElement.isAccess }}
-    final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
+class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
+    final {{storeClassName page.dataElement.target.name}} targetStore;
+    {{#unless page.dataElement.isAccess}}
+    final {{storeClassName page.dataElement.owner.name}} ownerStore;
     {{/unless}}
 
     final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
 
-    _{{ fqClass page.name }}PageState({@required this.target{{ className page.dataElement.target.name }}Store{{#unless page.dataElement.isAccess}}, @required this.owner{{ className page.dataElement.owner.name }}Store{{/unless}} }){
+    _{{fqClass page.name}}PageState({@required this.targetStore{{#unless page.dataElement.isAccess}}, @required this.ownerStore{{/unless}} }){
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${target{{ className page.dataElement.target.name }}Store.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{fqClass page.name}}Page.title){{#if page.dataElement.target.representation}} + ' - ${targetStore.{{variable page.dataElement.target.representation.name}} }'{{/if}});
         });
-    {{# if page.dataElement.isRelationBehaviourTypeRefreshable }}
-        {{fqVariable page.name}}PageStore.refresh{{ className page.dataElement.target.name }}(target{{ className page.dataElement.target.name }}Store).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-    {{/ if }}
+    {{#if page.dataElement.isRelationBehaviourTypeRefreshable}}
+        {{fqVariable page.name}}PageStore.refresh{{className page.dataElement.target.name}}(targetStore).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+    {{/if}}
     }
 //END viewpagefragment.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------

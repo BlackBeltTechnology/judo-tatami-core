@@ -23,32 +23,32 @@ return Observer(builder: (_) {
                 {{#each page.containers as |pageContainer|}}
                     {{#unless pageContainer.layoutType.original}}
                     if (MediaQuery.of(context).size.width >= {{pageContainer.layoutType.minimumResolution}} && MediaQuery.of(context).size.width <= {{pageContainer.layoutType.maximumResolution}}) {
-                        return get{{ fqClass page.name }}Page{{fqClass pageContainer.layoutType.name}}Body(context
+                        return get{{fqClass page.name}}Page{{fqClass pageContainer.layoutType.name}}Body(context
 
-                            {{~# if page.dataElement ~}}
-                            , target{{ className page.dataElement.target.name }}Store
-                            {{~/ if ~}}
+                            {{~#if page.dataElement~}}
+                            , targetStore
+                            {{~/if~}}
 
                             , {{fqVariable page.name}}PageStore
 
-                            {{~# if (isInputWidgetMapNeed page) ~}}
+                            {{~#if (isInputWidgetMapNeed page)~}}
                             , inputWidgetKeyMap
-                            {{~/ if ~}}
+                            {{~/if~}}
                         );
                     }
                         {{/unless}}
                     {{/each}}
-                    return get{{ fqClass page.name }}Page{{fqClass application.defaultLayoutType.name}}Body(context
+                    return get{{fqClass page.name}}Page{{fqClass application.defaultLayoutType.name}}Body(context
 
-                            {{~# if page.dataElement ~}}
-                            , target{{ className page.dataElement.target.name }}Store
-                            {{~/ if ~}}
+                            {{~#if page.dataElement~}}
+                            , targetStore
+                            {{~/if~}}
 
                             , {{fqVariable page.name}}PageStore
 
-                            {{~# if (isInputWidgetMapNeed page) ~}}
+                            {{~#if (isInputWidgetMapNeed page)~}}
                             , inputWidgetKeyMap
-                            {{~/ if ~}}
+                            {{~/if~}}
                     );
                 });
         }

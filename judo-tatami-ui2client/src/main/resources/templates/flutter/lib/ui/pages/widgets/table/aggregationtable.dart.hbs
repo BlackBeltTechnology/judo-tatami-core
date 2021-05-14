@@ -1,21 +1,21 @@
-{{~ log 'Table generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
+{{~log 'Table generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug'~}}
 //START aggregationtable.dart.hbs-----{{dataElement.name}}---------------------------------------------------------------------------------
-{{# with dataElement as |relation|}}
+{{#with dataElement as |relation|}}
 Observer(builder: (_) {
-    var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{disabled}});
+    var dataInfo = {{fqClass pageDefinition.name}}{{fqClass table.name}}{{fqClass pageContainer.layoutType.name}}Table(context, disabled: {{disabled}});
     return JudoTable(
         disabled: {{disabled}},
-        col: {{ col }},
+        col: {{col}},
         row: {{row}},
-        inCard: {{ isInCard }},
+        inCard: {{isInCard}},
         dataInfo: dataInfo,
-        rowList: {{# if relation.isCollection }}target{{ className relation.owner.name }}Store.{{variable relation.name}}{{else}}[target{{ className relation.owner.name }}Store.{{variable relation.name}}].asObservable(){{/ if}},
+        rowList: {{#if relation.isCollection}}targetStore.{{variable relation.name}}{{else}}[targetStore.{{variable relation.name}}].asObservable(){{/if}},
         /*
-        {{# if relation.isCollection }}
-        sortAscending: target{{ className relation.owner.name }}Store.{{ fqVariable relation.name }}__sortAsc,
-        sortColumnIndex: target{{ className relation.owner.name }}Store.{{ fqVariable relation.name }}__sortColumnIndex,
+        {{#if relation.isCollection}}
+        sortAscending: targetStore.{{fqVariable relation.name}}__sortAsc,
+        sortColumnIndex: targetStore.{{fqVariable relation.name}}__sortColumnIndex,
         onSort: (int columnIndex, bool asc) {
-            target{{ className relation.owner.name }}Store.{{ fqVariable relation.name }}SetSort(
+            targetStore.{{fqVariable relation.name}}SetSort(
             context,
             dataInfo.getColumnFieldByIndex(columnIndex, asc),
             columnIndex,
@@ -29,76 +29,76 @@ Observer(builder: (_) {
         {{#if rowAction.isViewAction}}
         navigateToViewPageAction: (element) async {
             if (element != null) {
-                var response = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,
-                arguments: {{ fqClass rowAction.target.name }}PageArguments({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, {{/ unless}}target{{ className relation.target.name }}Store: element));
-                {{# unless relation.isMemberTypeTransient }}
-                    {{# unless page.isPageTypeOperationOutput}}
+                var response = await navigation.open(Routes.{{fqVariable rowAction.target.name}}Page,
+                arguments: {{fqClass rowAction.target.name}}PageArguments({{#unless relation.isAccess}}ownerStore: targetStore, {{/unless}}targetStore: element));
+                {{#unless relation.isMemberTypeTransient}}
+                    {{#unless page.isPageTypeOperationOutput}}
                 if (response != null) {
-                    {{ fqVariable page.name }}PageStore.refresh{{ className relation.owner.name }}(target{{ className relation.owner.name }}Store)
+                    {{fqVariable page.name}}PageStore.refresh{{className relation.owner.name}}(targetStore)
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 }
-                    {{/ unless }}
-                {{/ unless }}
+                    {{/unless}}
+                {{/unless}}
             }
         },
         {{/if}}
         {{#if rowAction.isEditAction}}
-        navigateToEditPageAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
-            {{ fqClass relationType.target.name }}Store cloned = {{ fqClass relationType.target.name }}Store();
+        navigateToEditPageAction:{{#unless relation.isAccess}} targetStore.internal__updatable ?{{/unless}} (element) async {
+            {{storeClassName relationType.target.name}} cloned = {{storeClassName relationType.target.name}}();
             cloned.updateWith(element);
-            var res = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,
-            arguments: {{ fqClass rowAction.target.name }}PageArguments(target{{ className relation.target.name }}Store: cloned, validatable: {{ fqVariable page.name }}PageStore.validatable));
+            var res = await navigation.open(Routes.{{fqVariable rowAction.target.name}}Page,
+            arguments: {{fqClass rowAction.target.name}}PageArguments(targetStore: cloned, validatable: {{fqVariable page.name}}PageStore.validatable));
             if (res != null) {
                 element.updateWith(cloned);
-                var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.name }}{{ className relation.target.name }}(element, target{{ className page.dataElement.target.name }}Store)
+                var updated = await {{fqVariable page.name}}PageStore.update{{className relation.name}}{{className relation.target.name}}(element, targetStore)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                {{# if (isValidateHere page) }}
-                    {{# unless page.dataElement.isRelationKindAggregation }}
-                        {{# unless page.dataElement.isRelationKindComposition }}
-                            {{# unless relation.isMemberTypeTransient }}
-                var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
+                {{#if (isValidateHere page)}}
+                    {{#unless page.dataElement.isRelationKindAggregation}}
+                        {{#unless page.dataElement.isRelationKindComposition}}
+                            {{#unless relation.isMemberTypeTransient}}
+                var validate = await {{fqVariable page.name}}PageStore.validate({{#unless page.dataElement.isAccess}}ownerStore, {{/unless}}targetStore)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 if (validate != null) {
-                    target{{ className relation.owner.name }}Store.updateWith(validate);
+                    targetStore.updateWith(validate);
                 }
                             {{/unless}}
                         {{/unless}}
                     {{/unless}}
-                {{ else }}
+                {{else}}
                 if (updated != null) {
                     element.updateWith(updated);
-                    {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}})
+                    {{fqVariable page.name}}PageStore.get{{fqClass relation.name}}({{#unless relation.isAccess}}targetStore{{/unless}})
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 }
                 {{/if}}
             }
-        }{{# unless relation.isAccess}} : null{{/ unless}},
+        }{{#unless relation.isAccess}} : null{{/unless}},
         {{/if}}
         {{#if rowAction.isRemoveAction}}
-        removeAction:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} (element) {
-            {{# if relation.isRelationBehaviourTypeRemovable }}
-            {{fqVariable page.name}}PageStore.remove{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, element);
-            {{ else }}
-            var temporaryList = List<{{ fqClass relation.target.name }}Store>.from(target{{ className relation.owner.name }}Store.{{ variable relation.name }})
+        removeAction:{{#unless relation.isAccess}}{{#unless relation.isRelationKindStatic}} targetStore.internal__updatable ?{{/unless}}{{/unless}} (element) {
+            {{#if relation.isRelationBehaviourTypeRemovable}}
+            {{fqVariable page.name}}PageStore.remove{{fqClass relation.name}}(targetStore, element);
+            {{else}}
+            var temporaryList = List<{{storeClassName relation.target.name}}>.from(targetStore.{{variable relation.name}})
                 ..remove(element);
-            target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}(temporaryList);
-            {{/ if }}
-        }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+            targetStore.set{{fqClass relation.name}}(temporaryList);
+            {{/if}}
+        }{{#unless relation.isAccess}}{{#unless relation.isRelationKindStatic}} : null{{/unless}}{{/unless}},
         {{/if}}
         {{#if rowAction.isUnsetAction}}
-        unsetAction:{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-            {{fqVariable page.name}}PageStore.unset{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store)
+        unsetAction:{{#unless relation.isAccess}}{{#unless relation.isRelationKindStatic}} targetStore.internal__updatable ?{{/unless}}{{/unless}} () async {
+            {{fqVariable page.name}}PageStore.unset{{fqClass relation.name}}(targetStore)
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-        }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} : null{{/ unless}}{{/ unless}},
+        }{{#unless relation.isAccess}}{{#unless relation.isRelationKindStatic}} : null{{/unless}}{{/unless}},
         {{/if}}
         {{#if rowAction.isDeleteAction}}
-        deleteAction:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} (element) async {
-            {{fqVariable page.name}}PageStore.delete{{ className relation.name }}{{ className relation.target.name }}(element{{# unless relation.isAccess}}, target{{ className relation.owner.name }}Store{{/unless}})
+        deleteAction:{{#unless relation.isAccess}} targetStore.internal__updatable ?{{/unless}} (element) async {
+            {{fqVariable page.name}}PageStore.delete{{className relation.name}}{{className relation.target.name}}(element{{#unless relation.isAccess}}, targetStore{{/unless}})
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-        }{{# unless relation.isAccess}} : null{{/ unless}},
+        }{{#unless relation.isAccess}} : null{{/unless}},
         {{/if}}
         {{/each}}
     );
 }),
-{{/ with}}
+{{/with}}
 //END aggregationtable.dart.hbs-----{{dataElement.name}}-----------------------------------------------------------------------------------

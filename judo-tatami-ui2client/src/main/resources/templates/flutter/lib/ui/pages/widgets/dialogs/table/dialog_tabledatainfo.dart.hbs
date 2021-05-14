@@ -2,17 +2,17 @@
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{ cleanup template.factoryExpression }}}
-// Path expression: {{{ cleanup template.pathExpression }}}
-// Overwrite: {{{ cleanup template.overwriteExpression }}}
-// Template name: {{ template.templateName }}
-// Application: {{ application.name }}
+// Factory expression: {{{cleanup template.factoryExpression}}}
+// Path expression: {{{cleanup template.pathExpression}}}
+// Overwrite: {{{cleanup template.overwriteExpression}}}
+// Template name: {{template.templateName}}
+// Application: {{application.name}}
 
-part of {{ variable application.name }}.ui.pages.dialogs.tables;
+part of {{variable application.name}}.ui.pages.dialogs.tables;
 
-class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable implements JudoTableDataInfo {
+class {{fqClass table.pageDefinition.name}}{{fqClass table.name}}DialogTable implements JudoTableDataInfo {
 
-    const {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable(this.context, {this.disabled = false});
+    const {{fqClass table.pageDefinition.name}}{{fqClass table.name}}DialogTable(this.context, {this.disabled = false});
 
     final BuildContext context;
     final bool disabled;
@@ -20,14 +20,14 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
     @override
     List<DataColumn> getColumns(Function onAdd, Function onSort) {
         return [
-            {{# each columns}}
+            {{#each columns}}
             DataColumn(
-                label: Text(AppLocalizations.of(context).lookUpValue(context, '{{ label }}')),
-                {{# unless (isBooleanDataType dataType) }}
-                    {{# unless (isEnumType dataType) }}
+                label: Text(AppLocalizations.of(context).lookUpValue(context, '{{label}}')),
+                {{#unless (isBooleanDataType dataType)}}
+                    {{#unless (isEnumType dataType)}}
                 onSort: onSort,
-                    {{/ unless }}
-                {{/ unless }}
+                    {{/unless}}
+                {{/unless}}
             ),
             {{/each}}
         ];
@@ -35,31 +35,31 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
 
     @override
     Comparator getSortComparator(int columnIndex, bool asc) {
-        {{# each columns}}
-            {{# unless (isBooleanDataType dataType) }}
-                {{# unless (isEnumType dataType) }}
+        {{#each columns}}
+            {{#unless (isBooleanDataType dataType)}}
+                {{#unless (isEnumType dataType)}}
         if (columnIndex == {{@index}}) {
             if (asc) {
-                return (a, b) => a.{{ variable attributeType.name }}.compareTo(b.{{ variable attributeType.name }});
+                return (a, b) => a.{{variable attributeType.name}}.compareTo(b.{{variable attributeType.name}});
             } else {
-                return (a, b) => b.{{ variable attributeType.name }}.compareTo(a.{{ variable attributeType.name }});
+                return (a, b) => b.{{variable attributeType.name}}.compareTo(a.{{variable attributeType.name}});
             }
-                {{/ unless }}
-            {{/ unless }}
+                {{/unless}}
+            {{/unless}}
         }
         {{/each}}
     }
 
     @override
     String getColumnFieldByIndex(int columnIndex, bool asc) {
-    {{# each columns}}
-        {{# unless (isBooleanDataType dataType) }}
-            {{# unless (isEnumType dataType) }}
+    {{#each columns}}
+        {{#unless (isBooleanDataType dataType)}}
+            {{#unless (isEnumType dataType)}}
         if (columnIndex == {{@index}}) {
-            return "{{ variable attributeType.name }}";
+            return "{{variable attributeType.name}}";
         }
-            {{/ unless }}
-        {{/ unless }}
+            {{/unless}}
+        {{/unless}}
     {{/each}}
     }
 
@@ -73,9 +73,9 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
             Function deleteAction}) {
 
         ThemeData theme =  Theme.of(context);
-        return (target{{ className table.dataElement.target.name }}) => DataRow(
+        return (target{{className table.dataElement.target.name}}) => DataRow(
             cells: [
-                {{# each columns as |column|}}
+                {{#each columns as |column|}}
                 DataCell(
                     {{#if column}}
                     {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name)}}

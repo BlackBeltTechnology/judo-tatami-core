@@ -1,9 +1,9 @@
 {{log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug'}}
 //START operationinputpagestore.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------
-class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
+class {{fqClass page.name}}PageStore extends _{{fqClass page.name}}PageStore with _${{fqClass page.name}}PageStore {}
 
-abstract class _{{ fqClass page.name }}PageStore with Store {
-    {{ fqClass application.actor.name }}Repository _{{ fqVariable application.actor.name }}Repository = locator<{{ fqClass application.actor.name }}Repository>();
+abstract class _{{fqClass page.name}}PageStore with Store {
+    {{fqClass application.actor.name}}Repository _{{fqVariable application.actor.name}}Repository = locator<{{fqClass application.actor.name}}Repository>();
 
     @observable
     String errorMessage;
@@ -11,19 +11,19 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     // TODO: review that this is necessary in all cases
     bool validatable = false;
 
-    {{# each page.dataElement.target.relations as |relation| }}
-        {{# if isRelationKindAggregation }}
-            {{# if isMemberTypeTransient }}
+    {{#each page.dataElement.target.relations as |relation|}}
+        {{#if isRelationKindAggregation}}
+            {{#if isMemberTypeTransient}}
     {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/input_page_transient_actions.dart.hbs page=page relation=relation}}
             {{/if}}
-            {{# if isMemberTypeStored }}
+            {{#if isMemberTypeStored}}
     {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/input_page_stored_aggregation_actions.dart.hbs page=page relation=relation}}
-            {{/ if}}
-        {{/ if}}
-        {{# if isRelationKindComposition }}
+            {{/if}}
+        {{/if}}
+        {{#if isRelationKindComposition}}
     {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
-        {{/ if}}
-    {{/ each}}
+        {{/if}}
+    {{/each}}
 }
 //END operationinputpagestore.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------
 

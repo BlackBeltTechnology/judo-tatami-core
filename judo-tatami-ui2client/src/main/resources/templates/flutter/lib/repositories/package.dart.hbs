@@ -1,31 +1,31 @@
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{ cleanup template.factoryExpression }}}
-// Path expression: {{{ cleanup template.pathExpression }}}
-// Overwrite: {{{ cleanup template.overwriteExpression }}}
-// Template name: {{ template.templateName }}
-// Application: {{ application.name }}
+// Factory expression: {{{cleanup template.factoryExpression}}}
+// Path expression: {{{cleanup template.pathExpression}}}
+// Overwrite: {{{cleanup template.overwriteExpression}}}
+// Template name: {{template.templateName}}
+// Application: {{application.name}}
 
-library {{ variable ap.name }}.repository;
+library {{variable ap.name}}.repository;
 
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
-import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/injector/injector.dart';
+import 'package:{{modelPackage ap.name}}/{{path ap.name}}/injector/injector.dart';
 
 import 'package:openapi_dart_common/openapi.dart';
-import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/rest/lib/api.dart';
-import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/store/package.dart';
-import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/ui/pages/dialogs/helper_stores/package.dart';
-import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/utilities/package.dart';
+import 'package:{{modelPackage ap.name}}/{{path ap.name}}/rest/lib/api.dart';
+import 'package:{{modelPackage ap.name}}/{{path ap.name}}/store/package.dart';
+import 'package:{{modelPackage ap.name}}/{{path ap.name}}/ui/pages/dialogs/helper_stores/package.dart';
+import 'package:{{modelPackage ap.name}}/{{path ap.name}}/utilities/package.dart';
 
 part 'mapper.dart';
-part '{{fqPath ap.name }}__repository.dart';
-{{# each application.relationTypes ~}}
-part '{{ fqPath owner.name }}__{{ fqPath name }}__repository.dart';
-{{/ each }}
-{{# each classes ~}}
-    part '{{ fqPath name }}__repository.dart';
-{{/ each }}
+part '{{fqPath ap.name}}__repository.dart';
+{{#each application.relationTypes~}}
+part '{{fqPath owner.name}}__{{fqPath name}}__repository.dart';
+{{/each}}
+{{#each classes~}}
+    part '{{fqPath name}}__repository.dart';
+{{/each}}
 

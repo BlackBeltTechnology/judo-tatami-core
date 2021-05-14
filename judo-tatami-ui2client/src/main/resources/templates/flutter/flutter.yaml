@@ -73,9 +73,7 @@
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/store/' +
-    'package.dart'
+    #storeFolderPath(#application.actor.name) + 'package.dart'
   templateName: flutter/lib/store/package.dart.hbs
   templateContext:
     - name: ap
@@ -86,18 +84,13 @@
 - overwriteExpression: true
   factoryExpression: "#application.dataElements.?[!isActor]"
   pathExpression: >
-    'lib/' +
-    #path(#self.owner.actor.name) +
-    '/store/' +
-    #fqPath(#self.name) + '__store.dart'
+    #storeClassPath(#self.name, #self.owner.actor.name)
   templateName: flutter/lib/store/model_store.dart.hbs
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/store/' +
-    'enum_types.dart'
+    #storeFolderPath(#application.actor.name) + 'enum_types.dart'
   templateName: flutter/lib/store/enum_types.dart.hbs
   templateContext:
     - name: ap
@@ -709,6 +702,15 @@
     #path(#application.actor.name) +
     '.dart'
   templateName: flutter/lib/rest/openapi_generator_config.dart.hbs
+
+# ========================================
+# test
+# ========================================
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    'test/widget_test.dart'
+  templateName: flutter/test/widget_test.dart.hbs
 
 # ========================================
 # utilities

@@ -1,38 +1,38 @@
-{{ log 'Switch generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
+{{log 'Switch generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug'~}}
 //START switch.dart.hbs-----{{page.name}}--------------------------------------------------------------------------------------------------
-{{#if (isViewTypePage page) }}
+{{#if (isViewTypePage page)}}
 Observer(
     builder: (_) => JudoSwitch(
-        col: {{ col }},
-        row: {{ row }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
+        col: {{col}},
+        row: {{row}},
+        disabled: {{disabled}}{{#if enabledBy}} || !((targetStore?.{{variable enabledBy.name}}) ?? false){{/if}},
+      {{#if this.isLabelVisible}}
+        label: AppLocalizations.of(context).lookUpValue(context, '{{this.label}}'),
       {{/if}}
-      {{#if this.isIconVisible }}
-        icon: Icon(getIconByString("{{ this.icon.name }}")),
+      {{#if this.isIconVisible}}
+        icon: Icon(getIconByString("{{this.icon.name}}")),
       {{/if}}
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
+        initialValue: targetStore.{{variable attributeType.name}},
         readOnly: {{attributeType.isReadOnly}},
     ),
 ),
 {{/if}}
 
-{{#if (isCreateTypePage page) }}
+{{#if (isCreateTypePage page)}}
 Observer(
     builder: (_) => JudoSwitch(
-        col: {{ col }},
-        row: {{ row }},
-        mandatory: {{ attributeType.isRequired }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
+        col: {{col}},
+        row: {{row}},
+        mandatory: {{attributeType.isRequired}},
+        disabled: {{disabled}}{{#if enabledBy}} || !((targetStore?.{{variable enabledBy.name}}) ?? false){{/if}},
+      {{#if this.isLabelVisible}}
+        label: AppLocalizations.of(context).lookUpValue(context, '{{this.label}}'),
       {{/if}}
-      {{#if this.isIconVisible }}
-        icon: Icon(getIconByString("{{ this.icon.name }}")),
+      {{#if this.isIconVisible}}
+        icon: Icon(getIconByString("{{this.icon.name}}")),
       {{/if}}
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        initialValue: targetStore.{{variable attributeType.name}},
+        onChanged: (value) => targetStore.set{{className attributeType.name}}(value),
         readOnly: {{attributeType.isReadOnly}},
     ),
 ),
@@ -41,18 +41,18 @@ Observer(
 {{#if page.isPageTypeUpdate}}
 Observer(
     builder: (_) => JudoSwitch(
-        col: {{ col }},
-        row: {{ row }},
-        mandatory: {{ attributeType.isRequired }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
+        col: {{col}},
+        row: {{row}},
+        mandatory: {{attributeType.isRequired}},
+        disabled: {{disabled}}{{#if enabledBy}} || !((targetStore?.{{variable enabledBy.name}}) ?? false){{/if}},
+      {{#if this.isLabelVisible}}
+        label: AppLocalizations.of(context).lookUpValue(context, '{{this.label}}'),
       {{/if}}
-      {{#if this.isIconVisible }}
-        icon: Icon(getIconByString("{{ this.icon.name }}")),
+      {{#if this.isIconVisible}}
+        icon: Icon(getIconByString("{{this.icon.name}}")),
       {{/if}}
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        initialValue: targetStore.{{variable attributeType.name}},
+        onChanged: (value) => targetStore.set{{className attributeType.name}}(value),
         readOnly: {{attributeType.isReadOnly}},
     ),
 ),

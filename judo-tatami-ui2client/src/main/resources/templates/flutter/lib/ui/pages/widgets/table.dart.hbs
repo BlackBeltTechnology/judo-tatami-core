@@ -1,15 +1,15 @@
 //START table.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------------------------
 // {{dataElement.relationKind}} TABLE
-{{# if dataElement.isRelationKindStatic }}
+{{#if dataElement.isRelationKindStatic}}
 {{> templates/flutter/lib/ui/pages/widgets/table/associationtable.dart.hbs table=this}}
-{{/ if }}
-{{# if dataElement.isRelationKindAssociation }}
+{{/if}}
+{{#if dataElement.isRelationKindAssociation}}
 {{> templates/flutter/lib/ui/pages/widgets/table/associationtable.dart.hbs table=this}}
-{{/ if }}
-{{# if dataElement.isRelationKindAggregation }}
+{{/if}}
+{{#if dataElement.isRelationKindAggregation}}
 {{> templates/flutter/lib/ui/pages/widgets/table/aggregationtable.dart.hbs table=this}}
-{{/ if }}
-{{# if dataElement.isRelationKindComposition }}
+{{/if}}
+{{#if dataElement.isRelationKindComposition}}
 {{> templates/flutter/lib/ui/pages/widgets/table/aggregationtable.dart.hbs table=this}}
-{{/ if }}
+{{/if}}
 //END table.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------------------

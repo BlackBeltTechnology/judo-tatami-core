@@ -158,6 +158,15 @@ public class FlutterHelper {
         context.registerFunction("l10nLabelName", FlutterHelper.class.getDeclaredMethod("l10nLabelName", new Class[]{String.class}));
         context.registerFunction("getAttributeTypeNamesFromWidgets", FlutterHelper.class.getDeclaredMethod("getAttributeTypeNamesFromWidgets", new Class[]{Container.class}));
         context.registerFunction("isEmptyList", FlutterHelper.class.getDeclaredMethod("isEmptyList", new Class[]{List.class}));
+
+        //page store naming
+        context.registerFunction("storeClassPath", FlutterHelper.class.getDeclaredMethod("storeClassPath", new Class[]{String.class, String.class}));
+        context.registerFunction("storeFolderPath", FlutterHelper.class.getDeclaredMethod("storeFolderPath", new Class[]{String.class}));
+        context.registerFunction("storeClassFileName", FlutterHelper.class.getDeclaredMethod("storeClassFileName", new Class[]{String.class}));
+        context.registerFunction("storeClassName", FlutterHelper.class.getDeclaredMethod("storeClassName", new Class[]{String.class}));
+        context.registerFunction("storeClassRelativePath", FlutterHelper.class.getDeclaredMethod("storeClassRelativePath", new Class[]{String.class}));
+        context.registerFunction("storeClassVariableName", FlutterHelper.class.getDeclaredMethod("storeClassVariableName", new Class[]{String.class}));
+
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -249,6 +258,23 @@ public class FlutterHelper {
                 .skip(1)
                 .map(s -> StringUtils.capitalize(s))
                 .collect(Collectors.joining());
+    }
+
+    /**
+     * Splits a given fully qualified name at the namespace separator "::" and removes the first and last element of the list (i.e. model name and type name).
+     *
+     * @param name fully qualified name with "::" as namespace separators
+     * @return the list of the names of the packages which contain a given type
+     */
+    public static List<String> getPackageNameTokens(String name) {
+        List<String> nameTokens = stream(name
+                .split("::"))
+                .collect(Collectors.toList());
+        if (nameTokens.size() >= 2) {
+            nameTokens.remove(0);
+            nameTokens.remove(nameTokens.size() - 1);
+        }
+        return nameTokens;
     }
 
     public static String packageName(String packageName) {
@@ -596,6 +622,74 @@ public class FlutterHelper {
 
     public static boolean isEmptyList(List list){
         return list.isEmpty();
+    }
+
+    //store naming
+
+    /**
+     * Calculates the relative path of the "store" folder. Uses  {@link #path(String)} to calculate actor name.
+     * @param actorName name of the actor of the application
+     * @return relative path of "store" folder, e.g. lib/actor/store/
+     */
+    public static String storeFolderPath(String actorName) {
+        return "lib/"
+            .concat(path(actorName))
+            .concat("/store/");
+    }
+
+    /**
+     * Calculates the relative path of a Store class. Uses {@link #storeFolderPath(String)} to calculate relative path of "store" folder
+     * and {@link #storeClassRelativePath(String)} to calculate folder structure based on the package structure and the file name of the Store class.
+     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @param actorName name of the actor of the application
+     * @return relative path of a Store class, e.g. lib/actor/store/packageName1/packageName2/../typename__store.dart
+     */
+    public static String storeClassPath(String fqName, String actorName) {
+        return storeFolderPath(actorName).concat(storeClassRelativePath(fqName));
+    }
+
+    /**
+     * Calculates folder structure based on the package structure using {@link #getPackageNameTokens(String)}
+     * and the file name of the Store class using {@link #storeClassFileName(String)}.
+     *
+     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @return relative path of a Store class, e.g. packageName1/packageName2/../typename__store.dart
+     */
+    public static String storeClassRelativePath(String fqName) {
+        List<String> packageNameTokens = getPackageNameTokens(fqName);
+        if (packageNameTokens.isEmpty()) {
+            return storeClassFileName(fqName);
+        }
+        return packageNameTokens.stream()
+                .collect(Collectors.joining("/"))
+                .concat("/" + storeClassFileName(fqName));
+    }
+
+    /**
+     * Calculates the Store class file name. Uses {@link #className(String)} to remove model name and package names from the fully qualified name.
+     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @return the file name of a Store class, e.g. typename__store.dart
+     */
+    public static String storeClassFileName(String fqName) {
+        return className(fqName).toLowerCase() + "__store.dart";
+    }
+
+    /**
+     * Calculates the Store class name. Uses {@link #fqClassWithoutModel(String)} to remove model name from the fully qualified name and capitalizes package names.
+     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @return the class name of a Store class, e.g. Package1Package2..TypeNameStore
+     */
+    public static String storeClassName(String fqName) {
+        return fqClassWithoutModel(fqName) + "Store";
+    }
+
+    /**
+     * Calculates variable name used for Store classes. Uses {@link #variable(String)} to uncapitalize name tokens and remove reserved words.
+     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @return variable name based on the fully qualified name, e.g. typeNameStore
+     */
+    public static String storeClassVariableName(String fqName) {
+        return variable(fqName) + "Store";
     }
 
 }

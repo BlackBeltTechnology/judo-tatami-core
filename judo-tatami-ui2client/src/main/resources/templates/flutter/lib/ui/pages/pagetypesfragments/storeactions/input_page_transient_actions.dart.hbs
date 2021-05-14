@@ -1,35 +1,35 @@
 {{log 'Transient action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug'}}
 //START input_page_transient_actions.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------
-// {{ className relation.name }} transient actions
+// {{className relation.name}} transient actions
 @action
-Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+Future<void> create{{fqClass relation.name}}({{#unless relation.isAccess}}{{storeClassName relation.owner.name}} ownerStore, {{/unless}}{{storeClassName relation.target.name}} targetStore) async {
     try {
         errorMessage = null;
-        owner{{ className relation.owner.name }}Store.{{variable relation.name}}{{# if relation.isCollection }}.add(target{{ className relation.target.name }}Store){{ else }} = target{{ className relation.target.name }}Store{{/ if }};
+        ownerStore.{{variable relation.name}}{{#if relation.isCollection}}.add(targetStore){{else}} = targetStore{{/if}};
     } on ApiException catch (error) {
-        errorMessage = "Could not create {{ relation.name }}";
+        errorMessage = "Could not create {{relation.name}}";
         throw error;
     }
 }
 
 @action
-Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
+Future<void> delete{{className relation.name}}{{className relation.target.name}}({{storeClassName relation.target.name}} targetStore, {{storeClassName relation.owner.name}} ownerStore) async {
     try {
         errorMessage = null;
-        {{# if relation.isCollection }}owner{{ className relation.owner.name }}Store.{{variable relation.name}}.remove(target{{ className relation.target.name }}Store){{ else }}owner{{ className relation.owner.name }}Store.{{variable relation.name}} = null{{/ if }};
+        {{#if relation.isCollection}}ownerStore.{{variable relation.name}}.remove(targetStore){{else}}ownerStore.{{variable relation.name}} = null{{/if}};
     } on ApiException catch (error) {
-        errorMessage = "Could not delete {{ variable relation.target.name }}";
+        errorMessage = "Could not delete {{variable relation.target.name}}";
         throw error;
     }
 }
 
 @action
-Future<{{ fqClass relation.target.name }}Store> update{{ className relation.name }}{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
+Future<{{storeClassName relation.target.name}}> update{{className relation.name}}{{className relation.target.name}}({{storeClassName relation.target.name}} targetStore, {{storeClassName relation.owner.name}} ownerStore) async {
     try {
         errorMessage = null;
-        return target{{ className relation.target.name }}Store;
+        return targetStore;
     } on ApiException catch (error) {
-        errorMessage = "Could not update {{ variable relation.target.name }}";
+        errorMessage = "Could not update {{variable relation.target.name}}";
         throw error;
     }
 }

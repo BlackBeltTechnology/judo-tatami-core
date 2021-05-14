@@ -1,49 +1,49 @@
 //START formatted.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------------
-{{# if column }}
-{{ log 'Formatted text generation for' (variable application.name) '-' (fqClass table.name)'table' (variable dataName) (variable column.attributeType.name) level='debug' ~}}
-{{# if (isNumericType column.attributeType.dataType) }}
-target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Align(alignment: Alignment.centerRight, child: Text(
-    target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? target{{ dataName }}.{{ variable column.attributeType.name }}.toString() : '',
+{{#if column}}
+{{log 'Formatted text generation for' (variable application.name) '-' (fqClass table.name)'table' (variable dataName) (variable column.attributeType.name) level='debug'~}}
+{{#if (isNumericType column.attributeType.dataType)}}
+target{{dataName}}?.{{variable column.attributeType.name}} != null ? Align(alignment: Alignment.centerRight, child: Text(
+    target{{dataName}}?.{{variable column.attributeType.name}} != null ? target{{dataName}}.{{variable column.attributeType.name}}.toString() : '',
 )) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
-{{ else }}
-{{# if (isEnumType column.attributeType.dataType) }}
-target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
-    AppLocalizations.of(context).lookUpValue(context, target{{ dataName }}.{{ variable column.attributeType.name }}.toString().split('.').last),
-) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
-{{ else }}
-{{#if (isTimestampType column.attributeType.dataType) }}
-target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
-    DateFormat('yyyy-MM-dd HH:mm').format(target{{ dataName }}.{{ variable column.attributeType.name }}),
+{{else}}
+{{#if (isEnumType column.attributeType.dataType)}}
+target{{dataName}}?.{{variable column.attributeType.name}} != null ? Text(
+    AppLocalizations.of(context).lookUpValue(context, target{{dataName}}.{{variable column.attributeType.name}}.toString().split('.').last),
 ) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
 {{else}}
-{{#if (isDateType column.attributeType.dataType) }}
-target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
-    DateFormat('yyyy-MM-dd').format(target{{ dataName }}.{{ variable column.attributeType.name }}),
+{{#if (isTimestampType column.attributeType.dataType)}}
+target{{dataName}}?.{{variable column.attributeType.name}} != null ? Text(
+    DateFormat('yyyy-MM-dd HH:mm').format(target{{dataName}}.{{variable column.attributeType.name}}),
 ) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
 {{else}}
-{{#if (isBooleanDataType column.attributeType.dataType) }}
+{{#if (isDateType column.attributeType.dataType)}}
+target{{dataName}}?.{{variable column.attributeType.name}} != null ? Text(
+    DateFormat('yyyy-MM-dd').format(target{{dataName}}.{{variable column.attributeType.name}}),
+) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
+{{else}}
+{{#if (isBooleanDataType column.attributeType.dataType)}}
 Center(child: Icon(
-    target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? (target{{ dataName }}?.{{ variable column.attributeType.name }} ? Icons.check_circle : Icons.cancel) : Icons.block,
-    color: target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? (target{{ dataName }}?.{{ variable column.attributeType.name }} ? Colors.green.shade500.withOpacity(0.7) : Colors.red.shade500.withOpacity(0.7)) : Theme.of(context).colorScheme.background,
+    target{{dataName}}?.{{variable column.attributeType.name}} != null ? (target{{dataName}}?.{{variable column.attributeType.name}} ? Icons.check_circle : Icons.cancel) : Icons.block,
+    color: target{{dataName}}?.{{variable column.attributeType.name}} != null ? (target{{dataName}}?.{{variable column.attributeType.name}} ? Colors.green.shade500.withOpacity(0.7) : Colors.red.shade500.withOpacity(0.7)) : Theme.of(context).colorScheme.background,
 )),
 {{else}}
-target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
-    target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? target{{ dataName }}.{{ variable column.attributeType.name }}.toString() : '',
+target{{dataName}}?.{{variable column.attributeType.name}} != null ? Text(
+    target{{dataName}}?.{{variable column.attributeType.name}} != null ? target{{dataName}}.{{variable column.attributeType.name}}.toString() : '',
 ) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
-{{/ if}}
-{{/ if}}
-{{/ if}}
-{{/ if }}
-{{/ if }}
-{{ else }}
-{{ log 'Formatted text generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
+{{/if}}
+{{/if}}
+{{/if}}
+{{/if}}
+{{/if}}
+{{else}}
+{{log 'Formatted text generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug'~}}
 JudoText(
-    col: {{ col }},
-    row: {{ row }},
-    {{#if isLabelVisible }}
-    label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
-    {{/ if }}
-    text: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }}.toString(),
+    col: {{col}},
+    row: {{row}},
+    {{#if isLabelVisible}}
+    label: AppLocalizations.of(context).lookUpValue(context, '{{label}}'),
+    {{/if}}
+    text: targetStore.{{variable attributeType.name}}.toString(),
 ),
-{{/ if }}
+{{/if}}
 //END formatted.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------------------

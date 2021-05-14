@@ -1,190 +1,190 @@
-{{~ log 'Link generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
+{{~log 'Link generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug'~}}
 //START aggregationlink.dart.hbs-----{{dataElement.name}}----------------------------------------------------------------------------------
-{{# with dataElement as |relation|}}
+{{#with dataElement as |relation|}}
 Observer(builder: (_) {
     return JudoLink(
-      {{#if link.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ link.label }}'),
+      {{#if link.isLabelVisible}}
+        label: AppLocalizations.of(context).lookUpValue(context, '{{link.label}}'),
       {{/if}}
-      {{#if link.isIconVisible }}
-        icon: Icon(getIconByString("{{ link.icon.name }}")),
+      {{#if link.isIconVisible}}
+        icon: Icon(getIconByString("{{link.icon.name}}")),
       {{/if}}
-        inCard: {{ isInCard }},
-        disabled: {{ disabled }},
-        {{# if page.isPageTypeView }}
+        inCard: {{isInCard}},
+        disabled: {{disabled}},
+        {{#if page.isPageTypeView}}
         readOnly: true,
-        {{ else }}
-            {{# if attributeType.isReadOnly }}
+        {{else}}
+            {{#if attributeType.isReadOnly}}
         readOnly: true,
-            {{ else }}
+            {{else}}
         readOnly: false,
-            {{/ if }}
-        {{/ if }}
-        col: {{ col }},
-        row: {{ row }},
+            {{/if}}
+        {{/if}}
+        col: {{col}},
+        row: {{row}},
         formatter: (element) {
             if (element == null) return '';
             var ret = '';
-            {{# each link.parts as |part|}}
+            {{#each link.parts as |part|}}
                 {{#if part}}
-            if (element.{{ variable part.attributeType.name }} != null) {
+            if (element.{{variable part.attributeType.name}} != null) {
                 if (ret.length > 0) ret = ret + ' - ';
-                ret = ret + ({{> templates/flutter/lib/ui/pages/widgets/link/linkformatter.dart.hbs part=part dataName=(className link.dataElement.target.name) parameterVariable='element' }});
+                ret = ret + ({{> templates/flutter/lib/ui/pages/widgets/link/linkformatter.dart.hbs part=part dataName=(className link.dataElement.target.name) parameterVariable='element'}});
             }
                 {{/if}}
             {{/each}}
             return ret;
         },
 
-        data: target{{ className relation.owner.name }}Store.{{variable relation.name}},
+        data: targetStore.{{variable relation.name}},
         {{#each link.actions as |action|}}
             {{#if action.isSetAction}}
-                {{# unless page.isPageTypeView }}
-                    {{# unless attributeType.isReadOnly }}
-        setAction: target{{ className relation.owner.name }}Store.internal__updatable ? () async {
+                {{#unless page.isPageTypeView}}
+                    {{#unless attributeType.isReadOnly}}
+        setAction: targetStore.internal__updatable ? () async {
             var selected =
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation}}
             if (selected != null) {
-                        {{# if relation.isRelationBehaviourTypeSetable }}
-                {{fqVariable page.name}}PageStore.set{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, selected)
+                        {{#if relation.isRelationBehaviourTypeSetable}}
+                {{fqVariable page.name}}PageStore.set{{fqClass relation.name}}(targetStore, selected)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        {{ else }}
-                target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}(selected);
-                        {{/ if }}
+                        {{else}}
+                targetStore.set{{fqClass relation.name}}(selected);
+                        {{/if}}
             }
         } : null,
-                    {{/ unless }}
-                {{/ unless }}
+                    {{/unless}}
+                {{/unless}}
         {{/if}}
         {{/each}}
         actions: [
         {{#each link.actions as |action|}}
         {{#if action.isViewAction}}
-            target{{ className relation.owner.name }}Store.{{variable relation.name}} != null ?
+            targetStore.{{variable relation.name}} != null ?
             IconButton(
                 icon: Icon(
-                    Icons.{{ action.icon.name }},
+                    Icons.{{action.icon.name}},
                 ),
                 onPressed: () async {
-                    var response = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-                    arguments: {{ fqClass action.target.name }}PageArguments({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, {{/ unless}}target{{ className relation.target.name }}Store: target{{ className relation.owner.name }}Store.{{variable relation.name}}));
-                    {{# unless relation.isMemberTypeTransient }}
-                        {{# unless page.isPageTypeOperationOutput}}
+                    var response = await navigation.open(Routes.{{fqVariable action.target.name}}Page,
+                    arguments: {{fqClass action.target.name}}PageArguments({{#unless relation.isAccess}}ownerStore: targetStore, {{/unless}}targetStore: targetStore.{{variable relation.name}}));
+                    {{#unless relation.isMemberTypeTransient}}
+                        {{#unless page.isPageTypeOperationOutput}}
                     if (response != null) {
-                        {{ fqVariable page.name }}PageStore.refresh{{ className relation.owner.name }}(target{{ className relation.owner.name }}Store)
+                        {{fqVariable page.name}}PageStore.refresh{{className relation.owner.name}}(targetStore)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                     }
                         {{/unless}}
-                    {{/ unless }}
+                    {{/unless}}
                 }
             ) : null,
         {{/if}}
         {{#if action.isEditAction}}
-            (target{{ className relation.owner.name }}Store.internal__updatable && target{{ className relation.owner.name }}Store.{{variable relation.name}} != null) ?
+            (targetStore.internal__updatable && targetStore.{{variable relation.name}} != null) ?
             IconButton(
                 icon: Icon(
-                    Icons.{{ action.icon.name }},
+                    Icons.{{action.icon.name}},
                 ),
-                onPressed:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} () async {
-                    {{ fqClass relationType.target.name }}Store cloned = {{ fqClass relationType.target.name }}Store();
-                    cloned.updateWith(target{{ className relation.owner.name }}Store.{{variable relation.name}});
-                    var res = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-                    arguments: {{ fqClass action.target.name }}PageArguments(target{{ className relation.target.name }}Store: cloned, validatable: {{ fqVariable page.name }}PageStore.validatable));
+                onPressed:{{#unless relation.isAccess}} targetStore.internal__updatable ?{{/unless}} () async {
+                    {{storeClassName relationType.target.name}} cloned = {{storeClassName relationType.target.name}}();
+                    cloned.updateWith(targetStore.{{variable relation.name}});
+                    var res = await navigation.open(Routes.{{fqVariable action.target.name}}Page,
+                    arguments: {{fqClass action.target.name}}PageArguments(targetStore: cloned, validatable: {{fqVariable page.name}}PageStore.validatable));
                     if (res != null) {
-                        target{{ className relation.owner.name }}Store.{{variable relation.name}}.updateWith(cloned);
-                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.name }}{{ className relation.target.name }}(target{{ className relation.owner.name }}Store.{{variable relation.name}}, target{{ className relation.owner.name }}Store)
+                        targetStore.{{variable relation.name}}.updateWith(cloned);
+                        var updated = await {{fqVariable page.name}}PageStore.update{{className relation.name}}{{className relation.target.name}}(targetStore.{{variable relation.name}}, targetStore)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        {{# if (isValidateHere page) }}
-                            {{# unless page.dataElement.isRelationKindAggregation }}
-                                {{# unless page.dataElement.isRelationKindComposition }}
-                                    {{# unless relation.isMemberTypeTransient }}
-                        var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
+                        {{#if (isValidateHere page)}}
+                            {{#unless page.dataElement.isRelationKindAggregation}}
+                                {{#unless page.dataElement.isRelationKindComposition}}
+                                    {{#unless relation.isMemberTypeTransient}}
+                        var validate = await {{fqVariable page.name}}PageStore.validate({{#unless page.dataElement.isAccess}}targetStore, {{/unless}}targetStore)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         if (validate != null) {
-                            target{{ className relation.owner.name }}Store.updateWith(validate);
+                            targetStore.updateWith(validate);
                         }
                                     {{/unless}}
                                 {{/unless}}
                             {{/unless}}
-                        {{ else }}
+                        {{else}}
                         if (updated != null) {
-                            target{{ className relation.owner.name }}Store.{{variable relation.name}}.updateWith(updated);
-                            {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store{{/ unless}})
+                            targetStore.{{variable relation.name}}.updateWith(updated);
+                            {{fqVariable page.name}}PageStore.get{{fqClass relation.name}}({{#unless relation.isAccess}}targetStore{{/unless}})
                                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         }
                         {{/if}}
                     }
-                }{{# unless relation.isAccess}} : null{{/ unless}}
+                }{{#unless relation.isAccess}} : null{{/unless}}
             ) : null,
         {{/if}}
         {{#if action.isCreateAction}}
-            target{{ className relation.owner.name }}Store.internal__updatable && target{{ className relation.owner.name }}Store.{{variable relation.name}} == null ?
+            targetStore.internal__updatable && targetStore.{{variable relation.name}} == null ?
             IconButton(
                 icon: Icon(
-                    Icons.{{ action.icon.name }},
+                    Icons.{{action.icon.name}},
                 ),
-                onPressed:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} () async {
-                    var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless relation.isAccess}},
-                        arguments: {{ fqClass action.target.name }}PageArguments(owner{{ className relation.owner.name }}Store: target{{ className relation.owner.name }}Store, validatable: {{ fqVariable page.name }}PageStore.validatable){{~/ unless}});
+                onPressed:{{#unless relation.isAccess}} targetStore.internal__updatable ?{{/unless}} () async {
+                    var created = await navigation.open(Routes.{{fqVariable action.target.name}}Page{{#unless relation.isAccess}},
+                        arguments: {{fqClass action.target.name}}PageArguments(ownerStore: targetStore, validatable: {{fqVariable page.name}}PageStore.validatable){{~/unless}});
                     if (created != null) {
-                        {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess}}target{{ className relation.owner.name }}Store ,{{/ unless}}created)
+                        {{fqVariable page.name}}PageStore.create{{fqClass relation.name}}({{#unless relation.isAccess}}targetStore ,{{/unless}}created)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        {{# unless page.isPageTypeUpdate }}
-                            {{# unless page.isPageTypeView }}
-                                {{# unless page.isPageTypeOperationOutput}}
-                                    {{# unless page.dataElement.isRelationKindAggregation }}
-                                        {{# unless page.dataElement.isRelationKindComposition }}
-                                            {{# unless relation.isMemberTypeTransient }}
-                        var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess}}owner{{ className page.dataElement.owner.name }}Store, {{/unless}}target{{ className page.dataElement.target.name }}Store)
+                        {{#unless page.isPageTypeUpdate}}
+                            {{#unless page.isPageTypeView}}
+                                {{#unless page.isPageTypeOperationOutput}}
+                                    {{#unless page.dataElement.isRelationKindAggregation}}
+                                        {{#unless page.dataElement.isRelationKindComposition}}
+                                            {{#unless relation.isMemberTypeTransient}}
+                        var validate = await {{fqVariable page.name}}PageStore.validate({{#unless page.dataElement.isAccess}}targetStore, {{/unless}}targetStore)
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         if (validate != null) {
-                            target{{ className relation.owner.name }}Store.updateWith(validate);
+                            targetStore.updateWith(validate);
                         }
                                             {{/unless}}
                                         {{/unless}}
                                     {{/unless}}
-                                {{/ unless }}
+                                {{/unless}}
                             {{/unless}}
                         {{/unless}}
                     }
-                }{{# unless relation.isAccess}} : null{{/ unless}}
+                }{{#unless relation.isAccess}} : null{{/unless}}
             ) : null,
         {{/if}}
         {{#if action.isRemoveAction}}
-            (target{{ className relation.owner.name }}Store.internal__updatable && target{{ className relation.owner.name }}Store.{{variable relation.name}} != null) ?
+            (targetStore.internal__updatable && targetStore.{{variable relation.name}} != null) ?
             IconButton(
                 icon: Icon(
-                    Icons.{{ action.icon.name }},
+                    Icons.{{action.icon.name}},
                 ),
-                onPressed: {{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} () async => {{fqVariable page.name}}PageStore.remove{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store, target{{ className relation.owner.name }}Store.{{variable relation.name}}){{# unless relation.isAccess}} : null{{/ unless}}
+                onPressed: {{#unless relation.isAccess}} targetStore.internal__updatable ?{{/unless}} () async => {{fqVariable page.name}}PageStore.remove{{fqClass relation.name}}(targetStore, targetStore.{{variable relation.name}}){{#unless relation.isAccess}} : null{{/unless}}
             ) : null,
                 {{/if}}
                 {{#if action.isDeleteAction}}
-            (target{{ className relation.owner.name }}Store.internal__updatable && target{{ className relation.owner.name }}Store.{{variable relation.name}} != null) ?
+            (targetStore.internal__updatable && targetStore.{{variable relation.name}} != null) ?
             IconButton(
                 icon: Icon(
-                    Icons.{{ action.icon.name }},
+                    Icons.{{action.icon.name}},
                 ),
-                onPressed:{{# unless relation.isAccess}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}} () async {
-                    {{fqVariable page.name}}PageStore.delete{{ className relation.name }}{{ className relation.target.name }}(target{{ className relation.owner.name }}Store.{{variable relation.name}}{{# unless relation.isAccess}}, target{{ className relation.owner.name }}Store{{/unless}})
+                onPressed:{{#unless relation.isAccess}} targetStore.internal__updatable ?{{/unless}} () async {
+                    {{fqVariable page.name}}PageStore.delete{{className relation.name}}{{className relation.target.name}}(targetStore.{{variable relation.name}}{{#unless relation.isAccess}}, targetStore{{/unless}})
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                }{{# unless relation.isAccess}} : null{{/ unless}}
+                }{{#unless relation.isAccess}} : null{{/unless}}
             ) : null,
                 {{/if}}
                 {{#if action.isUnsetAction}}
-            (target{{ className relation.owner.name }}Store.internal__updatable && target{{ className relation.owner.name }}Store.{{variable relation.name}} != null) ?
+            (targetStore.internal__updatable && targetStore.{{variable relation.name}} != null) ?
             IconButton(
                 icon: Icon(
-                Icons.{{ action.icon.name }},
+                Icons.{{action.icon.name}},
                 ),
-                onPressed: {{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}} target{{ className relation.owner.name }}Store.internal__updatable ?{{/ unless}}{{/ unless}} () async {
-                    {{# if relation.isRelationBehaviourTypeUnsetable }}
-                    {{fqVariable page.name}}PageStore.unset{{ fqClass relation.name }}(target{{ className relation.owner.name }}Store)
+                onPressed: {{#unless relation.isAccess}}{{#unless relation.isRelationKindStatic}} targetStore.internal__updatable ?{{/unless}}{{/unless}} () async {
+                    {{#if relation.isRelationBehaviourTypeUnsetable}}
+                    {{fqVariable page.name}}PageStore.unset{{fqClass relation.name}}(targetStore)
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                    {{ else }}
-                    target{{ className relation.owner.name }}Store.set{{ fqClass relation.name }}(null);
-                    {{/ if }}
-                }{{# unless relation.isAccess}}{{# unless relation.isRelationKindStatic}}: null{{/ unless}}{{/ unless}}
+                    {{else}}
+                    targetStore.set{{fqClass relation.name}}(null);
+                    {{/if}}
+                }{{#unless relation.isAccess}}{{#unless relation.isRelationKindStatic}}: null{{/unless}}{{/unless}}
             ) : null,
         {{/if}}
 
@@ -192,5 +192,5 @@ Observer(builder: (_) {
         ],
     );
 }),
-{{/ with}}
+{{/with}}
 //END aggregationlink.dart.hbs-----{{dataElement.name}}------------------------------------------------------------------------------------

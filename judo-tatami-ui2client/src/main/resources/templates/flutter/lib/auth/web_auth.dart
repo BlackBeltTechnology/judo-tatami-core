@@ -3,10 +3,10 @@ import 'dart:html' as html;
 import 'package:dio/dio.dart';
 import 'package:flutter_appauth_web/flutter_appauth_web.dart';
 import 'package:openapi_dart_common/openapi.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/rest/lib/api.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{modelPackage application.name}}/{{path application.name}}/error/error_handler.dart';
+import 'package:{{modelPackage application.name}}/{{path application.name}}/repository/package.dart';
+import 'package:{{modelPackage application.name}}/{{path application.name}}/rest/lib/api.dart';
+import 'package:{{modelPackage application.name}}/{{path application.name}}/utilities/package.dart';
 import 'package:flutter_appauth_platform_interface/flutter_appauth_platform_interface.dart';
 
 import '../injector/injector.dart';
@@ -24,9 +24,9 @@ class WebAuth implements Auth {
   static const GRANT_AUTHORIZATION = "authorization_code";
   static const GRANT_REFRESH = "refresh_token";
   static const APP_NAME_KEY = "judo_ng_app_name";
-  static const APP_NAME = "{{ modelName application.name }}{{ packageName application.name }}";
+  static const APP_NAME = "{{modelName application.name}}{{packageName application.name}}";
 
-  {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }} _securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
+  {{modelName application.name}}{{packageName application.name}}MetadataSecurityFor{{className application.name}} _securitySettings = {{modelName application.name}}{{packageName application.name}}MetadataSecurityFor{{className application.name}}();
   var _authInfo = AuthInfoStore();
 
   bool isAuthenticationRequired() {
@@ -103,7 +103,7 @@ class WebAuth implements Auth {
     html.window.sessionStorage.clear();
     locator<ApiClient>().setAuthentication(_securitySettings.name, null);
     html.window.location.assign(_securitySettings.logoutEndpoint + "?redirect_uri=${Uri.encodeQueryComponent(_calculateRedirectUri())}");
-    _securitySettings = {{ modelName application.name }}{{ packageName application.name }}MetadataSecurityFor{{ className application.name }}();
+    _securitySettings = {{modelName application.name}}{{packageName application.name}}MetadataSecurityFor{{className application.name}}();
   }
 
   Future<void> login() async {
@@ -145,7 +145,7 @@ class WebAuth implements Auth {
     var apiClient = locator<ApiClient>();
     try {
       try {
-        await DefaultApi(apiClient).{{ modelNameVariable application.name }}{{ packageName application.name }}{{ className application.name }}Metadata();
+        await DefaultApi(apiClient).{{modelNameVariable application.name}}{{packageName application.name}}{{className application.name}}Metadata();
       } on ArgumentError catch (error) {
         print("Could not get metadata: " + error.message);
         // Very nice way to determinate REALM
@@ -153,7 +153,7 @@ class WebAuth implements Auth {
         apiClient.setAuthentication(realm, NoopAuth());
       }
 
-      {{ modelName application.name }}{{ packageName application.name }}MetadataFor{{ className application.name }} meta = await DefaultApi(apiClient).{{ modelNameVariable application.name }}{{ packageName application.name }}{{ className application.name }}Metadata();
+      {{modelName application.name}}{{packageName application.name}}MetadataFor{{className application.name}} meta = await DefaultApi(apiClient).{{modelNameVariable application.name}}{{packageName application.name}}{{className application.name}}Metadata();
       if (meta.security.isNotEmpty) {
         _securitySettings = meta.security.first;
       }
@@ -241,8 +241,8 @@ class WebAuth implements Auth {
   }
 
   Future<void> _updatePrincipalAllowed() async {
-    {{# if application.principal }}
-    {{ fqClass application.name }}Repository _actorRepository = locator<{{ fqClass application.name }}Repository>();
+    {{#if application.principal}}
+    {{fqClass application.name}}Repository _actorRepository = locator<{{fqClass application.name}}Repository>();
 
     try {
       var principal = await _actorRepository.getPrincipal();

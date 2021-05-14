@@ -1,20 +1,20 @@
 {{log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug'}}
 //START tablepagestore.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------
-class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
+class {{fqClass page.name}}PageStore extends _{{fqClass page.name}}PageStore with _${{fqClass page.name}}PageStore {}
 
-abstract class _{{ fqClass page.name }}PageStore with Store {
-    {{# with page.relationType as |relation| }}
-    {{ fqClass application.actor.name }}Repository _{{ fqVariable application.actor.name }}Repository = locator<{{ fqClass application.actor.name }}Repository>();
+abstract class _{{fqClass page.name}}PageStore with Store {
+    {{#with page.relationType as |relation|}}
+    {{fqClass application.actor.name}}Repository _{{fqVariable application.actor.name}}Repository = locator<{{fqClass application.actor.name}}Repository>();
 
     @observable
     String errorMessage;
 
-    {{# each page.containers.[0].tables as |table| }}
-        {{# if table.pageDefinition.relationType.isFilterable }}
+    {{#each page.containers.[0].tables as |table|}}
+        {{#if table.pageDefinition.relationType.isFilterable}}
     final Map<String, FilterStore> stringFilterStoreMap = {
-            {{# each table.filters as |filter|}}
-        '{{ variable filter.attributeType.name }}' : FilterStore(attributeName: '{{ variable filter.attributeType.name }}', attributeLabel: '{{ filter.label }}', filterType: FilterType.{{ filterDataType filter.attributeType.dataType }}{{# if (isEnumType filter.attributeType.dataType)}}, enumValues: {{ className filter.attributeType.dataType.name }}.values{{/if}}),
-            {{/ each }}
+            {{#each table.filters as |filter|}}
+        '{{variable filter.attributeType.name}}' : FilterStore(attributeName: '{{variable filter.attributeType.name}}', attributeLabel: '{{filter.label}}', filterType: FilterType.{{filterDataType filter.attributeType.dataType}}{{#if (isEnumType filter.attributeType.dataType)}}, enumValues: {{className filter.attributeType.dataType.name}}.values{{/if}}),
+            {{/each}}
     };
 
     @computed
@@ -28,316 +28,316 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
         {{/if}}
     @observable
-    int {{ fqVariable table.pageDefinition.relationType.name }}QueryLimit = ({{ table.row }}).round();
+    int {{fqVariable table.pageDefinition.relationType.name}}QueryLimit = ({{table.row}}).round();
 
     @action
-    void set{{ fqClass table.pageDefinition.relationType.name }}QueryLimit(double queryLimit) {
-        {{ fqVariable table.pageDefinition.relationType.name }}QueryLimit = queryLimit.round();
+    void set{{fqClass table.pageDefinition.relationType.name}}QueryLimit(double queryLimit) {
+        {{fqVariable table.pageDefinition.relationType.name}}QueryLimit = queryLimit.round();
     }
-    {{/ each }}
+    {{/each}}
 
-    {{# if relation.isCollection }}
-    {{# if page.dataElement.isAccess}}
+    {{#if relation.isCollection}}
+    {{#if page.dataElement.isAccess}}
     @observable
-    List<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.name }}StoreList = ObservableList<{{ fqClass relation.target.name }}Store>();
-    {{/ if }}
-
-    @observable
-    int {{ fqVariable relation.name }}SortColumnIndex;
+    List<{{storeClassName relation.target.name}}> {{fqVariable relation.name}}StoreList = ObservableList<{{storeClassName relation.target.name}}>();
+    {{/if}}
 
     @observable
-    String {{ fqVariable relation.name }}SortColumnName;
+    int {{fqVariable relation.name}}SortColumnIndex;
 
     @observable
-    bool {{ fqVariable relation.name }}SortAsc;
+    String {{fqVariable relation.name}}SortColumnName;
 
     @observable
-    Comparator {{ fqVariable relation.name }}SortCompare;
+    bool {{fqVariable relation.name}}SortAsc;
+
+    @observable
+    Comparator {{fqVariable relation.name}}SortCompare;
 
 
         @action
-    void {{ fqVariable relation.name }}SetSort({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare) {
+    void {{fqVariable relation.name}}SetSort({{#unless page.dataElement.isAccess}}{{storeClassName relation.owner.name}} ownerStore, {{/unless}}BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare) {
 
-        if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
-          {{ fqVariable relation.name }}SortAsc = true;
+        if ({{fqVariable relation.name}}SortColumnIndex != sortColumnIndex) {
+          {{fqVariable relation.name}}SortAsc = true;
         } else {
-          {{ fqVariable relation.name }}SortAsc = !{{ fqVariable relation.name }}SortAsc;
+          {{fqVariable relation.name}}SortAsc = !{{fqVariable relation.name}}SortAsc;
         }
 
-        {{ fqVariable relation.name }}SortColumnIndex = sortColumnIndex;
-        {{ fqVariable relation.name }}SortColumnName = sortColumnName;
-        {{ fqVariable relation.name }}SortCompare = sortCompare;
-        {{#if relation.isOrderable }}
-        get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-        {{ else }}
-            {{# unless page.dataElement.isAccess}}
-        owner{{ className relation.owner.name }}Store.{{variable relation.name}}.sort(sortCompare);
-            {{ else }}
-        {{ fqVariable relation.name }}StoreList.sort(sortCompare);
+        {{fqVariable relation.name}}SortColumnIndex = sortColumnIndex;
+        {{fqVariable relation.name}}SortColumnName = sortColumnName;
+        {{fqVariable relation.name}}SortCompare = sortCompare;
+        {{#if relation.isOrderable}}
+        get{{fqClass relation.name}}({{#unless page.dataElement.isAccess}}ownerStore{{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+        {{else}}
+            {{#unless page.dataElement.isAccess}}
+        ownerStore.{{variable relation.name}}.sort(sortCompare);
+            {{else}}
+        {{fqVariable relation.name}}StoreList.sort(sortCompare);
             {{/unless}}
         {{/if}}
     }
-    {{ else }}
-    {{# if page.dataElement.isAccess}}
+    {{else}}
+    {{#if page.dataElement.isAccess}}
     @observable
-    {{ fqClass relation.target.name }}Store {{ fqVariable relation.name }}Store;
-    {{/ if }}
-    {{/ if }}
+    {{storeClassName relation.target.name}} store;
+    {{/if}}
+    {{/if}}
 
     @observable
-    ObservableFuture {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture;
+    ObservableFuture {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture;
 
-    {{# if relation.isRelationBehaviourTypeCreatable }}
+    {{#if relation.isRelationBehaviourTypeCreatable}}
     @action
-    Future<{{ fqClass relation.target.name }}Store> create{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+    Future<{{storeClassName relation.target.name}}> create{{fqClass relation.name}}({{#unless page.dataElement.isAccess}}{{storeClassName relation.owner.name}} ownerStore, {{/unless}}{{storeClassName relation.target.name}} targetStore) async {
         try {
             errorMessage = null;
-            var created = await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store);
-            get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
+            var created = await _{{fqVariable application.actor.name}}Repository.{{fqVariable relation.owner.name}}{{fqClass relation.name}}Create({{#unless page.dataElement.isAccess}}ownerStore, {{/unless}}targetStore);
+            get{{fqClass relation.name}}({{#unless page.dataElement.isAccess}}ownerStore{{/unless}});
             return created;
         } on ApiException catch (error) {
-            errorMessage = "Could not create {{ relation.name }}";
+            errorMessage = "Could not create {{relation.name}}";
             throw error;
         }
     }
 
-    {{/ if }}
+    {{/if}}
 	{{#if relation.isRelationBehaviourTypeAddable}}
     @action
-    Future<List<{{ fqClass relation.target.name }}Store>> add{{fqClass relation.name}}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, List<{{ fqClass relation.target.name }}Store> selected{{ className relation.target.name }}Store) async {
+    Future<List<{{storeClassName relation.target.name}}>> add{{fqClass relation.name}}({{storeClassName relation.owner.name}} ownerStore, List<{{storeClassName relation.target.name}}> selectedStore) async {
         try {
-            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Add{{fqClass relation.name}}(owner{{ className relation.owner.name }}Store, selected{{ className relation.target.name }}Store);
-            owner{{ className relation.owner.name }}Store.{{variable relation.name}}.addAll(selected{{ className relation.target.name }}Store);
-            return owner{{ className relation.owner.name }}Store.{{variable relation.name}};
+            await _{{fqVariable application.actor.name}}Repository.{{fqVariable relation.owner.name}}Add{{fqClass relation.name}}(ownerStore, selectedStore);
+            ownerStore.{{variable relation.name}}.addAll(selectedStore);
+            return ownerStore.{{variable relation.name}};
         } on ApiException catch (error) {
-            errorMessage = "Could not add {{ relation.name}}";
+            errorMessage = "Could not add {{relation.name}}";
             throw error;
         }
     }
 
     {{/if}}
-    {{# if relation.isRelationBehaviourTypeRemovable }}
+    {{#if relation.isRelationBehaviourTypeRemovable}}
     @action
-    Future<void> remove{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{ fqClass relation.target.name }}Store selected{{ className relation.target.name }}Store) async {
+    Future<void> remove{{fqClass relation.name}}({{storeClassName relation.owner.name}} ownerStore, {{storeClassName relation.target.name}} selectedStore) async {
         try {
             errorMessage = null;
-            {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Remove{{fqClass relation.name}}(owner{{ className relation.owner.name }}Store, [selected{{ className relation.target.name }}Store]));
-            await {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture;
-            owner{{ className relation.owner.name }}Store.{{variable relation.name}}.remove(selected{{ className relation.target.name }}Store); // TODO: fix with remove more than 1 element
+            {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture = ObservableFuture(_{{fqVariable application.actor.name}}Repository.{{fqVariable relation.owner.name}}Remove{{fqClass relation.name}}(ownerStore, [selectedStore]));
+            await {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture;
+            ownerStore.{{variable relation.name}}.remove(selectedStore); // TODO: fix with remove more than 1 element
         } on ApiException catch (error) {
-            errorMessage = "Could not remove {{ relation.name }}";
+            errorMessage = "Could not remove {{relation.name}}";
             throw error;
         }
     }
 
     {{/if}}
-    {{# if relation.isRelationBehaviourTypeListable }}
+    {{#if relation.isRelationBehaviourTypeListable}}
     @action
-    {{# if relation.isCollection }}Future<List<{{ fqClass relation.target.name }}Store>>{{else}}Future<{{ fqClass relation.target.name }}Store>{{/if}} get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{ int queryLimit }) async {
+    {{#if relation.isCollection}}Future<List<{{storeClassName relation.target.name}}>>{{else}}Future<{{storeClassName relation.target.name}}>{{/if}} get{{fqClass relation.name}}({{#unless page.dataElement.isAccess}}{{storeClassName relation.owner.name}} ownerStore, {{/unless}}{ int queryLimit }) async {
         try {
             errorMessage = null;
-        {{# if relation.isCollection }}
+        {{#if relation.isCollection}}
             if (queryLimit != null) {
-                {{ fqVariable relation.name }}QueryLimit = queryLimit;
+                {{fqVariable relation.name}}QueryLimit = queryLimit;
             }
-        {{/ if }}
-        {{# if page.dataElement.isAccess}}
-            {{# if relation.isCollection }}
-            {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
-                sortColumn: {{ fqVariable relation.name }}SortColumnName,
-                sortAscending: {{ fqVariable relation.name }}SortAsc,
-                    {{# if relation.isFilterable }}
+        {{/if}}
+        {{#if page.dataElement.isAccess}}
+            {{#if relation.isCollection}}
+            {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture = ObservableFuture(_{{fqVariable application.actor.name}}Repository.{{fqVariable relation.owner.name}}{{fqClass relation.name}}List(
+                sortColumn: {{fqVariable relation.name}}SortColumnName,
+                sortAscending: {{fqVariable relation.name}}SortAsc,
+                    {{#if relation.isFilterable}}
                 filterStoreList: availableFilterList,
-                    {{/ if }}
-                queryLimit: {{ fqVariable relation.name }}QueryLimit,
+                    {{/if}}
+                queryLimit: {{fqVariable relation.name}}QueryLimit,
                 mask: '{
-                    {{~# each page.containers.[0].tables.[0].columns as |column| ~}}
-                    {{ variable column.attributeType.name }}{{# unless @last }},{{/ unless }}
-                    {{~/ each ~}}
+                    {{~#each page.containers.[0].tables.[0].columns as |column|~}}
+                    {{variable column.attributeType.name}}{{#unless @last}},{{/unless}}
+                    {{~/each~}}
                 }',
             ));
-            {{ fqVariable relation.name }}StoreList.clear();
-            {{ fqVariable relation.name }}StoreList.addAll(await {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture);
+            {{fqVariable relation.name}}StoreList.clear();
+            {{fqVariable relation.name}}StoreList.addAll(await {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture);
 
-                {{# unless relation.isOrderable }}
-            if ({{ fqVariable relation.name }}SortCompare != null) {
-                {{ fqVariable relation.name }}StoreList.sort({{ fqVariable relation.name }}SortCompare);
+                {{#unless relation.isOrderable}}
+            if ({{fqVariable relation.name}}SortCompare != null) {
+                {{fqVariable relation.name}}StoreList.sort({{fqVariable relation.name}}SortCompare);
             }
-                {{/ unless }}
+                {{/unless}}
 
-            return {{ fqVariable relation.name }}StoreList;
+            return {{fqVariable relation.name}}StoreList;
             {{else}}
-            {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
+            {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture = ObservableFuture(_{{fqVariable application.actor.name}}Repository.{{fqVariable relation.owner.name}}{{fqClass relation.name}}Get(
                 mask: '{
-                    {{~# each page.containers.[0].tables.[0].columns as |column| ~}}
-                    {{ variable column.attributeType.name }}{{# unless @last }},{{/ unless }}
-                    {{~/ each ~}}
+                    {{~#each page.containers.[0].tables.[0].columns as |column|~}}
+                    {{variable column.attributeType.name}}{{#unless @last}},{{/unless}}
+                    {{~/each~}}
                 }',
             ));
-            {{ fqVariable relation.name }}Store = await {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture;
-            return {{ fqVariable relation.name }}Store;
+            store = await {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture;
+            return store;
             {{/if}}
         {{else}}
-            {{# if relation.isCollection }}
-            {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
-                owner{{ className relation.owner.name }}Store,
-                sortColumn: {{ fqVariable relation.name }}SortColumnName,
-                sortAscending: {{ fqVariable relation.name }}SortAsc,
-                    {{# if relation.isFilterable }}
+            {{#if relation.isCollection}}
+            {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture = ObservableFuture(_{{fqVariable application.actor.name}}Repository.{{fqVariable relation.owner.name}}{{fqClass relation.name}}List(
+                ownerStore,
+                sortColumn: {{fqVariable relation.name}}SortColumnName,
+                sortAscending: {{fqVariable relation.name}}SortAsc,
+                    {{#if relation.isFilterable}}
                 filterStoreList: availableFilterList,
-                queryLimit: {{ fqVariable relation.name }}QueryLimit,
+                queryLimit: {{fqVariable relation.name}}QueryLimit,
                 mask: '{
-                    {{~# each page.containers.[0].tables.[0].columns as |column| ~}}
-                    {{ variable column.attributeType.name }}{{# unless @last }},{{/ unless }}
-                    {{~/ each ~}}
+                    {{~#each page.containers.[0].tables.[0].columns as |column|~}}
+                    {{variable column.attributeType.name}}{{#unless @last}},{{/unless}}
+                    {{~/each~}}
                 }',
-                    {{/ if }}
+                    {{/if}}
             ));
-            owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.clear();
-            owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.addAll(await {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture);
-                    {{# unless relation.isOrderable }}
-            if ({{ fqVariable relation.name }}SortCompare != null) {
-                    owner{{ className relation.owner.name }}Store.{{ variable relation.name }}.sort({{ fqVariable relation.name }}SortCompare);
+            ownerStore.{{variable relation.name}}.clear();
+            ownerStore.{{variable relation.name}}.addAll(await {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture);
+                    {{#unless relation.isOrderable}}
+            if ({{fqVariable relation.name}}SortCompare != null) {
+                    ownerStore.{{variable relation.name}}.sort({{fqVariable relation.name}}SortCompare);
             }
-                    {{/ unless }}
-            return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
+                    {{/unless}}
+            return ownerStore.{{variable relation.name}};
             {{else}}
-            {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
-                owner{{ className relation.owner.name }}Store,
+            {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture = ObservableFuture(_{{fqVariable application.actor.name}}Repository.{{fqVariable relation.owner.name}}{{fqClass relation.name}}Get(
+                ownerStore,
                 mask: '{
-                    {{~# each page.containers.[0].tables.[0].columns as |column| ~}}
-                    {{ variable column.attributeType.name }}{{# unless @last }},{{/ unless }}
-                    {{~/ each ~}}
+                    {{~#each page.containers.[0].tables.[0].columns as |column|~}}
+                    {{variable column.attributeType.name}}{{#unless @last}},{{/unless}}
+                    {{~/each~}}
                 }',
             ));
-            owner{{ className relation.owner.name }}Store.{{ variable relation.name }} = await {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture;
-            return owner{{ className relation.owner.name }}Store.{{ variable relation.name }};
+            ownerStore.{{variable relation.name}} = await {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture;
+            return ownerStore.{{variable relation.name}};
             {{/if}}
         {{/if}}
         } on ApiException catch (error) {
-            errorMessage = "Could not load {{ relation.name }}";
+            errorMessage = "Could not load {{relation.name}}";
             throw error;
         }
     }
 
     {{/if}}
-    {{# if relation.isRelationBehaviourTypeRangeable }}
+    {{#if relation.isRelationBehaviourTypeRangeable}}
     @observable
-    List<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.name }}StoreRangeList = ObservableList<{{ fqClass relation.target.name }}Store>();
+    List<{{storeClassName relation.target.name}}> {{fqVariable relation.name}}StoreRangeList = ObservableList<{{storeClassName relation.target.name}}>();
 
-        {{# unless relation.isCollection }}
+        {{#unless relation.isCollection}}
     @observable
-    int {{ fqVariable relation.name }}SortColumnIndex;
-
-    @observable
-    String {{ fqVariable relation.name }}SortColumnName;
+    int {{fqVariable relation.name}}SortColumnIndex;
 
     @observable
-    bool {{ fqVariable relation.name }}SortAsc;
+    String {{fqVariable relation.name}}SortColumnName;
 
     @observable
-    Comparator {{ fqVariable relation.name }}SortCompare;
+    bool {{fqVariable relation.name}}SortAsc;
 
-        {{/ unless }}
+    @observable
+    Comparator {{fqVariable relation.name}}SortCompare;
+
+        {{/unless}}
 
     @action
-    void {{ fqVariable relation.name }}SetSortRange({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList, String mask}) {
-        if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
-            {{ fqVariable relation.name }}SortAsc = true;
+    void {{fqVariable relation.name}}SetSortRange({{storeClassName relation.owner.name}} ownerStore, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList, String mask}) {
+        if ({{fqVariable relation.name}}SortColumnIndex != sortColumnIndex) {
+            {{fqVariable relation.name}}SortAsc = true;
         } else {
-            {{ fqVariable relation.name }}SortAsc = !{{ fqVariable relation.name }}SortAsc;
+            {{fqVariable relation.name}}SortAsc = !{{fqVariable relation.name}}SortAsc;
         }
 
-        {{ fqVariable relation.name }}SortColumnIndex = sortColumnIndex;
-        {{ fqVariable relation.name }}SortColumnName = sortColumnName;
-        {{ fqVariable relation.name }}SortCompare = sortCompare;
+        {{fqVariable relation.name}}SortColumnIndex = sortColumnIndex;
+        {{fqVariable relation.name}}SortColumnName = sortColumnName;
+        {{fqVariable relation.name}}SortCompare = sortCompare;
 
-        getRangeFor{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store, filterStoreList: filterStoreList, mask: mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+        getRangeFor{{fqClass relation.name}}(ownerStore, filterStoreList: filterStoreList, mask: mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
 
     }
 
     @action
-    Future<List<{{fqClass relation.target.name}}Store>> getRangeFor{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {List<FilterStore> filterStoreList, int queryLimit, String mask}) async {
+    Future<List<{{storeClassName relation.target.name}}>> getRangeFor{{fqClass relation.name}}({{storeClassName relation.owner.name}} ownerStore, {List<FilterStore> filterStoreList, int queryLimit, String mask}) async {
         try {
             errorMessage = null;
 
             if (queryLimit != null) {
-                {{ fqVariable relation.name }}QueryLimit = queryLimit;
+                {{fqVariable relation.name}}QueryLimit = queryLimit;
             }
 
-            {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}ToUpdate(
-                owner{{ className relation.owner.name }}Store,
-                sortColumn: {{ fqVariable relation.name }}SortColumnName,
-                sortAscending: {{ fqVariable relation.name }}SortAsc,
-                queryLimit: {{ fqVariable relation.name }}QueryLimit,
+            {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture = ObservableFuture(_{{fqVariable application.actor.name}}Repository.{{fqVariable relation.owner.name}}RangeOf{{fqClass relation.name}}ToUpdate(
+                ownerStore,
+                sortColumn: {{fqVariable relation.name}}SortColumnName,
+                sortAscending: {{fqVariable relation.name}}SortAsc,
+                queryLimit: {{fqVariable relation.name}}QueryLimit,
                 filterStoreList: filterStoreList,
                 mask: mask,
             ));
-            {{ fqVariable relation.name }}StoreRangeList.clear();
-            {{ fqVariable relation.name }}StoreRangeList.addAll(await {{ variable relation.owner.name}}{{ fqClass relation.name }}StoreFuture);
-            return {{ fqVariable relation.name }}StoreRangeList;
+            {{fqVariable relation.name}}StoreRangeList.clear();
+            {{fqVariable relation.name}}StoreRangeList.addAll(await {{variable relation.owner.name}}{{fqClass relation.name}}StoreFuture);
+            return {{fqVariable relation.name}}StoreRangeList;
         } on ApiException catch (error) {
-            errorMessage = "Could not get range of {{ relation.name }}";
+            errorMessage = "Could not get range of {{relation.name}}";
             throw error;
         }
     }
 
     {{/if}}
-    {{# if relation.isRelationBehaviourTypeSetable }}
+    {{#if relation.isRelationBehaviourTypeSetable}}
     @action
-    Future<void> set{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{# if relation.isCollection }}List<{{ fqClass relation.target.name }}Store>{{ else }}{{ fqClass relation.target.name }}Store{{/ if }} selected{{ className relation.target.name }}Store) async {
+    Future<void> set{{fqClass relation.name}}({{storeClassName relation.owner.name}} ownerStore, {{#if relation.isCollection}}List<{{storeClassName relation.target.name}}>{{else}}{{storeClassName relation.target.name}}{{/if}} selectedStore) async {
         try {
             errorMessage = null;
-            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Set{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store, selected{{ className relation.target.name }}Store);
-            get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
+            await _{{fqVariable application.actor.name}}Repository.{{fqVariable relation.owner.name}}Set{{fqClass relation.name}}(ownerStore, selectedStore);
+            get{{fqClass relation.name}}({{#unless page.dataElement.isAccess}}ownerStore{{/unless}});
         } on ApiException catch (error) {
-            errorMessage = "Could not set {{ relation.name }}";
+            errorMessage = "Could not set {{relation.name}}";
             throw error;
         }
     }
 
     {{/if}}
-    {{# if relation.isRelationBehaviourTypeUnsetable }}
+    {{#if relation.isRelationBehaviourTypeUnsetable}}
     @action
-    Future<void> unset{{ fqClass relation.name }}({{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store) async {
+    Future<void> unset{{fqClass relation.name}}({{storeClassName relation.owner.name}} ownerStore) async {
         try {
             errorMessage = null;
-            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(owner{{ className relation.owner.name }}Store);
-            get{{ fqClass relation.name }}({{# unless relation.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
+            await _{{fqVariable application.actor.name}}Repository.{{fqVariable relation.owner.name}}Unset{{fqClass relation.name}}(ownerStore);
+            get{{fqClass relation.name}}({{#unless relation.isAccess}}ownerStore{{/unless}});
         } on ApiException catch (error) {
-            errorMessage = "Could not unset {{ relation.name }}";
+            errorMessage = "Could not unset {{relation.name}}";
             throw error;
         }
     }
 
     {{/if}}
-    {{# if relation.isRelationBehaviourTypeDeletable }}
+    {{#if relation.isRelationBehaviourTypeDeletable}}
     @action
-    Future<void> delete{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store{{# unless relation.isAccess}}, {{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store{{/unless}}) async {
+    Future<void> delete{{className relation.target.name}}({{storeClassName relation.target.name}} targetStore{{#unless relation.isAccess}}, {{storeClassName relation.owner.name}} ownerStore{{/unless}}) async {
         try {
             errorMessage = null;
-            await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className relation.target.name }}Store);
-            get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store{{/unless}});
+            await _{{fqVariable application.actor.name}}Repository.{{fqVariable relation.target.name}}Delete(targetStore);
+            get{{fqClass relation.name}}({{#unless page.dataElement.isAccess}}ownerStore{{/unless}});
         } on ApiException catch (error) {
-            errorMessage = "Could not delete {{ relation.target.name }}";
+            errorMessage = "Could not delete {{relation.target.name}}";
             throw error;
         }
     }
 
     {{/if}}
-    {{# if relation.isRelationBehaviourTypeUpdatable }}
+    {{#if relation.isRelationBehaviourTypeUpdatable}}
     @action
-    Future<{{ fqClass relation.target.name }}Store> update{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+    Future<{{storeClassName relation.target.name}}> update{{className relation.target.name}}({{storeClassName relation.target.name}} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className relation.target.name }}Store);
+            return await _{{fqVariable application.actor.name}}Repository.{{fqVariable relation.target.name}}Update(targetStore);
         } on ApiException catch (error) {
-            errorMessage = "Could not update {{ relation.target.name }}";
+            errorMessage = "Could not update {{relation.target.name}}";
             throw error;
         }
     }
 
     {{/if}}
-    {{/ with }}
+    {{/with}}
 }
 //END tablepagestore.dart.hbs-----{{page.name}}--------------------------------------------------------------------------------------------

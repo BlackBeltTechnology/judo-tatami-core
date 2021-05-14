@@ -1,36 +1,35 @@
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{ cleanup template.factoryExpression }}}
-// Path expression: {{{ cleanup template.pathExpression }}}
-// Overwrite: {{{ cleanup template.overwriteExpression }}}
-// Template name: {{ template.templateName }}
-// Application: {{ application.name }}
-//
-// {{# each ap.relations }}
-//    Relation {{ ap.name }}.{{ variable name }} ({{ target.name }}) behaviours: {{# each behaviours }} {{{ . }}} {{/ each }}
-//    TransferObject: {{ target.name }} behaviours: {{# each target.behaviours }} {{{ . }}} {{/ each }}
-// {{/ each }}
+// Factory expression: {{{cleanup template.factoryExpression}}}
+// Path expression: {{{cleanup template.pathExpression}}}
+// Overwrite: {{{cleanup template.overwriteExpression}}}
+// Template name: {{template.templateName}}
+// Application: {{application.name}}//
+// {{#each ap.relations}}
+//    Relation {{ap.name}}.{{variable name}} ({{target.name}}) behaviours: {{#each behaviours}} {{{.}}} {{/each}}
+//    TransferObject: {{target.name}} behaviours: {{#each target.behaviours}} {{{.}}} {{/each}}
+// {{/each}}
 
-part of {{ variable ap.name }}.repository;
+part of {{variable ap.name}}.repository;
 
 @lazySingleton
-class {{ fqClass ap.name }}Repository{{# if application.relationTypes }} with {{else}}{{# if classes}} with {{/if}}{{/ if }}
-{{# each application.relationTypes ~}}
-    {{ fqClass owner.name }}{{ className name }}Repository{{# unless @last}},{{/ unless}} {{# if @last}}{{# if classes ~}}, {{/ if }} {{/ if }}
-{{/ each }}
-{{# each classes ~}}
-    {{ fqClass name }}Repository{{# unless @last}},{{/ unless}}
-{{/ each }} {
+class {{fqClass ap.name}}Repository{{#if application.relationTypes}} with {{else}}{{#if classes}} with {{/if}}{{/if}}
+{{#each application.relationTypes~}}
+    {{fqClass owner.name}}{{className name}}Repository{{#unless @last}},{{/unless}} {{#if @last}}{{#if classes~}}, {{/if}} {{/if}}
+{{/each}}
+{{#each classes~}}
+    {{fqClass name}}Repository{{#unless @last}},{{/unless}}
+{{/each}} {
 
-{{# if application.principal  }}
+{{#if application.principal}}
   //////////////////////////////////////////////////////////////////////////////
   // GET Principal
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass application.principal.name }}Store> getPrincipal() async {
-    {{ fqClass application.principal.transferObjectTypeName }} {{ variable application.principal.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable application.actor.name }}Principal();
-    return {{ fqClass application.actor.name }}RepositoryStoreMapper.create{{ fqClass application.principal.name }}StoreFrom{{ fqClass application.principal.name }}({{ variable application.principal.name }}Response);
+  Future<{{storeClassName application.principal.name}}> getPrincipal() async {
+    {{fqClass application.principal.transferObjectTypeName}} {{variable application.principal.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable application.actor.name}}Principal();
+    return {{fqClass application.actor.name}}RepositoryStoreMapper.create{{storeClassName application.principal.name}}From{{fqClass application.principal.name}}({{variable application.principal.name}}Response);
 
   }
-{{/ if }}
+{{/if}}
 }
