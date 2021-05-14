@@ -13,39 +13,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     bool validatable = true;
     {{/ if }}
 
-    /*
-    {{# if relation.isCollection }}
-    @observable
-    int {{ fqVariable relation.name }}SortColumnIndex;
-
-    @observable
-    String {{ fqVariable relation.name }}SortColumnName;
-
-    @observable
-    bool {{ fqVariable relation.name }}SortAsc;
-
-    @observable
-    Comparator {{ fqVariable relation.name }}SortCompare;
-
-    @action
-    void {{ fqVariable relation.name }}SetSort(BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare) {
-
-        if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
-            {{ fqVariable relation.name }}SortAsc = true;
-        } else {
-            {{ fqVariable relation.name }}SortAsc = !{{ fqVariable relation.name }}SortAsc;
-        }
-        {{ fqVariable relation.name }}SortColumnIndex = sortColumnIndex;
-        {{ fqVariable relation.name }}SortColumnName = sortColumnName;
-        {{ fqVariable relation.name }}SortCompare = sortCompare;
-        {{# if relation.isOrderable }}
-        get{{ fqClass relation.name }}().catchError((error) => ErrorHandler.errorDialog(context, error));
-    {{ else }}
-        {{ fqVariable relation.name }}StoreList.sort(sortCompare);
-    {{/ if }}
-    }
-    {{/ if }}
-    */
+    
     {{# if page.isPageTypeDashboard }}
         {{# if relation.isRelationBehaviourTypeListable }}
 
@@ -170,6 +138,11 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{/ with }}
     {{# each page.dataElement.target.relations as |relation| }}
+        {{# unless isRelationKindStatic }}
+            {{# unless isRelationKindAssociation }}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/embedded_collection_table_order_action.dart.hbs page=page relation=relation}}
+            {{/ unless }}
+        {{/ unless }}
         {{# unless isMemberTypeTransient }}
             {{# if isRelationKindAggregation }}
     {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation }}

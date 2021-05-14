@@ -10,23 +10,22 @@ Observer(builder: (_) {
         inCard: {{ isInCard }},
         dataInfo: dataInfo,
         rowList: {{# if relation.isCollection }}targetStore.{{ variable relation.name }}{{ else }}[targetStore.{{ variable relation.name }}].asObservable(){{/ if }},
-        /*
         {{# if relation.isCollection }}
-        sortAscending: targetStore.{{ fqVariable relation.name }}__sortAsc,
-        sortColumnIndex: targetStore.{{ fqVariable relation.name }}__sortColumnIndex,
+        sortAscending: {{ fqVariable page.name }}PageStore.{{ fqVariable relation.name }}SortAsc,
+        sortColumnIndex: {{ fqVariable page.name }}PageStore.{{ fqVariable relation.name }}SortColumnIndex,
         onSort: (int columnIndex, bool asc) {
-            targetStore.{{ fqVariable relation.name }}SetSort(
+          {{ fqVariable page.name }}PageStore.{{ fqVariable relation.name }}SetSort(
             context,
             dataInfo.getColumnFieldByIndex(columnIndex, asc),
             columnIndex,
             asc,
-            dataInfo.getSortComparator(columnIndex, asc)
+            dataInfo.getSortComparator(columnIndex, asc),
+            targetStore
           );
         },
-        */
-        {{/ if }}
-        {{# each table.rowActions as |rowAction| }}
-        {{# if rowAction.isViewAction }}
+        {{/if}}
+        {{#each table.rowActions as |rowAction|}}
+        {{#if rowAction.isViewAction}}
         navigateToViewPageAction: (element) async {
             if (element != null) {
                 var response = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,

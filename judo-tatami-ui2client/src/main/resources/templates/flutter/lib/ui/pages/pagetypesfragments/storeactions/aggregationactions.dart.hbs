@@ -90,18 +90,6 @@ Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner.
 List<{{ storeClassName relation.target.name }}> {{ fqVariable relation.name }}StoreRangeList = ObservableList<{{ storeClassName relation.target.name }}>();
 
 @observable
-int {{ fqVariable relation.name }}SortColumnIndex;
-
-@observable
-String {{ fqVariable relation.name }}SortColumnName;
-
-@observable
-bool {{ fqVariable relation.name }}SortAsc;
-
-@observable
-Comparator {{ fqVariable relation.name }}SortCompare;
-
-@observable
 int {{ fqVariable relation.name }}QueryLimit = 5;
 
 @action

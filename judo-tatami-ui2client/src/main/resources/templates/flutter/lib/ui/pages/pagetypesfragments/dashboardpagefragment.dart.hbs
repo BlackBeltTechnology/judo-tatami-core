@@ -12,9 +12,6 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
 
         _{{ fqClass page.name }}PageState(){
             final navigation = locator<NavigationState>();
-            SchedulerBinding.instance.addPostFrameCallback((_) {
-                navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore?.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
-            });
     {{# if page.dataElement }}
             final navigationRegistry = locator<NavigationRegistry>();
             {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}()
@@ -22,6 +19,10 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
                     if (res != null) {
                         targetStore = res;
                         {{ fqVariable page.name }}PageStore.getterStatusSetFulfilled();
+
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore?.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
+                        });
                     } else {
                         var currentPageNavigation = navigationRegistry.getPageNavigationByRoute(Routes.{{ fqVariable application.name }}DashboardPage);
                         if (currentPageNavigation.createPage != null) {

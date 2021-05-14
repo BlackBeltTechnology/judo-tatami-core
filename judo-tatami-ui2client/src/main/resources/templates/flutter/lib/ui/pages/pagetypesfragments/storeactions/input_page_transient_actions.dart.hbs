@@ -1,6 +1,7 @@
-{{ log 'Transient action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' }}
+{{ log 'Input transient action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' }}
 //START input_page_transient_actions.dart.hbs-----{{ relaltion.name }}---------------------------------------------------------------------------------
-// {{ className relation.name }} transient actions
+// {{ className relation.name }} input page transient actions
+
 @action
 Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
     try {

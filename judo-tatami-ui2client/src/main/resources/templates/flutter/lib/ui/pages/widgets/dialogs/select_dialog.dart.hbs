@@ -204,7 +204,7 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
               builder: (_) => ElevatedButton(
                 child: Text('Select'),
                 onPressed: tableHelperStore.selectButtonEnabled ? () {
-                {{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }} result;
+                  {{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }} result;
                 {{# if relation.isCollection }}
                   if (dialogTypeAdder) {
                     result = pageStore.{{ fqVariable relation.name }}StoreRangeList
