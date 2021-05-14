@@ -20,11 +20,11 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
     @override
     List<DataColumn> getColumns(Function onAdd, Function onSort) {
         return [
-            {{# each columns}}
+            {{# each columns as |column| }}
             DataColumn(
-                label: Text(AppLocalizations.of(context).lookUpValue(context, '{{ label }}')),
-                {{# unless (isBooleanDataType dataType) }}
-                    {{# unless (isEnumType dataType) }}
+                label: Text(AppLocalizations.of(context).lookUpValue(context, '{{ column.label }}')),
+                {{# unless (isBooleanDataType column.attributeType.dataType) }}
+                    {{# unless (isEnumType column.attributeType.dataType) }}
                 onSort: onSort,
                     {{/ unless }}
                 {{/ unless }}
@@ -35,28 +35,28 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
 
     @override
     Comparator getSortComparator(int columnIndex, bool asc) {
-        {{# each columns}}
-            {{# unless (isBooleanDataType dataType) }}
-                {{# unless (isEnumType dataType) }}
+        {{# each columns as |column| }}
+            {{# unless (isBooleanDataType column.attributeType.dataType) }}
+                {{# unless (isEnumType column.attributeType.dataType) }}
         if (columnIndex == {{@index}}) {
             if (asc) {
-                return (a, b) => a.{{ variable attributeType.name }}.compareTo(b.{{ variable attributeType.name }});
+                return (a, b) => a.{{ variable column.attributeType.name }}.compareTo(b.{{ variable column.attributeType.name }});
             } else {
-                return (a, b) => b.{{ variable attributeType.name }}.compareTo(a.{{ variable attributeType.name }});
+                return (a, b) => b.{{ variable column.attributeType.name }}.compareTo(a.{{ variable column.attributeType.name }});
             }
+        }
                 {{/ unless }}
             {{/ unless }}
-        }
         {{/each}}
     }
 
     @override
     String getColumnFieldByIndex(int columnIndex, bool asc) {
-    {{# each columns}}
-        {{# unless (isBooleanDataType dataType) }}
-            {{# unless (isEnumType dataType) }}
+    {{# each columns as |column| }}
+        {{# unless (isBooleanDataType column.attributeType.dataType) }}
+            {{# unless (isEnumType column.attributeType.dataType) }}
         if (columnIndex == {{@index}}) {
-            return "{{ variable attributeType.name }}";
+            return "{{ variable column.attributeType.name }}";
         }
             {{/ unless }}
         {{/ unless }}
@@ -75,7 +75,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
         ThemeData theme =  Theme.of(context);
         return (target{{ className table.dataElement.target.name }}) => DataRow(
             cells: [
-                {{# each columns as |column|}}
+                {{# each columns as |column| }}
                 DataCell(
                     {{#if column}}
                     {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name)}}
