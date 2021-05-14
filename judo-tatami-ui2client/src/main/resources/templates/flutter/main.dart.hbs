@@ -1,22 +1,22 @@
-{{log 'Main launcher generation for' (variable application.name) level='info'}}
+{{ log 'Main launcher generation for' (variable application.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 
 import 'package:flutter/material.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/auth/auth.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/auth/auth.dart';
 
-import '{{path application.name}}/app_theme.dart';
-import '{{path application.name}}/injector/injector.dart';
-import '{{path application.name}}/app.dart';
-import '{{path application.name}}/utilities/package.dart';
+import '{{ path application.name }}/app_theme.dart';
+import '{{ path application.name }}/injector/injector.dart';
+import '{{ path application.name }}/app.dart';
+import '{{ path application.name }}/utilities/package.dart';
 
 void main() async {
     JudoComponentCustomizer.set(new AppDesignCustomizer());
@@ -33,5 +33,5 @@ void main() async {
 
     await _auth.init(apiUrl);
 
-    runApp({{fqClass application.name}}Application());
+    runApp({{ fqClass application.name }}Application());
 }

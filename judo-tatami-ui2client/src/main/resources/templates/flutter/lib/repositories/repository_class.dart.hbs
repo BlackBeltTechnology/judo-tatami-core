@@ -1,145 +1,145 @@
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 //
-//   Class: {{class.name}} behaviours: {{#each class.behaviours}} {{{.}}} {{/each}}
+//   Class: {{ class.name }} behaviours: {{# each class.behaviours }} {{{ . }}} {{/ each }}
 
-part of {{variable ap.name}}.repository;
+part of {{ variable ap.name }}.repository;
 
-class {{fqClass class.name}}Repository {
+class {{ fqClass class.name }}Repository {
 
   //////////////////////////////////////////////////////////////////////////////
   // TEMPLATE (Default)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName class.name}}> {{fqVariable class.name}}Default() async {
+  Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}Default() async {
     // TODO: NOT SUPPORTED YET
-    // {{fqClass class.name}} {{variable class.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable class.name}}TemplateInstance{{fqClass name}}();
-    // return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName class.name}}From{{fqClass class.name}}({{variable class.name}}Response);
-    return {{storeClassName class.name}}();
+    // {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}TemplateInstance{{ fqClass name }}();
+    // return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
+    return {{ storeClassName class.name }}();
   }
-  {{#if class.isMapped}}
+  {{# if class.isMapped }}
 
   //////////////////////////////////////////////////////////////////////////////
   // REFRESH (Reload with Signed ID)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName class.name}}> {{fqVariable class.name}}GetByIdentifier({{storeClassName class.name}} target, {String mask}) async {
-    var queryCustomizer = {{modelName class.name}}Extension{{packageName class.name}}QueryCustomizer{{className class.name}}();
+  Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}GetByIdentifier({{ storeClassName class.name }} target, {String mask}) async {
+    var queryCustomizer = {{ modelName class.name }}Extension{{ packageName class.name }}QueryCustomizer{{ className class.name }}();
     if (mask != null) {
         queryCustomizer.mask = mask;
     }
-    {{fqClass class.transferObjectTypeName}} {{variable class.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}RefreshInstance{{fqClass name}}(target.internal__signedIdentifier, input: queryCustomizer);
-    return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName class.name}}From{{fqClass class.name}}({{variable class.name}}Response);
+    {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}RefreshInstance{{ fqClass name }}(target.internal__signedIdentifier, input: queryCustomizer);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
   }
-  {{/if}}
-  {{#if class.isClassBehaviourTypeUpdateValidatable}}
+  {{/ if }}
+  {{# if class.isClassBehaviourTypeUpdateValidatable }}
 
   //////////////////////////////////////////////////////////////////////////////
   // VALIDATE UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName class.name}}> {{fqVariable class.name}}ValidateForUpdate({{storeClassName class.name}} target) async {
-    {{fqClass class.transferObjectTypeName}}ForCreateAndUpdate {{variable class.name}}Request = {{fqClass ap.name}}RepositoryStoreMapper.create{{fqClass class.name}}ForCreateAndUpdateFrom{{storeClassName class.name}}(target);
-    {{fqClass class.transferObjectTypeName}} {{variable class.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}ValidateUpdateInstance{{fqClass name}}(target.internal__signedIdentifier, {{variable class.name}}Request);
-    return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName class.name}}From{{fqClass class.name}}({{variable class.name}}Response);
+  Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}ValidateForUpdate({{ storeClassName class.name }} target) async {
+    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ storeClassName class.name }}(target);
+    {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}ValidateUpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
   }
-  {{/if}}
-  {{#if class.isClassBehaviourTypeDeletable}}
+  {{/ if }}
+  {{# if class.isClassBehaviourTypeDeletable }}
 
   //////////////////////////////////////////////////////////////////////////////
   // DELETE
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable class.name}}Delete({{storeClassName class.name}} target) async {
-    return await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}DeleteInstance{{fqClass name}}(target.internal__signedIdentifier);
+  Future<void> {{ fqVariable class.name }}Delete({{ storeClassName class.name }} target) async {
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}DeleteInstance{{ fqClass name }}(target.internal__signedIdentifier);
   }
-  {{/if}}
-  {{#if class.isClassBehaviourTypeUpdatable}}
+  {{/ if }}
+  {{# if class.isClassBehaviourTypeUpdatable }}
 
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName class.name}}> {{fqVariable class.name}}Update({{storeClassName class.name}} target) async {
-    {{fqClass class.transferObjectTypeName}}ForCreateAndUpdate {{variable class.name}}Request = {{fqClass ap.name}}RepositoryStoreMapper.create{{fqClass class.name}}ForCreateAndUpdateFrom{{storeClassName class.name}}(target);
-    {{fqClass class.transferObjectTypeName}} {{variable class.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}UpdateInstance{{fqClass name}}(target.internal__signedIdentifier, {{variable class.name}}Request);
-    return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName class.name}}From{{fqClass class.name}}({{variable class.name}}Response);
+  Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}Update({{ storeClassName class.name }} target) async {
+    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ storeClassName class.name }}(target);
+    {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}UpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
   }
-  {{/if}}
-  {{#each class.relations as |relation|}}
-      {{#if relation.isRelationBehaviourTypeRangeable}}
+  {{/ if }}
+  {{# each class.relations as |relation| }}
+      {{# if relation.isRelationBehaviourTypeRangeable }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // GET CREATE RANGE FOR {{variable relation.name}}
+  // GET CREATE RANGE FOR {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{storeClassName relation.target.name}}>> {{fqVariable class.name}}RangeOf{{fqClass relation.name}}ToCreate({{storeClassName class.name}} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+  Future<List<{{ storeClassName relation.target.name }}>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToCreate({{ storeClassName class.name }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
     // Use this when JNG-2028 is done
-    // {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}} {{variable class.name}}Request = {{fqClass ap.name}}RepositoryStoreMapper.create{{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}From{{storeClassName class.name}}(target);
+    // {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}From{{ storeClassName class.name }}(target);
 
-    var {{variable class.name}}Request = {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}{{className relation.name}}();
+    var {{ variable class.name }}Request = {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}{{ className relation.name }}();
 
-    var queryCustomizer = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}QueryCustomizer{{className relation.target.name}}();
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}QueryCustomizer{{ className relation.target.name }}();
 
-    var seek = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}Seek{{className relation.target.name}}();
+    var seek = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}Seek{{ className relation.target.name }}();
 
-            {{#if relation.isOrderable}}
-    var orderBy = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}OrderingType{{className relation.target.name}}();
+            {{# if relation.isOrderable }}
+    var orderBy = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}();
 
     // Sort Attributes
     if (sortColumn != null) {
-                {{#each relation.target.attributes as |attribute|}}
-                    {{#unless (isEnumType attribute.dataType)}}
-                        {{#unless (isBooleanDataType attribute.dataType)}}
-      if (sortColumn == "{{variable attribute.name}}" ) {
-        orderBy.attribute = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}OrderingType{{className relation.target.name}}AttributeEnum.{{variable attribute.name}};
+                {{# each relation.target.attributes as |attribute| }}
+                    {{# unless (isEnumType attribute.dataType) }}
+                        {{# unless (isBooleanDataType attribute.dataType) }}
+      if (sortColumn == "{{ variable attribute.name }}" ) {
+        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
       }
-                        {{/unless}}
-                    {{/unless}}
-                {{/each}}
+                        {{/ unless }}
+                    {{/ unless }}
+                {{/ each }}
       if (orderBy.attribute != null) {
           orderBy.descending = sortAscending == null ? false : !sortAscending;
           queryCustomizer.orderBy = [orderBy];
       }
     }
-            {{/if}}
-            {{#if relation.isFilterable}}
+            {{/ if }}
+            {{# if relation.isFilterable }}
       if (filterStoreList != null && filterStoreList.isNotEmpty) {
           filterStoreList.forEach((element) {
             if (element.filterValue == null ) return;
-                {{#each relation.target.attributes as |attribute|}}
-                    {{#if attribute.isFilterable}}
-            if (element.attributeName.uncapitalize() == "{{variable attribute.name}}") {
-                var filter = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}();
-                        {{#if (isStringType attribute.dataType)}}
+                {{# each relation.target.attributes as |attribute| }}
+                    {{# if attribute.isFilterable }}
+            if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
+                var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
+                        {{# if (isStringType attribute.dataType) }}
                 if(element.filterOperation == 'contain'){
                     filter.value = '%' + (element.filterValue ?? '') + '%';
-                    filter.operator_ = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.like;
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
                 } else if (element.filterOperation == 'beginWith') {
                     filter.value = (element.filterValue ?? '') + '%';
-                    filter.operator_ = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.like;
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
                 } else {
                     filter.value = element.filterValue as String;
-                    filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
+                    filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
                 }
-                        {{/if}}
-                        {{#if (isEnumType attribute.dataType)}}
-                filter.value = (element.filterValue.toString().split('.').last).toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}ValueEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}ValueEnum.values);
-                filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
-                        {{/if}}
-                        {{#unless (isStringType attribute.dataType)}}
-                            {{#unless (isEnumType attribute.dataType)}}
-                filter.value = element.filterValue as {{dartType attribute.dataType}};
-                filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
-                            {{/unless}}
-                        {{/unless}}
-                queryCustomizer.{{variable attribute.name}}.add(filter);
+                        {{/ if }}
+                        {{# if (isEnumType attribute.dataType) }}
+                filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                        {{/ if }}
+                        {{# unless (isStringType attribute.dataType) }}
+                            {{# unless (isEnumType attribute.dataType) }}
+                filter.value = element.filterValue as {{ dartType attribute.dataType }};
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                            {{/ unless }}
+                        {{/ unless }}
+                queryCustomizer.{{ variable attribute.name }}.add(filter);
             }
-                    {{/if}}
-                {{/each}}
+                    {{/ if }}
+                {{/ each }}
           });
       }
-            {{/if}}
+            {{/ if }}
 
     seek.limit = queryLimit != null && queryLimit >= 5 ? queryLimit : 5;
     queryCustomizer.seek = seek;
@@ -147,84 +147,84 @@ class {{fqClass class.name}}Repository {
         queryCustomizer.mask = mask;
     }
 
-    {{variable class.name}}Request.queryCustomizer = queryCustomizer;
+    {{ variable class.name }}Request.queryCustomizer = queryCustomizer;
 
 
-    List<{{fqClass relation.target.transferObjectTypeName}}> {{variable relation.target.name}}ListResponse = await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}GetRangeReference{{fqClass relation.name}}(input: {{variable class.name}}Request);
-    return {{variable relation.target.name}}ListResponse.map<{{storeClassName relation.target.name}}>(
-      {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName relation.target.name}}From{{fqClass relation.target.name}}).toList();
+    List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}GetRangeReference{{ fqClass relation.name }}(input: {{ variable class.name }}Request);
+    return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // GET UPDATE RANGE FOR {{variable relation.name}}
+  // GET UPDATE RANGE FOR {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{storeClassName relation.target.name}}>> {{fqVariable class.name}}RangeOf{{fqClass relation.name}}ToUpdate({{storeClassName class.name}} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+  Future<List<{{ storeClassName relation.target.name }}>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToUpdate({{ storeClassName class.name }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
     // Use this when JNG-2028 is done
-    // {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}} {{variable class.name}}Request = {{fqClass ap.name}}RepositoryStoreMapper.create{{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}From{{storeClassName class.name}}(target);
+    // {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}From{{ storeClassName class.name }}(target);
 
-    var {{variable class.name}}Request = {{modelName ap.name}}Extension{{packageName class.name}}GetRangeInput{{className class.name}}{{className relation.name}}();
+    var {{ variable class.name }}Request = {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}{{ className relation.name }}();
 
-    var queryCustomizer = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}QueryCustomizer{{className relation.target.name}}();
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}QueryCustomizer{{ className relation.target.name }}();
 
-    var seek = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}Seek{{className relation.target.name}}();
+    var seek = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}Seek{{ className relation.target.name }}();
 
-            {{#if relation.isOrderable}}
-    var orderBy = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}OrderingType{{className relation.target.name}}();
+            {{# if relation.isOrderable }}
+    var orderBy = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}();
 
     // Sort Attributes
     if (sortColumn != null) {
-                {{#each relation.target.attributes as |attribute|}}
-                    {{#unless (isEnumType attribute.dataType)}}
-                        {{#unless (isBooleanDataType attribute.dataType)}}
-      if (sortColumn == "{{variable attribute.name}}" ) {
-        orderBy.attribute = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}OrderingType{{className relation.target.name}}AttributeEnum.{{variable attribute.name}};
+                {{# each relation.target.attributes as |attribute| }}
+                    {{# unless (isEnumType attribute.dataType) }}
+                        {{# unless (isBooleanDataType attribute.dataType) }}
+      if (sortColumn == "{{ variable attribute.name }}" ) {
+        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
       }
-                        {{/unless}}
-                    {{/unless}}
-                {{/each}}
+                        {{/ unless }}
+                    {{/ unless }}
+                {{/ each }}
       if (orderBy.attribute != null) {
           orderBy.descending = sortAscending == null ? false : !sortAscending;
           queryCustomizer.orderBy = [orderBy];
       }
     }
-            {{/if}}
-            {{#if relation.isFilterable}}
+            {{/ if }}
+            {{# if relation.isFilterable }}
       if (filterStoreList != null && filterStoreList.isNotEmpty) {
           filterStoreList.forEach((element) {
             if (element.filterValue == null ) return;
-                {{#each relation.target.attributes as |attribute|}}
-                    {{#if attribute.isFilterable}}
-            if (element.attributeName.uncapitalize() == "{{variable attribute.name}}") {
-                var filter = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}();
-                        {{#if (isStringType attribute.dataType)}}
+                {{# each relation.target.attributes as |attribute| }}
+                    {{# if attribute.isFilterable }}
+            if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
+                var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
+                        {{# if (isStringType attribute.dataType) }}
                 if(element.filterOperation == 'contain'){
                     filter.value = '%' + (element.filterValue ?? '') + '%';
-                    filter.operator_ = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.like;
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
                 } else if (element.filterOperation == 'beginWith') {
                     filter.value = (element.filterValue ?? '') + '%';
-                    filter.operator_ = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.like;
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
                 } else {
                     filter.value = element.filterValue as String;
-                    filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
+                    filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
                 }
-                        {{/if}}
-                        {{#if (isEnumType attribute.dataType)}}
-                filter.value = (element.filterValue.toString().split('.').last).toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}ValueEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}ValueEnum.values);
-                filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
-                        {{/if}}
-                        {{#unless (isStringType attribute.dataType)}}
-                            {{#unless (isEnumType attribute.dataType)}}
-                filter.value = element.filterValue as {{dartType attribute.dataType}};
-                filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
-                            {{/unless}}
-                        {{/unless}}
-                queryCustomizer.{{variable attribute.name}}.add(filter);
+                        {{/ if }}
+                        {{# if (isEnumType attribute.dataType) }}
+                filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                        {{/ if }}
+                        {{# unless (isStringType attribute.dataType) }}
+                            {{# unless (isEnumType attribute.dataType) }}
+                filter.value = element.filterValue as {{ dartType attribute.dataType }};
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                            {{/ unless }}
+                        {{/ unless }}
+                queryCustomizer.{{ variable attribute.name }}.add(filter);
             }
-                    {{/if}}
-                {{/each}}
+                    {{/ if }}
+                {{/ each }}
           });
       }
-            {{/if}}
+            {{/ if }}
 
     seek.limit = queryLimit != null && queryLimit >= 5 ? queryLimit : 5;
     queryCustomizer.seek = seek;
@@ -232,82 +232,82 @@ class {{fqClass class.name}}Repository {
         queryCustomizer.mask = mask;
     }
 
-    {{variable class.name}}Request.queryCustomizer = queryCustomizer;
+    {{ variable class.name }}Request.queryCustomizer = queryCustomizer;
 
-    List<{{fqClass relation.target.transferObjectTypeName}}> {{variable relation.target.name}}ListResponse = await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}GetRangeReference{{fqClass relation.name}}(input: {{variable class.name}}Request);
-    return {{variable relation.target.name}}ListResponse.map<{{storeClassName relation.target.name}}>(
-      {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName relation.target.name}}From{{fqClass relation.target.name}}).toList();
+    List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}GetRangeReference{{ fqClass relation.name }}(input: {{ variable class.name }}Request);
+    return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
   }
-      {{/if}}
-      {{#if relation.isRelationBehaviourTypeSetable}}
-        {{#if relation.isCollection}}
+      {{/ if }}
+      {{# if relation.isRelationBehaviourTypeSetable }}
+        {{# if relation.isCollection }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // SET {{variable relation.name}} (Collection)
+  // SET {{ variable relation.name }} (Collection)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable class.name}}Set{{fqClass relation.name}}({{storeClassName class.name}} target, List<{{storeClassName relation.target.name}}> selected) async {
+  Future<void> {{ fqVariable class.name }}Set{{ fqClass relation.name }}({{ storeClassName class.name }} target, List<{{ storeClassName relation.target.name }}> selected) async {
     List<dynamic> itemsToSet = selected.map<dynamic>((s) => {"__signedIdentifier": s.internal__signedIdentifier}).toList();
-    return await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}SetReference{{className relation.name}}(target.internal__signedIdentifier, input: itemsToSet);
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}SetReference{{ className relation.name }}(target.internal__signedIdentifier, input: itemsToSet);
   }
-        {{else}}
+        {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // SET {{variable relation.name}} (Single)
+  // SET {{ variable relation.name }} (Single)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable class.name}}Set{{fqClass relation.name}}({{storeClassName class.name}} target, {{storeClassName relation.target.name}} selected) async {
-    return await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}SetReference{{className relation.name}}(target.internal__signedIdentifier, SingleReference().copyWith(internal__signedIdentifier: selected.internal__signedIdentifier));
+  Future<void> {{ fqVariable class.name }}Set{{ fqClass relation.name }}({{ storeClassName class.name }} target, {{ storeClassName relation.target.name }} selected) async {
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}SetReference{{ className relation.name }}(target.internal__signedIdentifier, SingleReference().copyWith(internal__signedIdentifier: selected.internal__signedIdentifier));
   }
-        {{/if}}
-      {{/if}}
-      {{#if relation.isRelationBehaviourTypeUnsetable}}
+        {{/ if }}
+      {{/ if }}
+      {{# if relation.isRelationBehaviourTypeUnsetable }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // UNSET {{variable relation.name}}
+  // UNSET {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable class.name}}Unset{{fqClass relation.name}}({{storeClassName class.name}} target) async {
-    return await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}UnsetReference{{className relation.name}}(target.internal__signedIdentifier);
+  Future<void> {{ fqVariable class.name }}Unset{{ fqClass relation.name }}({{ storeClassName class.name }} target) async {
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}UnsetReference{{ className relation.name }}(target.internal__signedIdentifier);
   }
-      {{/if}}
-      {{#if relation.isRelationBehaviourTypeAddable}}
+      {{/ if }}
+      {{# if relation.isRelationBehaviourTypeAddable }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // ADD {{variable relation.name}}
+  // ADD {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable class.name}}Add{{fqClass relation.name}}({{storeClassName class.name}} target, List<{{storeClassName relation.target.name}}> selected) async {
+  Future<void> {{ fqVariable class.name }}Add{{ fqClass relation.name }}({{ storeClassName class.name }} target, List<{{ storeClassName relation.target.name }}> selected) async {
     List<dynamic> itemsToAdd = selected.map<dynamic>((s) => {"__signedIdentifier": s.internal__signedIdentifier}).toList();
-    return await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}AddReference{{className relation.name}}(target.internal__signedIdentifier, itemsToAdd);
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}AddReference{{ className relation.name }}(target.internal__signedIdentifier, itemsToAdd);
   }
-      {{/if}}
-      {{#if relation.isRelationBehaviourTypeRemovable}}
+      {{/ if }}
+      {{# if relation.isRelationBehaviourTypeRemovable }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // REMOVE {{variable relation.name}}
+  // REMOVE {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable class.name}}Remove{{fqClass relation.name}}({{storeClassName class.name}} target, List<{{storeClassName relation.target.name}}> selected) async {
+  Future<void> {{ fqVariable class.name }}Remove{{ fqClass relation.name }}({{ storeClassName class.name }} target, List<{{ storeClassName relation.target.name }}> selected) async {
     List<dynamic> itemsToRemove = selected.map<dynamic>((s) => {"__signedIdentifier": s.internal__signedIdentifier}).toList();
-    return await DefaultApi(locator<ApiClient>()).{{fqVariable class.transferObjectTypeName}}RemoveReference{{className relation.name}}(target.internal__signedIdentifier, itemsToRemove);
+    return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}RemoveReference{{ className relation.name }}(target.internal__signedIdentifier, itemsToRemove);
   }
-      {{/if}}
-  {{/each}}
+      {{/ if }}
+  {{/ each }}
 
-  {{#each class.operations as |operation|}}
+  {{# each class.operations as |operation| }}
   //////////////////////////////////////////////////////////////////////////////
-  // OPERATION {{variable operation.name}}
+  // OPERATION {{ variable operation.name }}
   //////////////////////////////////////////////////////////////////////////////
-      {{#if operation.output}}Future<{{#if operation.output.isCollection}}List<{{storeClassName operation.output.target.name}}>{{else}}{{storeClassName operation.output.target.name}}{{/if}}>{{else}}Future<void>{{/if}} {{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.input}}{{storeClassName operation.input.target.name}} targetStore, {{/if}}{{#if operation.isMapped}}{{storeClassName class.name}} ownerStore{{/if}}) async {
-      {{#if operation.input}}{{fqClass operation.input.target.transferObjectTypeName}} {{fqVariable operation.input.target.name}}Input = {{fqClass ap.name}}RepositoryStoreMapper.create{{fqClass operation.input.target.name}}From{{storeClassName operation.input.target.name}}(targetStore);{{/if}}
-      {{#if operation.output}}
-          {{#if operation.output.isCollection}}
-      List<{{fqClass operation.output.target.transferObjectTypeName}}> {{fqVariable operation.output.target.name}}Output = await DefaultApi(locator<ApiClient>()).{{fqVariable operation.owner.transferObjectTypeName}}{{className operation.name}}({{#if operation.isMapped}}ownerStore.internal__signedIdentifier, {{/if}}{{#if operation.input}}{{#if operation.input.isOptional}}input: {{/if}}{{#if operation.input.isCollection}}[{{fqVariable operation.input.target.name}}Input]{{else}}{{fqVariable operation.input.target.name}}Input{{/if}}{{/if}});
-      return {{fqVariable operation.output.target.name}}Output.map<{{storeClassName operation.output.target.name}}>((e) => {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName operation.output.target.name}}From{{fqClass operation.output.target.name}}(e)).toList();
-          {{else}}
-      {{fqClass operation.output.target.transferObjectTypeName}} {{fqVariable operation.output.target.name}}Output = await DefaultApi(locator<ApiClient>()).{{fqVariable operation.owner.transferObjectTypeName}}{{className operation.name}}({{#if operation.isMapped}}ownerStore.internal__signedIdentifier, {{/if}}{{#if operation.input}}{{#if operation.input.isOptional}}input: {{/if}}{{#if operation.input.isCollection}}[{{fqVariable operation.input.target.name}}Input]{{else}}{{fqVariable operation.input.target.name}}Input{{/if}}{{/if}});
-      return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName operation.output.target.name}}From{{fqClass operation.output.target.name}}({{fqVariable operation.output.target.name}}Output);
-          {{/if}}
-      {{else}}
-      return await DefaultApi(locator<ApiClient>()).{{fqVariable operation.owner.transferObjectTypeName}}{{className operation.name}}({{#if operation.isMapped}}ownerStore.internal__signedIdentifier, {{/if}}{{#if operation.input}}{{#if operation.input.isOptional}}input: {{/if}}{{#if operation.input.isCollection}}[{{fqVariable operation.input.target.name}}Input]{{else}}{{fqVariable operation.input.target.name}}Input{{/if}}{{/if}});
-      {{/if}}
+      {{# if operation.output }}Future<{{# if operation.output.isCollection }}List<{{ storeClassName operation.output.target.name }}>{{ else }}{{ storeClassName operation.output.target.name }}{{/ if }}>{{ else }}Future<void>{{/ if }} {{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}{{ storeClassName operation.input.target.name }} targetStore, {{/ if }}{{# if operation.isMapped }}{{ storeClassName class.name }} ownerStore{{/ if }}) async {
+      {{# if operation.input }}{{ fqClass operation.input.target.transferObjectTypeName }} {{ fqVariable operation.input.target.name }}Input = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass operation.input.target.name }}From{{ storeClassName operation.input.target.name }}(targetStore);{{/ if }}
+      {{# if operation.output }}
+          {{# if operation.output.isCollection }}
+      List<{{ fqClass operation.output.target.transferObjectTypeName }}> {{ fqVariable operation.output.target.name }}Output = await DefaultApi(locator<ApiClient>()).{{ fqVariable operation.owner.transferObjectTypeName }}{{ className operation.name }}({{# if operation.isMapped }}ownerStore.internal__signedIdentifier, {{/ if }}{{# if operation.input }}{{# if operation.input.isOptional }}input: {{/ if }}{{# if operation.input.isCollection }}[{{ fqVariable operation.input.target.name }}Input]{{ else }}{{ fqVariable operation.input.target.name }}Input{{/ if }}{{/ if }});
+      return {{ fqVariable operation.output.target.name }}Output.map<{{ storeClassName operation.output.target.name }}>((e) => {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName operation.output.target.name }}From{{ fqClass operation.output.target.name }}(e)).toList();
+          {{ else }}
+      {{ fqClass operation.output.target.transferObjectTypeName }} {{ fqVariable operation.output.target.name }}Output = await DefaultApi(locator<ApiClient>()).{{ fqVariable operation.owner.transferObjectTypeName }}{{ className operation.name }}({{# if operation.isMapped }}ownerStore.internal__signedIdentifier, {{/ if }}{{# if operation.input }}{{# if operation.input.isOptional }}input: {{/ if }}{{# if operation.input.isCollection }}[{{ fqVariable operation.input.target.name }}Input]{{ else }}{{ fqVariable operation.input.target.name }}Input{{/ if }}{{/ if }});
+      return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName operation.output.target.name }}From{{ fqClass operation.output.target.name }}({{ fqVariable operation.output.target.name }}Output);
+          {{/ if }}
+      {{ else }}
+      return await DefaultApi(locator<ApiClient>()).{{ fqVariable operation.owner.transferObjectTypeName }}{{ className operation.name }}({{# if operation.isMapped }}ownerStore.internal__signedIdentifier, {{/ if }}{{# if operation.input }}{{# if operation.input.isOptional }}input: {{/ if }}{{# if operation.input.isCollection }}[{{ fqVariable operation.input.target.name }}Input]{{ else }}{{ fqVariable operation.input.target.name }}Input{{/ if }}{{/ if }});
+      {{/ if }}
   }
 
-  {{/each}}
+  {{/ each }}
 }

@@ -1,8 +1,8 @@
-{{log 'Text generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug'~}}
-//START text.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------------------
+{{ log 'Text generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
+//START text.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------
 JudoText(
-    col: {{col}},
-    row: {{row}},
-    text: AppLocalizations.of(context).lookUpValue(context, '{{text}}'),
+    col: {{ col }},
+    row: {{ row }},
+    text: AppLocalizations.of(context).lookUpValue(context, '{{ text }}'),
 ),
-//END text.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------------------
+//END text.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------------------

@@ -1,11 +1,11 @@
-//START button.dart.hbs-----{{action.dataElement.name}}------------------------------------------------------------------------------------
-{{#if this.action.dataElement.isRelationKindComposition}}
-{{> templates/flutter/lib/ui/pages/widgets/aggregationAction.dart.hbs action = this.action relation = this.action.dataElement col = this.col}}
-{{else}}
-{{#if this.action.dataElement.isRelationKindAggregation}}
-{{> templates/flutter/lib/ui/pages/widgets/aggregationAction.dart.hbs action = this.action relation = this.action.dataElement col = this.col}}
-{{else}}
-{{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs action = this.action col = this.col}}
-{{/if}}
-{{/if}}
-//END button.dart.hbs-----{{action.dataElement.name}}--------------------------------------------------------------------------------------
+//START button.dart.hbs-----{{ action.dataElement.name }}------------------------------------------------------------------------------------
+{{# if this.action.dataElement.isRelationKindComposition }}
+{{> templates/flutter/lib/ui/pages/widgets/aggregationAction.dart.hbs action = this.action relation = this.action.dataElement col = this.col }}
+{{ else }}
+{{# if this.action.dataElement.isRelationKindAggregation }}
+{{> templates/flutter/lib/ui/pages/widgets/aggregationAction.dart.hbs action = this.action relation = this.action.dataElement col = this.col }}
+{{ else }}
+{{> templates/flutter/lib/ui/pages/widgets/instanceAction.dart.hbs action = this.action col = this.col }}
+{{/ if }}
+{{/ if }}
+//END button.dart.hbs-----{{ action.dataElement.name }}--------------------------------------------------------------------------------------

@@ -1,228 +1,228 @@
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 
-part of {{variable ap.name}}.repository;
+part of {{ variable ap.name }}.repository;
 
-class {{fqClass ap.name}}RepositoryStoreMapper {
+class {{ fqClass ap.name }}RepositoryStoreMapper {
 
-{{#each classes as |class|}}
-  // MAPPERS FOR {{className name}}
-  static {{storeClassName name}} create{{storeClassName name}}From{{fqClass name}}({{fqClass transferObjectTypeName}} {{variable name}}) {
-    if ({{variable name}} == null) {
+{{# each classes as |class| }}
+  // MAPPERS FOR {{ className name }}
+  static {{ storeClassName name }} create{{ storeClassName name }}From{{ fqClass name }}({{ fqClass transferObjectTypeName }} {{ variable name }}) {
+    if ({{ variable name }} == null) {
       return null;
     }
-    var store = {{storeClassName name}}();
-    map{{fqClass name}}To{{storeClassName name}}({{variable name}}, store);
+    var store = {{ storeClassName name }}();
+    map{{ fqClass name }}To{{ storeClassName name }}({{ variable name }}, store);
     return store;
   }
 
-  static void map{{fqClass name}}To{{storeClassName name}}({{fqClass transferObjectTypeName}} {{variable name}}, {{storeClassName name}} store) {
+  static void map{{ fqClass name }}To{{ storeClassName name }}({{ fqClass transferObjectTypeName }} {{ variable name }}, {{ storeClassName name }} store) {
     // Identifier
-    {{#if isMapped}}
-    store.internal__identifier = {{variable name}}.internal__identifier;
-    store.internal__signedIdentifier = {{variable name}}.internal__signedIdentifier;
-    store.internal__referenceIdentifier = {{variable name}}.internal__referenceId;
-    store.internal__updatable = {{variable name}}.internal__updatable;
-    store.internal__deletable = {{variable name}}.internal__deletable;
+    {{# if isMapped }}
+    store.internal__identifier = {{ variable name }}.internal__identifier;
+    store.internal__signedIdentifier = {{ variable name }}.internal__signedIdentifier;
+    store.internal__referenceIdentifier = {{ variable name }}.internal__referenceId;
+    store.internal__updatable = {{ variable name }}.internal__updatable;
+    store.internal__deletable = {{ variable name }}.internal__deletable;
 
-    {{/if}}
+    {{/ if }}
     // Attributes
-    {{#each attributes as |attribute|}}
-        {{~#if (isEnumType attribute.dataType)}}
-    if ({{variable class.name}}.{{variable attribute.name}} != null) {
-        store.{{variable attribute.name}} = {{className attribute.dataType.name}}.values[{{variable class.name}}.{{variable attribute.name}}.index];
+    {{# each attributes as |attribute| }}
+        {{~# if (isEnumType attribute.dataType) }}
+    if ({{ variable class.name }}.{{ variable attribute.name }} != null) {
+        store.{{ variable attribute.name }} = {{ className attribute.dataType.name }}.values[{{ variable class.name }}.{{ variable attribute.name }}.index];
     }
-        {{else}}
-            {{#if (isTimestampType attribute.dataType)}}
-    store.{{variable attribute.name}} = {{variable class.name}}.{{variable attribute.name}} != null ? {{variable class.name}}.{{variable attribute.name}}.toLocal() : null;
-            {{else}}
-    store.{{variable attribute.name}} = {{variable class.name}}.{{variable attribute.name}};
-            {{/if}}
-        {{/if}}
-    {{/each}}
+        {{ else }}
+            {{# if (isTimestampType attribute.dataType) }}
+    store.{{ variable attribute.name }} = {{ variable class.name }}.{{ variable attribute.name }} != null ? {{ variable class.name }}.{{ variable attribute.name }}.toLocal() : null;
+            {{ else }}
+    store.{{ variable attribute.name }} = {{ variable class.name }}.{{ variable attribute.name }};
+            {{/ if }}
+        {{/ if }}
+    {{/ each }}
     // Relations
-    {{#each relations as |relation|}}
-        {{#if isRelationEmbedded}}
-    if ({{variable class.name}}.{{variable relation.name}} != null) {
-            {{#if isCollection}}
-      store.{{variable relation.name}}.addAll({{variable class.name}}.{{variable relation.name}}.map<{{storeClassName target.name}}>(({{variable target.name}}) {
-        var store = {{storeClassName target.name}}();
-        map{{fqClass target.name}}To{{storeClassName target.name}}({{variable target.name}}, store);
+    {{# each relations as |relation| }}
+        {{# if isRelationEmbedded }}
+    if ({{ variable class.name }}.{{ variable relation.name }} != null) {
+            {{# if isCollection }}
+      store.{{ variable relation.name }}.addAll({{ variable class.name }}.{{ variable relation.name }}.map<{{ storeClassName target.name }}>(({{ variable target.name }}) {
+        var store = {{ storeClassName target.name }}();
+        map{{ fqClass target.name }}To{{ storeClassName target.name }}({{ variable target.name }}, store);
         return store;
       }).toList());
-            {{else}}
-      var {{variable name}} = {{storeClassName target.name}}();
-      map{{fqClass target.name}}To{{storeClassName target.name}}({{variable class.name}}.{{variable relation.name}}, {{variable name}});
-      store.set{{className name}}({{variable name}});
-            {{/if}}
+            {{ else }}
+      var {{ variable name }} = {{ storeClassName target.name }}();
+      map{{ fqClass target.name }}To{{ storeClassName target.name }}({{ variable class.name }}.{{ variable relation.name }}, {{ variable name }});
+      store.set{{ className name }}({{ variable name }});
+            {{/ if }}
     }
-        {{/if}}
-    {{/each}}
+        {{/ if }}
+    {{/ each }}
   }
 
-  static {{fqClass transferObjectTypeName}} create{{fqClass name}}From{{storeClassName name}}({{storeClassName name}} store) {
+  static {{ fqClass transferObjectTypeName }} create{{ fqClass name }}From{{ storeClassName name }}({{ storeClassName name }} store) {
     if (store == null) {
       return null;
     }
-    var {{variable name}} = {{fqClass transferObjectTypeName}}();
-    map{{storeClassName name}}To{{fqClass name}}(store, {{variable name}});
-    return {{variable name}};
+    var {{ variable name }} = {{ fqClass transferObjectTypeName }}();
+    map{{ storeClassName name }}To{{ fqClass name }}(store, {{ variable name }});
+    return {{ variable name }};
   }
 
-  static void map{{storeClassName name}}To{{fqClass name}}({{storeClassName name}} store, {{fqClass transferObjectTypeName}} {{variable name}}) {
-    {{#if isMapped}}
-    {{variable name}}.internal__identifier = store.internal__identifier;
-    {{variable name}}.internal__signedIdentifier = store.internal__signedIdentifier;
-    {{variable name}}.internal__referenceId = store.internal__referenceIdentifier;
+  static void map{{ storeClassName name }}To{{ fqClass name }}({{ storeClassName name }} store, {{ fqClass transferObjectTypeName }} {{ variable name }}) {
+    {{# if isMapped }}
+    {{ variable name }}.internal__identifier = store.internal__identifier;
+    {{ variable name }}.internal__signedIdentifier = store.internal__signedIdentifier;
+    {{ variable name }}.internal__referenceId = store.internal__referenceIdentifier;
 
-    {{/if}}
+    {{/ if }}
     // Attributes
-    {{#each attributes as |attribute|}}
-        {{#unless isReadOnly}}
-            {{~#if (isEnumType attribute.dataType)}}
-    if (store.{{variable attribute.name}} != null) {
-        {{variable class.name}}.{{variable attribute.name}} = {{fqClass transferObjectTypeName}}{{className attribute.name}}Enum.values[store.{{variable attribute.name}}.index];
+    {{# each attributes as |attribute| }}
+        {{# unless isReadOnly }}
+            {{~# if (isEnumType attribute.dataType) }}
+    if (store.{{ variable attribute.name }} != null) {
+        {{ variable class.name }}.{{ variable attribute.name }} = {{ fqClass transferObjectTypeName }}{{ className attribute.name }}Enum.values[store.{{ variable attribute.name }}.index];
     }
-            {{else}}
-    {{variable class.name}}.{{variable attribute.name}} = store.{{variable attribute.name}};
-            {{/if}}
-        {{/unless}}
-    {{/each}}
+            {{ else }}
+    {{ variable class.name }}.{{ variable attribute.name }} = store.{{ variable attribute.name }};
+            {{/ if }}
+        {{/ unless }}
+    {{/ each }}
     // Relations
-    {{#each relations as |relation|}}
-        {{#if isRelationEmbedded}}
-            {{#unless isReadOnly}}
-    if (store.{{variable relation.name}} != null) {
-                {{#if isCollection}}
-      {{variable class.name}}.{{variable relation.name}} = store.{{variable relation.name}}.map<{{fqClass target.transferObjectTypeName}}>(create{{fqClass target.name}}From{{storeClassName target.name}}).toList();
-                {{else}}
-      {{variable class.name}}.{{variable relation.name}} = create{{fqClass target.name}}From{{storeClassName target.name}}(store.{{variable relation.name}});
-                {{/if}}
+    {{# each relations as |relation| }}
+        {{# if isRelationEmbedded }}
+            {{# unless isReadOnly }}
+    if (store.{{ variable relation.name }} != null) {
+                {{# if isCollection }}
+      {{ variable class.name }}.{{ variable relation.name }} = store.{{ variable relation.name }}.map<{{ fqClass target.transferObjectTypeName }}>(create{{ fqClass target.name }}From{{ storeClassName target.name }}).toList();
+                {{ else }}
+      {{ variable class.name }}.{{ variable relation.name }} = create{{ fqClass target.name }}From{{ storeClassName target.name }}(store.{{ variable relation.name }});
+                {{/ if }}
     }
-            {{/unless}}
-        {{/if}}
-    {{/each}}
+            {{/ unless }}
+        {{/ if }}
+    {{/ each }}
 
   }
 
-  {{#if isMapped}}
-      {{#if isForCreateOrUpdateType}}
-  static {{fqClass transferObjectTypeName}}ForCreateAndUpdate create{{fqClass name}}ForCreateAndUpdateFrom{{storeClassName name}}({{storeClassName name}} store) {
-    var {{variable name}} = {{fqClass transferObjectTypeName}}ForCreateAndUpdate();
-    map{{storeClassName name}}To{{fqClass name}}ForCreateAndUpdate(store, {{variable name}});
-    return {{variable name}};
+  {{# if isMapped }}
+      {{# if isForCreateOrUpdateType }}
+  static {{ fqClass transferObjectTypeName }}ForCreateAndUpdate create{{ fqClass name }}ForCreateAndUpdateFrom{{ storeClassName name }}({{ storeClassName name }} store) {
+    var {{ variable name }} = {{ fqClass transferObjectTypeName }}ForCreateAndUpdate();
+    map{{ storeClassName name }}To{{ fqClass name }}ForCreateAndUpdate(store, {{ variable name }});
+    return {{ variable name }};
   }
 
-  static void map{{storeClassName name}}To{{fqClass name}}ForCreateAndUpdate({{storeClassName name}} store, {{fqClass transferObjectTypeName}}ForCreateAndUpdate {{variable name}}) {
+  static void map{{ storeClassName name }}To{{ fqClass name }}ForCreateAndUpdate({{ storeClassName name }} store, {{ fqClass transferObjectTypeName }}ForCreateAndUpdate {{ variable name }}) {
     // Identifier
-    {{variable name}}.internal__referenceId = store.internal__referenceIdentifier;
-    {{variable name}}.internal__signedIdentifier = store.internal__signedIdentifier;
+    {{ variable name }}.internal__referenceId = store.internal__referenceIdentifier;
+    {{ variable name }}.internal__signedIdentifier = store.internal__signedIdentifier;
 
     // Attributes
-    {{#each attributes as |attribute|}}
-        {{#unless isMemberTypeTransient}}
-            {{#unless isReadOnly}}
-                {{~#if (isEnumType attribute.dataType)}}
-    if (store.{{variable attribute.name}} != null) {
-        {{variable class.name}}.{{variable attribute.name}} = {{fqClass transferObjectTypeName}}ForCreateAndUpdate{{className attribute.name}}Enum.values[store.{{variable attribute.name}}.index];
+    {{# each attributes as |attribute| }}
+        {{# unless isMemberTypeTransient }}
+            {{# unless isReadOnly }}
+                {{~# if (isEnumType attribute.dataType) }}
+    if (store.{{ variable attribute.name }} != null) {
+        {{ variable class.name }}.{{ variable attribute.name }} = {{ fqClass transferObjectTypeName }}ForCreateAndUpdate{{ className attribute.name }}Enum.values[store.{{ variable attribute.name }}.index];
     }
-                {{else}}
-    {{variable class.name}}.{{variable attribute.name}} = store.{{variable attribute.name}};
-                {{/if}}
-            {{/unless}}
-        {{/unless}}
-    {{/each}}
+                {{ else }}
+    {{ variable class.name }}.{{ variable attribute.name }} = store.{{ variable attribute.name }};
+                {{/ if }}
+            {{/ unless }}
+        {{/ unless }}
+    {{/ each }}
     // Relations
-    {{#each relations as |relation|}}
-        {{#if isRelationEmbedded}}
-            {{#unless isReadOnly}}
-                {{#unless isMemberTypeTransient}}
-    if (store.{{variable relation.name}} != null) {
-                    {{#if isCollection}}
-      {{variable class.name}}.{{variable relation.name}} = store.{{variable relation.name}}.map<{{fqClass target.transferObjectTypeName}}ForCreateAndUpdate>((store) {
-        return create{{fqClass target.name}}ForCreateAndUpdateFrom{{storeClassName target.name}}(store);
+    {{# each relations as |relation| }}
+        {{# if isRelationEmbedded }}
+            {{# unless isReadOnly }}
+                {{# unless isMemberTypeTransient }}
+    if (store.{{ variable relation.name }} != null) {
+                    {{# if isCollection }}
+      {{ variable class.name }}.{{ variable relation.name }} = store.{{ variable relation.name }}.map<{{ fqClass target.transferObjectTypeName }}ForCreateAndUpdate>((store) {
+        return create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ storeClassName target.name }}(store);
       }).toList();
-                    {{else}}
-      {{variable class.name}}.{{variable relation.name}} = create{{fqClass target.name}}ForCreateAndUpdateFrom{{storeClassName target.name}}(store.{{variable relation.name}});
-                    {{/if}}
+                    {{ else }}
+      {{ variable class.name }}.{{ variable relation.name }} = create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ storeClassName target.name }}(store.{{ variable relation.name }});
+                    {{/ if }}
     }
-                {{/unless}}
-            {{/unless}}
-        {{/if}}
-    {{/each}}
+                {{/ unless }}
+            {{/ unless }}
+        {{/ if }}
+    {{/ each }}
   }
-      {{/if}}
-  {{/if}}
+      {{/ if }}
+  {{/ if }}
 
   // For rangeable handling
-  {{#if isOptional}}
-      {{#each relations as |relation|}}
-          {{#if relation.isRelationBehaviourTypeRangeable}}
-  static {{modelName ../../name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{className relation.name}} create{{modelName ../../name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{className relation.name}}From{{storeClassName ../../name}}({{storeClassName ../../name}} store) {
+  {{# if isOptional }}
+      {{# each relations as |relation| }}
+          {{# if relation.isRelationBehaviourTypeRangeable }}
+  static {{ modelName ../../name }}Extension{{ packageName ../../name }}GetRangeInput{{ className ../../name }}{{ className relation.name }} create{{ modelName ../../name }}Extension{{ packageName ../../name }}GetRangeInput{{ className ../../name }}{{ className relation.name }}From{{ storeClassName ../../name }}({{ storeClassName ../../name }} store) {
     if (store == null) {
       return null;
     }
-    var {{variable ../../name}} = {{modelName ../../name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{className relation.name}}();
-    map{{storeClassName ../../name}}To{{modelName ../../name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{className relation.name}}({{variable ../../name}}, store);
-    return {{variable ../../name}};
+    var {{ variable ../../name }} = {{ modelName ../../name }}Extension{{ packageName ../../name }}GetRangeInput{{ className ../../name }}{{ className relation.name }}();
+    map{{ storeClassName ../../name }}To{{ modelName ../../name }}Extension{{ packageName ../../name }}GetRangeInput{{ className ../../name }}{{ className relation.name }}({{ variable ../../name }}, store);
+    return {{ variable ../../name }};
   }
 
-  static void map{{storeClassName ../../name}}To{{modelName ../../name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{className relation.name}}({{modelName ../../name}}Extension{{packageName ../../name}}GetRangeInput{{className ../../name}}{{className relation.name}} {{variable ../../name}}, {{storeClassName ../../name}} store) {
-    var optional{{className ../../name}} = create{{modelName ../../name}}OptionalTransferobjecttypes{{packageName ../../name}}{{className ../../name}}(store);
+  static void map{{ storeClassName ../../name }}To{{ modelName ../../name }}Extension{{ packageName ../../name }}GetRangeInput{{ className ../../name }}{{ className relation.name }}({{ modelName ../../name }}Extension{{ packageName ../../name }}GetRangeInput{{ className ../../name }}{{ className relation.name }} {{ variable ../../name }}, {{ storeClassName ../../name }} store) {
+    var optional{{ className ../../name }} = create{{ modelName ../../name }}OptionalTransferobjecttypes{{ packageName ../../name }}{{ className ../../name }}(store);
 
-    {{variable ../../name}}.owner = optional{{className ../../name}};
+    {{ variable ../../name }}.owner = optional{{ className ../../name }};
   }
-          {{/if}}
-      {{/each}}
-  static {{modelName ../../name}}OptionalTransferobjecttypes{{packageName name}}{{className name}} create{{modelName ../../name}}OptionalTransferobjecttypes{{packageName name}}{{className name}}({{storeClassName name}} store) {
+          {{/ if }}
+      {{/ each }}
+  static {{ modelName ../../name }}OptionalTransferobjecttypes{{ packageName name }}{{ className name }} create{{ modelName ../../name }}OptionalTransferobjecttypes{{ packageName name }}{{ className name }}({{ storeClassName name }} store) {
     if (store == null) {
       return null;
     }
-    var optional{{className name}} = {{modelName ../../name}}OptionalTransferobjecttypes{{packageName name}}{{className name}}();
-    {{#if isMapped}}
-    optional{{className name}}.internal__identifier = store.internal__identifier;
-    optional{{className name}}.internal__signedIdentifier = store.internal__signedIdentifier;
-    optional{{className name}}.internal__referenceId = store.internal__referenceIdentifier;
+    var optional{{ className name }} = {{ modelName ../../name }}OptionalTransferobjecttypes{{ packageName name }}{{ className name }}();
+    {{# if isMapped }}
+    optional{{ className name }}.internal__identifier = store.internal__identifier;
+    optional{{ className name }}.internal__signedIdentifier = store.internal__signedIdentifier;
+    optional{{ className name }}.internal__referenceId = store.internal__referenceIdentifier;
 
-    {{/if}}
+    {{/ if }}
     // Attributes
-    {{#each attributes as |attribute|}}
-        {{#unless isReadOnly}}
-            {{~#if (isEnumType attribute.dataType)}}
-    if (store.{{variable attribute.name}} != null) {
-        optional{{className class.name}}.{{variable attribute.name}} = {{modelName ../../name}}OptionalTransferobjecttypes{{packageName class.name}}{{className class.name}}{{className attribute.name}}Enum.values[store.{{variable attribute.name}}.index];
+    {{# each attributes as |attribute| }}
+        {{# unless isReadOnly }}
+            {{~# if (isEnumType attribute.dataType) }}
+    if (store.{{ variable attribute.name }} != null) {
+        optional{{ className class.name }}.{{ variable attribute.name }} = {{ modelName ../../name }}OptionalTransferobjecttypes{{ packageName class.name }}{{ className class.name }}{{ className attribute.name }}Enum.values[store.{{ variable attribute.name }}.index];
     }
-            {{else}}
-    optional{{className class.name}}.{{variable attribute.name}} = store.{{variable attribute.name}};
-            {{/if}}
-        {{/unless}}
-    {{/each}}
+            {{ else }}
+    optional{{ className class.name }}.{{ variable attribute.name }} = store.{{ variable attribute.name }};
+            {{/ if }}
+        {{/ unless }}
+    {{/ each }}
 
     // Relations
-    {{#each relations as |relation|}}
-        {{#if isRelationEmbedded}}
-            {{#unless isReadOnly}}
-    if (store.{{variable relation.name}} != null) {
-    {{#if isCollection}}
-        optional{{className class.name}}.{{variable relation.name}} = store.{{variable relation.name}}.map<{{modelName ../../name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}>(create{{modelName ../../name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}).toList();
-    {{else}}
-        optional{{className class.name}}.{{variable relation.name}} = create{{modelName ../../name}}OptionalTransferobjecttypes{{packageName target.name}}{{className target.name}}(store.{{variable relation.name}});
-    {{/if}}
+    {{# each relations as |relation| }}
+        {{# if isRelationEmbedded }}
+            {{# unless isReadOnly }}
+    if (store.{{ variable relation.name }} != null) {
+    {{# if isCollection }}
+        optional{{ className class.name }}.{{ variable relation.name }} = store.{{ variable relation.name }}.map<{{ modelName ../../name }}OptionalTransferobjecttypes{{ packageName target.name }}{{ className target.name }}>(create{{ modelName ../../name }}OptionalTransferobjecttypes{{ packageName target.name }}{{ className target.name }}).toList();
+    {{ else }}
+        optional{{ className class.name }}.{{ variable relation.name }} = create{{ modelName ../../name }}OptionalTransferobjecttypes{{ packageName target.name }}{{ className target.name }}(store.{{ variable relation.name }});
+    {{/ if }}
     }
-            {{/unless}}
-        {{/if}}
-    {{/each}}
-    return optional{{className name}};
+            {{/ unless }}
+        {{/ if }}
+    {{/ each }}
+    return optional{{ className name }};
   }
 
-  {{/if}}
+  {{/ if }}
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-{{/each}}
+{{/ each }}
 }

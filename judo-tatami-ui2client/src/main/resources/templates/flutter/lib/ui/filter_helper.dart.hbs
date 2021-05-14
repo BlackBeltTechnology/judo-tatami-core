@@ -1,18 +1,18 @@
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/store/package.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/pages/dialogs/helper_stores/package.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/l10n/app_localizations.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
 Future<T> judoShowMenu<T>({@required BuildContext context, @required List<PopupMenuEntry<T>> items, @required GlobalKey buttonKey}) async {
     final RenderBox button = buttonKey.currentContext.findRenderObject() as RenderBox;
@@ -105,10 +105,10 @@ Widget getOperationsIconButton(BuildContext context, FilterStore filterStore) {
   var filterOperationDropdownKey = GlobalKey();
 
   switch(filterStore.filterType){
-    {{#each (getDistinctDataTypes application.dataTypes) as |dataType|}}
-    case FilterType.{{filterDataType dataType}}:
-        return iconDropDownWidget<{{dataTypeToOperationType dataType}}>(context, filterOperationDropdownKey, filterStore, {{dataTypeToOperationType dataType}}.values);
-    {{/each}}
+    {{# each (getDistinctDataTypes application.dataTypes) as |dataType| }}
+    case FilterType.{{ filterDataType dataType }}:
+        return iconDropDownWidget<{{ dataTypeToOperationType dataType }}>(context, filterOperationDropdownKey, filterStore, {{ dataTypeToOperationType dataType }}.values);
+    {{/ each }}
     default:
       return Container();
   }

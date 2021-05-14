@@ -1,12 +1,12 @@
-{{log 'Main generation for' (variable application.name) level='info'}}
+{{ log 'Main generation for' (variable application.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -17,20 +17,20 @@ import 'dart:async';
 import 'package:flutter/scheduler.dart';
 import 'repository/package.dart';
 
-import 'package:{{modelPackage application.name}}/{{path application.name}}/app_theme.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/error/error_handler.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/routes/router.gr.dart' as router;
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/drawer_items.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/navigation/navigation_state.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/guards/auth_guard.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/utilities/package.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/injector/injector.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/l10n/app_localizations.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/scaffold.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/drawer_items.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/guards/auth_guard.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
 
 Future<bool> hasActorMenuAccess() async {
-{{#if application.principal}}
-    {{fqClass application.name}}Repository _actorRepository = locator<{{fqClass application.name}}Repository>();
+{{# if application.principal }}
+    {{ fqClass application.name }}Repository _actorRepository = locator<{{ fqClass application.name }}Repository>();
 
     try {
         var principal = await _actorRepository.getPrincipal();
@@ -42,13 +42,13 @@ Future<bool> hasActorMenuAccess() async {
     } catch(error) {
         return false;
     }
-{{else}}
+{{ else }}
     // Anonymous access allowed
     return true;
-{{/if}}
+{{/ if }}
 }
 
-class {{fqClass application.name}}Application extends StatelessWidget {
+class {{ fqClass application.name }}Application extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
@@ -58,23 +58,23 @@ class {{fqClass application.name}}Application extends StatelessWidget {
         return MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales:  AppLocalizations.supportedLocales,
-            title: '{{modelName application.name}}',
+            title: '{{ modelName application.name }}',
             theme: AppTheme.of(context),
-            home: {{fqClass application.name}}ApplicationPage()
+            home: {{ fqClass application.name }}ApplicationPage()
         );
     }
 }
 
-class {{fqClass application.name}}ApplicationPage extends StatefulWidget {
+class {{ fqClass application.name }}ApplicationPage extends StatefulWidget {
     final String title;
 
-    {{fqClass application.name}}ApplicationPage({Key key, this.title}) : super(key: key);
+    {{ fqClass application.name }}ApplicationPage({Key key, this.title}) : super(key: key);
 
     @override
-    {{fqClass application.name}}ApplicationPageState createState() => {{fqClass application.name}}ApplicationPageState();
+    {{ fqClass application.name }}ApplicationPageState createState() => {{ fqClass application.name }}ApplicationPageState();
 }
 
-class {{fqClass application.name}}ApplicationPageState extends State<{{fqClass application.name}}ApplicationPage> {
+class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClass application.name }}ApplicationPage> {
 
     @override
     Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class {{fqClass application.name}}ApplicationPageState extends State<{{fqClass a
 
             final menu = Container(
                 child: SafeArea(
-                    child: {{fqClass application.name}}Drawer(),
+                    child: {{ fqClass application.name }}Drawer(),
                     right: false,
                 ),
             );
@@ -91,7 +91,7 @@ class {{fqClass application.name}}ApplicationPageState extends State<{{fqClass a
             children: <Widget>[
                 if (!navigation.isMenuCollapsed(context)) menu,
                 Expanded(
-                    child: {{fqClass application.name}}Scaffold(
+                    child: {{ fqClass application.name }}Scaffold(
                         key: navigation.scaffoldKey,
                         body: ExtendedNavigator(
                             key: navigation.navigatorKey,
@@ -109,12 +109,12 @@ class {{fqClass application.name}}ApplicationPageState extends State<{{fqClass a
     }
 }
 
-class {{fqClass application.name}}Drawer extends StatefulWidget {
+class {{ fqClass application.name }}Drawer extends StatefulWidget {
     @override
-    _{{fqClass application.name}}DrawerState createState() => new _{{fqClass application.name}}DrawerState();
+    _{{ fqClass application.name }}DrawerState createState() => new _{{ fqClass application.name }}DrawerState();
 }
 
-class _{{fqClass application.name}}DrawerState extends State<{{fqClass application.name}}Drawer> {
+class _{{ fqClass application.name }}DrawerState extends State<{{ fqClass application.name }}Drawer> {
     Future<bool> _hasActorMenuAccess;
     Auth _auth;
 
@@ -182,7 +182,7 @@ class _{{fqClass application.name}}DrawerState extends State<{{fqClass applicati
                                                         leading: Icon(Icons.settings),
                                                         title: Text(AppLocalizations.of(context).lookUpValue(context, 'Settings')),
                                                         onTap: () {
-                                                            navigationState.open(router.Routes.{{fqVariable application.name}}SettingsPage);
+                                                            navigationState.open(router.Routes.{{ fqVariable application.name }}SettingsPage);
                                                         },
                                                     ) : Container(),
                                                     _auth.isAuthenticationRequired() ? Observer(
@@ -216,7 +216,7 @@ class _{{fqClass application.name}}DrawerState extends State<{{fqClass applicati
 
     Widget actorMenuEntries(BuildContext context, NavigationState navigationState, String _selected) {
         return !_auth.isAuthenticationRequired() || (_auth.isLoggedIn() && _auth.getAuthInfo().isPrincipalAllowed) ? Column(
-            children: {{fqClass application.name}}NavigationItems.navigationItems.map(
+            children: {{ fqClass application.name }}NavigationItems.navigationItems.map(
                 (e) => Theme(
                     data: JudoComponentCustomizer.get().getMenuTheme(Theme.of(context)),
                     child: ListTile(
@@ -253,9 +253,9 @@ class _{{fqClass application.name}}DrawerState extends State<{{fqClass applicati
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                            Text(AppLocalizations.of(context).lookUpValue(context, '{{modelPackage application.name}}'),
+                            Text(AppLocalizations.of(context).lookUpValue(context, '{{ modelPackage application.name }}'),
                               style: JudoComponentCustomizer.get().getAppNameTextStyle(theme)),
-                            Text(AppLocalizations.of(context).lookUpValue(context, '{{path application.name}}'),
+                            Text(AppLocalizations.of(context).lookUpValue(context, '{{ path application.name }}'),
                               style: JudoComponentCustomizer.get().getActorNameTextStyle(theme)),
                         ],
                     )

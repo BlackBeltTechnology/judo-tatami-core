@@ -1,31 +1,31 @@
-//START tablepagefragment.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------------
-{{#with page.relationType as |relation|}}
-    {{#unless page.dataElement.isAccess}}
-    final {{storeClassName page.dataElement.owner.name}} ownerStore;
-    {{/unless}}
+//START tablepagefragment.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------
+{{# with page.relationType as |relation| }}
+    {{# unless page.dataElement.isAccess }}
+    final {{ storeClassName page.dataElement.owner.name }} ownerStore;
+    {{/ unless }}
 
-    {{#unless page.dataElement.isAccess}}
-    const {{fqClass page.name}}Page({Key key, @required this.ownerStore}) : super(key: key);
-    {{/unless}}
+    {{# unless page.dataElement.isAccess }}
+    const {{ fqClass page.name }}Page({Key key, @required this.ownerStore}) : super(key: key);
+    {{/ unless }}
 
     @override
-    State<StatefulWidget> createState() => _{{fqClass page.name}}PageState({{#unless page.dataElement.isAccess}}ownerStore: ownerStore{{/unless}});
+    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState({{# unless page.dataElement.isAccess }}ownerStore: ownerStore{{/ unless }});
 }
 
-class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
-    {{#unless page.dataElement.isAccess}}
-    final {{storeClassName page.dataElement.owner.name}} ownerStore;
-    {{/unless}}
+class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+    {{# unless page.dataElement.isAccess }}
+    final {{ storeClassName page.dataElement.owner.name }} ownerStore;
+    {{/ unless }}
 
-    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+    final {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore = {{ fqClass page.name }}PageStore();
 
-    _{{fqClass page.name}}PageState({{#unless page.dataElement.isAccess}}{@required this.ownerStore}{{/unless}}){
+    _{{ fqClass page.name }}PageState({{# unless page.dataElement.isAccess }}{@required this.ownerStore}{{/ unless }}){
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{fqClass page.name}}Page.title));
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
         });
 
-        {{fqVariable page.name}}PageStore.get{{fqClass page.dataElement.name}}({{#unless page.dataElement.isAccess}} ownerStore {{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+        {{ fqVariable page.name }}PageStore.get{{ fqClass page.dataElement.name }}({{# unless page.dataElement.isAccess }} ownerStore {{/ unless }}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     }
-{{/with}}
-//END tablepagefragment.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------
+{{/ with }}
+//END tablepagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------

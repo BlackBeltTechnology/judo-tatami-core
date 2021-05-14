@@ -1,7 +1,7 @@
-//START dashboardlayoutbuilder.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------
+//START dashboardlayoutbuilder.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------
 // ignore: missing_return
 return Observer(builder: (_) {
-        switch({{fqVariable page.name}}PageStore.getterStatus){
+        switch({{ fqVariable page.name }}PageStore.getterStatus){
             case FutureStatus.pending:
                 return CustomScrollView(
                     slivers: [
@@ -20,37 +20,37 @@ return Observer(builder: (_) {
                 return Container();
             case FutureStatus.fulfilled:
                 return LayoutBuilder(builder: (context, constraints) {
-                {{#each page.containers as |pageContainer|}}
-                    {{#unless pageContainer.layoutType.original}}
-                    if (MediaQuery.of(context).size.width >= {{pageContainer.layoutType.minimumResolution}} && MediaQuery.of(context).size.width <= {{pageContainer.layoutType.maximumResolution}}) {
-                        return get{{fqClass page.name}}Page{{fqClass pageContainer.layoutType.name}}Body(context
+                {{# each page.containers as |pageContainer| }}
+                    {{# unless pageContainer.layoutType.original }}
+                    if (MediaQuery.of(context).size.width >= {{ pageContainer.layoutType.minimumResolution }} && MediaQuery.of(context).size.width <= {{ pageContainer.layoutType.maximumResolution }}) {
+                        return get{{ fqClass page.name }}Page{{ fqClass pageContainer.layoutType.name }}Body(context
 
-                            {{~#if page.dataElement~}}
+                            {{~# if page.dataElement ~}}
                             , targetStore
-                            {{~/if~}}
+                            {{~/ if ~}}
 
-                            , {{fqVariable page.name}}PageStore
+                            , {{ fqVariable page.name }}PageStore
 
-                            {{~#if (isInputWidgetMapNeed page)~}}
+                            {{~# if (isInputWidgetMapNeed page) ~}}
                             , inputWidgetKeyMap
-                            {{~/if~}}
+                            {{~/ if ~}}
                         );
                     }
-                        {{/unless}}
-                    {{/each}}
-                    return get{{fqClass page.name}}Page{{fqClass application.defaultLayoutType.name}}Body(context
+                        {{/ unless }}
+                    {{/ each }}
+                    return get{{ fqClass page.name }}Page{{ fqClass application.defaultLayoutType.name }}Body(context
 
-                            {{~#if page.dataElement~}}
+                            {{~# if page.dataElement ~}}
                             , targetStore
-                            {{~/if~}}
+                            {{~/ if ~}}
 
-                            , {{fqVariable page.name}}PageStore
+                            , {{ fqVariable page.name }}PageStore
 
-                            {{~#if (isInputWidgetMapNeed page)~}}
+                            {{~# if (isInputWidgetMapNeed page) ~}}
                             , inputWidgetKeyMap
-                            {{~/if~}}
+                            {{~/ if ~}}
                     );
                 });
         }
 });
-//END dashboardlayoutbuilder.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------
+//END dashboardlayoutbuilder.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------

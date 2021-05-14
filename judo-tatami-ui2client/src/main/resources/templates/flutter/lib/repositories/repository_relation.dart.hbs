@@ -1,95 +1,95 @@
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 //
-//   Relation: {{relation.name}}
-//   Relation owner: {{relation.owner.name}}
-//   Relation target: {{relation.target.name}}
-//   Access: {{relation.isAccess}}
+//   Relation: {{ relation.name }}
+//   Relation owner: {{ relation.owner.name }}
+//   Relation target: {{ relation.target.name }}
+//   Access: {{ relation.isAccess }}
 //
-//    Relation: {{relation.owner.name}}.{{variable relation.name}} ({{relation.target.name}}) behaviours: {{#each relation.behaviours}} {{{.}}} {{/each}}
-//    TransferObject: {{relation.target.name}} behaviours: {{#each relation.target.behaviours}} {{{.}}} {{/each}}
+//    Relation: {{ relation.owner.name }}.{{ variable relation.name }} ({{ relation.target.name }}) behaviours: {{# each relation.behaviours }} {{{ . }}} {{/ each }}
+//    TransferObject: {{ relation.target.name }} behaviours: {{# each relation.target.behaviours }} {{{ . }}} {{/ each }}
 
-part of {{variable ap.name}}.repository;
+part of {{ variable ap.name }}.repository;
 
-class {{fqClass relation.owner.name}}{{fqClass relation.name}}Repository {
-  {{#if relation.isRelationBehaviourTypeListable}}
-      {{#if relation.isCollection}}
-          {{#if relation.isAccess}}
+class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
+  {{# if relation.isRelationBehaviourTypeListable }}
+      {{# if relation.isCollection }}
+          {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{storeClassName relation.target.name}}>> {{fqVariable relation.owner.name}}{{fqClass relation.name}}List({ String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+  Future<List<{{ storeClassName relation.target.name }}>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({ String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
 
-    var queryCustomizer = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}QueryCustomizer{{className relation.target.name}}();
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}QueryCustomizer{{ className relation.target.name }}();
 
-    var seek = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}Seek{{className relation.target.name}}();
+    var seek = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}Seek{{ className relation.target.name }}();
 
-            {{#if relation.isOrderable}}
-    var orderBy = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}OrderingType{{className relation.target.name}}();
+            {{# if relation.isOrderable }}
+    var orderBy = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}();
 
     // Sort Attributes
     if (sortColumn != null) {
-                {{#each relation.target.attributes as |attribute|}}
-                    {{#unless attribute.isMemberTypeTransient}}
-                        {{#unless (isEnumType attribute.dataType)}}
-                            {{#unless (isBooleanDataType attribute.dataType)}}
-        if (sortColumn == "{{variable attribute.name}}" ) {
-            orderBy.attribute = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}OrderingType{{className relation.target.name}}AttributeEnum.{{variable attribute.name}};
+                {{# each relation.target.attributes as |attribute| }}
+                    {{# unless attribute.isMemberTypeTransient }}
+                        {{# unless (isEnumType attribute.dataType) }}
+                            {{# unless (isBooleanDataType attribute.dataType) }}
+        if (sortColumn == "{{ variable attribute.name }}" ) {
+            orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
         }
-                            {{/unless}}
-                        {{/unless}}
-                    {{/unless}}
-                {{/each}}
+                            {{/ unless }}
+                        {{/ unless }}
+                    {{/ unless }}
+                {{/ each }}
       if (orderBy.attribute != null) {
         orderBy.descending = sortAscending == null ? false : !sortAscending;
         queryCustomizer.orderBy = [orderBy];
       }
     }
-            {{/if}}
-            {{#if relation.isFilterable}}
+            {{/ if }}
+            {{# if relation.isFilterable }}
       if (filterStoreList != null && filterStoreList.isNotEmpty) {
           filterStoreList.forEach((element) {
             if (element.filterValue == null ) return;
-                    {{#each relation.target.attributes as |attribute|}}
-                        {{#if attribute.isFilterable}}
-            if (element.attributeName.uncapitalize() == "{{variable attribute.name}}") {
-                var filter = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}();
-                            {{#if (isStringType attribute.dataType)}}
+                    {{# each relation.target.attributes as |attribute| }}
+                        {{# if attribute.isFilterable }}
+            if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
+                var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
+                            {{# if (isStringType attribute.dataType) }}
                 if(element.filterOperation == 'contain'){
                     filter.value = '%' + (element.filterValue ?? '') + '%';
-                    filter.operator_ = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.like;
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
                 } else if (element.filterOperation == 'beginWith') {
                     filter.value = (element.filterValue ?? '') + '%';
-                    filter.operator_ = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.like;
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
                 } else {
                     filter.value = element.filterValue as String;
-                    filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
+                    filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
                 }
-                            {{/if}}
-                            {{#if (isEnumType attribute.dataType)}}
-                filter.value = (element.filterValue.toString().split('.').last).toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}ValueEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}ValueEnum.values);
-                filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
-                            {{/if}}
-                            {{#unless (isStringType attribute.dataType)}}
-                                {{#unless (isEnumType attribute.dataType)}}
-                filter.value = element.filterValue as {{dartType attribute.dataType}};
-                filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
-                                {{/unless}}
-                            {{/unless}}
-                queryCustomizer.{{variable attribute.name}}.add(filter);
+                            {{/ if }}
+                            {{# if (isEnumType attribute.dataType) }}
+                filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                            {{/ if }}
+                            {{# unless (isStringType attribute.dataType) }}
+                                {{# unless (isEnumType attribute.dataType) }}
+                filter.value = element.filterValue as {{ dartType attribute.dataType }};
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                                {{/ unless }}
+                            {{/ unless }}
+                queryCustomizer.{{ variable attribute.name }}.add(filter);
             }
-                        {{/if}}
-                    {{/each}}
+                        {{/ if }}
+                    {{/ each }}
           });
       }
-                {{/if}}
+                {{/ if }}
 
       seek.limit = queryLimit != null && queryLimit >= 5 ? queryLimit : 5;
       queryCustomizer.seek = seek;
@@ -97,79 +97,79 @@ class {{fqClass relation.owner.name}}{{fqClass relation.name}}Repository {
         queryCustomizer.mask = mask;
       }
 
-      List<{{fqClass relation.target.transferObjectTypeName}}> {{variable relation.target.name}}ListResponse = await DefaultApi(locator<ApiClient>()).{{fqVariable relation.owner.name}}List{{className relation.name}}(input : queryCustomizer);
-    return {{variable relation.target.name}}ListResponse.map<{{storeClassName relation.target.name}}>(
-      {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName relation.target.name}}From{{fqClass relation.target.name}}).toList();
+      List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : queryCustomizer);
+    return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
   }
-          {{else}}
+          {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{storeClassName relation.target.name}}>> {{fqVariable relation.owner.name}}{{fqClass relation.name}}List({{storeClassName relation.owner.name}} owner, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+  Future<List<{{ storeClassName relation.target.name }}>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({{ storeClassName relation.owner.name }} owner, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
 
-    var queryCustomizer = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}QueryCustomizer{{className relation.target.name}}();
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}QueryCustomizer{{ className relation.target.name }}();
 
-    var seek = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}Seek{{className relation.target.name}}();
+    var seek = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}Seek{{ className relation.target.name }}();
 
-                {{#if relation.isOrderable}}
-    var orderBy = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}OrderingType{{className relation.target.name}}();
+                {{# if relation.isOrderable }}
+    var orderBy = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}();
 
     // Sort Attributes
     if (sortColumn != null) {
-                    {{#each relation.target.attributes as |attribute|}}
-                        {{#unless (isEnumType attribute.dataType)}}
-                            {{#unless (isBooleanDataType attribute.dataType)}}
-      if (sortColumn == "{{variable attribute.name}}" ) {
-        orderBy.attribute = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}OrderingType{{className relation.target.name}}AttributeEnum.{{variable attribute.name}};
+                    {{# each relation.target.attributes as |attribute| }}
+                        {{# unless (isEnumType attribute.dataType) }}
+                            {{# unless (isBooleanDataType attribute.dataType) }}
+      if (sortColumn == "{{ variable attribute.name }}" ) {
+        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
       }
-                            {{/unless}}
-                        {{/unless}}
-                    {{/each}}
+                            {{/ unless }}
+                        {{/ unless }}
+                    {{/ each }}
       if (orderBy.attribute != null) {
         orderBy.descending = sortAscending == null ? false : !sortAscending;
         queryCustomizer.orderBy = [orderBy];
       }
     }
-                {{/if}}
+                {{/ if }}
 
-                {{#if relation.isFilterable}}
+                {{# if relation.isFilterable }}
       if (filterStoreList != null && filterStoreList.isNotEmpty) {
           filterStoreList.forEach((element) {
-                    {{#each relation.target.attributes as |attribute|}}
+                    {{# each relation.target.attributes as |attribute| }}
             if (element.filterValue == null ) return;
-                        {{#if attribute.isFilterable}}
-            if (element.attributeName.uncapitalize() == "{{variable attribute.name}}") {
-                var filter = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}();
-                            {{#if (isStringType attribute.dataType)}}
+                        {{# if attribute.isFilterable }}
+            if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
+                var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
+                            {{# if (isStringType attribute.dataType) }}
                 if(element.filterOperation == 'contain'){
                     filter.value = '%' + element.filterValue + '%';
-                    filter.operator_ = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.like;
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
                 } else if (element.filterOperation == 'beginWith') {
                     filter.value = element.filterValue + '%';
-                    filter.operator_ = {{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.like;
+                    filter.operator_ = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.like;
                 } else {
                     filter.value = element.filterValue as String;
-                    filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
+                    filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
                 }
-                            {{/if}}
-                            {{#if (isEnumType attribute.dataType)}}
-                filter.value = (element.filterValue.toString().split('.').last).toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}ValueEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}ValueEnum.values);
-                filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
-                            {{/if}}
-                            {{#unless (isStringType attribute.dataType)}}
-                                {{#unless (isEnumType attribute.dataType)}}
-                filter.value = element.filterValue as {{dartType attribute.dataType}};
-                filter.operator_ = element.filterOperation.toEnum<{{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum>({{modelName relation.target.name}}ExtensionFilterBy{{openApiDataType attribute.dataType.name}}OperatorEnum.values);
-                                {{/unless}}
-                            {{/unless}}
-                queryCustomizer.{{variable attribute.name}}.add(filter);
+                            {{/ if }}
+                            {{# if (isEnumType attribute.dataType) }}
+                filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                            {{/ if }}
+                            {{# unless (isStringType attribute.dataType) }}
+                                {{# unless (isEnumType attribute.dataType) }}
+                filter.value = element.filterValue as {{ dartType attribute.dataType }};
+                filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
+                                {{/ unless }}
+                            {{/ unless }}
+                queryCustomizer.{{ variable attribute.name }}.add(filter);
             }
-                        {{/if}}
-                    {{/each}}
+                        {{/ if }}
+                    {{/ each }}
           });
       }
-                {{/if}}
+                {{/ if }}
 
       seek.limit = queryLimit != null && queryLimit >= 5 ? queryLimit : 5;
       queryCustomizer.seek = seek;
@@ -177,241 +177,241 @@ class {{fqClass relation.owner.name}}{{fqClass relation.name}}Repository {
         queryCustomizer.mask = mask;
       }
 
-    List<{{fqClass relation.target.transferObjectTypeName}}> {{variable relation.target.name}}ListResponse = await DefaultApi(locator<ApiClient>()).{{fqVariable owner.transferObjectTypeName}}List{{className relation.name}}(owner.internal__signedIdentifier, input : queryCustomizer);
-    return {{variable relation.target.name}}ListResponse.map<{{storeClassName relation.target.name}}>(
-      {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName relation.target.name}}From{{fqClass relation.target.name}}).toList();
+    List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : queryCustomizer);
+    return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
   }
-          {{/if}}
-      {{else}}
-          {{#if relation.isAccess}}
+          {{/ if }}
+      {{ else }}
+          {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName relation.target.name}}> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Get({ String mask }) async {
-    var queryCustomizer = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}QueryCustomizer{{className relation.target.name}}();
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({ String mask }) async {
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}QueryCustomizer{{ className relation.target.name }}();
     if (mask != null) {
         queryCustomizer.mask = mask;
     }
 
-    {{fqClass relation.target.transferObjectTypeName}} {{variable relation.target.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable relation.owner.name}}List{{className relation.name}}(input : queryCustomizer);
-    return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName relation.target.name}}From{{fqClass relation.target.name}}({{variable relation.target.name}}Response);
+    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : queryCustomizer);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
-          {{else}}
+          {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName relation.target.name}}> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Get({{storeClassName relation.owner.name}} owner, { String mask }) async {
-    var queryCustomizer = {{modelName relation.target.name}}Extension{{packageName relation.target.name}}QueryCustomizer{{className relation.target.name}}();
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({{ storeClassName relation.owner.name }} owner, { String mask }) async {
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}QueryCustomizer{{ className relation.target.name }}();
     if (mask != null) {
         queryCustomizer.mask = mask;
     }
 
-    {{fqClass relation.target.transferObjectTypeName}} {{variable relation.target.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable owner.transferObjectTypeName}}List{{className relation.name}}(owner.internal__signedIdentifier, input : queryCustomizer);
-    return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName relation.target.name}}From{{fqClass relation.target.name}}({{variable relation.target.name}}Response);
+    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : queryCustomizer);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
-          {{/if}}
-      {{/if}}
-  {{/if}}
-  {{#if relation.isRelationBehaviourTypeCreatable}}
-      {{#if relation.isAccess}}
+          {{/ if }}
+      {{/ if }}
+  {{/ if }}
+  {{# if relation.isRelationBehaviourTypeCreatable }}
+      {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
   // CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName relation.target.name}}> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Create({{storeClassName relation.target.name}} target) async {
-    {{fqClass relation.target.transferObjectTypeName}}ForCreateAndUpdate {{variable relation.target.name}}ForCreateAndUpdateRequest = {{fqClass ap.name}}RepositoryStoreMapper.create{{fqClass relation.target.name}}ForCreateAndUpdateFrom{{storeClassName relation.target.name}}(target);
-    {{fqClass relation.target.transferObjectTypeName}} {{variable relation.target.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable relation.owner.name}}CreateInstance{{className relation.name}}({{variable relation.target.name}}ForCreateAndUpdateRequest);
-    return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName relation.target.name}}From{{fqClass relation.target.name}}({{variable relation.target.name}}Response);
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ storeClassName relation.target.name }} target) async {
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
+    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}CreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
-      {{else}}
+      {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
   // CREATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName relation.target.name}}> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Create({{storeClassName relation.owner.name}} owner, {{storeClassName relation.target.name}} target) async {
-    {{fqClass relation.target.transferObjectTypeName}}ForCreateAndUpdate {{variable relation.target.name}}ForCreateAndUpdateRequest = {{fqClass ap.name}}RepositoryStoreMapper.create{{fqClass relation.target.name}}ForCreateAndUpdateFrom{{storeClassName relation.target.name}}(target);
-    {{fqClass relation.target.transferObjectTypeName}} {{variable relation.target.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable owner.transferObjectTypeName}}CreateInstance{{className relation.name}}(owner.internal__signedIdentifier, {{variable relation.target.name}}ForCreateAndUpdateRequest);
-    return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName relation.target.name}}From{{fqClass relation.target.name}}({{variable relation.target.name}}Response);
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target) async {
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
+    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}CreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ForCreateAndUpdateRequest);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
-      {{/if}}
-  {{/if}}
-  {{#if relation.isRelationBehaviourTypeCreateValidatable}}
-    {{#if relation.isAccess}}
+      {{/ if }}
+  {{/ if }}
+  {{# if relation.isRelationBehaviourTypeCreateValidatable }}
+    {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
   // VALIDATE CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName relation.target.name}}> {{fqVariable relation.owner.name}}{{fqClass relation.name}}ValidateForCreate({{storeClassName relation.target.name}} target) async {
-    {{fqClass relation.target.transferObjectTypeName}}ForCreateAndUpdate {{variable relation.target.name}}ForCreateAndUpdateRequest = {{fqClass ap.name}}RepositoryStoreMapper.create{{fqClass relation.target.name}}ForCreateAndUpdateFrom{{storeClassName relation.target.name}}(target);
-    {{fqClass relation.target.transferObjectTypeName}} {{variable relation.target.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable relation.owner.name}}ValidateCreateInstance{{className relation.name}}({{variable relation.target.name}}ForCreateAndUpdateRequest);
-    return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName relation.target.name}}From{{fqClass relation.target.name}}({{variable relation.target.name}}Response);
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ storeClassName relation.target.name }} target) async {
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
+    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}ValidateCreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
-    {{else}}
+    {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
   // VALIDATE CREATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName relation.target.name}}> {{fqVariable relation.owner.name}}{{fqClass relation.name}}ValidateForCreate({{storeClassName relation.owner.name}} owner, {{storeClassName relation.target.name}} target) async {
-    {{fqClass relation.target.transferObjectTypeName}}ForCreateAndUpdate {{variable relation.target.name}}ForCreateAndUpdateRequest = {{fqClass ap.name}}RepositoryStoreMapper.create{{fqClass relation.target.name}}ForCreateAndUpdateFrom{{storeClassName relation.target.name}}(target);
-    {{fqClass relation.target.transferObjectTypeName}} {{variable relation.target.name}}Response = await DefaultApi(locator<ApiClient>()).{{fqVariable owner.transferObjectTypeName}}ValidateCreateInstance{{className relation.name}}(owner.internal__signedIdentifier, {{variable relation.target.name}}ForCreateAndUpdateRequest);
-    return {{fqClass ap.name}}RepositoryStoreMapper.create{{storeClassName relation.target.name}}From{{fqClass relation.target.name}}({{variable relation.target.name}}Response);
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target) async {
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
+    {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}ValidateCreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ForCreateAndUpdateRequest);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
-    {{/if}}
-  {{/if}}
-  {{#if relation.isRelationBehaviourTypeDeletable}}
-      {{#if relation.isAccess}}
+    {{/ if }}
+  {{/ if }}
+  {{# if relation.isRelationBehaviourTypeDeletable }}
+      {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
   // DELETE (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Delete({{storeClassName relation.target.name}} target) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Delete(target);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Delete({{ storeClassName relation.target.name }} target) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Delete(target);
   }
-      {{else}}
+      {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
   // DELETE
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Delete({{storeClassName relation.owner.name}} owner,  {{storeClassName relation.target.name}} target) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Delete(target);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Delete({{ storeClassName relation.owner.name }} owner,  {{ storeClassName relation.target.name }} target) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Delete(target);
   }
-      {{/if}}
-  {{/if}}
-  {{#if relation.isRelationBehaviourTypeUpdatable}}
-      {{#if relation.isAccess}}
+      {{/ if }}
+  {{/ if }}
+  {{# if relation.isRelationBehaviourTypeUpdatable }}
+      {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE  (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName relation.target.name}}> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Update({{storeClassName relation.target.name}} target) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Update(target);
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Update({{ storeClassName relation.target.name }} target) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Update(target);
   }
-      {{else}}
+      {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{storeClassName relation.target.name}}> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Update({{storeClassName relation.owner.name}} owner, {{storeClassName relation.target.name}} target) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Update(target);
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Update({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Update(target);
   }
-      {{/if}}
-  {{/if}}
+      {{/ if }}
+  {{/ if }}
 
   // Target relations
-  {{#each relation.target.relations as |targetRelation|}}
-      {{#if targetRelation.isRelationBehaviourTypeRangeable}}
+  {{# each relation.target.relations as |targetRelation| }}
+      {{# if targetRelation.isRelationBehaviourTypeRangeable }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // GET CREATE RANGE FOR {{variable targetRelation.name}}
+  // GET CREATE RANGE FOR {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{storeClassName targetRelation.target.name}}>> {{fqVariable relation.owner.name}}{{fqClass relation.name}}RangeOf{{fqClass targetRelation.name}}ToCreate({{storeClassName relation.target.name}} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}RangeOf{{fqClass targetRelation.name}}ToCreate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit, mask: mask);
+  Future<List<{{ storeClassName targetRelation.target.name }}>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate({{ storeClassName relation.target.name }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit, mask: mask);
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // GET UPDATE RANGE FOR {{variable targetRelation.name}}
+  // GET UPDATE RANGE FOR {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{storeClassName targetRelation.target.name}}>> {{fqVariable relation.owner.name}}{{fqClass relation.name}}RangeOf{{fqClass targetRelation.name}}ToUpdate({{storeClassName relation.target.name}} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}RangeOf{{fqClass targetRelation.name}}ToUpdate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit, mask: mask);
+  Future<List<{{ storeClassName targetRelation.target.name }}>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate({{ storeClassName relation.target.name }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit, mask: mask);
   }
-      {{/if}}
-      {{#if targetRelation.isRelationBehaviourTypeSetable}}
-        {{#if targetRelation.isCollection}}
-          {{#if relation.isAccess}}
+      {{/ if }}
+      {{# if targetRelation.isRelationBehaviourTypeSetable }}
+        {{# if targetRelation.isCollection }}
+          {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // SET {{variable targetRelation.name}} (Access) Collection
+  // SET {{ variable targetRelation.name }} (Access) Collection
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Set{{fqClass targetRelation.name}}({{storeClassName relation.target.name}} target, List<{{storeClassName targetRelation.target.name}}> selected) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Set{{fqClass targetRelation.name}}(target, selected);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Set{{ fqClass targetRelation.name }}(target, selected);
   }
-          {{else}}
+          {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // SET {{variable targetRelation.name}} Collection
+  // SET {{ variable targetRelation.name }} Collection
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Set{{fqClass targetRelation.name}}({{storeClassName relation.owner.name}} owner, {{storeClassName relation.target.name}} target, List<{{storeClassName targetRelation.target.name}}> selected) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Set{{fqClass targetRelation.name}}(target, selected);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Set{{ fqClass targetRelation.name }}(target, selected);
   }
-          {{/if}}
-        {{else}}
-          {{#if relation.isAccess}}
+          {{/ if }}
+        {{ else }}
+          {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // SET {{variable targetRelation.name}} (Access) Single
+  // SET {{ variable targetRelation.name }} (Access) Single
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Set{{fqClass targetRelation.name}}({{storeClassName relation.target.name}} target, {{storeClassName targetRelation.target.name}} selected) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Set{{fqClass targetRelation.name}}(target, selected);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ storeClassName relation.target.name }} target, {{ storeClassName targetRelation.target.name }} selected) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Set{{ fqClass targetRelation.name }}(target, selected);
   }
-          {{else}}
+          {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // SET {{variable targetRelation.name}} Single
+  // SET {{ variable targetRelation.name }} Single
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Set{{fqClass targetRelation.name}}({{storeClassName relation.owner.name}} owner, {{storeClassName relation.target.name}} target, {{storeClassName targetRelation.target.name}} selected) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Set{{fqClass targetRelation.name}}(target, selected);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target, {{ storeClassName targetRelation.target.name }} selected) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Set{{ fqClass targetRelation.name }}(target, selected);
   }
-          {{/if}}
-        {{/if}}
-      {{/if}}
-      {{#if targetRelation.isRelationBehaviourTypeUnsetable}}
-          {{#if relation.isAccess}}
+          {{/ if }}
+        {{/ if }}
+      {{/ if }}
+      {{# if targetRelation.isRelationBehaviourTypeUnsetable }}
+          {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // UNSET {{variable targetRelation.name}} (Access)
+  // UNSET {{ variable targetRelation.name }} (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Unset{{fqClass targetRelation.name}}({{storeClassName relation.target.name}} target) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Unset{{fqClass targetRelation.name}}(target);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Unset{{ fqClass targetRelation.name }}({{ storeClassName relation.target.name }} target) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Unset{{ fqClass targetRelation.name }}(target);
   }
-          {{else}}
+          {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // UNSET {{variable targetRelation.name}}
+  // UNSET {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Unset{{fqClass targetRelation.name}}({{storeClassName relation.owner.name}} owner, {{storeClassName relation.target.name}} target) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Unset{{fqClass targetRelation.name}}(target);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Unset{{ fqClass targetRelation.name }}({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Unset{{ fqClass targetRelation.name }}(target);
   }
-          {{/if}}
-      {{/if}}
-      {{#if targetRelation.isRelationBehaviourTypeAddable}}
-          {{#if relation.isAccess}}
+          {{/ if }}
+      {{/ if }}
+      {{# if targetRelation.isRelationBehaviourTypeAddable }}
+          {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // ADD {{variable targetRelation.name}} (Access)
+  // ADD {{ variable targetRelation.name }} (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Add{{fqClass targetRelation.name}}({{storeClassName relation.target.name}} target, List<{{storeClassName targetRelation.target.name}}> selected) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Add{{fqClass targetRelation.name}}(target, selected);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetRelation.name }}({{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Add{{ fqClass targetRelation.name }}(target, selected);
   }
-          {{else}}
+          {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // ADD {{variable targetRelation.name}}
+  // ADD {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Add{{fqClass targetRelation.name}}({{storeClassName relation.owner.name}} owner, {{storeClassName relation.target.name}} target, List<{{storeClassName targetRelation.target.name}}> selected) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Add{{fqClass targetRelation.name}}(target, selected);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetRelation.name }}({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Add{{ fqClass targetRelation.name }}(target, selected);
   }
-          {{/if}}
-      {{/if}}
-      {{#if targetRelation.isRelationBehaviourTypeRemovable}}
-          {{#if relation.isAccess}}
+          {{/ if }}
+      {{/ if }}
+      {{# if targetRelation.isRelationBehaviourTypeRemovable }}
+          {{# if relation.isAccess }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // REMOVE {{variable targetRelation.name}} (Access)
+  // REMOVE {{ variable targetRelation.name }} (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Remove{{fqClass targetRelation.name}}({{storeClassName relation.target.name}} target, List<{{storeClassName targetRelation.target.name}}> selected) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Remove{{fqClass targetRelation.name}}(target, selected);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetRelation.name }}({{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Remove{{ fqClass targetRelation.name }}(target, selected);
   }
-          {{else}}
+          {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
-  // REMOVE {{variable targetRelation.name}}
+  // REMOVE {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{fqVariable relation.owner.name}}{{fqClass relation.name}}Remove{{fqClass targetRelation.name}}({{storeClassName relation.owner.name}} owner, {{storeClassName relation.target.name}} target, List<{{storeClassName targetRelation.target.name}}> selected) async {
-    return await locator<{{fqClass application.actor.name}}Repository>().{{fqVariable relation.target.name}}Remove{{fqClass targetRelation.name}}(target, selected);
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetRelation.name }}({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
+    return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Remove{{ fqClass targetRelation.name }}(target, selected);
   }
-          {{/if}}
-      {{/if}}
-  {{/each}}
+          {{/ if }}
+      {{/ if }}
+  {{/ each }}
 }

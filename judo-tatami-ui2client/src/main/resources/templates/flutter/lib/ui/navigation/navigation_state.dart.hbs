@@ -1,12 +1,12 @@
-{{log 'Breadcrumb generation for' (variable application.name) level='info'}}
+{{ log 'Breadcrumb generation for' (variable application.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,9 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
 import 'package:injectable/injectable.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/routes/router.gr.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/injector/injector.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/pages/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
 import 'navigation_registry.dart';
 import 'navigation_service.dart';
 import 'page_navigation.dart';
@@ -31,7 +31,7 @@ abstract class _NavigationState with Store {
     final navigatorKey = GlobalKey<ExtendedNavigatorState>();
     final scaffoldKey = GlobalKey<ScaffoldState>(); // rethink this key place
 
-    String currentRoute = Routes.{{fqVariable application.dashboard.name}}Page;
+    String currentRoute = Routes.{{ fqVariable application.dashboard.name }}Page;
     PageNavigation currentPageNavigation;
     final List<String> stack = [];
 
@@ -45,13 +45,13 @@ abstract class _NavigationState with Store {
     void setCurrentTitle(String newTitle) => currentTitle = newTitle;
 
    bool isMenuCollapsed(BuildContext context) {
-        {{#each application.layoutTypes as |layoutType|}}
-        {{#unless layoutType.original}}
-         if (MediaQuery.of(context).size.width >= {{layoutType.minimumResolution}} && MediaQuery.of(context).size.width <={{layoutType.maximumResolution}}) {
-            return {{layoutType.menuCollapsed}};
+        {{# each application.layoutTypes as |layoutType| }}
+        {{# unless layoutType.original }}
+         if (MediaQuery.of(context).size.width >= {{ layoutType.minimumResolution }} && MediaQuery.of(context).size.width <={{ layoutType.maximumResolution }}) {
+            return {{ layoutType.menuCollapsed }};
          }
-        {{/unless}}
-        {{/each}}
+        {{/ unless }}
+        {{/ each }}
         return false;
     }
     
@@ -80,9 +80,9 @@ abstract class _NavigationState with Store {
                 navigatorKey.currentState.pushAndRemoveUntil(targetPageNavigation.route, (route) => false, arguments: targetPageNavigation.getPageArgumentObject());
                 return;
             } else if(targetPageNavigation == null && currentPageNavigation?.pageType == PageType.View) { // if create page is not existing, but we need to go to the empty view page
-                currentRoute = Routes.{{fqVariable application.name}}BlankPage;
+                currentRoute = Routes.{{ fqVariable application.name }}BlankPage;
                 currentTitle = 'Empty';
-                navigatorKey.currentState.pushAndRemoveUntil(Routes.{{fqVariable application.name}}BlankPage, (route) => false);
+                navigatorKey.currentState.pushAndRemoveUntil(Routes.{{ fqVariable application.name }}BlankPage, (route) => false);
                 return;
             }
 

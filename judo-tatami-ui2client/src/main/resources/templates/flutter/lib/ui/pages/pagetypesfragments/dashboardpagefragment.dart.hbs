@@ -1,38 +1,38 @@
-//START dashboardpagefragment.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------
+//START dashboardpagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------
     @override
-    State<StatefulWidget> createState() => _{{fqClass page.name}}PageState();
+    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState();
 }
 
-class _{{fqClass page.name}}PageState extends State<{{fqClass page.name}}Page> {
-        final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+        final {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore = {{ fqClass page.name }}PageStore();
 
-    {{#if page.dataElement}}
-        {{storeClassName page.dataElement.target.name}} targetStore;
-    {{/if}}
+    {{# if page.dataElement }}
+        {{ storeClassName page.dataElement.target.name }} targetStore;
+    {{/ if }}
 
-        _{{fqClass page.name}}PageState(){
+        _{{ fqClass page.name }}PageState(){
             final navigation = locator<NavigationState>();
             SchedulerBinding.instance.addPostFrameCallback((_) {
-                navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{fqClass page.name}}Page.title){{#if page.dataElement.target.representation}} + ' - ${targetStore?.{{variable page.dataElement.target.representation.name}} }'{{/if}});
+                navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore?.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
             });
-    {{#if page.dataElement}}
+    {{# if page.dataElement }}
             final navigationRegistry = locator<NavigationRegistry>();
-            {{fqVariable page.name}}PageStore.get{{fqClass page.relationType.name}}()
+            {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}()
                 .then((res) {
                     if (res != null) {
                         targetStore = res;
-                        {{fqVariable page.name}}PageStore.getterStatusSetFulfilled();
+                        {{ fqVariable page.name }}PageStore.getterStatusSetFulfilled();
                     } else {
-                        var currentPageNavigation = navigationRegistry.getPageNavigationByRoute(Routes.{{fqVariable application.name}}DashboardPage);
+                        var currentPageNavigation = navigationRegistry.getPageNavigationByRoute(Routes.{{ fqVariable application.name }}DashboardPage);
                         if (currentPageNavigation.createPage != null) {
                             navigation.navigateTo(currentPageNavigation.createPage.route);
                         } else {
-                            navigation.navigateTo(Routes.{{fqVariable application.name}}BlankPage);
+                            navigation.navigateTo(Routes.{{ fqVariable application.name }}BlankPage);
                         }
-                        {{fqVariable page.name}}PageStore.getterStatusSetRejected();
+                        {{ fqVariable page.name }}PageStore.getterStatusSetRejected();
                     }
                 })
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-    {{/if}}
+    {{/ if }}
         }
-//END dashboardpagefragment.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------
+//END dashboardpagefragment.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------

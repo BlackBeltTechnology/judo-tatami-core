@@ -1,72 +1,72 @@
-{{log 'Page body generation for' (variable application.name) '-' (fqClass page.name)(fqClass container.layoutType.name) level='info'}}
+{{ log 'Page body generation for' (variable application.name) '-' (fqClass page.name)(fqClass container.layoutType.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
-// Container: {{container.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+// Container: {{ container.name }}
 
-part of {{variable application.name}}.ui.pages.{{variable container.layoutType.name}};
+part of {{ variable application.name }}.ui.pages.{{ variable container.layoutType.name }};
 
-Widget get{{fqClass page.name}}Page{{fqClass container.layoutType.name}}Body(BuildContext context
+Widget get{{ fqClass page.name }}Page{{ fqClass container.layoutType.name }}Body(BuildContext context
 
-        {{~#if page.isPageTypeDashboard~}}
-            {{~#unless page.dataElement.isCollection~}}
-                {{~#if page.dataElement~}}
-        , {{storeClassName page.dataElement.target.name}} targetStore
-                {{~/if~}}
-            {{~/unless~}}
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
-        {{~/if~}}
+        {{~# if page.isPageTypeDashboard ~}}
+            {{~# unless page.dataElement.isCollection ~}}
+                {{~# if page.dataElement ~}}
+        , {{ storeClassName page.dataElement.target.name }} targetStore
+                {{~/ if ~}}
+            {{~/ unless ~}}
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        {{~/ if ~}}
 
-        {{~#if page.isPageTypeTable~}}
-            {{~#unless page.dataElement.isAccess~}}
-        , {{storeClassName page.dataElement.owner.name}} ownerStore
-            {{~/unless~}}
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
-        {{~/if~}}
+        {{~# if page.isPageTypeTable ~}}
+            {{~# unless page.dataElement.isAccess ~}}
+        , {{ storeClassName page.dataElement.owner.name }} ownerStore
+            {{~/ unless ~}}
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        {{~/ if ~}}
 
-        {{~#if page.isPageTypeView~}}
-        , {{storeClassName page.dataElement.target.name}} targetStore
-        {{~#unless page.dataElement.isAccess~}}
-        , {{storeClassName page.dataElement.owner.name}} ownerStore
-        {{~/unless~}}
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
-        {{~/if~}}
+        {{~# if page.isPageTypeView ~}}
+        , {{ storeClassName page.dataElement.target.name }} targetStore
+        {{~# unless page.dataElement.isAccess ~}}
+        , {{ storeClassName page.dataElement.owner.name }} ownerStore
+        {{~/ unless ~}}
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        {{~/ if ~}}
 
-        {{~#if page.isPageTypeUpdate~}}
-        , {{storeClassName page.dataElement.target.name}} targetStore, {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
-        {{~/if~}}
+        {{~# if page.isPageTypeUpdate ~}}
+        , {{ storeClassName page.dataElement.target.name }} targetStore, {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        {{~/ if ~}}
 
-        {{~#if page.isPageTypeCreate~}}
-        , {{storeClassName page.dataElement.target.name}} targetStore
-        {{~#unless page.dataElement.isAccess~}}
-        , {{storeClassName page.dataElement.owner.name}} ownerStore
-        {{~/unless~}}
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
-        {{~/if~}}
+        {{~# if page.isPageTypeCreate ~}}
+        , {{ storeClassName page.dataElement.target.name }} targetStore
+        {{~# unless page.dataElement.isAccess ~}}
+        , {{ storeClassName page.dataElement.owner.name }} ownerStore
+        {{~/ unless ~}}
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        {{~/ if ~}}
 
-        {{~#if page.isPageTypeOperationInput~}}
-        , {{storeClassName page.dataElement.target.name}} targetStore
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
-        {{~/if~}}
+        {{~# if page.isPageTypeOperationInput ~}}
+        , {{ storeClassName page.dataElement.target.name }} targetStore
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        {{~/ if ~}}
 
-        {{~#if page.isPageTypeOperationOutput~}}
-        , {{storeClassName page.dataElement.target.name}} targetStore
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
-        {{~/if~}}
+        {{~# if page.isPageTypeOperationOutput ~}}
+        , {{ storeClassName page.dataElement.target.name }} targetStore
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        {{~/ if ~}}
 
-        {{~#if (isInputWidgetMapNeed page)~}}
+        {{~# if (isInputWidgetMapNeed page) ~}}
         , Map inputWidgetKeyMap
-        {{~/if~}}
+        {{~/ if ~}}
     ) {
     final navigation = locator<NavigationState>();
-    {{#if (isRefreshTableTypePage page)}}
+    {{# if (isRefreshTableTypePage page) }}
     var addFilterButtonKey = GlobalKey();
-    {{/if}}
+    {{/ if }}
 
     return CustomScrollView(
         slivers: [
@@ -75,20 +75,20 @@ Widget get{{fqClass page.name}}Page{{fqClass container.layoutType.name}}Body(Bui
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                        {{#if (isRefreshTableTypePage page)}}Observer(
-                            builder: (_) => {{/if}}JudoColumn(
-                                col: {{col}},
-                                row: {{row}}{{#if (isRefreshTableTypePage page)}} + {{fqVariable page.name}}PageStore.getPlusRowSize + 1{{/if}}, // +1 is for the text under table
+                        {{# if (isRefreshTableTypePage page) }}Observer(
+                            builder: (_) => {{/ if }}JudoColumn(
+                                col: {{ col }},
+                                row: {{ row }}{{# if (isRefreshTableTypePage page) }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}, // +1 is for the text under table
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                {{#each this.children as |child|}}
-                                    {{#if child}}
-                                    {{> (getWidgetTemplate child)}}
-                                    {{/if}}
-                                {{/each}}
+                                {{# each this.children as |child| }}
+                                    {{# if child }}
+                                    {{> (getWidgetTemplate child) }}
+                                    {{/ if }}
+                                {{/ each }}
                                 ],
-                            ),{{#if (isRefreshTableTypePage page)}}
-                        ),{{/if}}
+                            ),{{# if (isRefreshTableTypePage page) }}
+                        ),{{/ if }}
                     ]
                 ),
             )

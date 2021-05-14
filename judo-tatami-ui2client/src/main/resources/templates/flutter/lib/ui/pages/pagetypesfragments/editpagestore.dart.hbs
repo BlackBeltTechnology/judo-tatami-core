@@ -1,54 +1,54 @@
-{{log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug'}}
-//START editpagestore.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------------
-class {{fqClass page.name}}PageStore extends _{{fqClass page.name}}PageStore with _${{fqClass page.name}}PageStore {}
+{{ log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug' }}
+//START editpagestore.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------------
+class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
 
-abstract class _{{fqClass page.name}}PageStore with Store {
-    {{#with page.relationType as |relation|}}
-    {{fqClass application.actor.name}}Repository _{{fqVariable application.actor.name}}Repository = locator<{{fqClass application.actor.name}}Repository>();
+abstract class _{{ fqClass page.name }}PageStore with Store {
+    {{# with page.relationType as |relation| }}
+    {{ fqClass application.actor.name }}Repository _{{ fqVariable application.actor.name }}Repository = locator<{{ fqClass application.actor.name }}Repository>();
 
     @observable
     String errorMessage;
 
-    {{#if (validatableFlagNeed relation)}}
+    {{# if (validatableFlagNeed relation) }}
     bool validatable = true;
-    {{/if}}
+    {{/ if }}
 
-    {{#if relation.isRelationBehaviourTypeRefreshable}}
+    {{# if relation.isRelationBehaviourTypeRefreshable }}
     @action
-    Future<void> refresh{{className relation.target.name}}({{storeClassName relation.target.name}} targetStore) async {
+    Future<void> refresh{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            targetStore.updateWith(await _{{fqVariable application.actor.name}}Repository.{{fqVariable relation.target.name}}GetByIdentifier(targetStore));
+            targetStore.updateWith(await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}GetByIdentifier(targetStore));
         } on ApiException catch (error) {
-            errorMessage = "Could not refresh {{relation.target.name}}";
+            errorMessage = "Could not refresh {{ relation.target.name }}";
             throw error;
         }
     }
 
-    {{/if}}
-    {{#if relation.isRelationBehaviourTypeUpdateValidatable}}
+    {{/ if }}
+    {{# if relation.isRelationBehaviourTypeUpdateValidatable }}
     @action
-    Future<{{storeClassName relation.target.name}}> validate({{storeClassName relation.target.name}} targetStore) async {
+    Future<{{ storeClassName relation.target.name }}> validate({{ storeClassName relation.target.name }} targetStore) async {
             try {
             errorMessage = null;
-            return await _{{fqVariable application.actor.name}}Repository.{{fqVariable relation.target.name}}ValidateForUpdate(targetStore);
+            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}ValidateForUpdate(targetStore);
         } on ApiException catch (error) {
-            errorMessage = "Could not validate {{relation.target.name}}";
+            errorMessage = "Could not validate {{ relation.target.name }}";
             throw error;
         }
     }
 
-    {{/if}}
-    {{/with}}
-    {{#each page.dataElement.target.relations as |relation|}}
-        {{#unless isMemberTypeTransient}}
-            {{#if isRelationKindAggregation}}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
-            {{/if}}
-            {{#if isRelationKindComposition}}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
-            {{/if}}
-        {{/unless}}
-    {{/each}}
+    {{/ if }}
+    {{/ with }}
+    {{# each page.dataElement.target.relations as |relation| }}
+        {{# unless isMemberTypeTransient }}
+            {{# if isRelationKindAggregation }}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation }}
+            {{/ if }}
+            {{# if isRelationKindComposition }}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation }}
+            {{/ if }}
+        {{/ unless }}
+    {{/ each }}
 }
-//END editpagestore.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------------------
+//END editpagestore.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------------

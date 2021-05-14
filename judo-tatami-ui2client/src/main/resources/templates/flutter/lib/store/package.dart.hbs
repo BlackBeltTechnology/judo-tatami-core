@@ -1,13 +1,13 @@
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 
-library {{variable ap.name}}.store;
+library {{ variable ap.name }}.store;
 
 import 'package:mobx/mobx.dart';
 import 'package:uuid/uuid.dart';
@@ -16,6 +16,6 @@ import 'package:quiver/core.dart' show hash3;
 part 'package.g.dart';
 
 part 'enum_types.dart';
-{{#each classes~}}
-part '{{storeClassRelativePath name}}';
-{{/each}}
+{{# each classes ~}}
+part '{{ storeClassRelativePath name }}';
+{{/ each }}

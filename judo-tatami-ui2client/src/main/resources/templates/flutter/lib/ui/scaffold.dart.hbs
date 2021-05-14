@@ -1,26 +1,26 @@
-{{log 'Scaffold generation for' (variable application.name) level='info'}}
+{{ log 'Scaffold generation for' (variable application.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/injector/injector.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/app.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/app_theme.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/navigation/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/app_theme.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 
 /// A responsive scaffold for our application.
 /// Displays the navigation drawer alongside the [Scaffold] if the screen/window size is large enough
-class {{fqClass application.name}}Scaffold extends StatelessWidget {
-    const {{fqClass application.name}}Scaffold({@required this.body, this.floatingActionButton, Key key}) : super(key: key);
+class {{ fqClass application.name }}Scaffold extends StatelessWidget {
+    const {{ fqClass application.name }}Scaffold({@required this.body, this.floatingActionButton, Key key}) : super(key: key);
 
     final Widget body;
 
@@ -29,7 +29,7 @@ class {{fqClass application.name}}Scaffold extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         final navigation = locator<NavigationState>();
-        final drawer = navigation.isMenuCollapsed(context) ? {{fqClass application.name}}Drawer() : null;
+        final drawer = navigation.isMenuCollapsed(context) ? {{ fqClass application.name }}Drawer() : null;
 
         return SafeArea(
             child: Scaffold(

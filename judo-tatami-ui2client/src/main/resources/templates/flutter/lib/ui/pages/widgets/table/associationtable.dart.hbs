@@ -1,36 +1,36 @@
-{{log 'Table generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug'~}}
-//START associationtable.dart.hbs-----{{dataElement.name}}---------------------------------------------------------------------------------
+{{ log 'Table generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
+//START associationtable.dart.hbs-----{{ dataElement.name }}---------------------------------------------------------------------------------
 Observer(
     builder: (_) => JudoColumn(
         col: 1,
-        row: {{fqVariable page.name}}PageStore.getPlusRowSize as double,
-        children: getInputFilterWidgetsForTablePage(context, {{fqVariable page.name}}PageStore.availableFilterList, {{table.col}}, () => {{fqVariable page.name}}PageStore.get{{className page.relationType.name}}({{#unless page.dataElement.isAccess}}ownerStore{{/unless}}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message))),
+        row: {{ fqVariable page.name }}PageStore.getPlusRowSize as double,
+        children: getInputFilterWidgetsForTablePage(context, {{ fqVariable page.name }}PageStore.availableFilterList, {{ table.col }}, () => {{ fqVariable page.name }}PageStore.get{{ className page.relationType.name }}({{# unless page.dataElement.isAccess }}ownerStore{{/ unless }}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message))),
     ),
 ),
 // ignore: missing_return
 Observer(builder: (_) {
-    switch({{fqVariable page.name}}PageStore.{{variable page.relationType.owner.name}}{{fqClass page.relationType.name}}StoreFuture.status){
+    switch({{ fqVariable page.name }}PageStore.{{ variable page.relationType.owner.name }}{{ fqClass page.relationType.name }}StoreFuture.status){
         case FutureStatus.pending:
             return JudoLoadingProgress();
         case FutureStatus.rejected:
             return Container();
         case FutureStatus.fulfilled:
-            var dataInfo = {{fqClass pageDefinition.name}}{{fqClass table.name}}{{fqClass pageContainer.layoutType.name}}Table(context, disabled: {{disabled}});
+            var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{ disabled }});
             return JudoTable(
-                disabled: {{disabled}},
-                col: {{col}},
-                row: {{row}},
-                inCard: {{isInCard}},
+                disabled: {{ disabled }},
+                col: {{ col }},
+                row: {{ row }},
+                inCard: {{ isInCard }},
                 dataInfo: dataInfo,
-                rowList: {{#if page.dataElement.isAccess}}{{#if page.relationType.isCollection}}{{fqVariable page.name}}PageStore.{{fqVariable page.relationType.name}}StoreList.asObservable(){{else}}[{{fqVariable page.name}}PageStore.store].asObservable(){{/if}}{{else}}{{#if page.relationType.isCollection}}ownerStore.{{variable page.relationType.name}}{{else}}[ownerStore.{{variable page.relationType.name}}].asObservable(){{/if}}{{/if}},
-                {{#if page.relationType.isCollection}}
-                sortAscending: {{fqVariable page.name}}PageStore.{{fqVariable page.relationType.name}}SortAsc,
-                sortColumnIndex: {{fqVariable page.name}}PageStore.{{fqVariable page.relationType.name}}SortColumnIndex,
+                rowList: {{# if page.dataElement.isAccess }}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList.asObservable(){{ else }}[{{ fqVariable page.name }}PageStore.store].asObservable(){{/ if }}{{ else }}{{# if page.relationType.isCollection }}ownerStore.{{ variable page.relationType.name }}{{ else }}[ownerStore.{{ variable page.relationType.name }}].asObservable(){{/ if }}{{/ if }},
+                {{# if page.relationType.isCollection }}
+                sortAscending: {{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}SortAsc,
+                sortColumnIndex: {{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}SortColumnIndex,
                 onSort: (int columnIndex, bool asc) {
-                    {{fqVariable page.name}}PageStore.{{fqVariable page.relationType.name}}SetSort(
-                        {{#unless page.dataElement.isAccess}}
+                    {{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}SetSort(
+                        {{# unless page.dataElement.isAccess }}
                         ownerStore,
-                        {{/unless}}
+                        {{/ unless }}
                         context,
                         dataInfo.getColumnFieldByIndex(columnIndex, asc),
                         columnIndex,
@@ -38,66 +38,66 @@ Observer(builder: (_) {
                         dataInfo.getSortComparator(columnIndex, asc)
                     );
                 },
-                {{/if}}
-                {{#each table.rowActions as |action|}}
-                {{#if action.isViewAction}}
+                {{/ if }}
+                {{# each table.rowActions as |action| }}
+                {{# if action.isViewAction }}
                 navigateToViewPageAction: (element) async {
                     if (element != null) {
-                        var response = await navigation.open(Routes.{{fqVariable action.target.name}}Page,
-                            arguments: {{fqClass action.target.name}}PageArguments({{#unless page.dataElement.isAccess}}ownerStore: ownerStore, {{/unless}}targetStore: element));
-                        {{#unless relation.isMemberTypeTransient}}
+                        var response = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+                            arguments: {{ fqClass action.target.name }}PageArguments({{# unless page.dataElement.isAccess }}ownerStore: ownerStore, {{/ unless }}targetStore: element));
+                        {{# unless relation.isMemberTypeTransient }}
                         if (response != null) {
-                            {{fqVariable page.name}}PageStore.get{{fqClass page.relationType.name}}({{#unless page.dataElement.isAccess}}ownerStore{{/unless}})
+                            {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess }}ownerStore{{/ unless }})
                                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         }
-                        {{/unless}}
+                        {{/ unless }}
                     }
                 },
-                {{/if}}
-                {{#if action.isCreateAction}}
+                {{/ if }}
+                {{# if action.isCreateAction }}
                 // TODO: not sure this rowAction needed
-                navigateToCreatePageAction:{{#unless page.dataElement.isAccess}} targetStore.internal__updatable ?{{/unless}} (element) async {
-                    var created = await navigation.open(Routes.{{fqVariable action.target.name}}Page);
+                navigateToCreatePageAction:{{# unless page.dataElement.isAccess }} targetStore.internal__updatable ?{{/ unless }} (element) async {
+                    var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page);
                     if (created != null) {
-                        {{fqVariable page.name}}PageStore.create{{fqClass page.relationType.name}}({{#unless page.dataElement.isAccess}}ownerStore ,{{/unless}}created)
+                        {{ fqVariable page.name }}PageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess }}ownerStore ,{{/ unless }}created)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                     }
-                }{{#unless page.dataElement.isAccess}} : null{{/unless}},
-                {{/if}}
-                {{#if action.isEditAction}}
-                navigateToEditPageAction:{{#unless page.dataElement.isAccess}} ownerStore.internal__updatable ?{{/unless}} (element) async {
-                    {{storeClassName relationType.target.name}} cloned = {{storeClassName relationType.target.name}}();
+                }{{# unless page.dataElement.isAccess }} : null{{/ unless }},
+                {{/ if }}
+                {{# if action.isEditAction }}
+                navigateToEditPageAction:{{# unless page.dataElement.isAccess }} ownerStore.internal__updatable ?{{/ unless }} (element) async {
+                    {{ storeClassName relationType.target.name }} cloned = {{ storeClassName relationType.target.name }}();
                     cloned.updateWith(element);
-                    var res = await navigation.open(Routes.{{fqVariable action.target.name}}Page,
-                        arguments: {{fqClass action.target.name}}PageArguments(targetStore: cloned));
+                    var res = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+                        arguments: {{ fqClass action.target.name }}PageArguments(targetStore: cloned));
                     if (res != null) {
                         element.updateWith(cloned);
-                        var updated = await {{fqVariable page.name}}PageStore.update{{className page.relationType.target.name}}(element)
+                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className page.relationType.target.name }}(element)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         if (updated != null) {
                             element.updateWith(updated);
-                            {{fqVariable page.name}}PageStore.get{{fqClass page.relationType.name}}({{#unless page.dataElement.isAccess}}ownerStore{{/unless}})
+                            {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess }}ownerStore{{/ unless }})
                                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         }
                     }
-                }{{#unless page.dataElement.isAccess}}{{#unless page.dataElement.isRelationKindStatic}} : null{{/unless}}{{/unless}},
-                {{/if}}
-                {{#if action.isRemoveAction}}
-                removeAction:{{#unless page.dataElement.isAccess}} ownerStore.internal__updatable ?{{/unless}} (element) => {{fqVariable page.name}}PageStore.remove{{fqClass page.relationType.name}}(ownerStore, element){{#unless page.dataElement.isAccess}} : null{{/unless}},
-                {{/if}}
-                {{#if relationAction.isUnsetAction}}
-                unsetAction:{{#unless page.dataElement.isAccess}}{{#unless page.dataElement.isRelationKindStatic}} targetStore.internal__updatable ?{{/unless}}{{/unless}} () async {
-                    {{fqVariable page.name}}PageStore.unset{{fqClass page.dataElement.name}}(targetStore)
+                }{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
+                {{/ if }}
+                {{# if action.isRemoveAction }}
+                removeAction:{{# unless page.dataElement.isAccess }} ownerStore.internal__updatable ?{{/ unless }} (element) => {{ fqVariable page.name }}PageStore.remove{{ fqClass page.relationType.name }}(ownerStore, element){{# unless page.dataElement.isAccess }} : null{{/ unless }},
+                {{/ if }}
+                {{# if relationAction.isUnsetAction }}
+                unsetAction:{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
+                    {{ fqVariable page.name }}PageStore.unset{{ fqClass page.dataElement.name }}(targetStore)
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                }{{#unless page.dataElement.isAccess}}{{#unless page.dataElement.isRelationKindStatic}} : null{{/unless}}{{/unless}},
-                {{/if}}
-                {{#if action.isDeleteAction}}
-                deleteAction:{{#unless page.dataElement.isAccess}} ownerStore.internal__updatable ?{{/unless}} (element) async {
-                    {{fqVariable page.name}}PageStore.delete{{className page.relationType.target.name}}(element{{#unless page.dataElement.isAccess}}, ownerStore{{/unless}})
+                }{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
+                {{/ if }}
+                {{# if action.isDeleteAction }}
+                deleteAction:{{# unless page.dataElement.isAccess }} ownerStore.internal__updatable ?{{/ unless }} (element) async {
+                    {{ fqVariable page.name }}PageStore.delete{{ className page.relationType.target.name }}(element{{# unless page.dataElement.isAccess }}, ownerStore{{/ unless }})
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                }{{#unless page.dataElement.isAccess}} : null{{/unless}},
-                {{/if}}
-                {{/each}}
+                }{{# unless page.dataElement.isAccess }} : null{{/ unless }},
+                {{/ if }}
+                {{/ each }}
             );
     }
 }),
@@ -107,11 +107,11 @@ Row(
             padding: JudoComponentCustomizer.get().getDefaultPadding(),
             child: Observer(
                 builder: (_) => Text(
-                    AppLocalizations.of(context).lookUpValue(context, 'Showed rows: ') + '${ {{#if page.dataElement.isAccess}}{{#if page.relationType.isCollection}}{{fqVariable page.name}}PageStore.{{fqVariable page.relationType.name}}StoreList.length{{else}}[{{fqVariable page.name}}PageStore.store].length{{/if}}{{else}}{{#if page.relationType.isCollection}}ownerStore.{{variable page.relationType.name}}.length{{else}}[ownerStore.{{variable page.relationType.name}}].length{{/if}}{{/if}} }',
+                    AppLocalizations.of(context).lookUpValue(context, 'Showed rows: ') + '${ {{# if page.dataElement.isAccess }}{{# if page.relationType.isCollection }}{{ fqVariable page.name }}PageStore.{{ fqVariable page.relationType.name }}StoreList.length{{ else }}[{{ fqVariable page.name }}PageStore.store].length{{/ if }}{{ else }}{{# if page.relationType.isCollection }}ownerStore.{{ variable page.relationType.name }}.length{{ else }}[ownerStore.{{ variable page.relationType.name }}].length{{/ if }}{{/ if }} }',
                     style: JudoComponentCustomizer.get().getRowCounterTextStyle(Theme.of(context)),
                 ),
             ),
         ),
     ],
 ),
-//END associationtable.dart.hbs-----{{dataElement.name}}---------------------------------------------------------------------------------
+//END associationtable.dart.hbs-----{{ dataElement.name }}---------------------------------------------------------------------------------

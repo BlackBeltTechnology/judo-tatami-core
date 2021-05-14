@@ -1,14 +1,14 @@
-{{log 'Page package generation for' (variable application.name) level='debug'}}
+{{ log 'Page package generation for' (variable application.name) level='debug' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
-// Factory expression: {{{cleanup template.factoryExpression}}}
-// Path expression: {{{cleanup template.pathExpression}}}
-// Overwrite: {{{cleanup template.overwriteExpression}}}
-// Template name: {{template.templateName}}
-// Application: {{application.name}}
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
 
-library {{variable application.name}}.ui.pages;
+library {{ variable application.name }}.ui.pages;
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
@@ -17,27 +17,27 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
 
-import 'package:{{modelPackage application.name}}/{{path application.name}}/error/error_handler.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/injector/injector.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/repository/package.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/store/package.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/navigation/navigation_registry.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/navigation/navigation_service.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/navigation/navigation_state.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/scaffold.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/routes/router.gr.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/ui/pages/dialogs/helper_stores/package.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/utilities/package.dart';
-import 'package:{{modelPackage application.name}}/{{path application.name}}/l10n/app_localizations.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_registry.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_service.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
-{{#each application.layoutTypes as |layout|}}
-{{#unless layout.original}}
-import '{{variable layout.name}}/package.dart';
-{{/unless}}
-{{/each}}
+{{# each application.layoutTypes as |layout| }}
+{{# unless layout.original }}
+import '{{ variable layout.name }}/package.dart';
+{{/ unless }}
+{{/ each }}
 
-{{#each layout.pageContainers as |container|}}
-part '{{fqPath container.owner.name}}__page.dart';
-{{/each}}
+{{# each layout.pageContainers as |container| }}
+part '{{ fqPath container.owner.name }}__page.dart';
+{{/ each }}
 
 part 'package.g.dart';

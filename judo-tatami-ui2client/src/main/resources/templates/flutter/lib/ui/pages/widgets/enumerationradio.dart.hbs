@@ -1,51 +1,51 @@
-{{~log 'Radio generation for' (variable application.name) '-' (fqClass page.name)'page' level='debug'~}}
-//START enumerationradio.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
-{{#if (isViewTypePage page)}}
+{{~ log 'Radio generation for' (variable application.name) '-' (fqClass page.name)'page' level='debug' ~}}
+//START enumerationradio.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------
+{{# if (isViewTypePage page) }}
 Observer(
-    builder: (_) => JudoRadio<{{className attributeType.dataType.name}}>(
+    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
         key: UniqueKey(),
-        col: {{col}},
-        row: {{row}},
-        disabled: {{disabled}}{{#if enabledBy}} || !((targetStore?.{{variable enabledBy.name}}) ?? false){{/if}},
-        items: {{className attributeType.dataType.name}}.values,
+        col: {{ col }},
+        row: {{ row }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        items: {{ className attributeType.dataType.name }}.values,
         getLabel: (element) => AppLocalizations.of(context).lookUpValue(context, element.toString().split('.').last),
         getValue: (element) => element,
-        groupValue: targetStore.{{variable attributeType.name}},
+        groupValue: targetStore.{{ variable attributeType.name }},
         readOnly: true,
     )
 ),
-{{/if}}
+{{/ if }}
 
-{{#if (isCreateTypePage page)}}
+{{# if (isCreateTypePage page) }}
 Observer(
-    builder: (_) => JudoRadio<{{className attributeType.dataType.name}}>(
-        key: inputWidgetKeyMap['{{name}}'],
-        col: {{col}},
-        row: {{row}},
-        disabled: {{disabled}}{{#if enabledBy}} || !((targetStore?.{{variable enabledBy.name}}) ?? false){{/if}},
-        items: {{className attributeType.dataType.name}}.values,
+    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
+        key: inputWidgetKeyMap['{{ name }}'],
+        col: {{ col }},
+        row: {{ row }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        items: {{ className attributeType.dataType.name }}.values,
         getLabel: (element) => AppLocalizations.of(context).lookUpValue(context, element.toString().split('.').last),
         getValue: (element) => element,
-        groupValue: targetStore.{{variable attributeType.name}},
-        onChanged: (value) => targetStore.set{{className attributeType.name}}(value),
-        readOnly: {{attributeType.isReadOnly}},
+        groupValue: targetStore.{{ variable attributeType.name }},
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value),
+        readOnly: {{ attributeType.isReadOnly }},
     )
 ),
-{{/if}}
-{{#if page.isPageTypeUpdate}}
+{{/ if }}
+{{# if page.isPageTypeUpdate }}
 Observer(
-    builder: (_) => JudoRadio<{{className attributeType.dataType.name}}>(
-        key: inputWidgetKeyMap['{{name}}'],
-        col: {{col}},
-        row: {{row}},
-        disabled: {{disabled}}{{#if enabledBy}} || !((targetStore?.{{variable enabledBy.name}}) ?? false){{/if}},
-        items: {{className attributeType.dataType.name}}.values,
+    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
+        key: inputWidgetKeyMap['{{ name }}'],
+        col: {{ col }},
+        row: {{ row }},
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        items: {{ className attributeType.dataType.name }}.values,
         getLabel: (element) => AppLocalizations.of(context).lookUpValue(context, element.toString().split('.').last),
         getValue: (element) => element,
-        groupValue: targetStore.{{variable attributeType.name}},
-        onChanged: (value) => targetStore.set{{className attributeType.name}}(value),
-        readOnly: {{attributeType.isReadOnly}},
+        groupValue: targetStore.{{ variable attributeType.name }},
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value),
+        readOnly: {{ attributeType.isReadOnly }},
     )
 ),
-{{/if}}
-//END enumerationradio.dart.hbs-----{{page.name}}------------------------------------------------------------------------------------------
+{{/ if }}
+//END enumerationradio.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------
