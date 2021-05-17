@@ -1,0 +1,33 @@
+{{log 'Embedded table collaction order action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug'}}
+//START embedded_collection_table_order_action.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------
+// {{ className relation.name }} embedded table order
+
+@observable
+int {{ fqVariable relation.name }}SortColumnIndex;
+
+@observable
+String {{ fqVariable relation.name }}SortColumnName;
+
+@observable
+bool {{ fqVariable relation.name }}SortAsc;
+
+@observable
+Comparator {{ fqVariable relation.name }}SortCompare;
+
+{{# if relation.isCollection }}
+@action
+void {{ fqVariable relation.name }}SetSort(BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {{ fqClass relation.owner.name }}Store {{ fqVariable relation.owner.name }}Store) {
+    if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
+        {{ fqVariable relation.name }}SortAsc = true;
+    } else {
+        {{ fqVariable relation.name }}SortAsc = !{{ fqVariable relation.name }}SortAsc;
+    }
+    {{ fqVariable relation.name }}SortColumnIndex = sortColumnIndex;
+    {{ fqVariable relation.name }}SortColumnName = sortColumnName;
+    {{ fqVariable relation.name }}SortCompare = sortCompare;
+
+    {{ fqVariable relation.owner.name }}Store.{{ variable relation.name }}.sort(sortCompare);
+}
+{{/if}}
+
+//END embedded_collection_table_order_action.dart.hbs-----{{relaltion.name}}-----------------------------------------------------------------------------------
