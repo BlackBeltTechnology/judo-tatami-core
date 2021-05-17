@@ -38,7 +38,7 @@ rule EClassToTableVersionField
         var table = s.equivalent("EClassToRdbmsTable");
 	    table.fields.add(t);
 		t.sqlName = "VERSION";
-		t.mandatory = true;
+		t.mandatory = false;
 		t.fillType("java.lang.Integer");
 }
 
