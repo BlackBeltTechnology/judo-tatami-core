@@ -165,7 +165,6 @@ public class FlutterHelper {
         context.registerFunction("storeClassFileName", FlutterHelper.class.getDeclaredMethod("storeClassFileName", new Class[]{String.class}));
         context.registerFunction("storeClassName", FlutterHelper.class.getDeclaredMethod("storeClassName", new Class[]{String.class}));
         context.registerFunction("storeClassRelativePath", FlutterHelper.class.getDeclaredMethod("storeClassRelativePath", new Class[]{String.class}));
-        context.registerFunction("storeClassVariableName", FlutterHelper.class.getDeclaredMethod("storeClassVariableName", new Class[]{String.class}));
 
     }
 
@@ -687,15 +686,6 @@ public class FlutterHelper {
      */
     public static String storeClassName(String fqName) {
         return fqClassWithoutModel(fqName) + "Store";
-    }
-
-    /**
-     * Calculates variable name used for Store classes. Uses {@link #variable(String)} to uncapitalize name tokens and remove reserved words.
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return variable name based on the fully qualified name, e.g. typeNameStore
-     */
-    public static String storeClassVariableName(String fqName) {
-        return variable(fqName) + "Store";
     }
 
 }

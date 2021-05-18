@@ -14,36 +14,36 @@ class {{ storeClassName name }} extends _{{ storeClassName name }}
 
     {{ storeClassName name }}() : super();
 
-    {{ storeClassName name }}.clone({{ storeClassName name }} {{ storeClassVariableName name }}) : super.clone({{ storeClassVariableName name }});
+    {{ storeClassName name }}.clone({{ storeClassName name }} storeToClone) : super.clone(storeToClone);
 
 }
 
 abstract class _{{ storeClassName name }} with Store {
   _{{ storeClassName name }}();
 
-  _{{ storeClassName name }}.clone({{ storeClassName name }} {{ storeClassVariableName name }}) {
-    internal__identifier = {{ storeClassVariableName name }}.internal__identifier;
-    internal__signedIdentifier = {{ storeClassVariableName name }}.internal__signedIdentifier;
-    internal__referenceIdentifier = {{ storeClassVariableName name }}.internal__referenceIdentifier;
-    internal__updatable = {{ storeClassVariableName name }}.internal__updatable ?? true;
-    internal__deletable = {{ storeClassVariableName name }}.internal__deletable ?? true;
+  _{{ storeClassName name }}.clone({{ storeClassName name }} storeToClone) {
+    internal__identifier = storeToClone.internal__identifier;
+    internal__signedIdentifier = storeToClone.internal__signedIdentifier;
+    internal__referenceIdentifier = storeToClone.internal__referenceIdentifier;
+    internal__updatable = storeToClone.internal__updatable ?? true;
+    internal__deletable = storeToClone.internal__deletable ?? true;
 
     //Attributes
     {{# each attributes }}
-    {{ variable name }} = {{ storeClassVariableName ../name }}.{{ variable name }};
+    {{ variable name }} = storeToClone.{{ variable name }};
     {{/ each }}
 
     // Relations
     {{# each relations }}
       {{# if isCollection }}
-    if ({{ storeClassVariableName ../name }}.{{ variable name }} != null) {
-      {{ variable name }} = ObservableList.of({{ storeClassVariableName ../name }}.{{ variable name }});
+    if (storeToClone.{{ variable name }} != null) {
+      {{ variable name }} = ObservableList.of(storeToClone.{{ variable name }});
     } else {
       {{ variable name }} = ObservableList.of([]);
     }
       {{ else }}
-    if ({{ storeClassVariableName ../name }}.{{ variable name }} != null) {
-      {{ variable name }} = {{ storeClassName target.name }}.clone({{ storeClassVariableName ../name }}.{{ variable name }});
+    if (storeToClone.{{ variable name }} != null) {
+      {{ variable name }} = {{ storeClassName target.name }}.clone(storeToClone.{{ variable name }});
     } else {
       {{ variable name }} = null;
     }
@@ -142,28 +142,28 @@ abstract class _{{ storeClassName name }} with Store {
   int get hashCode => hash3(internal__signedIdentifier, internal__identifier, internal__referenceIdentifier);
 
   @action
-  void updateWith({{ storeClassName name }} {{ storeClassVariableName name }}) {
-    internal__identifier = {{ storeClassVariableName name }}.internal__identifier;
-    internal__signedIdentifier = {{ storeClassVariableName name }}.internal__signedIdentifier;
-    internal__referenceIdentifier = {{ storeClassVariableName name }}.internal__referenceIdentifier;
-    internal__updatable = {{ storeClassVariableName name }}.internal__updatable ?? true;
-    internal__deletable = {{ storeClassVariableName name }}.internal__deletable ?? true;
+  void updateWith({{ storeClassName name }} storeToClone) {
+    internal__identifier = storeToClone.internal__identifier;
+    internal__signedIdentifier = storeToClone.internal__signedIdentifier;
+    internal__referenceIdentifier = storeToClone.internal__referenceIdentifier;
+    internal__updatable = storeToClone.internal__updatable ?? true;
+    internal__deletable = storeToClone.internal__deletable ?? true;
 
     {{# each attributes }}
-      {{ variable name }} = {{ storeClassVariableName ../name }}.{{ variable name }};
+      {{ variable name }} = storeToClone.{{ variable name }};
     {{/ each }}
 
     // Relations
     {{# each relations }}
       {{# if isCollection }}
-    if ({{ storeClassVariableName ../name }}.{{ variable name }} != null) {
-      {{ variable name }} = ObservableList.of({{ storeClassVariableName ../name }}.{{ variable name }});
+    if (storeToClone.{{ variable name }} != null) {
+      {{ variable name }} = ObservableList.of(storeToClone.{{ variable name }});
     } else {
       {{ variable name }} = ObservableList.of([]);
     }
       {{ else }}
-    if ({{ storeClassVariableName ../name }}.{{ variable name }} != null) {
-      {{ variable name }} = {{ storeClassName target.name }}.clone({{ storeClassVariableName ../name }}.{{ variable name }});
+    if (storeToClone.{{ variable name }} != null) {
+      {{ variable name }} = {{ storeClassName target.name }}.clone(storeToClone.{{ variable name }});
     } else {
       {{ variable name }} = null;
     }
