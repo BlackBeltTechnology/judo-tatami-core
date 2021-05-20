@@ -22,6 +22,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
     private final String ID_ATTRIBUTE = "#_id";
     private final String TYPE_ATTRIBUTE = "#_type";
+    private final String VERSION_ATTRIBUTE = "#_version";
+    private final String CREATE_USERNAME_ATTRIBUTE = "#_create_username";
+    private final String CREATE_USER_ID_ATTRIBUTE = "#_create_user_id";
+    private final String CREATE_TIMESTAMP_ATTRIBUTE = "#_create_timestamp";
+    private final String UPDATE_USERNAME_ATTRIBUTE = "#_update_username";
+    private final String UPDATE_USER_ID_ATTRIBUTE = "#_update_user_id";
+    private final String UPDATE_TIMESTAMP_ATTRIBUTE = "#_update_timestamp";
 
     private void assertParents(Set<String> expected, String tableName) {
         rdbmsUtils.getRdbmsTable(tableName)
@@ -74,9 +81,23 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
 
         fields1.add(RDBMS_TABLE_FRUIT + ID_ATTRIBUTE);
         fields1.add(RDBMS_TABLE_FRUIT + TYPE_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_FRUIT + VERSION_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_FRUIT + CREATE_USERNAME_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_FRUIT + CREATE_USER_ID_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_FRUIT + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_FRUIT + UPDATE_USERNAME_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_FRUIT + UPDATE_USER_ID_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_FRUIT + UPDATE_TIMESTAMP_ATTRIBUTE);
 
         fields2.add(RDBMS_TABLE_APPLE + ID_ATTRIBUTE);
         fields2.add(RDBMS_TABLE_APPLE + TYPE_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_APPLE + VERSION_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_APPLE + CREATE_USERNAME_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_APPLE + CREATE_USER_ID_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_APPLE + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_APPLE + UPDATE_USERNAME_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_APPLE + UPDATE_USER_ID_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_APPLE + UPDATE_TIMESTAMP_ATTRIBUTE);
 
         parents.add(RDBMS_TABLE_FRUIT);
 
@@ -145,12 +166,33 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
 
         fields1.add(RDBMS_TABLE_VEGETABLE + ID_ATTRIBUTE);
         fields1.add(RDBMS_TABLE_VEGETABLE + TYPE_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEGETABLE + VERSION_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEGETABLE + CREATE_USERNAME_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEGETABLE + CREATE_USER_ID_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEGETABLE + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEGETABLE + UPDATE_USERNAME_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEGETABLE + UPDATE_USER_ID_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEGETABLE + UPDATE_TIMESTAMP_ATTRIBUTE);
 
         fields2.add(RDBMS_TABLE_FRUIT + ID_ATTRIBUTE);
         fields2.add(RDBMS_TABLE_FRUIT + TYPE_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_FRUIT + VERSION_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_FRUIT + CREATE_USERNAME_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_FRUIT + CREATE_USER_ID_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_FRUIT + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_FRUIT + UPDATE_USERNAME_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_FRUIT + UPDATE_USER_ID_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_FRUIT + UPDATE_TIMESTAMP_ATTRIBUTE);
 
         fields3.add(RDBMS_TABLE_TOMATO + ID_ATTRIBUTE);
         fields3.add(RDBMS_TABLE_TOMATO + TYPE_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_TOMATO + VERSION_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_TOMATO + CREATE_USERNAME_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_TOMATO + CREATE_USER_ID_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_TOMATO + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_TOMATO + UPDATE_USERNAME_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_TOMATO + UPDATE_USER_ID_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_TOMATO + UPDATE_TIMESTAMP_ATTRIBUTE);
 
         parents.add(RDBMS_TABLE_VEGETABLE);
         parents.add(RDBMS_TABLE_FRUIT);
@@ -227,12 +269,33 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
 
         fields1.add(RDBMS_TABLE_VEHICLE + ID_ATTRIBUTE);
         fields1.add(RDBMS_TABLE_VEHICLE + TYPE_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEHICLE + VERSION_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEHICLE + CREATE_USERNAME_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEHICLE + CREATE_USER_ID_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEHICLE + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEHICLE + UPDATE_USERNAME_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEHICLE + UPDATE_USER_ID_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_VEHICLE + UPDATE_TIMESTAMP_ATTRIBUTE);
 
         fields2.add(RDBMS_TABLE_CAR + ID_ATTRIBUTE);
         fields2.add(RDBMS_TABLE_CAR + TYPE_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_CAR + VERSION_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_CAR + CREATE_USERNAME_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_CAR + CREATE_USER_ID_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_CAR + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_CAR + UPDATE_USERNAME_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_CAR + UPDATE_USER_ID_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_CAR + UPDATE_TIMESTAMP_ATTRIBUTE);
 
         fields3.add(RDBMS_TABLE_ELECTRIC_CAR + ID_ATTRIBUTE);
         fields3.add(RDBMS_TABLE_ELECTRIC_CAR + TYPE_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_ELECTRIC_CAR + VERSION_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_ELECTRIC_CAR + CREATE_USERNAME_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_ELECTRIC_CAR + CREATE_USER_ID_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_ELECTRIC_CAR + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_ELECTRIC_CAR + UPDATE_USERNAME_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_ELECTRIC_CAR + UPDATE_USER_ID_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_ELECTRIC_CAR + UPDATE_TIMESTAMP_ATTRIBUTE);
 
         parents1.add(RDBMS_TABLE_VEHICLE);
         parents2.add(RDBMS_TABLE_CAR);
@@ -321,17 +384,45 @@ public class Asm2RdbmsInheritanceTest extends Asm2RdbmsMappingTestBase {
 
         fields1.add(RDBMS_TABLE_A + ID_ATTRIBUTE);
         fields1.add(RDBMS_TABLE_A + TYPE_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_A + VERSION_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_A + CREATE_USERNAME_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_A + CREATE_USER_ID_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_A + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_A + UPDATE_USERNAME_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_A + UPDATE_USER_ID_ATTRIBUTE);
+        fields1.add(RDBMS_TABLE_A + UPDATE_TIMESTAMP_ATTRIBUTE);
 
         fields2.add(RDBMS_TABLE_B + ID_ATTRIBUTE);
         fields2.add(RDBMS_TABLE_B + TYPE_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_B + VERSION_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_B + CREATE_USERNAME_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_B + CREATE_USER_ID_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_B + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_B + UPDATE_USERNAME_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_B + UPDATE_USER_ID_ATTRIBUTE);
+        fields2.add(RDBMS_TABLE_B + UPDATE_TIMESTAMP_ATTRIBUTE);
         parents2.add(RDBMS_TABLE_A);
 
         fields22.add(RDBMS_TABLE_BB + ID_ATTRIBUTE);
         fields22.add(RDBMS_TABLE_BB + TYPE_ATTRIBUTE);
+        fields22.add(RDBMS_TABLE_BB + VERSION_ATTRIBUTE);
+        fields22.add(RDBMS_TABLE_BB + CREATE_USERNAME_ATTRIBUTE);
+        fields22.add(RDBMS_TABLE_BB + CREATE_USER_ID_ATTRIBUTE);
+        fields22.add(RDBMS_TABLE_BB + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields22.add(RDBMS_TABLE_BB + UPDATE_USERNAME_ATTRIBUTE);
+        fields22.add(RDBMS_TABLE_BB + UPDATE_USER_ID_ATTRIBUTE);
+        fields22.add(RDBMS_TABLE_BB + UPDATE_TIMESTAMP_ATTRIBUTE);
         parents22.add(RDBMS_TABLE_A);
 
         fields3.add(RDBMS_TABLE_C + ID_ATTRIBUTE);
         fields3.add(RDBMS_TABLE_C + TYPE_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_C + VERSION_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_C + CREATE_USERNAME_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_C + CREATE_USER_ID_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_C + CREATE_TIMESTAMP_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_C + UPDATE_USERNAME_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_C + UPDATE_USER_ID_ATTRIBUTE);
+        fields3.add(RDBMS_TABLE_C + UPDATE_TIMESTAMP_ATTRIBUTE);
         parents3.add(RDBMS_TABLE_B);
         parents3.add(RDBMS_TABLE_BB);
 
