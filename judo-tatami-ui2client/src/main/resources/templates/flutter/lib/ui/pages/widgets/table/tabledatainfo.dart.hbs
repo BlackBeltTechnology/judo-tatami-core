@@ -1,4 +1,4 @@
-{{log 'Table data info generation for' (variable application.name) '-' (fqClass table.pageDefinition.name) (variable table.dataElement.target.name) level='debug'}}
+{{ log 'Table data info generation for' (variable application.name) '-' (fqClass table.pageDefinition.name) (variable table.dataElement.target.name) level='debug' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -23,7 +23,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
             {{# each columns as |column| }}
             DataColumn(
                 label: Text(
-                  AppLocalizations.of(context).lookUpValue(context, '{{label}}'),
+                  AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
                   style: JudoComponentCustomizer.get().getTableHeaderTextStyle(Theme.of(context)),
                 ),
                 {{# unless (isBooleanDataType column.attributeType.dataType) }}
@@ -32,10 +32,10 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                     {{/ unless }}
                 {{/ unless }}
             ),
-            {{/each}}
-            {{#each table.rowActions as |action|}}
-                {{#unless action.isViewAction}}
-                    {{#if action.isEditAction}}
+            {{/ each }}
+            {{# each table.rowActions as |action| }}
+                {{# unless action.isViewAction }}
+                    {{# if action.isEditAction }}
                         {{# unless table.pageDefinition.isPageTypeOperationInput }}
                     DataColumn(
                         label: Text("")
@@ -46,8 +46,8 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                         label: Text("")
                     ),
                     {{/ if }}
-                {{/ unless}}
-            {{/each}}
+                {{/ unless }}
+            {{/ each }}
         ];
     }
 
@@ -66,7 +66,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
         }
                 {{/ unless }}
             {{/ unless }}
-        {{/each}}
+        {{/ each }}
     }
 
     @override
@@ -79,7 +79,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
         }
             {{/ unless }}
         {{/ unless }}
-    {{/each}}
+    {{/ each }}
     }
 
     @override
@@ -94,28 +94,28 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
         ThemeData theme =  Theme.of(context);
         return (target{{ className table.dataElement.target.name }}) => DataRow(
             cells: [
-                {{# each columns as |column|}}
+                {{# each columns as |column| }}
                 DataCell(
-                    {{#if column}}
-                    {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name)}}
-                    {{/if}}
+                    {{# if column }}
+                    {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name) }}
+                    {{/ if }}
                 ),
-                {{/each}}
-                {{#each table.rowActions as |action|}}
-                {{#if action.isRemoveAction}}
+                {{/ each }}
+                {{# each table.rowActions as |action| }}
+                {{# if action.isRemoveAction }}
                 DataCell(
                     Icon(
-                        Icons.{{action.icon.name}},
+                        Icons.{{ action.icon.name }},
                         color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => removeAction(target{{ className table.dataElement.target.name }}),
                 ),
-                {{/if}}
-                {{#if action.isDeleteAction}}
+                {{/ if }}
+                {{# if action.isDeleteAction }}
                 target{{ className table.dataElement.target.name }}?.internal__deletable == true && deleteAction != null // function null if the owner is not updatable
                 ? DataCell(
                     Icon(
-                        Icons.{{action.icon.name}},
+                        Icons.{{ action.icon.name }},
                         color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => deleteAction(target{{ className table.dataElement.target.name }}),
@@ -123,13 +123,13 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 : DataCell(
                     Text(''),
                   ),
-                {{/if}}
-                {{#if action.isEditAction}}
+                {{/ if }}
+                {{# if action.isEditAction }}
                     {{# unless table.pageDefinition.isPageTypeOperationInput }}
                 SHOW_TABLE_ROW_ACTIONS ? (target{{ className table.dataElement.target.name }}?.internal__updatable == true && navigateToEditPageAction != null
                 ? DataCell(
                     Icon(
-                        Icons.{{action.icon.name}},
+                        Icons.{{ action.icon.name }},
                         color: disabled ? theme.disabledColor : theme.colorScheme.secondary,
                     ),
                     onTap: disabled ? null : () => navigateToEditPageAction(target{{ className table.dataElement.target.name }}),
@@ -137,9 +137,9 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 : DataCell(
                     Text(''),
                   )) : DataCell(Text('')),
-                    {{/unless}}
-                {{/if}}
-                {{/each}}
+                    {{/ unless }}
+                {{/ if }}
+                {{/ each }}
             ],
         );
     }

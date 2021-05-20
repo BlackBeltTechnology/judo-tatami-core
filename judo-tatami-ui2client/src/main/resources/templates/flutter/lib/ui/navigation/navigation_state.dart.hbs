@@ -1,4 +1,4 @@
-{{log 'Breadcrumb generation for' (variable application.name) level='info'}}
+{{ log 'Breadcrumb generation for' (variable application.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -45,13 +45,13 @@ abstract class _NavigationState with Store {
     void setCurrentTitle(String newTitle) => currentTitle = newTitle;
 
    bool isMenuCollapsed(BuildContext context) {
-        {{#each application.layoutTypes as |layoutType|}}
-        {{#unless layoutType.original}}
-         if (MediaQuery.of(context).size.width >= {{layoutType.minimumResolution}} && MediaQuery.of(context).size.width <={{layoutType.maximumResolution}}) {
-            return {{layoutType.menuCollapsed}};
+        {{# each application.layoutTypes as |layoutType| }}
+        {{# unless layoutType.original }}
+         if (MediaQuery.of(context).size.width >= {{ layoutType.minimumResolution }} && MediaQuery.of(context).size.width <={{ layoutType.maximumResolution }}) {
+            return {{ layoutType.menuCollapsed }};
          }
-        {{/unless}}
-        {{/each}}
+        {{/ unless }}
+        {{/ each }}
         return false;
     }
     

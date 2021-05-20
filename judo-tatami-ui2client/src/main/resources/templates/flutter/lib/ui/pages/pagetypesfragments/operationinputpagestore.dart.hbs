@@ -1,5 +1,5 @@
-{{log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug'}}
-//START operationinputpagestore.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------
+{{ log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug' }}
+//START operationinputpagestore.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------
 class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
 
 abstract class _{{ fqClass page.name }}PageStore with Store {
@@ -19,16 +19,16 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         {{/ unless }}
         {{# if isRelationKindAggregation }}
             {{# if isMemberTypeTransient }}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/input_page_transient_actions.dart.hbs page=page relation=relation}}
-            {{/if}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/input_page_transient_actions.dart.hbs page=page relation=relation }}
+            {{/ if }}
             {{# if isMemberTypeStored }}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/input_page_stored_aggregation_actions.dart.hbs page=page relation=relation}}
-            {{/ if}}
-        {{/ if}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/input_page_stored_aggregation_actions.dart.hbs page=page relation=relation }}
+            {{/ if }}
+        {{/ if }}
         {{# if isRelationKindComposition }}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
-        {{/ if}}
-    {{/ each}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation }}
+        {{/ if }}
+    {{/ each }}
 }
-//END operationinputpagestore.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------
+//END operationinputpagestore.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------
 

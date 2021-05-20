@@ -105,7 +105,7 @@ Widget getOperationsIconButton(BuildContext context, FilterStore filterStore) {
   var filterOperationDropdownKey = GlobalKey();
 
   switch(filterStore.filterType){
-    {{# each (getDistinctDataTypes application.dataTypes) as |dataType|}}
+    {{# each (getDistinctDataTypes application.dataTypes) as |dataType| }}
     case FilterType.{{ filterDataType dataType }}:
         return iconDropDownWidget<{{ dataTypeToOperationType dataType }}>(context, filterOperationDropdownKey, filterStore, {{ dataTypeToOperationType dataType }}.values);
     {{/ each }}

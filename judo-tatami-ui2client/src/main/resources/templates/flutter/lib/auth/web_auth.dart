@@ -250,9 +250,9 @@ class WebAuth implements Auth {
     } catch (error) {
       _authInfo.setIsPrincipalAllowed(false);
     }
-    {{else}}
+    {{ else }}
     _authInfo.setIsPrincipalAllowed(true);
-    {{/if}}
+    {{/ if }}
   }
 }
 

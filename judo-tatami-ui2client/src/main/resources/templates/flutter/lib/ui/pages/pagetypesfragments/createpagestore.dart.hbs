@@ -1,5 +1,5 @@
-{{log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug'}}
-//START createpagestore.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------
+{{ log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug' }}
+//START createpagestore.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------
 class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
 
 abstract class _{{ fqClass page.name }}PageStore with Store {
@@ -9,16 +9,16 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
-    {{# if (validatableFlagNeed relation)}}
+    {{# if (validatableFlagNeed relation) }}
     bool validatable = false;
     {{/ if }}
 
     {{# if relation.isRelationBehaviourTypeCreateValidatable }}
     @action
-    Future<{{ fqClass relation.target.name }}Store> validate({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+    Future<{{ storeClassName relation.target.name }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{# unless page.dataElement.isAccess}}owner{{ className relation.owner.name }}Store, {{/unless}}target{{ className relation.target.name }}Store);
+            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not validate {{ relation.name }}";
             throw error;
@@ -35,12 +35,12 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         {{/ unless }}
         {{# unless isMemberTypeTransient }}
             {{# if isRelationKindAggregation }}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation }}
             {{/ if }}
             {{# if isRelationKindComposition }}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation }}
             {{/ if }}
         {{/ unless }}
-    {{/ each}}
+    {{/ each }}
 }
-//END createpagestore.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------------
+//END createpagestore.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------------

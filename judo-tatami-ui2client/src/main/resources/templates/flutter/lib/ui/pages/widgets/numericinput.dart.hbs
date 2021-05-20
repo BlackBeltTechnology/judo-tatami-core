@@ -1,26 +1,26 @@
 {{~ log 'Numeric field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
-//START numericinput.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------
-{{#if (isViewTypePage page) }}
+//START numericinput.dart.hbs-----{{ page.dataElement.target.name }}-------------------------------------------------------------------------
+{{# if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoNumericInput(
         key: UniqueKey(),
         col: {{ col }},
         row: {{ row }},
         inCard: {{ isInCard }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }}.toString(),
+      {{/ if }}
+        initialValue: targetStore.{{ variable attributeType.name }}.toString(),
         readOnly: true,
     )
 ),
-{{/if}}
+{{/ if }}
 
-{{#if (isCreateTypePage page) }}
+{{# if (isCreateTypePage page) }}
 {{# if enabledBy }}Observer(
     builder: (_) => {{/ if }}JudoNumericInput(
         key: inputWidgetKeyMap['{{ name }}'],
@@ -28,20 +28,20 @@ Observer(
         row: {{ row }},
         inCard: {{ isInCard }},
         mandatory: {{ attributeType.isRequired }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
-        readOnly: {{attributeType.isReadOnly}},
+      {{/ if }}
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
+        readOnly: {{ attributeType.isReadOnly }},
     ){{# if enabledBy }}
 ){{/ if }},
-{{/if}}
+{{/ if }}
 
-{{#if page.isPageTypeUpdate}}
+{{# if page.isPageTypeUpdate }}
 {{# if enabledBy }}Observer(
     builder: (_) => {{/ if }}JudoNumericInput(
         key: inputWidgetKeyMap['{{ name }}'],
@@ -49,17 +49,17 @@ Observer(
         row: {{ row }},
         inCard: {{ isInCard }},
         mandatory: {{ attributeType.isRequired }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }}.toString(),
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
-        readOnly: {{attributeType.isReadOnly}},
+      {{/ if }}
+        initialValue: targetStore.{{ variable attributeType.name }}.toString(),
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
+        readOnly: {{ attributeType.isReadOnly }},
     ){{# if enabledBy }}
 ){{/ if }},
-{{/if}}
-//END numericinput.dart.hbs-----{{page.dataElement.target.name}}---------------------------------------------------------------------------
+{{/ if }}
+//END numericinput.dart.hbs-----{{ page.dataElement.target.name }}---------------------------------------------------------------------------

@@ -1,36 +1,36 @@
-//START createpagefragment.dart.hbs-----{{page.name}}--------------------------------------------------------------------------------------
-    {{#unless page.dataElement.isAccess}}
-    final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
-    {{/unless}}
+//START createpagefragment.dart.hbs-----{{ page.name }}--------------------------------------------------------------------------------------
+    {{# unless page.dataElement.isAccess }}
+    final {{ storeClassName page.dataElement.owner.name }} ownerStore;
+    {{/ unless }}
     {{# if (validatableFlagNeed page.dataElement) }}
     final bool validatable;
     {{/ if }}
 
-    const {{fqClass page.name}}Page({ Key key{{#unless page.dataElement.isAccess}}, @required this.owner{{ className page.dataElement.owner.name }}Store{{/unless}}{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) : super(key: key);
+    const {{ fqClass page.name }}Page({ Key key{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/ unless }}{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) : super(key: key);
 
-    {{#unless page.dataElement.isAccess}}
+    {{# unless page.dataElement.isAccess }}
     @override
-    _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState(owner{{ className page.dataElement.owner.name }}Store: owner{{ className page.dataElement.owner.name }}Store{{# if (validatableFlagNeed page.dataElement) }}, validatable: validatable{{/ if }});
+    _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState(ownerStore: ownerStore{{# if (validatableFlagNeed page.dataElement) }}, validatable: validatable{{/ if }});
     {{ else }}
     @override
     _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState({{# if (validatableFlagNeed page.dataElement) }}validatable: validatable{{/ if }});
-    {{/unless}}
+    {{/ unless }}
 }
 
 class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
 
-    final {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store = {{ fqClass page.dataElement.target.name }}Store();
-    {{#unless page.dataElement.isAccess }}
-    final {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store;
-    {{/unless}}
+    final {{ storeClassName page.dataElement.target.name }} targetStore = {{ storeClassName page.dataElement.target.name }}();
+    {{# unless page.dataElement.isAccess }}
+    final {{ storeClassName page.dataElement.owner.name }} ownerStore;
+    {{/ unless }}
     {{# if (validatableFlagNeed page.dataElement) }}
     final bool validatable;
     {{/ if }}
 
-    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+    final {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore = {{ fqClass page.name }}PageStore();
 
 
-    _{{ fqClass page.name }}PageState({{#unless page.dataElement.isAccess}}{ @required this.owner{{ className page.dataElement.owner.name }}Store,{{# unless (validatableFlagNeed page.dataElement) }} } {{/unless}}{{/unless}}{{# if (validatableFlagNeed page.dataElement) }}{{#if page.dataElement.isAccess}}{ {{/ if}} this.validatable }{{/ if }} )
+    _{{ fqClass page.name }}PageState({{# unless page.dataElement.isAccess }}{ @required this.ownerStore,{{# unless (validatableFlagNeed page.dataElement) }} } {{/ unless }}{{/ unless }}{{# if (validatableFlagNeed page.dataElement) }}{{# if page.dataElement.isAccess }}{ {{/ if }} this.validatable }{{/ if }} )
     {
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -38,8 +38,8 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
         });
     {{# if (validatableFlagNeed page.dataElement) }}
         if (this.validatable != null) {
-            {{fqVariable page.name}}PageStore.validatable = this.validatable;
+            {{ fqVariable page.name }}PageStore.validatable = this.validatable;
         }
     {{/ if }}
     }
-//END createpagefragment.dart.hbs-----{{page.name}}----------------------------------------------------------------------------------------
+//END createpagefragment.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------

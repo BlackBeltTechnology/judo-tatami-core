@@ -1,4 +1,4 @@
-{{log 'Navigation store generation for' (variable application.name) level='info'}}
+{{ log 'Navigation store generation for' (variable application.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -33,7 +33,7 @@ abstract class _NavigationStore with Store {
                     {{# if page.isPageTypeView }}
                         {{# if relation.isRelationBehaviourTypeListable }}
     @action
-    Future<{{ fqClass relation.target.name }}Store> get{{ fqClass relation.name }}() async {
+    Future<{{ storeClassName relation.target.name }}> get{{ fqClass relation.name }}() async {
         try {
             errorMessage = null;
             return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get();
@@ -48,10 +48,10 @@ abstract class _NavigationStore with Store {
                     {{# if page.isPageTypeUpdate }}
                         {{# if relation.isRelationBehaviourTypeUpdatable }}
     @action
-    Future<{{ fqClass relation.target.name }}Store> update{{ fqClass relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
+    Future<{{ storeClassName relation.target.name }}> update{{ fqClass relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className page.dataElement.target.name }}Store);
+            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}Update(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not update {{ relation.target.name }}";
             throw error;
@@ -63,10 +63,10 @@ abstract class _NavigationStore with Store {
                     {{# if page.isPageTypeView }}
                         {{# if relation.isRelationBehaviourTypeDeletable }}
     @action
-    Future<void> delete{{ fqClass relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
+    Future<void> delete{{ fqClass relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className page.dataElement.target.name }}Store);
+            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}Delete(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not delete {{ relation.name }}";
             throw error;
@@ -78,10 +78,10 @@ abstract class _NavigationStore with Store {
                     {{# if page.isPageTypeCreate }}
                         {{# if relation.isRelationBehaviourTypeCreatable }}
     @action
-    Future<{{ fqClass relation.target.name }}Store> create{{ fqClass relation.name }}({{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+    Future<{{ storeClassName relation.target.name }}> create{{ fqClass relation.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create(target{{ className relation.target.name }}Store);
+            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not create {{ relation.name }}";
             throw error;
@@ -91,8 +91,8 @@ abstract class _NavigationStore with Store {
 
                         {{/ if }}
                     {{/ if }}
-                {{/unless}}
-            {{/if}}
+                {{/ unless }}
+            {{/ if }}
         {{/ with }}
     {{/ with }}
 {{/ each }}

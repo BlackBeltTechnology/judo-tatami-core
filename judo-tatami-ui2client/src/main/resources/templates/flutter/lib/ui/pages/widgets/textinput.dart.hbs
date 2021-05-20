@@ -1,68 +1,68 @@
 {{~ log 'Text input field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
-//START textinput.dart.hbs-----{{page.dataElement.target.name}}----------------------------------------------------------------------------
-{{#if (isViewTypePage page) }}
+//START textinput.dart.hbs-----{{ page.dataElement.target.name }}----------------------------------------------------------------------------
+{{# if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoInputText(
         key: UniqueKey(),
         col: {{ col }},
         row: {{ row }},
-        maxLength: {{attributeType.dataType.maxLength}} ?? 250,
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
+        maxLength: {{ attributeType.dataType.maxLength }} ?? 250,
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
+      {{/ if }}
         inCard: {{ isInCard }},
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
+        initialValue: targetStore.{{ variable attributeType.name }},
         readOnly: true,
     )
 ),
-{{/if}}
+{{/ if }}
 
-{{#if (isCreateTypePage page) }}
+{{# if (isCreateTypePage page) }}
 {{# if enabledBy }}Observer(
     builder: (_) => {{/ if }}JudoInputText(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
-        maxLength: {{attributeType.dataType.maxLength}} ?? 250,
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
+        maxLength: {{ attributeType.dataType.maxLength }} ?? 250,
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
+      {{/ if }}
         inCard: {{ isInCard }},
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
-        readOnly: {{attributeType.isReadOnly}},
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value.toString()),
+        readOnly: {{ attributeType.isReadOnly }},
     ){{# if enabledBy }}
 ){{/ if }},
-{{/if}}
+{{/ if }}
 
-{{#if page.isPageTypeUpdate}}
+{{# if page.isPageTypeUpdate }}
 {{# if enabledBy }}Observer(
     builder: (_) => {{/ if }}JudoInputText(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
-        maxLength: {{attributeType.dataType.maxLength}} ?? 250,
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
+        maxLength: {{ attributeType.dataType.maxLength }} ?? 250,
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
+      {{/ if }}
         inCard: {{ isInCard }},
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
-        readOnly: {{attributeType.isReadOnly}},
+        initialValue: targetStore.{{ variable attributeType.name }},
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value.toString()),
+        readOnly: {{ attributeType.isReadOnly }},
     ){{# if enabledBy }}
 ){{/ if }},
-{{/if}}
-//END textinput.dart.hbs-----{{page.dataElement.target.name}}------------------------------------------------------------------------------
+{{/ if }}
+//END textinput.dart.hbs-----{{ page.dataElement.target.name }}------------------------------------------------------------------------------

@@ -16,7 +16,7 @@ Comparator {{ fqVariable relation.name }}SortCompare;
 
 {{# if relation.isCollection }}
 @action
-void {{ fqVariable relation.name }}SetSort(BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {{ fqClass relation.owner.name }}Store {{ fqVariable relation.owner.name }}Store) {
+void {{ fqVariable relation.name }}SetSort(BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {{ storeClassName relation.owner.name }} store) {
     if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
         {{ fqVariable relation.name }}SortAsc = true;
     } else {
@@ -26,7 +26,7 @@ void {{ fqVariable relation.name }}SetSort(BuildContext context, String sortColu
     {{ fqVariable relation.name }}SortColumnName = sortColumnName;
     {{ fqVariable relation.name }}SortCompare = sortCompare;
 
-    {{ fqVariable relation.owner.name }}Store.{{ variable relation.name }}.sort(sortCompare);
+    store.{{ variable relation.name }}.sort(sortCompare);
 }
 {{/if}}
 

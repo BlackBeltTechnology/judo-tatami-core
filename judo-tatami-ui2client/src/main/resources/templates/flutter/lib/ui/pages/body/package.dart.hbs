@@ -1,4 +1,4 @@
-{{log 'Page body package generation for' (variable application.name)(variable layout.name) level='debug'}}
+{{ log 'Page body package generation for' (variable application.name)(variable layout.name) level='debug' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -8,7 +8,7 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-library {{ variable application.name }}.ui.pages.{{variable name}};
+library {{ variable application.name }}.ui.pages.{{ variable name }};
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -32,5 +32,5 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
 {{# each layout.pageContainers as |container| }}
-part '{{ fqPath container.owner.name }}__{{fqPath layout.name}}__body.dart';
+part '{{ fqPath container.owner.name }}__{{ fqPath layout.name }}__body.dart';
 {{/ each }}

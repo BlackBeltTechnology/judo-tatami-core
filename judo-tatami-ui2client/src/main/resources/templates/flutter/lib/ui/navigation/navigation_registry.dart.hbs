@@ -1,4 +1,4 @@
-{{log 'Navigation registry generation for' (variable application.name) level='info'}}
+{{ log 'Navigation registry generation for' (variable application.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -48,8 +48,8 @@ class NavigationRegistry {
             Crud.Update: {{# if relation.isRelationBehaviourTypeUpdatable }}NavigationStore().update{{ fqClass relation.target.name }}{{ else }}null{{/ if }},
         }
     );
-            {{/unless}}
-        {{/if}}
+            {{/ unless }}
+        {{/ if }}
     {{/ with }}
     {{/ with }}
 {{/ each }}
@@ -71,7 +71,7 @@ class NavigationRegistry {
         viewPage: {{ fqVariable page.name }}Page,
                     {{ else }}
         viewPage: {{ fqVariable relationPage.name }}Page,
-                    {{/if}}
+                    {{/ if }}
                 {{/ if }}
                 {{# if relationPage.isPageTypeCreate }}
         createPage: {{ fqVariable relationPage.name }}Page,
@@ -84,8 +84,8 @@ class NavigationRegistry {
                 {{/ if }}
         {{/ each }}
     );
-                    {{/unless}}
-                {{/if}}
+                    {{/ unless }}
+                {{/ if }}
         {{/ with }}
         {{/ with }}
     {{/ each }}
@@ -100,8 +100,8 @@ class NavigationRegistry {
                     {{# unless page.dataElement.isCollection }}
         case Routes.{{ fqVariable page.name }}Page:
             return {{ fqVariable page.name }}Page;
-                    {{/unless}}
-                {{/if}}
+                    {{/ unless }}
+                {{/ if }}
             {{/ with }}
         {{/ with }}
     {{/ each }}
@@ -119,10 +119,10 @@ class NavigationRegistry {
                     {{# unless page.dataElement.isCollection }}
                         {{# if page.isPageTypeView }}
         case Routes.{{ fqVariable page.name }}Page:
-            return {{ fqClass page.name }}PageArguments(target{{ className page.dataElement.target.name }}Store: target);
+            return {{ fqClass page.name }}PageArguments(targetStore: target);
                         {{/ if }}
-                    {{/unless}}
-                {{/if}}
+                    {{/ unless }}
+                {{/ if }}
             {{/ with }}
         {{/ with }}
     {{/ each }}

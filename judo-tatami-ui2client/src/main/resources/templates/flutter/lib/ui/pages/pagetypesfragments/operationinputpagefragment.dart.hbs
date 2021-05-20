@@ -1,13 +1,13 @@
-//START operationinputpagefragment.dart.hbs-----{{page.name}}------------------------------------------------------------------------------
+//START operationinputpagefragment.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------
     @override
     _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState();
 }
 
 class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
 
-    final {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store = {{ fqClass page.dataElement.target.name }}Store();
+    final {{ storeClassName page.dataElement.target.name }} targetStore = {{ storeClassName page.dataElement.target.name }}();
 
-    final {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore = {{fqClass page.name}}PageStore();
+    final {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore = {{ fqClass page.name }}PageStore();
 
     _{{ fqClass page.name }}PageState(){
         final navigation = locator<NavigationState>();
@@ -15,4 +15,4 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
             navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
         });
     }
-//END operationinputpagefragment.dart.hbs-----{{page.name}}--------------------------------------------------------------------------------
+//END operationinputpagefragment.dart.hbs-----{{ page.name }}--------------------------------------------------------------------------------

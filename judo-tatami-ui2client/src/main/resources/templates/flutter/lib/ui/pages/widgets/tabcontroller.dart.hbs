@@ -1,12 +1,12 @@
 {{~ log 'Tab generation for' (variable application.name) '-' (fqClass page.name)'page' (variable name) level='debug' ~}}
-//START tabcontroller.dart.hbs-----{{name}}------------------------------------------------------------------------------------------------
+//START tabcontroller.dart.hbs-----{{ name }}------------------------------------------------------------------------------------------------
 JudoTab(
     col: {{ col }},
     row: {{ row }},
     tabContent: [
     {{# each tabs as |tab| }}
         {{# if tab }}
-            {{# with tab.element as |child|}}
+            {{# with tab.element as |child| }}
                 {{> (getWidgetTemplate child) }}
             {{/ with }}
         {{/ if }}
@@ -15,14 +15,14 @@ JudoTab(
     tabs: [
     {{# each tabs as |tab| }}
         Tab(
-        {{#if tab.element.isIconVisible }}
+        {{# if tab.element.isIconVisible }}
             icon: Icon(getIconByString("{{ tab.element.icon.name }}")),
-        {{/if}}
-        {{#if tab.element.isLabelVisible }}
+        {{/ if }}
+        {{# if tab.element.isLabelVisible }}
             text: AppLocalizations.of(context).lookUpValue(context, '{{ tab.element.label }}'),
-        {{/if}}
+        {{/ if }}
         ),
     {{/ each }}
     ]
 ),
-//END tabcontroller.dart.hbs-----{{name}}--------------------------------------------------------------------------------------------------
+//END tabcontroller.dart.hbs-----{{ name }}--------------------------------------------------------------------------------------------------

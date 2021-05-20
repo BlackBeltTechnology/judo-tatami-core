@@ -1,4 +1,4 @@
-{{log 'Dialog table data info generation for' (variable application.name) '-' (fqClass table.pageDefinition.name) (variable table.dataElement.target.name) level='debug'}}
+{{ log 'Dialog table data info generation for' (variable application.name) '-' (fqClass table.pageDefinition.name) (variable table.dataElement.target.name) level='debug' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -29,7 +29,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
                     {{/ unless }}
                 {{/ unless }}
             ),
-            {{/each}}
+            {{/ each }}
         ];
     }
 
@@ -47,7 +47,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
         }
                 {{/ unless }}
             {{/ unless }}
-        {{/each}}
+        {{/ each }}
     }
 
     @override
@@ -60,7 +60,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
         }
             {{/ unless }}
         {{/ unless }}
-    {{/each}}
+    {{/ each }}
     }
 
     @override
@@ -77,11 +77,11 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
             cells: [
                 {{# each columns as |column| }}
                 DataCell(
-                    {{#if column}}
-                    {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name)}}
-                    {{/if}}
+                    {{# if column }}
+                    {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name) }}
+                    {{/ if }}
                 ),
-                {{/each}}
+                {{/ each }}
             ],
         );
     }

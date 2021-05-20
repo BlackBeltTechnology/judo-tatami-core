@@ -1,4 +1,4 @@
-{{log 'Route generation for' (variable application.name) level='info'}}
+{{ log 'Route generation for' (variable application.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -18,15 +18,15 @@ import '../settings.dart';
 
 @MaterialAutoRouter(preferRelativeImports: true, routes: <AutoRoute>[
     CustomRoute(
-        page: {{fqClass application.name}}SettingsPage,
+        page: {{ fqClass application.name }}SettingsPage,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
     ),
     CustomRoute(
-        page: {{fqClass application.name}}ErrorPage,
+        page: {{ fqClass application.name }}ErrorPage,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
     ),
     CustomRoute(
-        page: {{fqClass application.name}}BlankPage,
+        page: {{ fqClass application.name }}BlankPage,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
     ),
     {{# each layout.pageContainers as |container| }}

@@ -1,70 +1,70 @@
 {{~ log 'Date field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
-//START dateinput.dart.hbs-----{{page.dataElement.target.name}}----------------------------------------------------------------------------
-{{#if (isViewTypePage page) }}
+//START dateinput.dart.hbs-----{{ page.dataElement.target.name }}----------------------------------------------------------------------------
+{{# if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoDateInput(
         key: UniqueKey(),
         col: {{ col }},
         row: {{ row }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-      {{#if this.isLabelVisible }}
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        initialDate: targetStore.{{ variable attributeType.name }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
+      {{/ if }}
         inCard: {{ isInCard }},
-      {{#if this.isIconVisible }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
+      {{/ if }}
         readOnly: true,
     ),
 ),
-{{/if}}
+{{/ if }}
 
-{{#if (isCreateTypePage page) }}
+{{# if (isCreateTypePage page) }}
 Observer(
     builder: (_) => JudoDateInput(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-      {{#if this.isLabelVisible }}
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        initialDate: targetStore.{{ variable attributeType.name }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
+      {{/ if }}
         inCard: {{ isInCard }},
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
         lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
-        readOnly: {{attributeType.isReadOnly}},
+        readOnly: {{ attributeType.isReadOnly }},
     ),
 ),
-{{/if}}
+{{/ if }}
 
-{{#if page.isPageTypeUpdate}}
+{{# if page.isPageTypeUpdate }}
 Observer(
     builder: (_) => JudoDateInput(
         key: inputWidgetKeyMap['{{ name }}'],
         col: {{ col }},
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-        initialDate: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-      {{#if this.isLabelVisible }}
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        initialDate: targetStore.{{ variable attributeType.name }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
+      {{/ if }}
         inCard: {{ isInCard }},
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value),
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
         lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
-        readOnly: {{attributeType.isReadOnly}},
+        readOnly: {{ attributeType.isReadOnly }},
     ),
 ),
-{{/if}}
-//END dateinput.dart.hbs-----{{page.dataElement.target.name}}------------------------------------------------------------------------------
+{{/ if }}
+//END dateinput.dart.hbs-----{{ page.dataElement.target.name }}------------------------------------------------------------------------------

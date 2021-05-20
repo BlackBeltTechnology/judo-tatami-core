@@ -1,4 +1,4 @@
-{{log 'Table package generation for' (variable application.name) level='debug'}}
+{{ log 'Table package generation for' (variable application.name) level='debug' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -18,5 +18,5 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
 {{# each tables as |table| }}
-part '{{ fqPath table.pageDefinition.name }}__{{ fqPath table.name }}__{{fqPath table.pageContainer.layoutType.name}}__table.dart';
+part '{{ fqPath table.pageDefinition.name }}__{{ fqPath table.name }}__{{ fqPath table.pageContainer.layoutType.name }}__table.dart';
 {{/ each }}

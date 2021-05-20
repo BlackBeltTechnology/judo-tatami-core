@@ -25,14 +25,14 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({ String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+  Future<List<{{ storeClassName relation.target.name }}>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({ String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
 
-    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}QueryCustomizer{{ className relation.target.name }}();
 
-    var seek = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}Seek{{ className relation.target.name}}();
+    var seek = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}Seek{{ className relation.target.name }}();
 
             {{# if relation.isOrderable }}
-    var orderBy = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}();
+    var orderBy = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}();
 
     // Sort Attributes
     if (sortColumn != null) {
@@ -41,7 +41,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
                         {{# unless (isEnumType attribute.dataType) }}
                             {{# unless (isBooleanDataType attribute.dataType) }}
         if (sortColumn == "{{ variable attribute.name }}" ) {
-            orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}AttributeEnum.{{ variable attribute.name }};
+            orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
         }
                             {{/ unless }}
                         {{/ unless }}
@@ -52,13 +52,13 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
         queryCustomizer.orderBy = [orderBy];
       }
     }
-            {{/ if}}
+            {{/ if }}
             {{# if relation.isFilterable }}
       if (filterStoreList != null && filterStoreList.isNotEmpty) {
           filterStoreList.forEach((element) {
             if (element.filterValue == null ) return;
                     {{# each relation.target.attributes as |attribute| }}
-                        {{# if attribute.isFilterable}}
+                        {{# if attribute.isFilterable }}
             if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
                 var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
                             {{# if (isStringType attribute.dataType) }}
@@ -72,20 +72,20 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
                     filter.value = element.filterValue as String;
                     filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
                 }
-                            {{/if}}
+                            {{/ if }}
                             {{# if (isEnumType attribute.dataType) }}
                 filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
-                            {{/if}}
-                            {{#unless (isStringType attribute.dataType) }}
-                                {{#unless (isEnumType attribute.dataType) }}
+                            {{/ if }}
+                            {{# unless (isStringType attribute.dataType) }}
+                                {{# unless (isEnumType attribute.dataType) }}
                 filter.value = element.filterValue as {{ dartType attribute.dataType }};
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
                                 {{/ unless }}
                             {{/ unless }}
                 queryCustomizer.{{ variable attribute.name }}.add(filter);
             }
-                        {{/if}}
+                        {{/ if }}
                     {{/ each }}
           });
       }
@@ -98,22 +98,22 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
       }
 
       List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : queryCustomizer);
-    return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
-      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
+    return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
   }
           {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
   // GET Collection
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass relation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({{ fqClass relation.owner.name }}Store owner, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+  Future<List<{{ storeClassName relation.target.name }}>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List({{ storeClassName relation.owner.name }} owner, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
 
-    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}QueryCustomizer{{ className relation.target.name }}();
 
-    var seek = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}Seek{{ className relation.target.name}}();
+    var seek = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}Seek{{ className relation.target.name }}();
 
                 {{# if relation.isOrderable }}
-    var orderBy = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}();
+    var orderBy = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}();
 
     // Sort Attributes
     if (sortColumn != null) {
@@ -121,7 +121,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
                         {{# unless (isEnumType attribute.dataType) }}
                             {{# unless (isBooleanDataType attribute.dataType) }}
       if (sortColumn == "{{ variable attribute.name }}" ) {
-        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}OrderingType{{ className relation.target.name}}AttributeEnum.{{ variable attribute.name }};
+        orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
       }
                             {{/ unless }}
                         {{/ unless }}
@@ -131,14 +131,14 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
         queryCustomizer.orderBy = [orderBy];
       }
     }
-                {{/ if}}
+                {{/ if }}
 
                 {{# if relation.isFilterable }}
       if (filterStoreList != null && filterStoreList.isNotEmpty) {
           filterStoreList.forEach((element) {
                     {{# each relation.target.attributes as |attribute| }}
             if (element.filterValue == null ) return;
-                        {{# if attribute.isFilterable}}
+                        {{# if attribute.isFilterable }}
             if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
                 var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
                             {{# if (isStringType attribute.dataType) }}
@@ -152,13 +152,13 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
                     filter.value = element.filterValue as String;
                     filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
                 }
-                            {{/if}}
+                            {{/ if }}
                             {{# if (isEnumType attribute.dataType) }}
                 filter.value = (element.filterValue.toString().split('.').last).toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}ValueEnum.values);
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
-                            {{/if}}
-                            {{#unless (isStringType attribute.dataType) }}
-                                {{#unless (isEnumType attribute.dataType) }}
+                            {{/ if }}
+                            {{# unless (isStringType attribute.dataType) }}
+                                {{# unless (isEnumType attribute.dataType) }}
                 filter.value = element.filterValue as {{ dartType attribute.dataType }};
                 filter.operator_ = element.filterOperation.toEnum<{{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum>({{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}OperatorEnum.values);
                                 {{/ unless }}
@@ -178,8 +178,8 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
       }
 
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : queryCustomizer);
-    return {{ variable relation.target.name }}ListResponse.map<{{ fqClass relation.target.name }}Store>(
-      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}).toList();
+    return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
+      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
   }
           {{/ if }}
       {{ else }}
@@ -188,28 +188,28 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({ String mask }) async {
-    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({ String mask }) async {
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}QueryCustomizer{{ className relation.target.name }}();
     if (mask != null) {
         queryCustomizer.mask = mask;
     }
 
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : queryCustomizer);
-    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
           {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
   // GET SINGLE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({{ fqClass relation.owner.name }}Store owner, { String mask }) async {
-    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name}}QueryCustomizer{{ className relation.target.name}}();
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get({{ storeClassName relation.owner.name }} owner, { String mask }) async {
+    var queryCustomizer = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}QueryCustomizer{{ className relation.target.name }}();
     if (mask != null) {
         queryCustomizer.mask = mask;
     }
 
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : queryCustomizer);
-    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
           {{/ if }}
       {{/ if }}
@@ -220,20 +220,20 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ fqClass relation.target.name }}Store target) async {
-    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ storeClassName relation.target.name }} target) async {
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}CreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
-    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
       {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
   // CREATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
-    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target) async {
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}CreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ForCreateAndUpdateRequest);
-    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
       {{/ if }}
   {{/ if }}
@@ -243,20 +243,20 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // VALIDATE CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ fqClass relation.target.name }}Store target) async {
-    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ storeClassName relation.target.name }} target) async {
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}ValidateCreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
-    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
     {{ else }}
 
   //////////////////////////////////////////////////////////////////////////////
   // VALIDATE CREATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
-    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ fqClass relation.target.name }}Store(target);
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target) async {
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}ValidateCreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ForCreateAndUpdateRequest);
-    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass relation.target.name }}StoreFrom{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
     {{/ if }}
   {{/ if }}
@@ -266,7 +266,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // DELETE (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Delete({{ fqClass relation.target.name }}Store target) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Delete({{ storeClassName relation.target.name }} target) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Delete(target);
   }
       {{ else }}
@@ -274,7 +274,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // DELETE
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Delete({{ fqClass relation.owner.name }}Store owner,  {{ fqClass relation.target.name }}Store target) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Delete({{ storeClassName relation.owner.name }} owner,  {{ storeClassName relation.target.name }} target) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Delete(target);
   }
       {{/ if }}
@@ -285,7 +285,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE  (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Update({{ fqClass relation.target.name }}Store target) async {
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Update({{ storeClassName relation.target.name }} target) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Update(target);
   }
       {{ else }}
@@ -293,7 +293,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ fqClass relation.target.name }}Store> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Update({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
+  Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Update({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Update(target);
   }
       {{/ if }}
@@ -306,14 +306,14 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // GET CREATE RANGE FOR {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass targetRelation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate({{ fqClass relation.target.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+  Future<List<{{ storeClassName targetRelation.target.name }}>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate({{ storeClassName relation.target.name }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToCreate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit, mask: mask);
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // GET UPDATE RANGE FOR {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ fqClass targetRelation.target.name }}Store>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate({{ fqClass relation.target.name }}Store target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
+  Future<List<{{ storeClassName targetRelation.target.name }}>> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate({{ storeClassName relation.target.name }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}RangeOf{{ fqClass targetRelation.name }}ToUpdate(target, sortColumn: sortColumn, sortAscending: sortAscending, filterStoreList: filterStoreList, queryLimit: queryLimit, mask: mask);
   }
       {{/ if }}
@@ -324,7 +324,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable targetRelation.name }} (Access) Collection
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ fqClass relation.target.name }}Store target, List<{{ fqClass targetRelation.target.name }}Store> selected) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Set{{ fqClass targetRelation.name }}(target, selected);
   }
           {{ else }}
@@ -332,7 +332,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable targetRelation.name }} Collection
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, List<{{ fqClass targetRelation.target.name }}Store> selected) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Set{{ fqClass targetRelation.name }}(target, selected);
   }
           {{/ if }}
@@ -342,7 +342,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable targetRelation.name }} (Access) Single
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ fqClass relation.target.name }}Store target, {{ fqClass targetRelation.target.name }}Store selected) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ storeClassName relation.target.name }} target, {{ storeClassName targetRelation.target.name }} selected) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Set{{ fqClass targetRelation.name }}(target, selected);
   }
           {{ else }}
@@ -350,7 +350,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable targetRelation.name }} Single
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, {{ fqClass targetRelation.target.name }}Store selected) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Set{{ fqClass targetRelation.name }}({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target, {{ storeClassName targetRelation.target.name }} selected) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Set{{ fqClass targetRelation.name }}(target, selected);
   }
           {{/ if }}
@@ -362,7 +362,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // UNSET {{ variable targetRelation.name }} (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Unset{{ fqClass targetRelation.name }}({{ fqClass relation.target.name }}Store target) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Unset{{ fqClass targetRelation.name }}({{ storeClassName relation.target.name }} target) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Unset{{ fqClass targetRelation.name }}(target);
   }
           {{ else }}
@@ -370,7 +370,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // UNSET {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Unset{{ fqClass targetRelation.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Unset{{ fqClass targetRelation.name }}({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Unset{{ fqClass targetRelation.name }}(target);
   }
           {{/ if }}
@@ -381,7 +381,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // ADD {{ variable targetRelation.name }} (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetRelation.name }}({{ fqClass relation.target.name }}Store target, List<{{ fqClass targetRelation.target.name }}Store> selected) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetRelation.name }}({{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Add{{ fqClass targetRelation.name }}(target, selected);
   }
           {{ else }}
@@ -389,7 +389,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // ADD {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetRelation.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, List<{{ fqClass targetRelation.target.name }}Store> selected) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Add{{ fqClass targetRelation.name }}({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Add{{ fqClass targetRelation.name }}(target, selected);
   }
           {{/ if }}
@@ -400,7 +400,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE {{ variable targetRelation.name }} (Access)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetRelation.name }}({{ fqClass relation.target.name }}Store target, List<{{ fqClass targetRelation.target.name }}Store> selected) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetRelation.name }}({{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Remove{{ fqClass targetRelation.name }}(target, selected);
   }
           {{ else }}
@@ -408,7 +408,7 @@ class {{ fqClass relation.owner.name }}{{ fqClass relation.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE {{ variable targetRelation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetRelation.name }}({{ fqClass relation.owner.name }}Store owner, {{ fqClass relation.target.name }}Store target, List<{{ fqClass targetRelation.target.name }}Store> selected) async {
+  Future<void> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Remove{{ fqClass targetRelation.name }}({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target, List<{{ storeClassName targetRelation.target.name }}> selected) async {
     return await locator<{{ fqClass application.actor.name }}Repository>().{{ fqVariable relation.target.name }}Remove{{ fqClass targetRelation.name }}(target, selected);
   }
           {{/ if }}

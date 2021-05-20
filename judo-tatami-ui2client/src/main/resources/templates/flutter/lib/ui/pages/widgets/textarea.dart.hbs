@@ -1,6 +1,6 @@
 {{~ log 'Text area input field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
-//START textarea.dart.hbs-----{{page.dataElement.target.name}}-----------------------------------------------------------------------------
-{{#if (isViewTypePage page) }}
+//START textarea.dart.hbs-----{{ page.dataElement.target.name }}-----------------------------------------------------------------------------
+{{# if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoInputText(
         key: UniqueKey(),
@@ -8,21 +8,21 @@ Observer(
         row: {{ row }},
         multiline: true,
         inCard: {{ isInCard }},
-        maxLength: {{attributeType.dataType.maxLength}} ?? 250,
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
+        maxLength: {{ attributeType.dataType.maxLength }} ?? 250,
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
+      {{/ if }}
+        initialValue: targetStore.{{ variable attributeType.name }},
         readOnly: true,
     )
 ),
-{{/if}}
+{{/ if }}
 
-{{#if (isCreateTypePage page) }}
+{{# if (isCreateTypePage page) }}
 {{# if enabledBy }}Observer(
     builder: (_) => {{/ if }}JudoInputText(
         key: inputWidgetKeyMap['{{ name }}'],
@@ -31,21 +31,21 @@ Observer(
         mandatory: {{ attributeType.isRequired }},
         multiline: true,
         inCard: {{ isInCard }},
-        maxLength: {{attributeType.dataType.maxLength}} ?? 250,
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
+        maxLength: {{ attributeType.dataType.maxLength }} ?? 250,
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
-        readOnly: {{attributeType.isReadOnly}},
+      {{/ if }}
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value.toString()),
+        readOnly: {{ attributeType.isReadOnly }},
     ){{# if enabledBy }}
 ){{/ if }},
-{{/if}}
+{{/ if }}
 
-{{#if page.isPageTypeUpdate}}
+{{# if page.isPageTypeUpdate }}
 {{# if enabledBy }}Observer(
     builder: (_) => {{/ if }}JudoInputText(
         key: inputWidgetKeyMap['{{ name }}'],
@@ -54,18 +54,18 @@ Observer(
         mandatory: {{ attributeType.isRequired }},
         multiline: true,
         inCard: {{ isInCard }},
-        maxLength: {{attributeType.dataType.maxLength}} ?? 250,
-        disabled: {{ disabled }}{{# if enabledBy }} || !((target{{ className page.relationType.target.name }}Store?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{#if this.isLabelVisible }}
+        maxLength: {{ attributeType.dataType.maxLength }} ?? 250,
+        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+      {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/if}}
-      {{#if this.isIconVisible }}
+      {{/ if }}
+      {{# if this.isIconVisible }}
         icon: Icon(getIconByString("{{ this.icon.name }}")),
-      {{/if}}
-        initialValue: target{{ className page.dataElement.target.name }}Store.{{ variable attributeType.name }},
-        onChanged: (value) => target{{ className page.dataElement.target.name }}Store.set{{ className attributeType.name }}(value.toString()),
-        readOnly: {{attributeType.isReadOnly}},
+      {{/ if }}
+        initialValue: targetStore.{{ variable attributeType.name }},
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value.toString()),
+        readOnly: {{ attributeType.isReadOnly }},
     ){{# if enabledBy }}
 ){{/ if }},
-{{/if}}
-//END textarea.dart.hbs-----{{page.dataElement.target.name}}-------------------------------------------------------------------------------
+{{/ if }}
+//END textarea.dart.hbs-----{{ page.dataElement.target.name }}-------------------------------------------------------------------------------

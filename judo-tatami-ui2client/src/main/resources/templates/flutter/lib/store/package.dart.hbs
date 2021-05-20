@@ -17,5 +17,5 @@ part 'package.g.dart';
 
 part 'enum_types.dart';
 {{# each classes ~}}
-part '{{ fqPath name }}__store.dart';
+part '{{ storeClassRelativePath name }}';
 {{/ each }}

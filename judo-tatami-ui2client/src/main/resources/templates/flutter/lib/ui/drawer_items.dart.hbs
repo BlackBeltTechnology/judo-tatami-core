@@ -1,4 +1,4 @@
-{{log 'Navigation items generation for' (variable application.name) level='info'}}
+{{ log 'Navigation items generation for' (variable application.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -18,17 +18,17 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 class {{ fqClass application.name }}NavigationItems {
 
     static List<NavigationItem> navigationItems = [
-        {{#each application.navigationController.items as |item|}}
+        {{# each application.navigationController.items as |item| }}
         NavigationItem(
             route: Routes.{{ fqVariable item.target.name }}Page,
-          {{#if item.isIconVisible }}
-            leading: Icon(getIconByString("{{item.icon.name}}")),
-          {{/if}}
-          {{#if item.isLabelVisible }}
+          {{# if item.isIconVisible }}
+            leading: Icon(getIconByString("{{ item.icon.name }}")),
+          {{/ if }}
+          {{# if item.isLabelVisible }}
             title: '{{ item.label }}',
-          {{/if}}
+          {{/ if }}
         ),
 
-        {{/each}}
+        {{/ each }}
     ];
 }

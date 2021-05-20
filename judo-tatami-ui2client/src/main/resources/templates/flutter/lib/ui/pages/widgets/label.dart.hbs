@@ -1,15 +1,15 @@
 {{ log 'Label generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
-//START label.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------------------------
+//START label.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------------------
 JudoLabel(
     col: {{ col }},
     row: {{ row }},
-  {{#if isLabelVisible }}
+  {{# if isLabelVisible }}
     label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
     labelMargin: {{ labelMargin.left }},
-  {{/if}}
-  {{#if isIconVisible }}
+  {{/ if }}
+  {{# if isIconVisible }}
     icon: Icon(getIconByString("{{ icon.name }}")),
     iconMargin: {{ iconMargin.right }},
-  {{/if}}
+  {{/ if }}
 ),
-//END label.dart.hbs-----{{page.name}}-----------------------------------------------------------------------------------------------------
+//END label.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------------

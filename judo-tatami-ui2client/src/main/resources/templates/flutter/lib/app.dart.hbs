@@ -1,4 +1,4 @@
-{{log 'Main generation for' (variable application.name) level='info'}}
+{{ log 'Main generation for' (variable application.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -42,10 +42,10 @@ Future<bool> hasActorMenuAccess() async {
     } catch(error) {
         return false;
     }
-{{else}}
+{{ else }}
     // Anonymous access allowed
     return true;
-{{/if}}
+{{/ if }}
 }
 
 class {{ fqClass application.name }}Application extends StatelessWidget {
@@ -91,7 +91,7 @@ class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClas
             children: <Widget>[
                 if (!navigation.isMenuCollapsed(context)) menu,
                 Expanded(
-                    child: {{fqClass application.name}}Scaffold(
+                    child: {{ fqClass application.name }}Scaffold(
                         key: navigation.scaffoldKey,
                         body: ExtendedNavigator(
                             key: navigation.navigatorKey,

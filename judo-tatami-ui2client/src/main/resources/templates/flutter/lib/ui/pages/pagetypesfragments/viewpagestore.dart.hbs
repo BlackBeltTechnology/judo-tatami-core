@@ -1,5 +1,5 @@
-{{log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug'}}
-//START viewpagestore.dart.hbs-----{{page.name}}-------------------------------------------------------------------------------------------
+{{ log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug' }}
+//START viewpagestore.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------------
 class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
 
 abstract class _{{ fqClass page.name }}PageStore with Store {
@@ -9,9 +9,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
-    {{# if (validatableFlagNeed relation)}}
+    {{# if (validatableFlagNeed relation) }}
     bool validatable = true;
-    {{/if}}
+    {{/ if }}
 
     
     {{# if page.isPageTypeDashboard }}
@@ -36,7 +36,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     @action
-    Future<{{ fqClass relation.target.name }}Store> get{{ fqClass relation.name }}() async {
+    Future<{{ storeClassName relation.target.name }}> get{{ fqClass relation.name }}() async {
         try {
             errorMessage = null;
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
@@ -68,11 +68,11 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeRefreshable }}
     @action
-    Future<void> refresh{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
+    Future<void> refresh{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            target{{ className page.dataElement.target.name }}Store.updateWith(await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}GetByIdentifier(
-                target{{ className page.dataElement.target.name }}Store,
+            targetStore.updateWith(await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}GetByIdentifier(
+                targetStore,
                 mask: '{
                     {{~# with page.containers.[0] as |container| ~}}
                         {{~# each (getAttributeTypeNamesFromWidgets container) as |attributeName| ~}}
@@ -96,13 +96,13 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         }
     }
 
-    {{/ if}}
+    {{/ if }}
     {{# if relation.isRelationBehaviourTypeUpdatable }}
     @action
-    Future<{{ fqClass relation.target.name }}Store> update{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
+    Future<{{ storeClassName relation.target.name }}> update{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Update(target{{ className page.dataElement.target.name }}Store);
+            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}Update(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not update {{ relation.target.name }}";
             throw error;
@@ -112,10 +112,10 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeDeletable }}
     @action
-    Future<void> delete{{ className relation.target.name }}({{ fqClass relation.target.name }}Store target{{ className page.dataElement.target.name }}Store) async {
+    Future<void> delete{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}Delete(target{{ className page.dataElement.target.name }}Store);
+            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}Delete(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not delete {{ relation.name }}";
             throw error;
@@ -125,10 +125,10 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeUpdateValidatable }}
     @action
-    Future<{{ fqClass relation.target.name }}Store> validate({{# unless page.dataElement.isAccess}}{{ fqClass relation.owner.name }}Store owner{{ className relation.owner.name }}Store, {{/unless}}{{ fqClass relation.target.name }}Store target{{ className relation.target.name }}Store) async {
+    Future<{{ storeClassName relation.target.name }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{fqVariable relation.target.name}}ValidateForUpdate(target{{ className relation.target.name }}Store);
+            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}ValidateForUpdate(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not validate {{ relation.target.name }}";
             throw error;
@@ -145,25 +145,25 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         {{/ unless }}
         {{# unless isMemberTypeTransient }}
             {{# if isRelationKindAggregation }}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
-            {{/ if}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation }}
+            {{/ if }}
             {{# if isRelationKindComposition }}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation}}
-            {{/ if}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation }}
+            {{/ if }}
         {{/ unless }}
-    {{/ each}}
+    {{/ each }}
 
     //OPERATIONS
     {{# each page.dataElement.target.operations as |operation| }}
     @action
-    {{# if operation.output}}Future<{{# if operation.output.isCollection }}List<{{fqClass operation.output.target.name}}Store>{{ else }}{{fqClass operation.output.target.name}}Store{{/if}}>{{else}}Future<void>{{/if}} {{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.input}}{{fqClass operation.input.target.name}}Store {{fqVariable operation.input.target.name}}Store, {{/if}}{{#if operation.isMapped }}{{ fqClass operation.owner.name }}Store {{ fqVariable operation.owner.name }}Store{{/if}}) async {
+    {{# if operation.output }}Future<{{# if operation.output.isCollection }}List<{{ storeClassName operation.output.target.name }}>{{ else }}{{ storeClassName operation.output.target.name }}{{/ if }}>{{ else }}Future<void>{{/ if }} {{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}{{ storeClassName operation.input.target.name }} targetStore, {{/ if }}{{# if operation.isMapped }}{{ storeClassName operation.owner.name }} ownerStore{{/ if }}) async {
         try {
             errorMessage = null;
-            {{# if operation.output}}return {{/if}}await _{{ fqVariable application.actor.name }}Repository.{{fqVariable operation.owner.name}}{{className operation.name}}({{#if operation.input}}{{fqVariable operation.input.target.name}}Store, {{/if}}{{#if operation.isMapped }}{{ fqVariable operation.owner.name }}Store{{/if}});
+            {{# if operation.output }}return {{/ if }}await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}targetStore, {{/ if }}{{# if operation.isMapped }}ownerStore{{/ if }});
         } on ApiException {
-            errorMessage = "Could not call operation {{operation.name}}";
+            errorMessage = "Could not call operation {{ operation.name }}";
         }
     }
-    {{/each}}
+    {{/ each }}
 }
-//END viewpagestore.dart.hbs-----{{page.name}}---------------------------------------------------------------------------------------------
+//END viewpagestore.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-{{log 'Page body generation for' (variable application.name) '-' (fqClass page.name)(fqClass container.layoutType.name) level='info'}}
+{{ log 'Page body generation for' (variable application.name) '-' (fqClass page.name)(fqClass container.layoutType.name) level='info' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -9,54 +9,54 @@
 // Application: {{ application.name }}
 // Container: {{ container.name }}
 
-part of {{ variable application.name }}.ui.pages.{{variable container.layoutType.name}};
+part of {{ variable application.name }}.ui.pages.{{ variable container.layoutType.name }};
 
-Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(BuildContext context
+Widget get{{ fqClass page.name }}Page{{ fqClass container.layoutType.name }}Body(BuildContext context
 
         {{~# if page.isPageTypeDashboard ~}}
             {{~# unless page.dataElement.isCollection ~}}
                 {{~# if page.dataElement ~}}
-        , {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store
+        , {{ storeClassName page.dataElement.target.name }} targetStore
                 {{~/ if ~}}
             {{~/ unless ~}}
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeTable ~}}
             {{~# unless page.dataElement.isAccess ~}}
-        , {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store
+        , {{ storeClassName page.dataElement.owner.name }} ownerStore
             {{~/ unless ~}}
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeView ~}}
-        , {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store
+        , {{ storeClassName page.dataElement.target.name }} targetStore
         {{~# unless page.dataElement.isAccess ~}}
-        , {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store
+        , {{ storeClassName page.dataElement.owner.name }} ownerStore
         {{~/ unless ~}}
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeUpdate ~}}
-        , {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store, {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+        , {{ storeClassName page.dataElement.target.name }} targetStore, {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeCreate ~}}
-        , {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store
+        , {{ storeClassName page.dataElement.target.name }} targetStore
         {{~# unless page.dataElement.isAccess ~}}
-        , {{ fqClass page.dataElement.owner.name }}Store owner{{ className page.dataElement.owner.name }}Store
+        , {{ storeClassName page.dataElement.owner.name }} ownerStore
         {{~/ unless ~}}
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeOperationInput ~}}
-        , {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+        , {{ storeClassName page.dataElement.target.name }} targetStore
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeOperationOutput ~}}
-        , {{ fqClass page.dataElement.target.name }}Store target{{ className page.dataElement.target.name }}Store
-        , {{fqClass page.name}}PageStore {{fqVariable page.name}}PageStore
+        , {{ storeClassName page.dataElement.target.name }} targetStore
+        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
         {{~/ if ~}}
 
         {{~# if (isInputWidgetMapNeed page) ~}}
@@ -66,7 +66,7 @@ Widget get{{ fqClass page.name }}Page{{fqClass container.layoutType.name}}Body(B
     final navigation = locator<NavigationState>();
     {{# if (isRefreshTableTypePage page) }}
     var addFilterButtonKey = GlobalKey();
-    {{/if}}
+    {{/ if }}
 
     return CustomScrollView(
         slivers: [

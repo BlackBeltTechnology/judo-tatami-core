@@ -13,13 +13,13 @@ part of {{ variable ap.name }}.store;
     {{# if (isEnumType dataType) }}
 enum {{ className dataType.name }} {
 {{# each dataType.members as |member| }}
-    {{# if (isFilterOperationLike member dataType.name)}}
+    {{# if (isFilterOperationLike member dataType.name) }}
     contain,
     beginWith,
     {{ else }}
     {{ member.name }},
     {{/ if }}
-{{/each}}
+{{/ each }}
 }
     {{/ if }}
-{{/each}}
+{{/ each }}

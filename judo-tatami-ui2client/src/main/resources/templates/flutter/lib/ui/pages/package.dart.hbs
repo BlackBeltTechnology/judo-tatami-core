@@ -1,4 +1,4 @@
-{{log 'Page package generation for' (variable application.name) level='debug'}}
+{{ log 'Page package generation for' (variable application.name) level='debug' }}
 //////////////////////////////////////////////////////////////////////////////
 // G E N E R A T E D    C L A S S
 // ------------------------------
@@ -30,11 +30,11 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
-{{#each application.layoutTypes as |layout|}}
-{{#unless layout.original}}
-import '{{variable layout.name}}/package.dart';
-{{/unless}}
-{{/each}}
+{{# each application.layoutTypes as |layout| }}
+{{# unless layout.original }}
+import '{{ variable layout.name }}/package.dart';
+{{/ unless }}
+{{/ each }}
 
 {{# each layout.pageContainers as |container| }}
 part '{{ fqPath container.owner.name }}__page.dart';
