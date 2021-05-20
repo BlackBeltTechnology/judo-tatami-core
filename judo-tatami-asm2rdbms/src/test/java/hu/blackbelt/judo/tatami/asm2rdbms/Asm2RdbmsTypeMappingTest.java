@@ -213,6 +213,13 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         table.add(RDBMS_TABLE_NAME);
         fields.add(RDBMS_TABLE_NAME + "#_id");
         fields.add(RDBMS_TABLE_NAME + "#_type");
+        fields.add(RDBMS_TABLE_NAME + "#_version");
+        fields.add(RDBMS_TABLE_NAME + "#_create_username");
+        fields.add(RDBMS_TABLE_NAME + "#_create_user_id");
+        fields.add(RDBMS_TABLE_NAME + "#_create_timestamp");
+        fields.add(RDBMS_TABLE_NAME + "#_update_username");
+        fields.add(RDBMS_TABLE_NAME + "#_update_user_id");
+        fields.add(RDBMS_TABLE_NAME + "#_update_timestamp");
         fields.add(RDBMS_TABLE_NAME + "#bigDecimalAttr");
         fields.add(RDBMS_TABLE_NAME + "#bigInteger");
         fields.add(RDBMS_TABLE_NAME + "#doubleAttr");
@@ -382,6 +389,13 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         table.add(RDBMS_TABLE_NAME);
         fields.add(RDBMS_TABLE_NAME + "#_id");
         fields.add(RDBMS_TABLE_NAME + "#_type");
+        fields.add(RDBMS_TABLE_NAME + "#_version");
+        fields.add(RDBMS_TABLE_NAME + "#_create_username");
+        fields.add(RDBMS_TABLE_NAME + "#_create_user_id");
+        fields.add(RDBMS_TABLE_NAME + "#_create_timestamp");
+        fields.add(RDBMS_TABLE_NAME + "#_update_username");
+        fields.add(RDBMS_TABLE_NAME + "#_update_user_id");
+        fields.add(RDBMS_TABLE_NAME + "#_update_timestamp");
         fields.add(RDBMS_TABLE_NAME + "#stringAttr");
         fields.add(RDBMS_TABLE_NAME + "#javalangStringAttr");
 
@@ -515,6 +529,13 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         table.add(RDBMS_TABLE_NAME);
         fields.add(RDBMS_TABLE_NAME + "#_id");
         fields.add(RDBMS_TABLE_NAME + "#_type");
+        fields.add(RDBMS_TABLE_NAME + "#_version");
+        fields.add(RDBMS_TABLE_NAME + "#_create_username");
+        fields.add(RDBMS_TABLE_NAME + "#_create_user_id");
+        fields.add(RDBMS_TABLE_NAME + "#_create_timestamp");
+        fields.add(RDBMS_TABLE_NAME + "#_update_username");
+        fields.add(RDBMS_TABLE_NAME + "#_update_user_id");
+        fields.add(RDBMS_TABLE_NAME + "#_update_timestamp");
         fields.add(RDBMS_TABLE_NAME + "#dateAttr");
         fields.add(RDBMS_TABLE_NAME + "#javautilDateAttr");
         fields.add(RDBMS_TABLE_NAME + "#javasqlDateAttr");
@@ -647,6 +668,13 @@ public class Asm2RdbmsTypeMappingTest extends Asm2RdbmsMappingTestBase {
         table.add(RDBMS_TABLE_NAME);
         fields.add(RDBMS_TABLE_NAME + "#_id");
         fields.add(RDBMS_TABLE_NAME + "#_type");
+        fields.add(RDBMS_TABLE_NAME + "#_version");
+        fields.add(RDBMS_TABLE_NAME + "#_create_username");
+        fields.add(RDBMS_TABLE_NAME + "#_create_user_id");
+        fields.add(RDBMS_TABLE_NAME + "#_create_timestamp");
+        fields.add(RDBMS_TABLE_NAME + "#_update_username");
+        fields.add(RDBMS_TABLE_NAME + "#_update_user_id");
+        fields.add(RDBMS_TABLE_NAME + "#_update_timestamp");
         fields.add(RDBMS_TABLE_NAME + "#booleanAttr");
         fields.add(RDBMS_TABLE_NAME + "#javalangBooleanAttr");
 
