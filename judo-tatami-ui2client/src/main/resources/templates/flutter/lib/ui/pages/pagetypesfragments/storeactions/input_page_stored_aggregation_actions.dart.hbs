@@ -62,7 +62,7 @@ Future<List<{{ storeClassName relation.target.name }}>> getRangeFor{{ fqClass re
             {{ fqVariable relation.name }}QueryLimit = queryLimit;
         }
 
-        {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}{{# if (isCreateTypePage page) }}ToCreate{{ else }}ToUpdate{{/ if }}(
+        {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}{{# if (isCreateTypePage page) }}ToCreate{{ else }}ToUpdate{{/ if }}(
             ownerStore,
             sortColumn: {{ fqVariable relation.name }}SortColumnName,
             sortAscending: {{ fqVariable relation.name }}SortAsc,

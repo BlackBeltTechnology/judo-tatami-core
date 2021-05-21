@@ -104,9 +104,7 @@
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/repository/' +
-    'package.dart'
+    #repositoryFolderPath(#application.actor.name) + 'package.dart'
   templateName: flutter/lib/repositories/package.dart.hbs
   templateContext:
     - name: ap
@@ -117,11 +115,7 @@
 - overwriteExpression: true
   factoryExpression: "#application.relationTypes"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/repository/' +
-    #fqPath(#self.owner.name) + '__' +
-    #path(#self.name)  +
-    '__repository.dart'
+    #repositoryRelationPath(#self.name, #self.owner.name, #application.actor.name)
   templateName: flutter/lib/repositories/repository_relation.dart.hbs
   templateContext:
     - name: ap
@@ -132,9 +126,7 @@
 - overwriteExpression: true
   factoryExpression: "#application.dataElements.?[!isActor]"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/repository/' +
-    #fqPath(#self.name) + '__repository.dart'
+    #repositoryClassPath(#self.name, #application.actor.name)
   templateName: flutter/lib/repositories/repository_class.dart.hbs
   templateContext:
     - name: ap
@@ -146,9 +138,7 @@
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/repository/' +
-    #fqPath(#application.actor.name) + '__repository.dart'
+    #repositoryClassPath(#application.actor.name, #application.actor.name)
   templateName: flutter/lib/repositories/repository_access_point.dart.hbs
   templateContext:
     - name: ap
@@ -156,13 +146,10 @@
     - name: classes
       expression: "#application.dataElements.?[!isActor]"
 
-
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/repository/' +
-    'mapper.dart'
+    #repositoryFolderPath(#application.actor.name) + 'mapper.dart'
   templateName: flutter/lib/repositories/repository_store_mapper.dart.hbs
   templateContext:
     - name: ap

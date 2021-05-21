@@ -11,7 +11,7 @@
 
 part of {{ variable ap.name }}.repository;
 
-class {{ fqClass class.name }}Repository {
+class {{ repositoryClassName class.name }} {
 
   //////////////////////////////////////////////////////////////////////////////
   // TEMPLATE (Default)
@@ -19,7 +19,7 @@ class {{ fqClass class.name }}Repository {
   Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}Default() async {
     // TODO: NOT SUPPORTED YET
     // {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}TemplateInstance{{ fqClass name }}();
-    // return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
+    // return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
     return {{ storeClassName class.name }}();
   }
   {{# if class.isMapped }}
@@ -33,7 +33,7 @@ class {{ fqClass class.name }}Repository {
         queryCustomizer.mask = mask;
     }
     {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}RefreshInstance{{ fqClass name }}(target.internal__signedIdentifier, input: queryCustomizer);
-    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
+    return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
   {{# if class.isClassBehaviourTypeUpdateValidatable }}
@@ -42,9 +42,9 @@ class {{ fqClass class.name }}Repository {
   // VALIDATE UPDATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}ValidateForUpdate({{ storeClassName class.name }} target) async {
-    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ storeClassName class.name }}(target);
+    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ repositoryClassName ap.name }}StoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ storeClassName class.name }}(target);
     {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}ValidateUpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
-    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
+    return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
   {{# if class.isClassBehaviourTypeDeletable }}
@@ -62,9 +62,9 @@ class {{ fqClass class.name }}Repository {
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}Update({{ storeClassName class.name }} target) async {
-    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ storeClassName class.name }}(target);
+    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ repositoryClassName ap.name }}StoreMapper.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ storeClassName class.name }}(target);
     {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}UpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
-    return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
+    return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
   {{# each class.relations as |relation| }}
@@ -75,7 +75,7 @@ class {{ fqClass class.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   Future<List<{{ storeClassName relation.target.name }}>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToCreate({{ storeClassName class.name }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
     // Use this when JNG-2028 is done
-    // {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}From{{ storeClassName class.name }}(target);
+    // {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }} {{ variable class.name }}Request = {{ repositoryClassName ap.name }}StoreMapper.create{{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}From{{ storeClassName class.name }}(target);
 
     var {{ variable class.name }}Request = {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}{{ className relation.name }}();
 
@@ -152,7 +152,7 @@ class {{ fqClass class.name }}Repository {
 
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}GetRangeReference{{ fqClass relation.name }}(input: {{ variable class.name }}Request);
     return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
-      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
+      {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@ class {{ fqClass class.name }}Repository {
   //////////////////////////////////////////////////////////////////////////////
   Future<List<{{ storeClassName relation.target.name }}>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToUpdate({{ storeClassName class.name }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask }) async {
     // Use this when JNG-2028 is done
-    // {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }} {{ variable class.name }}Request = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}From{{ storeClassName class.name }}(target);
+    // {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }} {{ variable class.name }}Request = {{ repositoryClassName ap.name }}StoreMapper.create{{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}From{{ storeClassName class.name }}(target);
 
     var {{ variable class.name }}Request = {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}{{ className relation.name }}();
 
@@ -236,7 +236,7 @@ class {{ fqClass class.name }}Repository {
 
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}GetRangeReference{{ fqClass relation.name }}(input: {{ variable class.name }}Request);
     return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
-      {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
+      {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
   }
       {{/ if }}
       {{# if relation.isRelationBehaviourTypeSetable }}
@@ -295,14 +295,14 @@ class {{ fqClass class.name }}Repository {
   // OPERATION {{ variable operation.name }}
   //////////////////////////////////////////////////////////////////////////////
       {{# if operation.output }}Future<{{# if operation.output.isCollection }}List<{{ storeClassName operation.output.target.name }}>{{ else }}{{ storeClassName operation.output.target.name }}{{/ if }}>{{ else }}Future<void>{{/ if }} {{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}{{ storeClassName operation.input.target.name }} targetStore, {{/ if }}{{# if operation.isMapped }}{{ storeClassName class.name }} ownerStore{{/ if }}) async {
-      {{# if operation.input }}{{ fqClass operation.input.target.transferObjectTypeName }} {{ fqVariable operation.input.target.name }}Input = {{ fqClass ap.name }}RepositoryStoreMapper.create{{ fqClass operation.input.target.name }}From{{ storeClassName operation.input.target.name }}(targetStore);{{/ if }}
+      {{# if operation.input }}{{ fqClass operation.input.target.transferObjectTypeName }} {{ fqVariable operation.input.target.name }}Input = {{ repositoryClassName ap.name }}StoreMapper.create{{ fqClass operation.input.target.name }}From{{ storeClassName operation.input.target.name }}(targetStore);{{/ if }}
       {{# if operation.output }}
           {{# if operation.output.isCollection }}
       List<{{ fqClass operation.output.target.transferObjectTypeName }}> {{ fqVariable operation.output.target.name }}Output = await DefaultApi(locator<ApiClient>()).{{ fqVariable operation.owner.transferObjectTypeName }}{{ className operation.name }}({{# if operation.isMapped }}ownerStore.internal__signedIdentifier, {{/ if }}{{# if operation.input }}{{# if operation.input.isOptional }}input: {{/ if }}{{# if operation.input.isCollection }}[{{ fqVariable operation.input.target.name }}Input]{{ else }}{{ fqVariable operation.input.target.name }}Input{{/ if }}{{/ if }});
-      return {{ fqVariable operation.output.target.name }}Output.map<{{ storeClassName operation.output.target.name }}>((e) => {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName operation.output.target.name }}From{{ fqClass operation.output.target.name }}(e)).toList();
+      return {{ fqVariable operation.output.target.name }}Output.map<{{ storeClassName operation.output.target.name }}>((e) => {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName operation.output.target.name }}From{{ fqClass operation.output.target.name }}(e)).toList();
           {{ else }}
       {{ fqClass operation.output.target.transferObjectTypeName }} {{ fqVariable operation.output.target.name }}Output = await DefaultApi(locator<ApiClient>()).{{ fqVariable operation.owner.transferObjectTypeName }}{{ className operation.name }}({{# if operation.isMapped }}ownerStore.internal__signedIdentifier, {{/ if }}{{# if operation.input }}{{# if operation.input.isOptional }}input: {{/ if }}{{# if operation.input.isCollection }}[{{ fqVariable operation.input.target.name }}Input]{{ else }}{{ fqVariable operation.input.target.name }}Input{{/ if }}{{/ if }});
-      return {{ fqClass ap.name }}RepositoryStoreMapper.create{{ storeClassName operation.output.target.name }}From{{ fqClass operation.output.target.name }}({{ fqVariable operation.output.target.name }}Output);
+      return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName operation.output.target.name }}From{{ fqClass operation.output.target.name }}({{ fqVariable operation.output.target.name }}Output);
           {{/ if }}
       {{ else }}
       return await DefaultApi(locator<ApiClient>()).{{ fqVariable operation.owner.transferObjectTypeName }}{{ className operation.name }}({{# if operation.isMapped }}ownerStore.internal__signedIdentifier, {{/ if }}{{# if operation.input }}{{# if operation.input.isOptional }}input: {{/ if }}{{# if operation.input.isCollection }}[{{ fqVariable operation.input.target.name }}Input]{{ else }}{{ fqVariable operation.input.target.name }}Input{{/ if }}{{/ if }});

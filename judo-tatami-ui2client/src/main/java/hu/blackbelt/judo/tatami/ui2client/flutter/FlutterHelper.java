@@ -166,6 +166,14 @@ public class FlutterHelper {
         context.registerFunction("storeClassName", FlutterHelper.class.getDeclaredMethod("storeClassName", new Class[]{String.class}));
         context.registerFunction("storeClassRelativePath", FlutterHelper.class.getDeclaredMethod("storeClassRelativePath", new Class[]{String.class}));
 
+        //repository naming
+        context.registerFunction("repositoryFolderPath", FlutterHelper.class.getDeclaredMethod("repositoryFolderPath", new Class[]{String.class}));
+        context.registerFunction("repositoryClassPath", FlutterHelper.class.getDeclaredMethod("repositoryClassPath", new Class[]{String.class, String.class}));
+        context.registerFunction("repositoryRelationPath", FlutterHelper.class.getDeclaredMethod("repositoryRelationPath", new Class[]{String.class, String.class, String.class}));
+        context.registerFunction("repositoryClassRelativePath", FlutterHelper.class.getDeclaredMethod("repositoryClassRelativePath", new Class[]{String.class}));
+        context.registerFunction("repositoryRelationRelativePath", FlutterHelper.class.getDeclaredMethod("repositoryRelationRelativePath", new Class[]{String.class, String.class}));
+        context.registerFunction("repositoryClassName", FlutterHelper.class.getDeclaredMethod("repositoryClassName", new Class[]{String.class}));
+        context.registerFunction("repositoryRelationName", FlutterHelper.class.getDeclaredMethod("repositoryRelationName", new Class[]{String.class, String.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -229,6 +237,7 @@ public class FlutterHelper {
         return componentsLocation + visualElementType.eClass().getInstanceClass().getSimpleName().toLowerCase() + ".dart.hbs";
     }
 
+    @Deprecated
     public static String fqPath(String fqName) {
         return fqName
                 .replaceAll("\\.", "__")
@@ -239,6 +248,7 @@ public class FlutterHelper {
                 .toLowerCase();
     }
 
+    @Deprecated
     public static String fqClass(String fqName) {
         return stream(fqName.replaceAll("#", "::")
                 .replaceAll("\\.", "::")
@@ -292,6 +302,7 @@ public class FlutterHelper {
         return null;
     }
 
+    @Deprecated
     public static String fqVariable(String fqName) {
         return StringUtils.uncapitalize(fqClass(fqName));
     }
@@ -303,7 +314,6 @@ public class FlutterHelper {
         } else {
             return fq;
         }
-
     }
 
     public static String openApiDataType(String fqDataTypeName){
@@ -496,7 +506,7 @@ public class FlutterHelper {
         if (page.getRelationType() == null) return false;
         return page.getIsPageTypeDashboard() && !page.getRelationType().isIsCollection();
     }
-    
+
     public static boolean isCollectionRelationDashboardPage(PageDefinition page){
         if (page.getRelationType() == null) return false;
         return page.getIsPageTypeDashboard() && page.getRelationType().isIsCollection();
@@ -510,11 +520,11 @@ public class FlutterHelper {
     public static boolean isViewTypePage(PageDefinition page) {
         return page.getIsPageTypeView() || page.getIsPageTypeOperationOutput() || isSingleRelationDashboardPage(page);
     }
-    
+
     public static boolean isRefreshViewTypePage(PageDefinition page) {
         return page.getIsPageTypeView() || isSingleRelationDashboardPage(page);
     }
-    
+
     public static boolean isRefreshTableTypePage(PageDefinition page) {
         return page.getIsPageTypeTable() || isCollectionRelationDashboardPage(page);
     }
@@ -686,6 +696,103 @@ public class FlutterHelper {
      */
     public static String storeClassName(String fqName) {
         return fqClassWithoutModel(fqName) + "Store";
+    }
+
+    //repository naming
+
+    /**
+     * Calculates the relative path of the "repository" folder. Uses  {@link #path(String)} to calculate actor name.
+     * @param actorName name of the actor of the application
+     * @return relative path of "repository" folder, e.g. lib/actor/repository/
+     */
+    public static String repositoryFolderPath(String actorName) {
+        return "lib/"
+                .concat(path(actorName))
+                .concat("/repository/");
+    }
+
+    /**
+     * Calculates the relative path of a Repository class. Uses {@link #repositoryFolderPath(String)} to calculate relative path of "repository" folder
+     * and {@link #repositoryClassRelativePath(String)} to calculate folder structure based on the package structure and the file name of the Repository class.
+     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @param actorName name of the actor of the application
+     * @return relative path of a Repository class, e.g. lib/actor/repository/packageName1/packageName2/../typename/repository.dart
+     */
+    public static String repositoryClassPath(String fqName, String actorName) {
+        return repositoryFolderPath(actorName).concat(repositoryClassRelativePath(fqName));
+    }
+
+    /**
+     * Calculates the relative path of a Repository class. Uses {@link #repositoryFolderPath(String)} to calculate relative path of "repository" folder
+     * and {@link #repositoryRelationRelativePath(String,String)} to calculate folder structure based on the package structure and the file name of the Repository class.
+     * @param relationName the name of the relation
+     * @param actorName name of the actor of the application
+     * @return relative path of a Repository class, e.g. lib/actor/repository/packageName1/packageName2/../typename/relationName__repository.dart
+     */
+    public static String repositoryRelationPath(String relationName, String ownerName, String actorName) {
+        return repositoryFolderPath(actorName).concat(repositoryRelationRelativePath(relationName, ownerName));
+    }
+
+    /**
+     * Calculates folder structure based on the package structure using {@link #getRepositoryRelativePath(String)}
+     * for the path and file name of Repository classes of types.
+     *
+     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @return relative path of a Repository class, e.g. packageName1/packageName2/../typename/repository.dart
+     */
+    public static String repositoryClassRelativePath(String fqName) {
+        return getRepositoryRelativePath(fqName).concat("/repository.dart");
+    }
+
+    /**
+     * Calculates folder structure based on the package structure using {@link #getRepositoryRelativePath(String)}.
+     * for the path and file name of Repository classes of relations.
+     *
+     * @param relationName name of the realtion
+     * @param ownerName the fully qualified name of owner of the relation with "::" as namespace separators
+     * @return relative path of a Repository class, e.g. packageName1/packageName2/../typename/relationname__repository.dart
+     */
+    public static String repositoryRelationRelativePath(String relationName, String ownerName) {
+        return getRepositoryRelativePath(ownerName).concat("/" + relationName.toLowerCase().concat("__repository.dart"));
+    }
+
+    /**
+     * Calculates folder structure based on the package structure using {@link #getPackageNameTokens(String)}
+     * for the path of a repository for a type.
+     *
+     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @return relative path of a Repository class folder, e.g. packageName1/packageName2/../typename
+     */
+    private static String getRepositoryRelativePath(String fqName) {
+        List<String> packageNameTokens = getPackageNameTokens(fqName);
+        String path;
+        if (packageNameTokens.isEmpty()) {
+            path = className(fqName).toLowerCase();
+        } else {
+            path = packageNameTokens.stream()
+                .collect(Collectors.joining("/"))
+                .concat(className(fqName).toLowerCase());
+        }
+        return path;
+    }
+
+    /**
+     * Calculates the Repository class name. Uses {@link #fqClassWithoutModel(String)} to remove model name from the fully qualified name and capitalizes package names.
+     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @return the class name of a Repository class, e.g. Package1Package2..TypeNameRepository
+     */
+    public static String repositoryClassName(String fqName) {
+        return fqClassWithoutModel(fqName).concat("Repository");
+    }
+
+    /**
+     * Calculates the Repository class name for relations. Uses {@link #fqClassWithoutModel(String)} to remove model name from the fully qualified name of the owner name and capitalizes package names, then adds the relation name calpitalzed.
+     * @param relationName the name of a the relation
+     * @param ownerName the fully qualified name of the relation's owner with "::" as namespace separators
+     * @return the class name of a Repository class, e.g. Package1Package2..TypeNameRelationNameRepository
+     */
+    public static String repositoryRelationName(String relationName, String ownerName) {
+        return repositoryClassName(ownerName).concat(StringUtils.capitalize(relationName)).concat("Repository");
     }
 
 }

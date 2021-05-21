@@ -4,7 +4,7 @@ class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore
 
 abstract class _{{ fqClass page.name }}PageStore with Store {
     {{# with page.relationType as |relation| }}
-    {{ fqClass application.actor.name }}Repository _{{ fqVariable application.actor.name }}Repository = locator<{{ fqClass application.actor.name }}Repository>();
+    {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
 
     @observable
     String errorMessage;
@@ -92,7 +92,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<{{ storeClassName relation.target.name }}> create{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            var created = await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);
+            var created = await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);
             get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}ownerStore{{/ unless }});
             return created;
         } on ApiException catch (error) {
@@ -106,7 +106,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @action
     Future<List<{{ storeClassName relation.target.name }}>> add{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, List<{{ storeClassName relation.target.name }}> selectedStore) async {
         try {
-            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Add{{ fqClass relation.name }}(ownerStore, selectedStore);
+            await _actorRepository.{{ fqVariable relation.owner.name }}Add{{ fqClass relation.name }}(ownerStore, selectedStore);
             ownerStore.{{ variable relation.name }}.addAll(selectedStore);
             return ownerStore.{{ variable relation.name }};
         } on ApiException catch (error) {
@@ -121,7 +121,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {{ storeClassName relation.target.name }} selectedStore) async {
         try {
             errorMessage = null;
-            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Remove{{ fqClass relation.name }}(ownerStore, [selectedStore]));
+            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}Remove{{ fqClass relation.name }}(ownerStore, [selectedStore]));
             await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
             ownerStore.{{ variable relation.name }}.remove(selectedStore); // TODO: fix with remove more than 1 element
         } on ApiException catch (error) {
@@ -143,7 +143,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         {{/ if }}
         {{# if page.dataElement.isAccess }}
             {{# if relation.isCollection }}
-            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
+            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
                 sortColumn: {{ fqVariable relation.name }}SortColumnName,
                 sortAscending: {{ fqVariable relation.name }}SortAsc,
                     {{# if relation.isFilterable }}
@@ -167,7 +167,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
             return {{ fqVariable relation.name }}StoreList;
             {{ else }}
-            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
+            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
                 mask: '{
                     {{~# each page.containers.[0].tables.[0].columns as |column| ~}}
                     {{ variable column.attributeType.name }}{{# unless @last }},{{/ unless }}
@@ -179,7 +179,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{/ if }}
         {{ else }}
             {{# if relation.isCollection }}
-            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
+            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
                 ownerStore,
                 sortColumn: {{ fqVariable relation.name }}SortColumnName,
                 sortAscending: {{ fqVariable relation.name }}SortAsc,
@@ -202,7 +202,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                     {{/ unless }}
             return ownerStore.{{ variable relation.name }};
             {{ else }}
-            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
+            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
                 ownerStore,
                 mask: '{
                     {{~# each page.containers.[0].tables.[0].columns as |column| ~}}
@@ -265,7 +265,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                 {{ fqVariable relation.name }}QueryLimit = queryLimit;
             }
 
-            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}ToUpdate(
+            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}ToUpdate(
                 ownerStore,
                 sortColumn: {{ fqVariable relation.name }}SortColumnName,
                 sortAscending: {{ fqVariable relation.name }}SortAsc,
@@ -288,7 +288,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<void> set{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }} selectedStore) async {
         try {
             errorMessage = null;
-            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Set{{ fqClass relation.name }}(ownerStore, selectedStore);
+            await _actorRepository.{{ fqVariable relation.owner.name }}Set{{ fqClass relation.name }}(ownerStore, selectedStore);
             get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}ownerStore{{/ unless }});
         } on ApiException catch (error) {
             errorMessage = "Could not set {{ relation.name }}";
@@ -302,7 +302,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<void> unset{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore) async {
         try {
             errorMessage = null;
-            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(ownerStore);
+            await _actorRepository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(ownerStore);
             get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore{{/ unless }});
         } on ApiException catch (error) {
             errorMessage = "Could not unset {{ relation.name }}";
@@ -316,7 +316,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<void> delete{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore{{# unless relation.isAccess }}, {{ storeClassName relation.owner.name }} ownerStore{{/ unless }}) async {
         try {
             errorMessage = null;
-            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}Delete(targetStore);
+            await _actorRepository.{{ fqVariable relation.target.name }}Delete(targetStore);
             get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}ownerStore{{/ unless }});
         } on ApiException catch (error) {
             errorMessage = "Could not delete {{ relation.target.name }}";
@@ -330,7 +330,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<{{ storeClassName relation.target.name }}> update{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}Update(targetStore);
+            return await _actorRepository.{{ fqVariable relation.target.name }}Update(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not update {{ relation.target.name }}";
             throw error;
