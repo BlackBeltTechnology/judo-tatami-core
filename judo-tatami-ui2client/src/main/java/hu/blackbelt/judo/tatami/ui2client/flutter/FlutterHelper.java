@@ -147,6 +147,7 @@ public class FlutterHelper {
         context.registerFunction("isCollectionRelationDashboardPage", FlutterHelper.class.getDeclaredMethod("isCollectionRelationDashboardPage", new Class[]{PageDefinition.class}));
         context.registerFunction("isBookmarkablePage", FlutterHelper.class.getDeclaredMethod("isBookmarkablePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isAccessTablePage", FlutterHelper.class.getDeclaredMethod("isAccessTablePage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isAccessViewPage", FlutterHelper.class.getDeclaredMethod("isAccessViewPage", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshViewTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshViewTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshTableTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshTableTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isViewTypePage", FlutterHelper.class.getDeclaredMethod("isViewTypePage", new Class[]{PageDefinition.class}));
@@ -254,12 +255,12 @@ public class FlutterHelper {
     }
 
     public static String uriPath(String fqName) {
-        return stream(fqName.replaceAll("#.*", "")
+        return stream(fqName.replaceAll("#", "::")
                 .replaceAll("\\.", "::")
                 .replaceAll("/", "::")
                 .replaceAll("_", "::")
                 .split("::"))
-                .map(s -> s.toLowerCase())
+                .map(String::toLowerCase)
                 .collect(Collectors.joining("-"));
     }
 
@@ -532,12 +533,17 @@ public class FlutterHelper {
     }
 
     public static boolean isBookmarkablePage(PageDefinition page){
-        return page.getIsPageTypeView() || page.getIsPageTypeDashboard() || isAccessTablePage(page);
+        return page.getIsPageTypeDashboard() || isAccessTablePage(page) || isAccessViewPage(page);
     }
 
     public static boolean isAccessTablePage(PageDefinition page){
         if (page.getRelationType() == null) return false;
         return page.getIsPageTypeDashboard() || (page.getIsPageTypeTable() && page.getRelationType().isIsAccess());
+    }
+
+    public static boolean isAccessViewPage(PageDefinition page){
+        if (page.getRelationType() == null) return false;
+        return page.getIsPageTypeDashboard() || (page.getIsPageTypeView() && page.getRelationType().isIsAccess());
     }
 
     public static boolean isViewTypePage(PageDefinition page) {

@@ -1,13 +1,14 @@
 //START viewpagefragment.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------
     final String idParam;
     {{# unless page.dataElement.isAccess }}
+    final {{ storeClassName page.dataElement.target.name }} targetStore;
     final {{ storeClassName page.dataElement.owner.name }} ownerStore;
     {{/ unless }}
     
-    const {{ fqClass page.name }}Page({Key key{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/unless}}, @PathParam('id') this.idParam }) : super(key: key);
+    const {{ fqClass page.name }}Page({Key key{{# unless page.dataElement.isAccess }}, @required this.targetStore, @required this.ownerStore{{/unless}}, @PathParam('id') this.idParam }) : super(key: key);
     
     @override
-    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState(idParam: idParam{{# unless page.dataElement.isAccess }}, ownerStore: ownerStore{{/ unless }});
+    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState(idParam: idParam{{# unless page.dataElement.isAccess }}, targetStore: targetStore, ownerStore: ownerStore{{/ unless }});
 }
 
 class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
@@ -19,11 +20,13 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
 
     final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
 
-    _{{ fqClass page.name }}PageState({this.idParam{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/ unless }} }){
+    _{{ fqClass page.name }}PageState({this.idParam{{# unless page.dataElement.isAccess }}, @required this.targetStore, @required this.ownerStore{{/ unless }} }){
         final navigation = locator<NavigationState>();
     {{# if page.dataElement.isRelationBehaviourTypeRefreshable }}
+        {{# if page.dataElement.isAccess }}
         targetStore = {{ storeClassName page.dataElement.target.name }}();
         targetStore.internal__signedIdentifier = idParam;
+        {{/ if }}
         pageStore
             .refresh{{ className page.dataElement.target.name }}(targetStore)
             .then((_) {

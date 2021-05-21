@@ -40,6 +40,7 @@ const List<AutoRoute> otherRoutes = [
     {{# each layout.pageContainers as |container| }}
     {{# unless (isBookmarkablePage container.owner) }}
     CustomRoute(
+        path: '/{{ uriPath container.owner.name }}',
         page: {{ fqClass container.owner.name }}Page,
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         guards: [AuthGuard],
