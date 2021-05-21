@@ -51,7 +51,7 @@ operation ESM!esm::ui::TabularReferenceField createTableFromTabularReferenceFiel
     if (relation.upper == 1) {
         table.row = 1.0d;
     } else {
-        table.row = self.row.asReal();
+        table.row = self.row.asReal() + 2d;
     }
     
     table.sourceId = self.getID();
