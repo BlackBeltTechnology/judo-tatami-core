@@ -749,7 +749,7 @@ public class FlutterHelper {
      * Calculates folder structure based on the package structure using {@link #getRepositoryRelativePath(String)}.
      * for the path and file name of Repository classes of relations.
      *
-     * @param relationName name of the realtion
+     * @param relationName name of the relation
      * @param ownerName the fully qualified name of owner of the relation with "::" as namespace separators
      * @return relative path of a Repository class, e.g. packageName1/packageName2/../typename/relationname__repository.dart
      */
@@ -788,7 +788,8 @@ public class FlutterHelper {
     }
 
     /**
-     * Calculates the Repository class name for relations. Uses {@link #fqClassWithoutModel(String)} to remove model name from the fully qualified name of the owner name and capitalizes package names, then adds the relation name calpitalzed.
+     * Calculates the Repository class name for relations.
+     * Uses {@link #fqClassWithoutModel(String)} to remove model name from the fully qualified name of the owner name and capitalizes package names, then adds the relation name capitalized.
      * @param relationName the name of a the relation
      * @param ownerName the fully qualified name of the relation's owner with "::" as namespace separators
      * @return the class name of a Repository class, e.g. Package1Package2..TypeNameRelationNameRepository
@@ -796,5 +797,4 @@ public class FlutterHelper {
     public static String repositoryRelationName(String relationName, String ownerName) {
         return repositoryClassName(ownerName).concat(StringUtils.capitalize(relationName)).concat("Repository");
     }
-
 }
