@@ -28,7 +28,7 @@ class {{ repositoryClassName ap.name }}{{# if application.relationTypes }} with 
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ storeClassName application.principal.name }}> getPrincipal() async {
     {{ fqClass application.principal.transferObjectTypeName }} {{ variable application.principal.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable application.actor.name }}Principal();
-    return {{ repositoryClassName application.actor.name }}StoreMapper.create{{ storeClassName application.principal.name }}From{{ fqClass application.principal.name }}({{ variable application.principal.name }}Response);
+    return {{ repositoryStoreMapperClassName application.actor.name }}.create{{ storeClassName application.principal.name }}From{{ fqClass application.principal.name }}({{ variable application.principal.name }}Response);
 
   }
 {{/ if }}

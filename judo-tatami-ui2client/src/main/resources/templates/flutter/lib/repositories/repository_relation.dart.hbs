@@ -99,7 +99,7 @@ class {{ repositoryRelationName relation.name relation.owner.name }} {
 
       List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : queryCustomizer);
     return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
-      {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
+      {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
   }
           {{ else }}
 
@@ -179,7 +179,7 @@ class {{ repositoryRelationName relation.name relation.owner.name }} {
 
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : queryCustomizer);
     return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
-      {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
+      {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
   }
           {{/ if }}
       {{ else }}
@@ -195,7 +195,7 @@ class {{ repositoryRelationName relation.name relation.owner.name }} {
     }
 
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}List{{ className relation.name }}(input : queryCustomizer);
-    return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
           {{ else }}
 
@@ -209,7 +209,7 @@ class {{ repositoryRelationName relation.name relation.owner.name }} {
     }
 
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}List{{ className relation.name }}(owner.internal__signedIdentifier, input : queryCustomizer);
-    return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
           {{/ if }}
       {{/ if }}
@@ -221,9 +221,9 @@ class {{ repositoryRelationName relation.name relation.owner.name }} {
   // CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ storeClassName relation.target.name }} target) async {
-    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ repositoryClassName ap.name }}StoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ repositoryStoreMapperClassName ap.name }}.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}CreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
-    return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
       {{ else }}
 
@@ -231,9 +231,9 @@ class {{ repositoryRelationName relation.name relation.owner.name }} {
   // CREATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target) async {
-    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ repositoryClassName ap.name }}StoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ repositoryStoreMapperClassName ap.name }}.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}CreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ForCreateAndUpdateRequest);
-    return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
       {{/ if }}
   {{/ if }}
@@ -244,9 +244,9 @@ class {{ repositoryRelationName relation.name relation.owner.name }} {
   // VALIDATE CREATE (Access)
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ storeClassName relation.target.name }} target) async {
-    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ repositoryClassName ap.name }}StoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ repositoryStoreMapperClassName ap.name }}.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable relation.owner.name }}ValidateCreateInstance{{ className relation.name }}({{ variable relation.target.name }}ForCreateAndUpdateRequest);
-    return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
     {{ else }}
 
@@ -254,9 +254,9 @@ class {{ repositoryRelationName relation.name relation.owner.name }} {
   // VALIDATE CREATE
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ storeClassName relation.target.name }}> {{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{ storeClassName relation.owner.name }} owner, {{ storeClassName relation.target.name }} target) async {
-    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ repositoryClassName ap.name }}StoreMapper.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
+    {{ fqClass relation.target.transferObjectTypeName }}ForCreateAndUpdate {{ variable relation.target.name }}ForCreateAndUpdateRequest = {{ repositoryStoreMapperClassName ap.name }}.create{{ fqClass relation.target.name }}ForCreateAndUpdateFrom{{ storeClassName relation.target.name }}(target);
     {{ fqClass relation.target.transferObjectTypeName }} {{ variable relation.target.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable owner.transferObjectTypeName }}ValidateCreateInstance{{ className relation.name }}(owner.internal__signedIdentifier, {{ variable relation.target.name }}ForCreateAndUpdateRequest);
-    return {{ repositoryClassName ap.name }}StoreMapper.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
+    return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}({{ variable relation.target.name }}Response);
   }
     {{/ if }}
   {{/ if }}

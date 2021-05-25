@@ -173,6 +173,7 @@ public class FlutterHelper {
         context.registerFunction("repositoryClassRelativePath", FlutterHelper.class.getDeclaredMethod("repositoryClassRelativePath", new Class[]{String.class}));
         context.registerFunction("repositoryRelationRelativePath", FlutterHelper.class.getDeclaredMethod("repositoryRelationRelativePath", new Class[]{String.class, String.class}));
         context.registerFunction("repositoryClassName", FlutterHelper.class.getDeclaredMethod("repositoryClassName", new Class[]{String.class}));
+        context.registerFunction("repositoryStoreMapperClassName", FlutterHelper.class.getDeclaredMethod("repositoryStoreMapperClassName", new Class[]{String.class}));
         context.registerFunction("repositoryRelationName", FlutterHelper.class.getDeclaredMethod("repositoryRelationName", new Class[]{String.class, String.class}));
     }
 
@@ -785,6 +786,15 @@ public class FlutterHelper {
      */
     public static String repositoryClassName(String fqName) {
         return fqClassWithoutModel(fqName).concat("Repository");
+    }
+
+    /**
+     * Calculates the RepositoryStoreMapper class name. Uses {@link #repositoryClassName(String)} to calculate Repository class name and concatenates "StoreMapper" to it.
+     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @return the class name of a RepositoryStoreMapper class, e.g. Package1Package2..TypeNameRepositoryStoreMapper
+     */
+    public static String repositoryStoreMapperClassName(String fqName) {
+        return repositoryClassName(fqName).concat("StoreMapper");
     }
 
     /**
