@@ -125,7 +125,7 @@ rule CreatePageDefinitionForPreviewFromTable
         var table = s.createTableFromTransferObjectTable(application, relation, t);
 
         if (t.dataElement.isCollection) {
-            table.row = 31d;
+            table.row = 12d;
         } else {
             table.row = 2d;
         }
