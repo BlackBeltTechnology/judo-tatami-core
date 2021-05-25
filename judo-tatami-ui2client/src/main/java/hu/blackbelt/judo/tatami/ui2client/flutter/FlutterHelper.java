@@ -677,7 +677,8 @@ public class FlutterHelper {
         }
         return packageNameTokens.stream()
                 .collect(Collectors.joining("/"))
-                .concat("/" + storeClassFileName(fqName));
+                .concat("/")
+                .concat(storeClassFileName(fqName));
     }
 
     /**
@@ -771,6 +772,7 @@ public class FlutterHelper {
         } else {
             path = packageNameTokens.stream()
                 .collect(Collectors.joining("/"))
+                .concat("/")
                 .concat(className(fqName).toLowerCase());
         }
         return path;
