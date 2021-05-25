@@ -21,11 +21,11 @@ import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/ui/pages/dialogs/h
 import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/utilities/package.dart';
 
 part 'mapper.dart';
-part '{{ fqPath ap.name }}__repository.dart';
+part '{{ repositoryClassRelativePath ap.name }}';
 {{# each application.relationTypes ~}}
-part '{{ fqPath owner.name }}__{{ fqPath name }}__repository.dart';
+part '{{ repositoryRelationRelativePath name owner.name }}';
 {{/ each }}
 {{# each classes ~}}
-    part '{{ fqPath name }}__repository.dart';
+    part '{{ repositoryClassRelativePath name }}';
 {{/ each }}
 

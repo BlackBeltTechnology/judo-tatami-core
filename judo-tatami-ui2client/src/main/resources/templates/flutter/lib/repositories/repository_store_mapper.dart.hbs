@@ -9,7 +9,7 @@
 
 part of {{ variable ap.name }}.repository;
 
-class {{ fqClass ap.name }}RepositoryStoreMapper {
+class {{ repositoryStoreMapperClassName ap.name }} {
 
 {{# each classes as |class| }}
   // MAPPERS FOR {{ className name }}

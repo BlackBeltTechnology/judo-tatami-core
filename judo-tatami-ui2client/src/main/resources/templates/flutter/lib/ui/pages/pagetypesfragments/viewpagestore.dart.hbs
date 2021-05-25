@@ -4,7 +4,7 @@ class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore
 
 abstract class _{{ fqClass page.name }}PageStore with Store {
     {{# with page.relationType as |relation| }}
-    {{ fqClass application.actor.name }}Repository _{{ fqVariable application.actor.name }}Repository = locator<{{ fqClass application.actor.name }}Repository>();
+    {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
 
     @observable
     String errorMessage;
@@ -39,7 +39,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<{{ storeClassName relation.target.name }}> get{{ fqClass relation.name }}() async {
         try {
             errorMessage = null;
-            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
+            {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
                 mask: '{
                     {{~# with page.containers.[0] as |container| ~}}
                         {{~# each (getAttributeTypeNamesFromWidgets container) as |attributeName| ~}}
@@ -71,7 +71,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<void> refresh{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            targetStore.updateWith(await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}GetByIdentifier(
+            targetStore.updateWith(await _actorRepository.{{ fqVariable relation.target.name }}GetByIdentifier(
                 targetStore,
                 mask: '{
                     {{~# with page.containers.[0] as |container| ~}}
@@ -102,7 +102,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<{{ storeClassName relation.target.name }}> update{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}Update(targetStore);
+            return await _actorRepository.{{ fqVariable relation.target.name }}Update(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not update {{ relation.target.name }}";
             throw error;
@@ -115,7 +115,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<void> delete{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}Delete(targetStore);
+            await _actorRepository.{{ fqVariable relation.target.name }}Delete(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not delete {{ relation.name }}";
             throw error;
@@ -128,7 +128,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<{{ storeClassName relation.target.name }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}ValidateForUpdate(targetStore);
+            return await _actorRepository.{{ fqVariable relation.target.name }}ValidateForUpdate(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not validate {{ relation.target.name }}";
             throw error;
@@ -159,7 +159,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{# if operation.output }}Future<{{# if operation.output.isCollection }}List<{{ storeClassName operation.output.target.name }}>{{ else }}{{ storeClassName operation.output.target.name }}{{/ if }}>{{ else }}Future<void>{{/ if }} {{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}{{ storeClassName operation.input.target.name }} targetStore, {{/ if }}{{# if operation.isMapped }}{{ storeClassName operation.owner.name }} ownerStore{{/ if }}) async {
         try {
             errorMessage = null;
-            {{# if operation.output }}return {{/ if }}await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}targetStore, {{/ if }}{{# if operation.isMapped }}ownerStore{{/ if }});
+            {{# if operation.output }}return {{/ if }}await _actorRepository.{{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}targetStore, {{/ if }}{{# if operation.isMapped }}ownerStore{{/ if }});
         } on ApiException {
             errorMessage = "Could not call operation {{ operation.name }}";
         }

@@ -20,7 +20,7 @@ part 'navigation_store.g.dart';
 class NavigationStore extends _NavigationStore with _$NavigationStore {}
 
 abstract class _NavigationStore with Store {
-    {{ fqClass application.actor.name }}Repository _{{ fqVariable application.actor.name }}Repository = locator<{{ fqClass application.actor.name }}Repository>();
+    {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
 
     @observable
     String errorMessage;
@@ -36,7 +36,7 @@ abstract class _NavigationStore with Store {
     Future<{{ storeClassName relation.target.name }}> get{{ fqClass relation.name }}() async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get();
+            return await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get();
         } on ApiException catch (error) {
             errorMessage = "Could not load {{ relation.name }}";
             throw error;
@@ -51,7 +51,7 @@ abstract class _NavigationStore with Store {
     Future<{{ storeClassName relation.target.name }}> update{{ fqClass relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}Update(targetStore);
+            return await _actorRepository.{{ fqVariable relation.target.name }}Update(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not update {{ relation.target.name }}";
             throw error;
@@ -66,7 +66,7 @@ abstract class _NavigationStore with Store {
     Future<void> delete{{ fqClass relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.target.name }}Delete(targetStore);
+            return await _actorRepository.{{ fqVariable relation.target.name }}Delete(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not delete {{ relation.name }}";
             throw error;
@@ -81,7 +81,7 @@ abstract class _NavigationStore with Store {
     Future<{{ storeClassName relation.target.name }}> create{{ fqClass relation.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create(targetStore);
+            return await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create(targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not create {{ relation.name }}";
             throw error;

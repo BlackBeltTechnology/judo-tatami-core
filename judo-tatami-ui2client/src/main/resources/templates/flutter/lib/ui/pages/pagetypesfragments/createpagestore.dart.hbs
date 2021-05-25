@@ -4,7 +4,7 @@ class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore
 
 abstract class _{{ fqClass page.name }}PageStore with Store {
     {{# with page.relationType as |relation| }}
-    {{ fqClass application.actor.name }}Repository _{{ fqVariable application.actor.name }}Repository = locator<{{ fqClass application.actor.name }}Repository>();
+    {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
 
     @observable
     String errorMessage;
@@ -18,7 +18,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Future<{{ storeClassName relation.target.name }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _{{ fqVariable application.actor.name }}Repository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);
+            return await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);
         } on ApiException catch (error) {
             errorMessage = "Could not validate {{ relation.name }}";
             throw error;

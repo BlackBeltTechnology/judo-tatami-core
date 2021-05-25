@@ -34,3 +34,7 @@ operation UI!ui::Flex wrapAndLabelFlex() : UI!ui::Flex {
     return wrapper;
 }
 
+operation UI!ui::Flex isLabelWrapper() : Boolean {
+    return self.children.first().isKindOf(UI!ui::Label);
+}
+
