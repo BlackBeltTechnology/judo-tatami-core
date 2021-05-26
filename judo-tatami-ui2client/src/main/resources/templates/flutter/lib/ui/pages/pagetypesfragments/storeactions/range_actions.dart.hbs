@@ -1,0 +1,92 @@
+{{ log 'Range action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' }}
+//START range_actions.dart.hbs-----{{ relaltion.name }}---------------------------------------------------------------------------------
+// {{ className relation.name }} range actions
+{{# if relation.isRelationBehaviourTypeRangeable }}
+@observable
+ObservableFuture {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreRangeFuture;
+
+@observable
+List<{{ storeClassName relation.target.name }}> {{ fqVariable relation.name }}StoreRangeList = ObservableList<{{ storeClassName relation.target.name }}>();
+
+@computed
+int get {{ variable relation.name }}TableForRangeItemsRangeStart => nextPageCounterFor{{ fqClass relation.name }}Range * {{ fqVariable relation.name }}QueryLimit + 1;
+
+@computed
+int get {{ variable relation.name }}TableForRangeItemsRangeEnd => {{ variable relation.name }}TableForRangeItemsRangeStart - 1 + {{ fqVariable relation.name }}StoreRangeList.length;
+
+@computed
+bool get nextButtonEnableFor{{ fqClass relation.name }}Range => {{ fqVariable relation.name }}StoreRangeList.length == {{ fqVariable relation.name }}QueryLimit && !nextPageIsEmptyFor{{ fqClass relation.name }}Range;
+
+@observable
+int nextPageCounterFor{{ fqClass relation.name }}Range = 0;
+
+@computed
+bool get previousButtonEnableFor{{ fqClass relation.name }}Range => nextPageCounterFor{{ fqClass relation.name }}Range > 0;
+
+@observable
+bool nextPageIsEmptyFor{{ fqClass relation.name }}Range = false;
+
+@action
+void {{ fqVariable relation.name }}SetSortRange({{ storeClassName relation.owner.name }} ownerStore, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList, String mask}) {
+    if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
+        {{ fqVariable relation.name }}SortAsc = true;
+    } else {
+        {{ fqVariable relation.name }}SortAsc = !{{ fqVariable relation.name }}SortAsc;
+    }
+
+    {{ fqVariable relation.name }}SortColumnIndex = sortColumnIndex;
+    {{ fqVariable relation.name }}SortColumnName = sortColumnName;
+    {{ fqVariable relation.name }}SortCompare = sortCompare;
+
+    getRangeFor{{ fqClass relation.name }}(ownerStore, filterStoreList: filterStoreList, mask: mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+}
+
+@action
+Future<List<{{ storeClassName relation.target.name }}>> getRangeFor{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {List<FilterStore> filterStoreList, int queryLimit, String mask, bool isNext}) async {
+    try {
+        errorMessage = null;
+
+        if(isNext == null) {
+            nextPageCounterFor{{ fqClass relation.name }}Range = 0;
+        }
+
+        {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreRangeFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}To{{# if (isCreateTypePage page) }}Create{{ else }}Update{{/ if }}(
+            ownerStore,
+            sortColumn: {{ fqVariable relation.name }}SortColumnName,
+            sortAscending: {{ fqVariable relation.name }}SortAsc,
+            queryLimit: queryLimit ?? {{ fqVariable relation.name }}QueryLimit,
+            filterStoreList: filterStoreList,
+            mask: mask,
+            lastItem: isNext != null ?
+                (isNext ? {{ fqVariable relation.name }}StoreRangeList.last : {{ fqVariable relation.name }}StoreRangeList.first)
+                : null,
+            reverse: isNext != null ?
+                !isNext
+                : null,
+        ));
+
+        List<{{ storeClassName relation.target.name }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreRangeFuture;
+        if (nextItemsList.isEmpty) {
+            nextPageIsEmptyFor{{ fqClass relation.name }}Range = true;
+            return {{ fqVariable relation.name }}StoreRangeList;
+        }
+
+        nextPageIsEmptyFor{{ fqClass relation.name }}Range = false;
+        if(isNext != null) {
+            if (isNext) {
+                nextPageCounterFor{{ fqClass relation.name }}Range++;
+            } else {
+                nextPageCounterFor{{ fqClass relation.name }}Range--;
+            }
+        }
+
+        {{ fqVariable relation.name }}StoreRangeList.clear();
+        {{ fqVariable relation.name }}StoreRangeList.addAll(nextItemsList);
+        return {{ fqVariable relation.name }}StoreRangeList;
+    } on ApiException catch (error) {
+        errorMessage = "Could not get range of {{ relation.name }}";
+        throw error;
+    }
+}
+{{/ if }}
+//END range_actions.dart.hbs-----{{ relaltion.name }}-----------------------------------------------------------------------------------

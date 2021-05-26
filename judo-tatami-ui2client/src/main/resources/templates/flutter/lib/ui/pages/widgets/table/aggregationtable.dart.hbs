@@ -6,15 +6,15 @@ Observer(builder: (_) {
     return JudoTable(
         disabled: {{ disabled }},
         col: {{ col }},
-        row: {{ row }},
+        row: {{ row }} - 1,
         inCard: {{ isInCard }},
         dataInfo: dataInfo,
-        rowList: {{# if relation.isCollection }}targetStore.{{ variable relation.name }}{{ else }}[targetStore.{{ variable relation.name }}].asObservable(){{/ if }},
+        rowList: {{# if relation.isCollection }}pageStore.{{ variable relation.name }}TablePagingList{{ else }}[targetStore.{{ variable relation.name }}].asObservable(){{/ if }},
         {{# if relation.isCollection }}
-        sortAscending: {{ fqVariable page.name }}PageStore.{{ fqVariable relation.name }}SortAsc,
-        sortColumnIndex: {{ fqVariable page.name }}PageStore.{{ fqVariable relation.name }}SortColumnIndex,
+        sortAscending: pageStore.{{ fqVariable relation.name }}SortAsc,
+        sortColumnIndex: pageStore.{{ fqVariable relation.name }}SortColumnIndex,
         onSort: (int columnIndex, bool asc) {
-          {{ fqVariable page.name }}PageStore.{{ fqVariable relation.name }}SetSort(
+          pageStore.{{ fqVariable relation.name }}SetSort(
             context,
             dataInfo.getColumnFieldByIndex(columnIndex, asc),
             columnIndex,
@@ -33,7 +33,7 @@ Observer(builder: (_) {
                 {{# unless relation.isMemberTypeTransient }}
                     {{# unless page.isPageTypeOperationOutput }}
                 if (response != null) {
-                    {{ fqVariable page.name }}PageStore.refresh{{ className relation.owner.name }}(targetStore)
+                    pageStore.refresh{{ className relation.owner.name }}(targetStore)
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 }
                     {{/ unless }}
@@ -46,16 +46,16 @@ Observer(builder: (_) {
             {{ storeClassName relationType.target.name }} cloned = {{ storeClassName relationType.target.name }}();
             cloned.updateWith(element);
             var res = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,
-            arguments: {{ fqClass rowAction.target.name }}PageArguments(targetStore: cloned, validatable: {{ fqVariable page.name }}PageStore.validatable));
+            arguments: {{ fqClass rowAction.target.name }}PageArguments(targetStore: cloned, validatable: pageStore.validatable));
             if (res != null) {
                 element.updateWith(cloned);
-                var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.name }}{{ className relation.target.name }}(element, targetStore)
+                var updated = await pageStore.update{{ className relation.name }}{{ className relation.target.name }}(element, targetStore)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 {{# if (isValidateHere page) }}
                     {{# unless page.dataElement.isRelationKindAggregation }}
                         {{# unless page.dataElement.isRelationKindComposition }}
                             {{# unless relation.isMemberTypeTransient }}
-                var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
+                var validate = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 if (validate != null) {
                     targetStore.updateWith(validate);
@@ -66,7 +66,7 @@ Observer(builder: (_) {
                 {{ else }}
                 if (updated != null) {
                     element.updateWith(updated);
-                    {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore{{/ unless }})
+                    pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore{{/ unless }})
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 }
                 {{/ if }}
@@ -76,7 +76,7 @@ Observer(builder: (_) {
         {{# if rowAction.isRemoveAction }}
         removeAction:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} (element) {
             {{# if relation.isRelationBehaviourTypeRemovable }}
-            {{ fqVariable page.name }}PageStore.remove{{ fqClass relation.name }}(targetStore, element);
+            pageStore.remove{{ fqClass relation.name }}(targetStore, element);
             {{ else }}
             var temporaryList = List<{{ storeClassName relation.target.name }}>.from(targetStore.{{ variable relation.name }})
                 ..remove(element);
@@ -86,18 +86,53 @@ Observer(builder: (_) {
         {{/ if }}
         {{# if rowAction.isUnsetAction }}
         unsetAction:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            {{ fqVariable page.name }}PageStore.unset{{ fqClass relation.name }}(targetStore)
+            pageStore.unset{{ fqClass relation.name }}(targetStore)
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         }{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
         {{/ if }}
         {{# if rowAction.isDeleteAction }}
         deleteAction:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} (element) async {
-            {{ fqVariable page.name }}PageStore.delete{{ className relation.name }}{{ className relation.target.name }}(element{{# unless relation.isAccess }}, targetStore{{/ unless }})
+            pageStore.delete{{ className relation.name }}{{ className relation.target.name }}(element{{# unless relation.isAccess }}, targetStore{{/ unless }})
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         }{{# unless relation.isAccess }} : null{{/ unless }},
         {{/ if }}
         {{/ each }}
     );
 }),
+Row(
+    children: [
+        Padding(
+            padding: JudoComponentCustomizer.get().getDefaultPadding(),
+            child: Observer(
+                builder: (_) => Text(
+                    '${pageStore.{{ variable relation.name }}TableItemsRangeStart} - ${pageStore.{{ variable relation.name }}TableItemsRangeEnd}',
+                    style: JudoComponentCustomizer.get().getRowCounterTextStyle(Theme.of(context)),
+                ),
+            ),
+        ),
+        Observer(
+            builder: (_) => Padding(
+                padding: JudoComponentCustomizer.get().getDefaultPadding(),
+                child: ElevatedButton(
+                    onPressed: pageStore.{{ variable relation.name }}TablePreviousEnable ? () async {
+                        pageStore.{{ variable relation.name }}TablePreviousPage();
+                    } : null,
+                    child: Text(AppLocalizations.of(context).lookUpValue(context, 'Previous')),
+                ),
+            ),
+        ),
+        Observer(
+            builder: (_) => Padding(
+                padding: JudoComponentCustomizer.get().getDefaultPadding(),
+                child: ElevatedButton(
+                    onPressed: pageStore.{{ variable relation.name }}TableNextEnable ? () async {
+                        pageStore.{{ variable relation.name }}TableNextPage();
+                    } : null,
+                    child: Text(AppLocalizations.of(context).lookUpValue(context, 'Next')),
+                ),
+            ),
+        ),
+    ],
+),
 {{/ with }}
 //END aggregationtable.dart.hbs-----{{ dataElement.name }}-----------------------------------------------------------------------------------

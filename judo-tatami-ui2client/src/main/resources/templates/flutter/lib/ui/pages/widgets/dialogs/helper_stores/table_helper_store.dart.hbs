@@ -21,30 +21,29 @@ abstract class _TableHelperStore with Store {
     Function getId;
 
     @observable
-    ObservableList<String> selected;
+    ObservableList<dynamic> selected;
 
     @observable
-    String singleSelected;
+    dynamic singleSelected;
 
     @computed
     bool get selectButtonEnabled => selected.isNotEmpty || singleSelected != null;
 
     @action
     void selectRow(dynamic value) {
-      String valueId = getId(value);
-      if (selected.contains(valueId)) {
-        selected.remove(valueId);
+      if (selected.firstWhere((element) => getId(element) == getId(value), orElse: () => null) != null) {
+        selected.removeAt(selected.indexWhere((element) => getId(element) == getId(value)));
       } else {
-        selected.add(valueId);
+        selected.add(value);
       }
     }
 
     @action
     void singleSelectRow(dynamic value) {
-      if (getId(value) == singleSelected) {
+      if (getId(value) == getId(singleSelected)) {
         singleSelected = null;
       } else {
-        singleSelected = getId(value);
+        singleSelected = value;
       }
     }
 

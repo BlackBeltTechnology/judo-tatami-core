@@ -3,7 +3,7 @@
 await judoSelect{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}Page(
     context: context,
     ownerStore: {{~# if page.isPageTypeTable ~}}{{~# unless page.dataElement.isAccess ~}}owner{{ else }}target{{/ unless }}{{ else }}target{{/ if }}Store,
-    pageStore: {{ fqVariable page.name }}PageStore,
+    pageStore: pageStore,
     {{# if addDialog }}
     dialogTypeAdder: true,
     {{/ if }}

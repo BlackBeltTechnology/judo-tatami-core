@@ -11,9 +11,9 @@
     {{# if action.isCreateAction }}
         onPressed:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
             var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless relation.isAccess }},
-            arguments: {{ fqClass action.target.name }}PageArguments(ownerStore: targetStore, validatable: {{ fqVariable page.name }}PageStore.validatable){{~/ unless }});
+            arguments: {{ fqClass action.target.name }}PageArguments(ownerStore: targetStore, validatable: pageStore.validatable){{~/ unless }});
             if (created != null) {
-                {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
+                pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{# unless page.isPageTypeUpdate }}
             {{# unless page.isPageTypeView }}
@@ -21,7 +21,7 @@
                     {{# unless page.dataElement.isRelationKindAggregation }}
                         {{# unless page.dataElement.isRelationKindComposition }}
                             {{# unless relation.isMemberTypeTransient }}
-                var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
+                var validate = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 if (validate != null) {
                     targetStore.updateWith(validate);
@@ -41,7 +41,7 @@
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation addDialog=true }}
             if (selected != null) {
         {{# if relation.isRelationBehaviourTypeAddable }}
-                {{ fqVariable page.name }}PageStore.add{{ fqClass relation.name }}(targetStore, selected)
+                pageStore.add{{ fqClass relation.name }}(targetStore, selected)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{ else }}
             var temporaryList = List<{{ storeClassName relation.target.name }}>.from(targetStore.{{ variable relation.name }})
@@ -57,7 +57,7 @@
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation }}
             if (selected != null) {
         {{# if relation.isRelationBehaviourTypeSetable }}
-                {{ fqVariable page.name }}PageStore.set{{ fqClass relation.name }}(targetStore, selected)
+                pageStore.set{{ fqClass relation.name }}(targetStore, selected)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{ else }}
                 targetStore.set{{ fqClass relation.name }}(selected);
@@ -67,7 +67,7 @@
     {{/ if }}
     {{# if action.isUnsetAction }}
         onPressed:{{# unless page.relationType.isAccess }}{{# unless page.relationType.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            {{ fqVariable page.name }}PageStore.unset{{ fqClass page.relationType.name }}(targetStore)
+            pageStore.unset{{ fqClass page.relationType.name }}(targetStore)
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         }{{# unless page.relationType.isAccess }}{{# unless page.relationType.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
     {{/ if }}

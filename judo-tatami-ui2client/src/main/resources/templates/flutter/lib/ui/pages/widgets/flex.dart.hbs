@@ -7,15 +7,15 @@ JudoRow(
     builder: (_) => {{/ if }}JudoColumn(
 {{/ if }}
         col: {{ col }},
-        row: {{ row }}{{# unless isDirectionHorizontal }}{{# if (isRefreshTableTypePage page) }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}{{/ unless }},
+        row: {{ row }}{{# unless isDirectionHorizontal }}{{# if (isRefreshTableTypePage page) }} + pageStore.getPlusRowSize{{/ if }}{{/ unless }},
         card: {{ card }},
-        {{# if frame }}
+    {{# if frame }}
         elevation: {{ frame.elevation }},
         radius: {{ frame.radius }},
         {{# if frame.margin }}
         frameMargin: EdgeInsets.only(top: {{ frame.margin.top }}, bottom: {{ frame.margin.bottom }}, left: {{ frame.margin.left }}, right: {{ frame.margin.right }}),
         {{/ if }}
-        {{/ if }}
+    {{/ if }}
         mainAxisAlignment: MainAxisAlignment.{{ mainAxisAlignment this }},
         crossAxisAlignment: CrossAxisAlignment.{{ crossAxisAlignment this }},
         mainAxisSize: MainAxisSize.{{ mainAxisSize this }},
