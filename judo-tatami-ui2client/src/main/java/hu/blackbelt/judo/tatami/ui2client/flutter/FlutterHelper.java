@@ -134,6 +134,7 @@ public class FlutterHelper {
         context.registerFunction("isTransientAttribute", FlutterHelper.class.getDeclaredMethod("isTransientAttribute", new Class[]{AttributeType.class}));
         context.registerFunction("multiplyCol", FlutterHelper.class.getDeclaredMethod("multiplyCol", new Class[]{Double.class}));
         context.registerFunction("validatableFlagNeed", FlutterHelper.class.getDeclaredMethod("validatableFlagNeed", new Class[]{RelationType.class}));
+        context.registerFunction("tableNavigateToViewHasIdParam", FlutterHelper.class.getDeclaredMethod("tableNavigateToViewHasIdParam", new Class[]{PageDefinition.class}));
         context.registerFunction("isEnumType", FlutterHelper.class.getDeclaredMethod("isEnumType", new Class[]{DataType.class}));
         context.registerFunction("isTimestampType", FlutterHelper.class.getDeclaredMethod("isTimestampType", new Class[]{DataType.class}));
         context.registerFunction("isBooleanDataType", FlutterHelper.class.getDeclaredMethod("isBooleanDataType", new Class[]{DataType.class}));
@@ -463,6 +464,10 @@ public class FlutterHelper {
                 .anyMatch(
                         relationTypeElement -> relationTypeElement.getIsRelationKindAggregation() || relationTypeElement.getIsRelationKindComposition()
                 );
+    }
+
+    public static boolean tableNavigateToViewHasIdParam(PageDefinition page) {
+        return (page.getIsPageTypeTable() || page.getIsPageTypeDashboard()) && ((RelationType)page.getDataElement()).isIsAccess();
     }
 
     public static boolean isEnumType (DataType type) {
