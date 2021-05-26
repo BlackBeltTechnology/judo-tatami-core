@@ -25,7 +25,7 @@ public class [%= name%]Impl extends [%= getInternalPrefix() + getModelPackageNam
     @Override
     public [%= dtoTypeName %] create([%= dtoTypeName %] data) {
         org.eclipse.emf.ecore.EClass eClass = getEClass(FQ_NAME);
-        hu.blackbelt.judo.dao.api.Payload resultPayload = dao.create(eClass, hu.blackbelt.judo.dao.api.Payload.asPayload([%= sdkUtil %].asMap(data)));
+        hu.blackbelt.judo.dao.api.Payload resultPayload = dao.create(eClass, hu.blackbelt.judo.dao.api.Payload.asPayload([%= sdkUtil %].asMap(data)), null);
         return [%= sdkUtil %].fromPayload([%= dtoTypeName %].class, resultPayload);
     }
 
@@ -60,7 +60,7 @@ public class [%= name%]Impl extends [%= getInternalPrefix() + getModelPackageNam
     */
     @Override
     public [%= dtoTypeName %] update([%= dtoTypeName %] data) {
-        hu.blackbelt.judo.dao.api.Payload resultPayload = dao.update(getEClass(FQ_NAME), hu.blackbelt.judo.dao.api.Payload.asPayload([%= sdkUtil %].asMap(data)));
+        hu.blackbelt.judo.dao.api.Payload resultPayload = dao.update(getEClass(FQ_NAME), hu.blackbelt.judo.dao.api.Payload.asPayload([%= sdkUtil %].asMap(data)), null);
         return [%= sdkUtil %].fromPayload([%= dtoTypeName %].class, resultPayload);
     }
     
@@ -74,7 +74,7 @@ public class [%= name%]Impl extends [%= getInternalPrefix() + getModelPackageNam
     */
     @Override
     public [%= relatedType %] create[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObject) {
-        hu.blackbelt.judo.dao.api.Payload resultPayload = dao.createNavigationInstanceAt(object.get__identifier(), [%= sdkUtil %].getReference(getEClass(FQ_NAME), "[%= rel.name %]"), hu.blackbelt.judo.dao.api.Payload.asPayload([%= sdkUtil %].asMap(relatedObject)));
+        hu.blackbelt.judo.dao.api.Payload resultPayload = dao.createNavigationInstanceAt(object.get__identifier(), [%= sdkUtil %].getReference(getEClass(FQ_NAME), "[%= rel.name %]"), hu.blackbelt.judo.dao.api.Payload.asPayload([%= sdkUtil %].asMap(relatedObject)), null);
         return [%= sdkUtil %].fromPayload([%= relatedType %].class, resultPayload);
     }
 
@@ -122,7 +122,7 @@ public class [%= name%]Impl extends [%= getInternalPrefix() + getModelPackageNam
     public [%= relatedType %] create[%= rel.name.firstToUpperCase() %]([%= dtoTypeName %] object, [%= relatedType %] relatedObjects) {
         [%=relatedType %] result = new java.util.ArrayList<>();
         for ([%= singleRelatedType %] element : relatedObjects) {
-            hu.blackbelt.judo.dao.api.Payload resultPayload = dao.createNavigationInstanceAt(object.get__identifier(), [%= sdkUtil %].getReference(getEClass(FQ_NAME), "[%= rel.name %]"), hu.blackbelt.judo.dao.api.Payload.asPayload([%= sdkUtil %].asMap(element)));
+            hu.blackbelt.judo.dao.api.Payload resultPayload = dao.createNavigationInstanceAt(object.get__identifier(), [%= sdkUtil %].getReference(getEClass(FQ_NAME), "[%= rel.name %]"), hu.blackbelt.judo.dao.api.Payload.asPayload([%= sdkUtil %].asMap(element)), null);
             result.add([%= sdkUtil %].fromPayload([%= singleRelatedType %].class, resultPayload));
         }
     return result;

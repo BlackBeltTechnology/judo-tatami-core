@@ -71,10 +71,10 @@
         <judo-meta-openapi-version>1.0.0.20210518_094315_bf3a0a8_develop</judo-meta-openapi-version>
         <judo-meta-ui-version>1.0.0.20210518_100339_03fdd11_develop</judo-meta-ui-version>
         <judo-meta-keycloak-version>1.0.0.20210518_100326_ff22cde_develop</judo-meta-keycloak-version>
-        <judo-dao-api-version>1.0.2.20210512_093916_3da4a7a_develop</judo-dao-api-version>
+        <judo-dao-api-version>1.0.2.20210526_142237_614cb97_feature_JNG_2669_add_query_customizer_to_create_and_update</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20210302_135850_a9b5c54_develop</judo-dispatcher-api-version>
-        <judo-script-codegen-version>1.1.0.20210519_141519_bef9d1f_develop</judo-script-codegen-version>
-        <judo-operation-utils-version>1.1.0.20210518_101734_5a1ea9c_develop</judo-operation-utils-version>
+        <judo-script-codegen-version>1.1.0.20210526_142710_e84fbd8_feature_JNG_2669_add_query_customizer_to_create_and_update</judo-script-codegen-version>
+        <judo-operation-utils-version>1.1.0.20210526_142935_5eac057_feature_JNG_2669_add_query_customizer_to_create_and_update</judo-operation-utils-version>
 
         <structured-map-proxy-version>1.0.6.20210119_121627_130c6ee_develop</structured-map-proxy-version>
 
