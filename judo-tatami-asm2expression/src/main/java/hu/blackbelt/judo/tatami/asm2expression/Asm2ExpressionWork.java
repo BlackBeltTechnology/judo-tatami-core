@@ -33,6 +33,8 @@ public class Asm2ExpressionWork extends AbstractTransformationWork {
 				.orElseGet(() -> buildExpressionModel().name(asmModel.get().getName()).build());
 		getTransformationContext().put(expressionModel);
 
-		Asm2Expression.executeAsm2Expression(asmModel.get(), measureModel.orElse(null), expressionModel);
+		Asm2ExpressionConfiguration config = getTransformationContext().getByClass(Asm2ExpressionConfiguration.class).orElse(new Asm2ExpressionConfiguration());
+
+		Asm2Expression.executeAsm2Expression(asmModel.get(), measureModel.orElse(null), expressionModel, config);
 	}
 }
