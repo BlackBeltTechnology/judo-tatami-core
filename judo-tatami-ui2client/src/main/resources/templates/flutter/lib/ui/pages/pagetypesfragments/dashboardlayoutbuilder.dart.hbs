@@ -1,7 +1,7 @@
 //START dashboardlayoutbuilder.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------
 // ignore: missing_return
 return Observer(builder: (_) {
-        switch({{ fqVariable page.name }}PageStore.getterStatus){
+        switch(pageStore.getterStatus){
             case FutureStatus.pending:
                 return CustomScrollView(
                     slivers: [
@@ -29,7 +29,7 @@ return Observer(builder: (_) {
                             , targetStore
                             {{~/ if ~}}
 
-                            , {{ fqVariable page.name }}PageStore
+                            , pageStore
 
                             {{~# if (isInputWidgetMapNeed page) ~}}
                             , inputWidgetKeyMap
@@ -44,7 +44,7 @@ return Observer(builder: (_) {
                             , targetStore
                             {{~/ if ~}}
 
-                            , {{ fqVariable page.name }}PageStore
+                            , pageStore
 
                             {{~# if (isInputWidgetMapNeed page) ~}}
                             , inputWidgetKeyMap

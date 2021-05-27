@@ -9,6 +9,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
+    @observable
+    {{ storeClassName relation.target.name }} targetStore;
+
     {{# each page.containers.[0].tables as |table| }}
         {{# if table.pageDefinition.relationType.isFilterable }}
     final Map<String, FilterStore> stringFilterStoreMap = {
@@ -16,6 +19,12 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         '{{ variable filter.attributeType.name }}' : FilterStore(attributeName: '{{ variable filter.attributeType.name }}', attributeLabel: '{{ filter.label }}', filterType: FilterType.{{ filterDataType filter.attributeType.dataType }}{{# if (isEnumType filter.attributeType.dataType) }}, enumValues: {{ className filter.attributeType.dataType.name }}.values{{/ if }}),
             {{/ each }}
     };
+
+    final String mask = '{
+    {{~# each (getAttributeTypeNamesFromColumnsAndAttributes page.containers.[0].tables.[0].filters relation.target.attributes) as |attributeName| ~}}
+        {{ variable attributeName }}{{# unless @last }},{{/ unless }}
+    {{~/ each ~}}
+    }';
 
     @computed
     int get getPlusRowSize => availableFilterList.length;
@@ -28,7 +37,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
         {{/ if }}
     @observable
-    int {{ fqVariable table.pageDefinition.relationType.name }}QueryLimit = ({{ table.row }}).round();
+    int {{ fqVariable table.pageDefinition.relationType.name }}QueryLimit = ({{ table.row }} - 2).round();
 
     @action
     void set{{ fqClass table.pageDefinition.relationType.name }}QueryLimit(double queryLimit) {
@@ -37,10 +46,28 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ each }}
 
     {{# if relation.isCollection }}
-    {{# if page.dataElement.isAccess }}
+        {{# if page.dataElement.isAccess }}
     @observable
     List<{{ storeClassName relation.target.name }}> {{ fqVariable relation.name }}StoreList = ObservableList<{{ storeClassName relation.target.name }}>();
-    {{/ if }}
+
+    @computed
+    bool get nextButtonEnable => {{ fqVariable relation.name }}StoreList.length == {{ fqVariable relation.name }}QueryLimit && !nextPageIsEmpty;
+        {{ else }}
+    @observable
+    bool nextButtonEnable = true;
+        {{/ if }}
+
+    @computed
+    int get pageTableItemsRangeStart => nextPageCounter * {{ fqVariable relation.name }}QueryLimit + 1;
+
+    @observable
+    int nextPageCounter = 0;
+
+    @computed
+    bool get previousButtonEnable => nextPageCounter > 0;
+
+    @observable
+    bool nextPageIsEmpty = false;
 
     @observable
     int {{ fqVariable relation.name }}SortColumnIndex;
@@ -55,7 +82,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     Comparator {{ fqVariable relation.name }}SortCompare;
 
 
-        @action
+    @action
     void {{ fqVariable relation.name }}SetSort({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare) {
 
         if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
@@ -70,11 +97,11 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         {{# if relation.isOrderable }}
         get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}ownerStore{{/ unless }}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{ else }}
-            {{# unless page.dataElement.isAccess }}
-        ownerStore.{{ variable relation.name }}.sort(sortCompare);
-            {{ else }}
+            {{# if page.dataElement.isAccess }}
         {{ fqVariable relation.name }}StoreList.sort(sortCompare);
-            {{/ unless }}
+            {{ else }}
+        ownerStore.{{ variable relation.name }}.sort(sortCompare);
+            {{/ if }}
         {{/ if }}
     }
     {{ else }}
@@ -133,13 +160,14 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeListable }}
     @action
-    {{# if relation.isCollection }}Future<List<{{ storeClassName relation.target.name }}>>{{ else }}Future<{{ storeClassName relation.target.name }}>{{/ if }} get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{ int queryLimit }) async {
+    {{# if relation.isCollection }}Future<List<{{ storeClassName relation.target.name }}>>{{ else }}Future<{{ storeClassName relation.target.name }}>{{/ if }} get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{ int queryLimit, bool isNext }) async {
         try {
             errorMessage = null;
         {{# if relation.isCollection }}
-            if (queryLimit != null) {
-                {{ fqVariable relation.name }}QueryLimit = queryLimit;
-            }
+        if(isNext == null) {
+            nextPageCounter = 0;
+        }
+
         {{/ if }}
         {{# if page.dataElement.isAccess }}
             {{# if relation.isCollection }}
@@ -149,15 +177,33 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                     {{# if relation.isFilterable }}
                 filterStoreList: availableFilterList,
                     {{/ if }}
-                queryLimit: {{ fqVariable relation.name }}QueryLimit,
-                mask: '{
-                    {{~# each page.containers.[0].tables.[0].columns as |column| ~}}
-                    {{ variable column.attributeType.name }}{{# unless @last }},{{/ unless }}
-                    {{~/ each ~}}
-                }',
+                queryLimit: queryLimit ?? {{ fqVariable relation.name }}QueryLimit,
+                mask: mask,
+                lastItem: isNext != null ?
+                (isNext ? {{ fqVariable relation.name }}StoreList.last : {{ fqVariable relation.name }}StoreList.first)
+                    : null,
+                reverse: isNext != null ?
+                !isNext
+                    : null,
             ));
+
+            List<{{ storeClassName relation.target.name }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
+            if (nextItemsList.isEmpty) {
+                nextPageIsEmpty = true;
+                return {{ fqVariable relation.name }}StoreList;
+            }
+
+            nextPageIsEmpty = false;
+            if(isNext != null) {
+                if (isNext) {
+                    nextPageCounter++;
+                } else {
+                    nextPageCounter--;
+                }
+            }
+
             {{ fqVariable relation.name }}StoreList.clear();
-            {{ fqVariable relation.name }}StoreList.addAll(await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture);
+            {{ fqVariable relation.name }}StoreList.addAll(nextItemsList);
 
                 {{# unless relation.isOrderable }}
             if ({{ fqVariable relation.name }}SortCompare != null) {
@@ -168,11 +214,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             return {{ fqVariable relation.name }}StoreList;
             {{ else }}
             {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
-                mask: '{
-                    {{~# each page.containers.[0].tables.[0].columns as |column| ~}}
-                    {{ variable column.attributeType.name }}{{# unless @last }},{{/ unless }}
-                    {{~/ each ~}}
-                }',
+                mask: mask,
             ));
             store = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
             return store;
@@ -185,16 +227,34 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                 sortAscending: {{ fqVariable relation.name }}SortAsc,
                     {{# if relation.isFilterable }}
                 filterStoreList: availableFilterList,
-                queryLimit: {{ fqVariable relation.name }}QueryLimit,
-                mask: '{
-                    {{~# each page.containers.[0].tables.[0].columns as |column| ~}}
-                    {{ variable column.attributeType.name }}{{# unless @last }},{{/ unless }}
-                    {{~/ each ~}}
-                }',
+                queryLimit: queryLimit ?? {{ fqVariable relation.name }}QueryLimit,
+                mask: mask,
+                lastItem: isNext != null ?
+                (isNext ? ownerStore.{{ variable relation.name }}.last : ownerStore.{{ variable relation.name }}.first)
+                    : null,
+                reverse: isNext != null ?
+                !isNext
+                    : null,
                     {{/ if }}
             ));
+
+            List<{{ storeClassName relation.target.name }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
+            if (nextItemsList.isEmpty) {
+                nextButtonEnable = false;
+                return ownerStore.{{ variable relation.name }};
+            }
+
+            nextButtonEnable = true && nextItemsList.length >= {{ fqVariable relation.name }}QueryLimit;
+            if(isNext != null) {
+                if (isNext) {
+                    nextPageCounter++;
+                } else {
+                    nextPageCounter--;
+                }
+            }
+
             ownerStore.{{ variable relation.name }}.clear();
-            ownerStore.{{ variable relation.name }}.addAll(await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture);
+            ownerStore.{{ variable relation.name }}.addAll(nextItemsList);
                     {{# unless relation.isOrderable }}
             if ({{ fqVariable relation.name }}SortCompare != null) {
                     ownerStore.{{ variable relation.name }}.sort({{ fqVariable relation.name }}SortCompare);
@@ -204,11 +264,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{ else }}
             {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
                 ownerStore,
-                mask: '{
-                    {{~# each page.containers.[0].tables.[0].columns as |column| ~}}
-                    {{ variable column.attributeType.name }}{{# unless @last }},{{/ unless }}
-                    {{~/ each ~}}
-                }',
+                mask: mask,
             ));
             ownerStore.{{ variable relation.name }} = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
             return ownerStore.{{ variable relation.name }};
@@ -222,9 +278,6 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeRangeable }}
-    @observable
-    List<{{ storeClassName relation.target.name }}> {{ fqVariable relation.name }}StoreRangeList = ObservableList<{{ storeClassName relation.target.name }}>();
-
         {{# unless relation.isCollection }}
     @observable
     int {{ fqVariable relation.name }}SortColumnIndex;
@@ -237,52 +290,11 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
     @observable
     Comparator {{ fqVariable relation.name }}SortCompare;
-
         {{/ unless }}
-
-    @action
-    void {{ fqVariable relation.name }}SetSortRange({{ storeClassName relation.owner.name }} ownerStore, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList, String mask}) {
-        if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
-            {{ fqVariable relation.name }}SortAsc = true;
-        } else {
-            {{ fqVariable relation.name }}SortAsc = !{{ fqVariable relation.name }}SortAsc;
-        }
-
-        {{ fqVariable relation.name }}SortColumnIndex = sortColumnIndex;
-        {{ fqVariable relation.name }}SortColumnName = sortColumnName;
-        {{ fqVariable relation.name }}SortCompare = sortCompare;
-
-        getRangeFor{{ fqClass relation.name }}(ownerStore, filterStoreList: filterStoreList, mask: mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-
-    }
-
-    @action
-    Future<List<{{ storeClassName relation.target.name }}>> getRangeFor{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {List<FilterStore> filterStoreList, int queryLimit, String mask}) async {
-        try {
-            errorMessage = null;
-
-            if (queryLimit != null) {
-                {{ fqVariable relation.name }}QueryLimit = queryLimit;
-            }
-
-            {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}ToUpdate(
-                ownerStore,
-                sortColumn: {{ fqVariable relation.name }}SortColumnName,
-                sortAscending: {{ fqVariable relation.name }}SortAsc,
-                queryLimit: {{ fqVariable relation.name }}QueryLimit,
-                filterStoreList: filterStoreList,
-                mask: mask,
-            ));
-            {{ fqVariable relation.name }}StoreRangeList.clear();
-            {{ fqVariable relation.name }}StoreRangeList.addAll(await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture);
-            return {{ fqVariable relation.name }}StoreRangeList;
-        } on ApiException catch (error) {
-            errorMessage = "Could not get range of {{ relation.name }}";
-            throw error;
-        }
-    }
-
     {{/ if }}
+
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=relation}}
+
     {{# if relation.isRelationBehaviourTypeSetable }}
     @action
     Future<void> set{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }} selectedStore) async {

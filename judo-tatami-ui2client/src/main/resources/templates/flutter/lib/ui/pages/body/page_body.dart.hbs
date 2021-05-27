@@ -19,14 +19,14 @@ Widget get{{ fqClass page.name }}Page{{ fqClass container.layoutType.name }}Body
         , {{ storeClassName page.dataElement.target.name }} targetStore
                 {{~/ if ~}}
             {{~/ unless ~}}
-        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        , {{ fqClass page.name }}PageStore pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeTable ~}}
             {{~# unless page.dataElement.isAccess ~}}
         , {{ storeClassName page.dataElement.owner.name }} ownerStore
             {{~/ unless ~}}
-        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        , {{ fqClass page.name }}PageStore pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeView ~}}
@@ -34,11 +34,11 @@ Widget get{{ fqClass page.name }}Page{{ fqClass container.layoutType.name }}Body
         {{~# unless page.dataElement.isAccess ~}}
         , {{ storeClassName page.dataElement.owner.name }} ownerStore
         {{~/ unless ~}}
-        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        , {{ fqClass page.name }}PageStore pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeUpdate ~}}
-        , {{ storeClassName page.dataElement.target.name }} targetStore, {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        , {{ storeClassName page.dataElement.target.name }} targetStore, {{ fqClass page.name }}PageStore pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeCreate ~}}
@@ -46,17 +46,17 @@ Widget get{{ fqClass page.name }}Page{{ fqClass container.layoutType.name }}Body
         {{~# unless page.dataElement.isAccess ~}}
         , {{ storeClassName page.dataElement.owner.name }} ownerStore
         {{~/ unless ~}}
-        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        , {{ fqClass page.name }}PageStore pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeOperationInput ~}}
         , {{ storeClassName page.dataElement.target.name }} targetStore
-        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        , {{ fqClass page.name }}PageStore pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeOperationOutput ~}}
         , {{ storeClassName page.dataElement.target.name }} targetStore
-        , {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore
+        , {{ fqClass page.name }}PageStore pageStore
         {{~/ if ~}}
 
         {{~# if (isInputWidgetMapNeed page) ~}}
@@ -78,7 +78,7 @@ Widget get{{ fqClass page.name }}Page{{ fqClass container.layoutType.name }}Body
                         {{# if (isRefreshTableTypePage page) }}Observer(
                             builder: (_) => {{/ if }}JudoColumn(
                                 col: {{ col }},
-                                row: {{ row }}{{# if (isRefreshTableTypePage page) }} + {{ fqVariable page.name }}PageStore.getPlusRowSize + 1{{/ if }}, // +1 is for the text under table
+                                row: {{ row }}{{# if (isRefreshTableTypePage page) }} + pageStore.getPlusRowSize{{/ if }},
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                 {{# each this.children as |child| }}

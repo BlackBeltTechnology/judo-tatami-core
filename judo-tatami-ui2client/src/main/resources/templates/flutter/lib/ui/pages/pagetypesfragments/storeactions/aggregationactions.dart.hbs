@@ -85,57 +85,6 @@ Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner.
 }
 
 {{/ if }}
-{{# if relation.isRelationBehaviourTypeRangeable }}
-@observable
-List<{{ storeClassName relation.target.name }}> {{ fqVariable relation.name }}StoreRangeList = ObservableList<{{ storeClassName relation.target.name }}>();
-
-@observable
-int {{ fqVariable relation.name }}QueryLimit = 5;
-
-@action
-void {{ fqVariable relation.name }}SetSortRange({{ storeClassName relation.owner.name }} ownerStore, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList, String mask}) {
-
-    if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
-        {{ fqVariable relation.name }}SortAsc = true;
-    } else {
-        {{ fqVariable relation.name }}SortAsc = !{{ fqVariable relation.name }}SortAsc;
-    }
-
-    {{ fqVariable relation.name }}SortColumnIndex = sortColumnIndex;
-    {{ fqVariable relation.name }}SortColumnName = sortColumnName;
-    {{ fqVariable relation.name }}SortCompare = sortCompare;
-
-    getRangeFor{{ fqClass relation.name }}(ownerStore, filterStoreList: filterStoreList, mask: mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-
-}
-
-@action
-Future<List<{{ storeClassName relation.target.name }}>> getRangeFor{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {List<FilterStore> filterStoreList, int queryLimit, String mask}) async {
-    try {
-        errorMessage = null;
-
-        if (queryLimit != null) {
-            {{ fqVariable relation.name }}QueryLimit = queryLimit;
-        }
-
-        {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}{{# if (isCreateTypePage page) }}ToCreate{{ else }}ToUpdate{{/ if }}(
-            ownerStore,
-            sortColumn: {{ fqVariable relation.name }}SortColumnName,
-            sortAscending: {{ fqVariable relation.name }}SortAsc,
-            queryLimit: {{ fqVariable relation.name }}QueryLimit,
-            filterStoreList: filterStoreList,
-            mask: mask,
-        ));
-        {{ fqVariable relation.name }}StoreRangeList.clear();
-        {{ fqVariable relation.name }}StoreRangeList.addAll(await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture);
-        return {{ fqVariable relation.name }}StoreRangeList;
-    } on ApiException catch (error) {
-        errorMessage = "Could not get range of {{ relation.name }}";
-        throw error;
-    }
-}
-
-{{/ if }}
 {{# if relation.isRelationBehaviourTypeSetable }}
 @action
 Future<void> set{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }} selectedStore) async {

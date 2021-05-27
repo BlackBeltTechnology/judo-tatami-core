@@ -3,71 +3,90 @@
 class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
 
 abstract class _{{ fqClass page.name }}PageStore with Store {
-{{# with page.dataElement as |data| }}
+{{# with page.dataElement as |relation| }}
     {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
 
     @observable
     String errorMessage;
 
     @observable
-    ObservableFuture {{ fqVariable data.name }}StoreFuture;
+    {{ storeClassName relation.target.name }} targetStore;
+
+    @observable
+    ObservableFuture {{ fqVariable relation.name }}StoreFuture;
 
     // TODO: review that this is necessary in all cases
     bool validatable = false;
 
-    {{# if data.isRelationBehaviourTypeRefreshable }}
+    {{# if relation.isRelationBehaviourTypeRefreshable }}
     @action
-    Future<void> refresh{{ className data.target.name }}({{ storeClassName data.target.name }} targetStore) async {
+    Future<void> refresh{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            targetStore.updateWith(await _actorRepository.{{ fqVariable data.target.name }}GetByIdentifier(targetStore));
+            targetStore.updateWith(await _actorRepository.{{ fqVariable relation.target.name }}GetByIdentifier(targetStore));
         } on ApiException catch (error) {
-            errorMessage = "Could not refresh {{ variable data.target.name }}";
+            errorMessage = "Could not refresh {{ variable relation.target.name }}";
             throw error;
         }
     }
 
     {{/ if }}
-    {{# if data.isRelationBehaviourTypeUpdatable }}
+    {{# if relation.isRelationBehaviourTypeUpdatable }}
     @action
-    Future<{{ storeClassName data.target.name }}> update{{ className data.target.name }}({{ storeClassName data.target.name }} targetStore) async {
+    Future<{{ storeClassName relation.target.name }}> update{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _actorRepository.{{ fqVariable data.target.name }}Update(targetStore);
+            return await _actorRepository.{{ fqVariable relation.target.name }}Update(targetStore);
         } on ApiException catch (error) {
-            errorMessage = "Could not update {{ variable data.target.name }}";
+            errorMessage = "Could not update {{ variable relation.target.name }}";
             throw error;
         }
     }
 
     {{/ if }}
-    {{# if data.isRelationBehaviourTypeDeletable }}
+    {{# if relation.isRelationBehaviourTypeDeletable }}
     @action
-    Future<void> delete{{ className data.target.name }}({{ storeClassName data.target.name }} targetStore) async {
+    Future<void> delete{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            await _actorRepository.{{ fqVariable data.target.name }}Delete(targetStore);
+            await _actorRepository.{{ fqVariable relation.target.name }}Delete(targetStore);
         } on ApiException catch (error) {
-            errorMessage = "Could not delete {{ variable data.name }}";
+            errorMessage = "Could not delete {{ variable relation.name }}";
             throw error;
         }
     }
 
     {{/ if }}
-    {{# if data.isRelationBehaviourTypeCreateValidatable }}
+    {{# if relation.isRelationBehaviourTypeCreateValidatable }}
     @action
-    Future<{{ storeClassName data.target.name }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName data.owner.name }} ownerStore, {{/ unless }}{{ storeClassName data.target.name }} targetStore) async {
+    Future<{{ storeClassName relation.target.name }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
         try {
             errorMessage = null;
-            return await _actorRepository.{{ fqVariable data.owner.name }}{{ fqClass data.name }}ValidateForCreate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);
+            return await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);
         } on ApiException catch (error) {
-            errorMessage = "Could not validate {{ data.name }}";
+            errorMessage = "Could not validate {{ relation.name }}";
             throw error;
         }
     }
 
     {{/ if }}
 {{/ with }}
+
+{{# each page.containers.[0].tables as |table| }}
+    @observable
+    int {{ fqVariable table.dataElement.name }}QueryLimit = ({{ table.row }} - 2).round();
+
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/embedded_table_paging_actions.dart.hbs table=table page=page relation=table.dataElement }}
+
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=table.dataElement}}
+{{/ each }}
+{{# each page.containers.[0].links as |link| }}
+    @observable
+    int {{ fqVariable link.dataElement.name }}QueryLimit = 5; // For judo link setter dialog
+
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=link.dataElement}}
+{{/ each }}
+
 {{# each page.dataElement.target.relations as |relation| }}
     {{# unless isRelationKindStatic }}
         {{# unless isRelationKindAssociation }}
