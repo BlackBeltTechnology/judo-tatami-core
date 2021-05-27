@@ -156,6 +156,7 @@ public class FlutterHelper {
         context.registerFunction("isFilterOperationLike", FlutterHelper.class.getDeclaredMethod("isFilterOperationLike", new Class[]{EnumerationMember.class, String.class}));
         context.registerFunction("labelName", FlutterHelper.class.getDeclaredMethod("labelName", new Class[]{String.class}));
         context.registerFunction("l10nLabelName", FlutterHelper.class.getDeclaredMethod("l10nLabelName", new Class[]{String.class}));
+        context.registerFunction("getAttributeTypeNamesFromColumnsAndAttributes", FlutterHelper.class.getDeclaredMethod("getAttributeTypeNamesFromColumnsAndAttributes", new Class[]{EList.class, EList.class}));
         context.registerFunction("getAttributeTypeNamesFromWidgets", FlutterHelper.class.getDeclaredMethod("getAttributeTypeNamesFromWidgets", new Class[]{Container.class}));
         context.registerFunction("isEmptyList", FlutterHelper.class.getDeclaredMethod("isEmptyList", new Class[]{List.class}));
 
@@ -596,6 +597,23 @@ public class FlutterHelper {
 
     public static boolean isFilterOperationLike(EnumerationMember operator, String enumName) {
         return variable(operator.getName()).equals("like") && className(enumName).equals("StringOperation");
+    }
+
+    public static List<String> getAttributeTypeNamesFromColumnsAndAttributes(EList<Filter> filterList, EList<AttributeType> attributeTypeList) {
+        List<String> attributeNameList = filterList
+                .stream()
+                .map(filter -> filter.getAttributeType().getName())
+                .collect(Collectors.toList());
+
+        for (AttributeType element : attributeTypeList ) {
+            if (element.isIsRequired()) {
+                if (!attributeNameList.contains(element.getName())) {
+                    attributeNameList.add(element.getName());
+                }
+            }
+        }
+
+        return attributeNameList;
     }
 
     public static List<String> getAttributeTypeNamesFromWidgets(Container container) {

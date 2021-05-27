@@ -10,9 +10,11 @@
 class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
     final {{ storeClassName page.dataElement.target.name }} targetStore;
 
-    final {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore = {{ fqClass page.name }}PageStore();
+    final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
 
     _{{ fqClass page.name }}PageState({@required this.targetStore}){
+        pageStore.targetStore = targetStore;
+
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
             navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});

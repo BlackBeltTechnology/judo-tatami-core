@@ -46,7 +46,7 @@ Observer(builder: (_) {
             {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation }}
             if (selected != null) {
                         {{# if relation.isRelationBehaviourTypeSetable }}
-                {{ fqVariable page.name }}PageStore.set{{ fqClass relation.name }}(targetStore, selected)
+                pageStore.set{{ fqClass relation.name }}(targetStore, selected)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         {{ else }}
                 targetStore.set{{ fqClass relation.name }}(selected);
@@ -71,7 +71,7 @@ Observer(builder: (_) {
                     {{# unless relation.isMemberTypeTransient }}
                         {{# unless page.isPageTypeOperationOutput }}
                     if (response != null) {
-                        {{ fqVariable page.name }}PageStore.refresh{{ className relation.owner.name }}(targetStore)
+                        pageStore.refresh{{ className relation.owner.name }}(targetStore)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                     }
                         {{/ unless }}
@@ -89,16 +89,16 @@ Observer(builder: (_) {
                     {{ storeClassName relationType.target.name }} cloned = {{ storeClassName relationType.target.name }}();
                     cloned.updateWith(targetStore.{{ variable relation.name }});
                     var res = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-                    arguments: {{ fqClass action.target.name }}PageArguments(targetStore: cloned, validatable: {{ fqVariable page.name }}PageStore.validatable));
+                    arguments: {{ fqClass action.target.name }}PageArguments(targetStore: cloned, validatable: pageStore.validatable));
                     if (res != null) {
                         targetStore.{{ variable relation.name }}.updateWith(cloned);
-                        var updated = await {{ fqVariable page.name }}PageStore.update{{ className relation.name }}{{ className relation.target.name }}(targetStore.{{ variable relation.name }}, targetStore)
+                        var updated = await pageStore.update{{ className relation.name }}{{ className relation.target.name }}(targetStore.{{ variable relation.name }}, targetStore)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         {{# if (isValidateHere page) }}
                             {{# unless page.dataElement.isRelationKindAggregation }}
                                 {{# unless page.dataElement.isRelationKindComposition }}
                                     {{# unless relation.isMemberTypeTransient }}
-                        var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess }}targetStore, {{/ unless }}targetStore)
+                        var validate = await pageStore.validate({{# unless page.dataElement.isAccess }}targetStore, {{/ unless }}targetStore)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         if (validate != null) {
                             targetStore.updateWith(validate);
@@ -109,7 +109,7 @@ Observer(builder: (_) {
                         {{ else }}
                         if (updated != null) {
                             targetStore.{{ variable relation.name }}.updateWith(updated);
-                            {{ fqVariable page.name }}PageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore{{/ unless }})
+                            pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore{{/ unless }})
                                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         }
                         {{/ if }}
@@ -125,9 +125,9 @@ Observer(builder: (_) {
                 ),
                 onPressed:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async {
                     var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless relation.isAccess }},
-                        arguments: {{ fqClass action.target.name }}PageArguments(ownerStore: targetStore, validatable: {{ fqVariable page.name }}PageStore.validatable){{~/ unless }});
+                        arguments: {{ fqClass action.target.name }}PageArguments(ownerStore: targetStore, validatable: pageStore.validatable){{~/ unless }});
                     if (created != null) {
-                        {{ fqVariable page.name }}PageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
+                        pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         {{# unless page.isPageTypeUpdate }}
                             {{# unless page.isPageTypeView }}
@@ -135,7 +135,7 @@ Observer(builder: (_) {
                                     {{# unless page.dataElement.isRelationKindAggregation }}
                                         {{# unless page.dataElement.isRelationKindComposition }}
                                             {{# unless relation.isMemberTypeTransient }}
-                        var validate = await {{ fqVariable page.name }}PageStore.validate({{# unless page.dataElement.isAccess }}targetStore, {{/ unless }}targetStore)
+                        var validate = await pageStore.validate({{# unless page.dataElement.isAccess }}targetStore, {{/ unless }}targetStore)
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         if (validate != null) {
                             targetStore.updateWith(validate);
@@ -156,7 +156,7 @@ Observer(builder: (_) {
                 icon: Icon(
                     Icons.{{ action.icon.name }},
                 ),
-                onPressed: {{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async => {{ fqVariable page.name }}PageStore.remove{{ fqClass relation.name }}(targetStore, targetStore.{{ variable relation.name }}){{# unless relation.isAccess }} : null{{/ unless }}
+                onPressed: {{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async => pageStore.remove{{ fqClass relation.name }}(targetStore, targetStore.{{ variable relation.name }}){{# unless relation.isAccess }} : null{{/ unless }}
             ) : null,
                 {{/ if }}
                 {{# if action.isDeleteAction }}
@@ -166,7 +166,7 @@ Observer(builder: (_) {
                     Icons.{{ action.icon.name }},
                 ),
                 onPressed:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async {
-                    {{ fqVariable page.name }}PageStore.delete{{ className relation.name }}{{ className relation.target.name }}(targetStore.{{ variable relation.name }}{{# unless relation.isAccess }}, targetStore{{/ unless }})
+                    pageStore.delete{{ className relation.name }}{{ className relation.target.name }}(targetStore.{{ variable relation.name }}{{# unless relation.isAccess }}, targetStore{{/ unless }})
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 }{{# unless relation.isAccess }} : null{{/ unless }}
             ) : null,
@@ -179,7 +179,7 @@ Observer(builder: (_) {
                 ),
                 onPressed: {{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
                     {{# if relation.isRelationBehaviourTypeUnsetable }}
-                    {{ fqVariable page.name }}PageStore.unset{{ fqClass relation.name }}(targetStore)
+                    pageStore.unset{{ fqClass relation.name }}(targetStore)
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                     {{ else }}
                     targetStore.set{{ fqClass relation.name }}(null);

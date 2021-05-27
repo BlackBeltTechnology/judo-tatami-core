@@ -17,7 +17,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
     final {{ storeClassName page.dataElement.owner.name }} ownerStore;
     {{/ unless }}
 
-    final {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore = {{ fqClass page.name }}PageStore();
+    final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
 
     _{{ fqClass page.name }}PageState({{# unless page.dataElement.isAccess }}{@required this.ownerStore}{{/ unless }}){
         final navigation = locator<NavigationState>();
@@ -25,7 +25,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
             navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
         });
 
-        {{ fqVariable page.name }}PageStore.get{{ fqClass page.dataElement.name }}({{# unless page.dataElement.isAccess }} ownerStore {{/ unless }}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+        pageStore.get{{ fqClass page.dataElement.name }}({{# unless page.dataElement.isAccess }} ownerStore {{/ unless }}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     }
 {{/ with }}
 //END tablepagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------

@@ -87,14 +87,14 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         return get{{ fqClass page.name }}Page{{ fqClass pageContainer.layoutType.name }}Body(context
 
                             {{~# if page.isPageTypeDashboard ~}}
-                            , {{ fqVariable page.name }}PageStore
+                            , pageStore
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeTable ~}}
                                 {{~# unless page.dataElement.isAccess ~}}
                             , ownerStore
                                 {{~/ unless ~}}
-                            , {{ fqVariable page.name }}PageStore
+                            , pageStore
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeView ~}}
@@ -102,11 +102,11 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                                 {{~# unless page.dataElement.isAccess ~}}
                             , ownerStore
                                 {{~/ unless ~}}
-                            , {{ fqVariable page.name }}PageStore
+                            , pageStore
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeUpdate ~}}
-                            , targetStore, {{ fqVariable page.name }}PageStore
+                            , targetStore, pageStore
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeCreate ~}}
@@ -114,17 +114,17 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                                 {{~# unless page.dataElement.isAccess ~}}
                             , ownerStore
                                 {{~/ unless ~}}
-                            , {{ fqVariable page.name }}PageStore
+                            , pageStore
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeOperationInput ~}}
                             , targetStore
-                            , {{ fqVariable page.name }}PageStore
+                            , pageStore
                             {{~/ if ~}}
 
                             {{~# if page.isPageTypeOperationOutput ~}}
                             , targetStore
-                            , {{ fqVariable page.name }}PageStore
+                            , pageStore
                             {{~/ if ~}}
 
                             {{~# if (isInputWidgetMapNeed page) ~}}
@@ -137,14 +137,14 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     return get{{ fqClass page.name }}Page{{ fqClass application.defaultLayoutType.name }}Body(context
 
                         {{~# if page.isPageTypeDashboard ~}}
-                        , {{ fqVariable page.name }}PageStore
+                        , pageStore
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeTable ~}}
                         {{~# unless page.dataElement.isAccess ~}}
                         , ownerStore
                         {{~/ unless ~}}
-                        , {{ fqVariable page.name }}PageStore
+                        , pageStore
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeView ~}}
@@ -152,11 +152,11 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         {{~# unless page.dataElement.isAccess ~}}
                         , ownerStore
                         {{~/ unless ~}}
-                        , {{ fqVariable page.name }}PageStore
+                        , pageStore
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeUpdate ~}}
-                        , targetStore, {{ fqVariable page.name }}PageStore
+                        , targetStore, pageStore
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeCreate ~}}
@@ -164,17 +164,17 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                         {{~# unless page.dataElement.isAccess ~}}
                         , ownerStore
                         {{~/ unless ~}}
-                        , {{ fqVariable page.name }}PageStore
+                        , pageStore
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeOperationInput ~}}
                         , targetStore
-                        , {{ fqVariable page.name }}PageStore
+                        , pageStore
                         {{~/ if ~}}
 
                         {{~# if page.isPageTypeOperationOutput ~}}
                         , targetStore
-                        , {{ fqVariable page.name }}PageStore
+                        , pageStore
                         {{~/ if ~}}
 
                         {{~# if (isInputWidgetMapNeed page) ~}}

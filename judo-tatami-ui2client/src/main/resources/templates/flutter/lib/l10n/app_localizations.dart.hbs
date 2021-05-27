@@ -116,8 +116,10 @@ class AppLocalizations {
             return AppLocalizations.of(context).{{ l10nLabelName 'Login' }}();
           case 'Logout':
             return AppLocalizations.of(context).{{ l10nLabelName 'Logout' }}();
-          case 'Showed rows: ':
-            return AppLocalizations.of(context).{{ l10nLabelName 'Showed rows: ' }}();
+          case 'Next':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Next' }}();
+          case 'Previous':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Previous' }}();
           case 'Something went wrong. Please contact with the system admins.':
             return AppLocalizations.of(context).{{ l10nLabelName 'Something went wrong. Please contact with the system admins.' }}();
           default:
@@ -231,7 +233,7 @@ class AppLocalizations {
     }
     String {{ l10nLabelName 'MISSING_REQUIRED_RELATION' }}(String feature) {
       return Intl.message(
-        'Missing requered relation.',
+        'Missing required relation.',
         name: '{{ l10nLabelName 'MISSING_REQUIRED_RELATION' }}',
         args: [feature],
         desc: 'A required single relation (path expression is returned in location field) is missing from request.',
@@ -240,7 +242,7 @@ class AppLocalizations {
     }
     String {{ l10nLabelName 'MISSING_REQUIRED_ATTRIBUTE' }}(String feature) {
       return Intl.message(
-        'Missing requered attribute.',
+        'Missing required attribute.',
         name: '{{ l10nLabelName 'MISSING_REQUIRED_ATTRIBUTE' }}',
         args: [feature],
         desc: 'A required attribute (path expression is returned in location field) is missing from request.',
@@ -422,13 +424,21 @@ class AppLocalizations {
         locale: localeName,
       );
     }
-    String {{ l10nLabelName 'Showed rows: ' }}() {
-      return Intl.message(
-        'Showed rows: ',
-        name: '{{ l10nLabelName 'Showed rows: ' }}',
-        args: [],
-        locale: localeName,
-      );
+    String {{ l10nLabelName 'Next' }}() {
+        return Intl.message(
+            'Next',
+            name: '{{ l10nLabelName 'Next' }}',
+            args: [],
+            locale: localeName,
+        );
+    }
+    String {{ l10nLabelName 'Previous' }}() {
+        return Intl.message(
+            'Previous',
+            name: '{{ l10nLabelName 'Previous' }}',
+            args: [],
+            locale: localeName,
+        );
     }
     String {{ l10nLabelName 'Something went wrong. Please contact with the system admins.' }}() {
       return Intl.message(

@@ -9,6 +9,9 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     @observable
     String errorMessage;
 
+    @observable
+    {{ storeClassName relation.target.name }} targetStore;
+
     {{# if (validatableFlagNeed relation) }}
     bool validatable = true;
     {{/ if }}
@@ -40,20 +43,36 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
     {{/ if }}
     {{/ with }}
-    {{# each page.dataElement.target.relations as |relation| }}
-        {{# unless isRelationKindStatic }}
-            {{# unless isRelationKindAssociation }}
+
+{{# each page.containers.[0].tables as |table| }}
+    @observable
+    int {{ fqVariable table.dataElement.name }}QueryLimit = ({{ table.row }} - 2).round();
+
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/embedded_table_paging_actions.dart.hbs table=table page=page relation=table.dataElement }}
+
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=table.dataElement}}
+{{/ each }}
+{{# each page.containers.[0].links as |link| }}
+    @observable
+    int {{ fqVariable link.dataElement.name }}QueryLimit = 5; // For judo link setter dialog
+
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=link.dataElement}}
+{{/ each }}
+
+{{# each page.dataElement.target.relations as |relation| }}
+    {{# unless isRelationKindStatic }}
+        {{# unless isRelationKindAssociation }}
     {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/embedded_collection_table_order_action.dart.hbs page=page relation=relation}}
-            {{/ unless }}
         {{/ unless }}
-        {{# unless isMemberTypeTransient }}
-            {{# if isRelationKindAggregation }}
+    {{/ unless }}
+    {{# unless isMemberTypeTransient }}
+        {{# if isRelationKindAggregation }}
     {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation }}
-            {{/ if }}
-            {{# if isRelationKindComposition }}
+        {{/ if }}
+        {{# if isRelationKindComposition }}
     {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions.dart.hbs page=page relation=relation }}
-            {{/ if }}
-        {{/ unless }}
-    {{/ each }}
+        {{/ if }}
+    {{/ unless }}
+{{/ each }}
 }
 //END editpagestore.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------------

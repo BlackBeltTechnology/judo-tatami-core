@@ -4,21 +4,25 @@
 }
 
 class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
-        final {{ fqClass page.name }}PageStore {{ fqVariable page.name }}PageStore = {{ fqClass page.name }}PageStore();
+        final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
 
     {{# if page.dataElement }}
         {{ storeClassName page.dataElement.target.name }} targetStore;
     {{/ if }}
 
         _{{ fqClass page.name }}PageState(){
+    {{# if page.dataElement }}
+            pageStore.targetStore = targetStore;
+    {{/ if }}
+
             final navigation = locator<NavigationState>();
     {{# if page.dataElement }}
             final navigationRegistry = locator<NavigationRegistry>();
-            {{ fqVariable page.name }}PageStore.get{{ fqClass page.relationType.name }}()
+            pageStore.get{{ fqClass page.relationType.name }}()
                 .then((res) {
                     if (res != null) {
                         targetStore = res;
-                        {{ fqVariable page.name }}PageStore.getterStatusSetFulfilled();
+                        pageStore.getterStatusSetFulfilled();
 
                         SchedulerBinding.instance.addPostFrameCallback((_) {
                             navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore?.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
@@ -30,7 +34,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
                         } else {
                             navigation.navigateTo(Routes.{{ fqVariable application.name }}BlankPage);
                         }
-                        {{ fqVariable page.name }}PageStore.getterStatusSetRejected();
+                        pageStore.getterStatusSetRejected();
                     }
                 })
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));

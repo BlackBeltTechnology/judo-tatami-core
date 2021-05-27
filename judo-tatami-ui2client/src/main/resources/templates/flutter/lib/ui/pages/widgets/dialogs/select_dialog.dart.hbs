@@ -12,7 +12,6 @@
 
 part of {{ variable application.name }}.ui.pages.dialogs;
 
-{{# with table.filters as |tableFilters| }}
 {{# with table.dataElement as |relation| }}
 class {{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore extends _{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore with _${{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore {}
 
@@ -23,6 +22,14 @@ abstract class _{{ fqClass relation.name }}{{ className relation.target.name }}D
         '{{ variable filter.attributeType.name }}' : FilterStore(attributeName: '{{ variable filter.attributeType.name }}', attributeLabel: '{{ filter.label }}', filterType: FilterType.{{ filterDataType filter.attributeType.dataType }}{{# if (isEnumType filter.attributeType.dataType) }}, enumValues: {{ className filter.attributeType.dataType.name }}.values{{/ if }}),
     {{/ each }}
     };
+
+    String mask = '{
+    {{~# each (getAttributeTypeNamesFromColumnsAndAttributes table.filters relation.target.attributes) as |attributeName| ~}}
+        {{ variable attributeName }}{{# unless @last }},{{/ unless }}
+    {{~/ each ~}}
+    }';
+
+    int tableQueryLimit = ({{ table.row }}-2).round() < 5 ? 5 : ({{ table.row }}-2).round();
 
     @computed
     double get getInputWidgetsHeight => availableFilterList.length * JudoComponentCustomizer.get().getLineHeight();
@@ -39,33 +46,29 @@ abstract class _{{ fqClass relation.name }}{{ className relation.target.name }}D
 
 Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }}> judoSelect{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}Page({@required BuildContext context, {{ fqClass page.name }}PageStore pageStore{{# unless (isAccessTablePage page) }}, {{ storeClassName relation.owner.name }} ownerStore{{/ unless }}, bool dialogTypeAdder = false  }) async {
 {{# if relation.isRelationBehaviourTypeRangeable }}
-{{# unless (isAccessTablePage page) }}
-{{# unless relation.isMemberTypeTransient }}
+    {{# unless (isAccessTablePage page) }}
+        {{# unless relation.isMemberTypeTransient }}
     var addFilterButtonKey = GlobalKey();
 
-    String mask = '{
-    {{~# each tableFilters as |filter| ~}}
-        {{ variable filter.attributeType.name }}{{# unless @last }},{{/ unless }}
-    {{~/ each ~}}
-    }';
-    int tableQueryLimit = ({{ table.row }}-1).round();
-
-    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: tableQueryLimit, mask: mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-
-    {{# if relation.isCollection }}
-    ObservableList<String> selected = ObservableList.of(
-        ownerStore.{{ variable relation.name }}
-            .map<String>((element) => element.internal__identifier)
-            .toList()
-            .asObservable()
-    );
-    {{ else }}
-    ObservableList<String> selected = <String>[].asObservable();
-    {{/ if }}
-    List<String> alreadyAddedItems = List.of(selected);
     var dialogHelperStore = {{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore();
 
-    var tableHelperStore = TableHelperStore(selected, ({{ storeClassName relation.target.name }} value) => value.internal__identifier);
+
+
+    pageStore.getRangeFor{{ fqClass relation.name }}(ownerStore, queryLimit: dialogHelperStore.tableQueryLimit, mask: dialogHelperStore.mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+
+    {{# if relation.isCollection }}
+    ObservableList<{{ storeClassName relation.target.name }}> selected = ObservableList.of(ownerStore.{{ variable relation.name }});
+    List<{{ storeClassName relation.target.name }}> alreadyAddedItems = List.of(selected);
+    {{ else }}
+    ObservableList<{{ storeClassName relation.target.name }}> selected = <{{ storeClassName relation.target.name }}>[].asObservable();
+    {{/ if }}
+
+    var tableHelperStore = TableHelperStore(selected, ({{ storeClassName relation.target.name }} value) => value?.internal__identifier);
+    {{# unless relation.isCollection }}
+    if (ownerStore.{{ variable relation.name }} != null) {
+        tableHelperStore.singleSelected = ownerStore.{{ variable relation.name }};
+    }
+    {{/ unless }}
 
   return await showDialog<{{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }}>(
     context: context,
@@ -107,9 +110,9 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
                           onPressed: () async {
                               pageStore.getRangeFor{{ fqClass relation.name }}(
                                   ownerStore,
-                                  queryLimit: tableQueryLimit,
+                                  queryLimit: dialogHelperStore.tableQueryLimit,
                                   filterStoreList: dialogHelperStore.availableFilterList,
-                                  mask: mask,
+                                  mask: dialogHelperStore.mask,
                               ).catchError((error) => ErrorHandler.showErrorSnack(context, error));
                           },
                       ) : JudoSpacer(col: 1),
@@ -126,9 +129,9 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
                         dialogHelperStore.availableFilterList,
                         () => pageStore.getRangeFor{{ fqClass relation.name }}(
                             ownerStore,
-                            queryLimit: tableQueryLimit,
+                            queryLimit: dialogHelperStore.tableQueryLimit,
                             filterStoreList: dialogHelperStore.availableFilterList,
-                            mask: mask,
+                            mask: dialogHelperStore.mask,
                         ).catchError((error) => ErrorHandler.showErrorSnack(context, error)), 
                       ),
                     ),
@@ -138,7 +141,7 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
                   children: [
                     // ignore: missing_return
                     Observer(builder: (_) {
-                      switch(pageStore.{{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture.status){
+                      switch(pageStore.{{ variable relation.owner.name }}{{ fqClass relation.name }}StoreRangeFuture.status){
                         case FutureStatus.pending:
                           return JudoLoadingProgress();
                         case FutureStatus.rejected:
@@ -150,7 +153,7 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
                             disabled: false,
                             collectionSelector: {{ relation.isCollection }},
                             col: 1,
-                            row: {{ table.row }} >= 6 ? {{ table.row }} : 6,
+                            row: {{ table.row }}-1 >= 6 ? {{ table.row }}-1 : 6,
                             dataInfo: dataInfo,
                             sortAscending: pageStore.{{ fqVariable relation.name }}SortAsc,
                             sortColumnIndex: pageStore.{{ fqVariable relation.name }}SortColumnIndex,
@@ -163,18 +166,18 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
                                   asc,
                                   dataInfo.getSortComparator(columnIndex, asc),
                                   filterStoreList: dialogHelperStore.availableFilterList,
-                                  mask: mask,
+                                  mask: dialogHelperStore.mask,
                               );
                             },
                             rowList: pageStore.{{ fqVariable relation.name }}StoreRangeList,
                             dialogTypeAdder: dialogTypeAdder,
                             {{# if relation.isCollection }}
-                            alreadyAddedItemsComparator: ({{ storeClassName relation.target.name }} element) => alreadyAddedItems.contains(tableHelperStore.getId(element)),
+                            alreadyAddedItemsComparator: ({{ storeClassName relation.target.name }} element) => alreadyAddedItems.firstWhere((selected) => tableHelperStore.getId(element) == tableHelperStore.getId(selected), orElse: () => null) != null,
                             {{/ if }}
                             multiSelectAction: ({{ storeClassName relation.target.name }} element) => tableHelperStore.selectRow(element),
                             singleSelectAction: ({{ storeClassName relation.target.name }} element) => tableHelperStore.singleSelectRow(element),
-                            multiSelectedComparator: ({{ storeClassName relation.target.name }} element) => tableHelperStore.selected.contains(tableHelperStore.getId(element)),
-                            singleSelectedComparator: ({{ storeClassName relation.target.name }} element) => tableHelperStore.singleSelected == tableHelperStore.getId(element),
+                            multiSelectedComparator: ({{ storeClassName relation.target.name }} element) => tableHelperStore.selected.firstWhere((selected) => tableHelperStore.getId(element) == tableHelperStore.getId(selected), orElse: () => null) != null,
+                            singleSelectedComparator: ({{ storeClassName relation.target.name }} element) => tableHelperStore.getId(tableHelperStore.singleSelected) == tableHelperStore.getId(element),
                           );
                       }
                     }),
@@ -186,8 +189,42 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
                             padding: JudoComponentCustomizer.get().getDefaultPadding(),
                             child: Observer(
                                 builder: (_) => Text(
-                                    AppLocalizations.of(context).lookUpValue(context, 'Showed rows: ') + '${pageStore.{{ fqVariable relation.name }}StoreRangeList.length}',
+                                    '${pageStore.{{ variable relation.name }}TableForRangeItemsRangeStart} - ${pageStore.{{ variable relation.name }}TableForRangeItemsRangeEnd}',
                                     style: JudoComponentCustomizer.get().getRowCounterTextStyle(Theme.of(context)),
+                                ),
+                            ),
+                        ),
+                        Observer(
+                            builder: (_) => Padding(
+                                padding: JudoComponentCustomizer.get().getDefaultPadding(),
+                                child: ElevatedButton(
+                                    onPressed: pageStore.previousButtonEnableFor{{ fqClass relation.name }}Range ? () async {
+                                        await pageStore.getRangeFor{{ fqClass relation.name }}(
+                                            ownerStore,
+                                            queryLimit: dialogHelperStore.tableQueryLimit,
+                                            filterStoreList: dialogHelperStore.availableFilterList,
+                                            mask: dialogHelperStore.mask,
+                                            isNext: false,
+                                        ).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                                    } : null,
+                                    child: Text(AppLocalizations.of(context).lookUpValue(context, 'Previous')),
+                                ),
+                            ),
+                        ),
+                        Observer(
+                            builder: (_) => Padding(
+                                padding: JudoComponentCustomizer.get().getDefaultPadding(),
+                                child: ElevatedButton(
+                                    onPressed: pageStore.nextButtonEnableFor{{ fqClass relation.name }}Range ? () async {
+                                        await pageStore.getRangeFor{{ fqClass relation.name }}(
+                                            ownerStore,
+                                            queryLimit: dialogHelperStore.tableQueryLimit,
+                                            filterStoreList: dialogHelperStore.availableFilterList,
+                                            mask: dialogHelperStore.mask,
+                                            isNext: true,
+                                        ).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                                    } : null,
+                                    child: Text(AppLocalizations.of(context).lookUpValue(context, 'Next')),
                                 ),
                             ),
                         ),
@@ -207,18 +244,12 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
                   {{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }} result;
                 {{# if relation.isCollection }}
                   if (dialogTypeAdder) {
-                    result = pageStore.{{ fqVariable relation.name }}StoreRangeList
-                        .where((element) => selected.contains(element.internal__identifier) && !alreadyAddedItems.contains(element.internal__identifier))
+                    result = selected
+                        .where((element) => alreadyAddedItems.firstWhere((selected) => tableHelperStore.getId(element) == tableHelperStore.getId(selected), orElse: () => null) == null)
                         .toList();
                   } else {
                 {{/ if }}
-                    result = pageStore.{{ fqVariable relation.name }}StoreRangeList
-                          {{# if relation.isCollection }}
-                          .where((element) => selected.contains(element.internal__identifier))
-                          .toList();
-                          {{ else }}
-                          .firstWhere((element) => tableHelperStore.singleSelected == element.internal__identifier, orElse: () => null);
-                          {{/ if }}
+                    result = {{# if relation.isCollection }}selected{{ else }}tableHelperStore.singleSelected{{/ if }};
                 {{# if relation.isCollection }}
                   }
                 {{/ if }}
@@ -231,9 +262,8 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
       );
     },
   );
-{{/ unless }}
-{{/ unless }}
+        {{/ unless }}
+    {{/ unless }}
 {{/ if }}
 }
-{{/ with }}
 {{/ with }}
