@@ -1,5 +1,5 @@
 {{~ log 'Flex generation for' (variable application.name) '-' (fqClass page.name)'page' (variable name) level='debug' ~}}
-//START flex.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------
+//START xmi:id="{{ getXMIID this }}" -----flex.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------
 {{# if isDirectionHorizontal }}
 JudoRow(
 {{ else }}
