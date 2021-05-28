@@ -21,17 +21,19 @@ rule ApplicationDashboardPage
         t.containers.add(pageContainer);
          
          var dashboard = s.accesses.selectOne(a | a.appliedAnnotations.exists(annotation | annotation.name == "dashboard"));
+         var clazz = s.mapClassType(application);
          if (dashboard.isDefined() and dashboard.upper == 1 and dashboard.target.view.isDefined()) {
-            var clazz = s.mapClassType(application);
-            t.dataElement = dashboard.mapRelationType(application, clazz);
+            var relation = dashboard.mapRelationType(application, clazz);
+            t.name = (clazz.name + "." + relation.name).anchor("Dashboard");
             pageContainer.children.add(dashboard.target.view.map(application, t));
             t.label = dashboard.target.view.getUiLabel();
-         } else if (dashboard.isDefined() and (dashboard.upper > 1 or dashboard.upper == -1) and dashboard.target.isTableDefined()) {
-            var clazz = s.mapClassType(application);
-            var relation = dashboard.mapRelationType(application, clazz);
             t.dataElement = relation;
+         } else if (dashboard.isDefined() and (dashboard.upper > 1 or dashboard.upper == -1) and dashboard.target.isTableDefined()) {
+	        var relation = dashboard.mapRelationType(application, clazz);
+	        t.name = (clazz.name + "." + relation.name).anchor("Dashboard");
             pageContainer.children.add(dashboard.target.table.createTableFromTransferObjectTable(application, relation, t));
             t.label = dashboard.target.table.getUiLabel();
+            t.dataElement = relation;
          }
          
         application.pages.add(t);
