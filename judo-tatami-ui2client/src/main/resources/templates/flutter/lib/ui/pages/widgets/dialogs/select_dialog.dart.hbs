@@ -23,11 +23,12 @@ abstract class _{{ fqClass relation.name }}{{ className relation.target.name }}D
     {{/ each }}
     };
 
-    String mask = '{
+    // String mask = '{
     {{~# each (getAttributeTypeNamesFromColumnsAndAttributes table.filters relation.target.attributes) as |attributeName| ~}}
         {{ variable attributeName }}{{# unless @last }},{{/ unless }}
     {{~/ each ~}}
     }';
+    final String mask = null;
 
     int tableQueryLimit = ({{ table.row }}-2).round() < 5 ? 5 : ({{ table.row }}-2).round();
 

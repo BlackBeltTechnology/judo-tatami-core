@@ -20,11 +20,12 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{/ each }}
     };
 
-    final String mask = '{
+    // final String mask = '{
     {{~# each (getAttributeTypeNamesFromColumnsAndAttributes page.containers.[0].tables.[0].filters relation.target.attributes) as |attributeName| ~}}
         {{ variable attributeName }}{{# unless @last }},{{/ unless }}
     {{~/ each ~}}
     }';
+    final String mask = null; // delete this line after mask refactor has been done
 
     @computed
     int get getPlusRowSize => availableFilterList.length;

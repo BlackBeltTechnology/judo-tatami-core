@@ -44,13 +44,11 @@ Observer(builder: (_) {
                 {{# if action.isViewAction }}
                 navigateToViewPageAction: (element) async {
                     if (element != null) {
-                        var response = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
+                        await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
                             arguments: {{ fqClass action.target.name }}PageArguments({{# unless relation.isAccess }}ownerStore: ownerStore, {{/ unless }}targetStore: element));
                         {{# unless relation.isMemberTypeTransient }}
-                        if (response != null) {
-                            pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore{{/ unless }})
-                                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        }
+                        pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore{{/ unless }})
+                            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                         {{/ unless }}
                     }
                 },
