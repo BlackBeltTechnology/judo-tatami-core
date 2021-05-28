@@ -9,7 +9,7 @@
 // Application: {{ application.name }}
 // Container: {{ container.name }}
 
-part of {{ variable application.name }}.ui.pages;
+part of {{ pageLibraryName application.name page.name }};
 {{# if page.isPageTypeView }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs }}
 {{/ if }}

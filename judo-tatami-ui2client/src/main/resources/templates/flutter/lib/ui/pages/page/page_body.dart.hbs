@@ -9,7 +9,7 @@
 // Application: {{ application.name }}
 // Container: {{ container.name }}
 
-part of {{ variable application.name }}.ui.pages.{{ variable container.layoutType.name }};
+part of {{ pageLibraryName application.name page.name }};
 
 Widget get{{ fqClass page.name }}Page{{ fqClass container.layoutType.name }}Body(BuildContext context
 

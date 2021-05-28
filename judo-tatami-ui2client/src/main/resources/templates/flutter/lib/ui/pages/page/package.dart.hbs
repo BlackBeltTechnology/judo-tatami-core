@@ -8,29 +8,50 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-library {{ variable application.name }}.ui.pages.{{ variable name }};
+library {{ pageLibraryName application.name name }};
 
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:openapi_dart_common/openapi.dart';
 import 'package:intl/intl.dart';
-import 'package:judo_icon_helper/icons_helper.dart';
 
 import 'package:judo_flutter_components/judo_flutter_components.dart';
-import 'tables/package.dart';
+import 'package:judo_icon_helper/icons_helper.dart';
 
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/package.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/filter_helper.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
-{{# each layout.pageContainers as |container| }}
-part '{{ fqPath container.owner.name }}__{{ fqPath layout.name }}__body.dart';
+part 'package.g.dart';
+part 'page.dart';
+{{# each containers as |container| }}
+  {{# if container.layoutType.original }}
+    {{# each tables as |table| }}
+part '{{ dialogFileName table.dataElement.name }}';
+part '{{ dialogTableFileName table.dataElement.name }}';
+    {{/ each }}
+    {{# each links as |link| }}
+part '{{ dialogFileName link.dataElement.name }}';
+part '{{ dialogTableFileName link.dataElement.name }}';
+    {{/ each }}
+  {{/ if }}
 {{/ each }}
+
+{{# each containers as |container| }}
+  {{# unless container.layoutType.original }}
+part '{{ pageBodyFileName container.layoutType.name }}';
+    {{# each tables as |table| }}
+part '{{ tableFileName container.layoutType.name table.dataElement.name }}';
+    {{/ each }}
+  {{/ unless }}
+{{/ each }}
+

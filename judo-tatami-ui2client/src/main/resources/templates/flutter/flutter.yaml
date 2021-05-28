@@ -84,7 +84,7 @@
 - overwriteExpression: true
   factoryExpression: "#application.dataElements.?[!isActor]"
   pathExpression: >
-    #storeClassPath(#self.name, #self.owner.actor.name)
+    #storeClassPath(#self.owner.actor.name, #self.name)
   templateName: flutter/lib/store/model_store.dart.hbs
 
 - overwriteExpression: true
@@ -115,7 +115,7 @@
 - overwriteExpression: true
   factoryExpression: "#application.relationTypes"
   pathExpression: >
-    #repositoryRelationPath(#self.name, #self.owner.name, #application.actor.name)
+    #repositoryRelationPath(#application.actor.name, #self.owner.name, #self.name)
   templateName: flutter/lib/repositories/repository_relation.dart.hbs
   templateContext:
     - name: ap
@@ -126,7 +126,7 @@
 - overwriteExpression: true
   factoryExpression: "#application.dataElements.?[!isActor]"
   pathExpression: >
-    #repositoryClassPath(#self.name, #application.actor.name)
+    #repositoryClassPath(#application.actor.name, #self.name)
   templateName: flutter/lib/repositories/repository_class.dart.hbs
   templateContext:
     - name: ap
@@ -278,14 +278,8 @@
 - overwriteExpression: true
   factoryExpression: "#application.tables.?[pageContainer.layoutType.original]"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/dialogs/' +
-    #fqPath(#self.pageDefinition.name) +
-    '__'+
-    #fqPath(#self.name) +
-    '__dialog.dart'
-  templateName: flutter/lib/ui/pages/widgets/dialogs/select_dialog.dart.hbs
+    #dialogPath(#application.actor.name, #self.pageDefinition.name, #self.dataElement.name)
+  templateName: flutter/lib/ui/pages/page/select_dialog.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
@@ -297,14 +291,8 @@
 - overwriteExpression: true
   factoryExpression: "#application.links.?[pageContainer.layoutType.original]"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/dialogs/' +
-    #fqPath(#self.pageDefinition.name) +
-    '__'+
-    #fqPath(#self.name) +
-    '__dialog.dart'
-  templateName: flutter/lib/ui/pages/widgets/dialogs/select_dialog.dart.hbs
+    #dialogPath(#application.actor.name, #self.pageDefinition.name, #self.dataElement.name)
+  templateName: flutter/lib/ui/pages/page/select_dialog.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
@@ -312,54 +300,28 @@
       expression: "#self.pageDefinition"
     - name: ap
       expression: "#application.actor"
-
-- overwriteExpression: true
-  factoryExpression: "#application.layoutTypes.?[original]"
-  pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/dialogs/' +
-    'package.dart'
-  templateName: flutter/lib/ui/pages/widgets/dialogs/package.dart.hbs
 
 - overwriteExpression: true
   factoryExpression: "#application.tables.?[pageContainer.layoutType.original]"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/dialogs/tables/' +
-    #fqPath(#self.pageDefinition.name) +
-    '__'+
-    #fqPath(#self.name) +
-    '__dialog_table.dart'
-  templateName: flutter/lib/ui/pages/widgets/dialogs/table/dialog_tabledatainfo.dart.hbs
+    #dialogTablePath(#application.actor.name, #self.pageDefinition.name, #self.dataElement.name)
+  templateName: flutter/lib/ui/pages/page/dialog_tabledatainfo.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
+    - name: page
+      expression: "#self.pageDefinition"
 
 - overwriteExpression: true
   factoryExpression: "#application.links.?[pageContainer.layoutType.original]"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/dialogs/tables/' +
-    #fqPath(#self.pageDefinition.name) +
-    '__'+
-    #fqPath(#self.name) +
-    '__dialog_table.dart'
-  templateName: flutter/lib/ui/pages/widgets/dialogs/table/dialog_linktabledatainfo.dart.hbs
+    #dialogTablePath(#application.actor.name, #self.pageDefinition.name, #self.dataElement.name)
+  templateName: flutter/lib/ui/pages/page/dialog_linktabledatainfo.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
-
-- overwriteExpression: true
-  factoryExpression: "#application.layoutTypes.?[original]"
-  pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/dialogs/tables/' +
-    'package.dart'
-  templateName: flutter/lib/ui/pages/widgets/dialogs/table/package.dart.hbs
+    - name: page
+      expression: "#self.pageDefinition"
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
@@ -368,19 +330,22 @@
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/dialogs/helper_stores/filter_store.dart'"
-  templateName: flutter/lib/ui/pages/widgets/dialogs/helper_stores/filter_store.dart.hbs
+  pathExpression: >
+    #pagesUtilitiesPath(#application.actor.name) + 'filter_store.dart'
+  templateName: flutter/lib/ui/pages/utilities/filter_store.dart.hbs
 
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/dialogs/helper_stores/table_helper_store.dart'"
-  templateName: flutter/lib/ui/pages/widgets/dialogs/helper_stores/table_helper_store.dart.hbs
+  pathExpression: >
+    #pagesUtilitiesPath(#application.actor.name) + 'table_helper_store.dart'
+  templateName: flutter/lib/ui/pages/utilities/table_helper_store.dart.hbs
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/pages/dialogs/helper_stores/package.dart'"
-  templateName: flutter/lib/ui/pages/widgets/dialogs/helper_stores/package.dart.hbs
+  pathExpression: >
+    #pagesUtilitiesPath(#application.actor.name) + 'package.dart'
+  templateName: flutter/lib/ui/pages/utilities/package.dart.hbs
 
 # ========================================
 # pages
@@ -388,12 +353,8 @@
 - overwriteExpression: true
   factoryExpression: "#application.pageContainers.?[layoutType.original]"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/' +
-    #fqPath(#self.owner.name) +
-    '__page.dart'
-  templateName: flutter/lib/ui/pages/page.dart.hbs
+    #pageStorePath(#application.actor.name, #self.owner.name)
+  templateName: flutter/lib/ui/pages/page/page.dart.hbs
   templateContext:
     - name: container
       expression: "#self"
@@ -403,16 +364,15 @@
       expression: "#application.actor"
 
 - overwriteExpression: true
-  factoryExpression: "#application.layoutTypes.?[original]"
+  factoryExpression: "#application.pages"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/' +
-    'package.dart'
-  templateName: flutter/lib/ui/pages/package.dart.hbs
+    #pageStorePackagePath(#application.actor.name, #self.name)
+  templateName: flutter/lib/ui/pages/page/package.dart.hbs
   templateContext:
-    - name: layout
+    - name: page
       expression: "#self"
+    - name: ap
+      expression: "#application.actor"
 
 # ========================================
 # page body
@@ -420,14 +380,8 @@
 - overwriteExpression: true
   factoryExpression: "#application.pageContainers.?[!layoutType.original]"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/' +
-    #fqPath(#self.layoutType.name) +
-    '/' +
-    #fqPath(#self.owner.name) +
-    '__' + #fqPath(#self.layoutType.name) + '__body.dart'
-  templateName: flutter/lib/ui/pages/body/page_body.dart.hbs
+    #pageBodyPath(#application.actor.name, #self.owner.name, #self.layoutType.name)
+  templateName: flutter/lib/ui/pages/page/page_body.dart.hbs
   templateContext:
     - name: container
       expression: "#self"
@@ -437,16 +391,12 @@
       expression: "#application.actor"
 
 - overwriteExpression: true
-  factoryExpression: "#application.layoutTypes.?[!original]"
+  factoryExpression: "#application"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/' +
-    #fqPath(#self.name) +
-    '/package.dart'
-  templateName: flutter/lib/ui/pages/body/package.dart.hbs
+    #pagesFolderPath(#application.actor.name) + 'package.dart'
+  templateName: flutter/lib/ui/pages/package.dart.hbs
   templateContext:
-    - name: layout
+    - name: application
       expression: "#self"
 
 # ========================================
@@ -455,29 +405,13 @@
 - overwriteExpression: true
   factoryExpression: "#application.tables.?[!pageContainer.layoutType.original]"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/' + #fqPath(#self.pageContainer.layoutType.name) + '/tables/' +
-    #fqPath(#self.pageDefinition.name) +
-    '__'+
-    #fqPath(#self.name) +
-    '__' +
-    #fqPath(#self.pageContainer.layoutType.name) +
-    '__table.dart'
-  templateName: flutter/lib/ui/pages/widgets/table/tabledatainfo.dart.hbs
+    #tablePath(#application.actor.name, #self.pageDefinition.name, #self.pageContainer.layoutType.name, #self.dataElement.name)
+  templateName: flutter/lib/ui/pages/page/tabledatainfo.dart.hbs
   templateContext:
     - name: table
       expression: "#self"
-
-- overwriteExpression: true
-  factoryExpression: "#application.layoutTypes.?[!original]"
-  pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/pages/' +
-    #fqPath(#self.name) + '/tables/' +
-    'package.dart'
-  templateName: flutter/lib/ui/pages/widgets/table/package.dart.hbs
+    - name: page
+      expression: "#self.pageDefinition"
 
 # ========================================
 # routes

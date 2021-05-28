@@ -6,9 +6,9 @@
 // Path expression: {{{ cleanup template.pathExpression }}}
 // Overwrite: {{{ cleanup template.overwriteExpression }}}
 // Template name: {{ template.templateName }}
-// Application: {{ application.name }}
+// Application: {{ name }}
 
-library {{ variable application.name }}.ui.pages;
+library {{ variable name }}.ui.pages;
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
@@ -26,18 +26,9 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/dialogs/helper_stores/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
-{{# each application.layoutTypes as |layout| }}
-{{# unless layout.original }}
-import '{{ variable layout.name }}/package.dart';
-{{/ unless }}
+{{# each pages as |page| }}
+import '{{ pageStorePackageRelativePath page.name }}';
 {{/ each }}
-
-{{# each layout.pageContainers as |container| }}
-part '{{ fqPath container.owner.name }}__page.dart';
-{{/ each }}
-
-part 'package.g.dart';

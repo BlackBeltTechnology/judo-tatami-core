@@ -10,7 +10,7 @@
 // Page: {{ page.name }}
 // Table: {{ table.name }}
 
-part of {{ variable application.name }}.ui.pages.dialogs;
+part of {{ pageLibraryName application.name page.name }};
 
 {{# with table.dataElement as |relation| }}
 class {{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore extends _{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore with _${{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore {}

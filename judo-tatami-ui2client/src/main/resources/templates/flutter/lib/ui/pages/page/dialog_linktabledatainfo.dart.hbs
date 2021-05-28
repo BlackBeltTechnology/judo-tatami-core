@@ -8,7 +8,7 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-part of {{ variable application.name }}.ui.pages.dialogs.tables;
+part of {{ pageLibraryName application.name page.name }};
 
 class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable implements JudoTableDataInfo {
 
@@ -20,11 +20,11 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
     @override
     List<DataColumn> getColumns(Function onAdd, Function onSort) {
         return [
-            {{# each columns as |column| }}
+            {{# each parts as |part| }}
             DataColumn(
-                label: Text(AppLocalizations.of(context).lookUpValue(context, '{{ column.label }}')),
-                {{# unless (isBooleanDataType column.attributeType.dataType) }}
-                    {{# unless (isEnumType column.attributeType.dataType) }}
+                label: Text(AppLocalizations.of(context).lookUpValue(context, '{{ part.label }}')),
+                {{# unless (isBooleanDataType part.attributeType.dataType) }}
+                    {{# unless (isEnumType part.attributeType.dataType) }}
                 onSort: onSort,
                     {{/ unless }}
                 {{/ unless }}
@@ -35,14 +35,14 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
 
     @override
     Comparator getSortComparator(int columnIndex, bool asc) {
-        {{# each columns as |column| }}
-            {{# unless (isBooleanDataType column.attributeType.dataType) }}
-                {{# unless (isEnumType column.attributeType.dataType) }}
+        {{# each parts as |part| }}
+            {{# unless (isBooleanDataType part.attributeType.dataType) }}
+                {{# unless (isEnumType part.attributeType.dataType) }}
         if (columnIndex == {{@index}}) {
             if (asc) {
-                return (a, b) => a.{{ variable column.attributeType.name }}.compareTo(b.{{ variable column.attributeType.name }});
+                return (a, b) => a.{{ variable part.attributeType.name }}.compareTo(b.{{ variable part.attributeType.name }});
             } else {
-                return (a, b) => b.{{ variable column.attributeType.name }}.compareTo(a.{{ variable column.attributeType.name }});
+                return (a, b) => b.{{ variable part.attributeType.name }}.compareTo(a.{{ variable part.attributeType.name }});
             }
         }
                 {{/ unless }}
@@ -52,11 +52,11 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
 
     @override
     String getColumnFieldByIndex(int columnIndex, bool asc) {
-    {{# each columns as |column| }}
-        {{# unless (isBooleanDataType column.attributeType.dataType) }}
-            {{# unless (isEnumType column.attributeType.dataType) }}
+    {{# each parts as |part| }}
+        {{# unless (isBooleanDataType part.attributeType.dataType) }}
+            {{# unless (isEnumType part.attributeType.dataType) }}
         if (columnIndex == {{@index}}) {
-            return "{{ variable column.attributeType.name }}";
+            return "{{ variable part.attributeType.name }}";
         }
             {{/ unless }}
         {{/ unless }}
@@ -75,10 +75,10 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
         ThemeData theme =  Theme.of(context);
         return (target{{ className table.dataElement.target.name }}) => DataRow(
             cells: [
-                {{# each columns as |column| }}
+                {{# each parts as |part| }}
                 DataCell(
-                    {{# if column }}
-                    {{> (getWidgetTemplate column) column=column dataName=(className table.dataElement.target.name) }}
+                    {{# if part }}
+                    {{> (getWidgetTemplate part) column=part dataName=(className table.dataElement.target.name) }}
                     {{/ if }}
                 ),
                 {{/ each }}

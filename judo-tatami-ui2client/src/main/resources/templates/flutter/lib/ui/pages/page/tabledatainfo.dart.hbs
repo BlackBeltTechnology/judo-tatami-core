@@ -8,7 +8,7 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-part of {{ variable application.name }}.ui.pages.{{ fqVariable table.pageContainer.layoutType.name }}.tables;
+part of {{ pageLibraryName application.name page.name }};
 
 class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table implements JudoTableDataInfo {
 

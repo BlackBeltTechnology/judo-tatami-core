@@ -17,7 +17,7 @@
 
 part of {{ variable ap.name }}.repository;
 
-class {{ repositoryRelationName relation.name relation.owner.name }} {
+class {{ repositoryRelationName relation.owner.name relation.name }} {
   {{# if relation.isRelationBehaviourTypeListable }}
       {{# if relation.isCollection }}
           {{# if relation.isAccess }}
