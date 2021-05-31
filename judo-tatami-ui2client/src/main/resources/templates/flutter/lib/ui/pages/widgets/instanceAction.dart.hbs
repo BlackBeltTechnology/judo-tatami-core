@@ -7,7 +7,7 @@
         {{/ if }}
         row: {{ row }},
         col: {{ col }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        disabled: {{# if action.isBackAction }}navigation.stack.length == 0{{ else }}{{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }}{{/ if }},
     {{# unless disabled }}
         {{# if action.isSaveAction }}
         onPressed: () async {

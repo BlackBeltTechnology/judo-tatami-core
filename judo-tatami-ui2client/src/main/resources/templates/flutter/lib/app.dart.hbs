@@ -27,6 +27,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_service.dart';
 
 Future<bool> hasActorMenuAccess() async {
 {{# if application.principal }}
@@ -47,6 +48,7 @@ Future<bool> hasActorMenuAccess() async {
     return true;
 {{/ if }}
 }
+
 
 class {{ fqClass application.name }}Application extends StatelessWidget {
 
@@ -94,6 +96,7 @@ class {{ fqClass application.name }}ApplicationPageState extends State<{{ fqClas
                     child: {{ fqClass application.name }}Scaffold(
                         key: navigation.scaffoldKey,
                         body: ExtendedNavigator(
+                            initialRoute: NavigationService.getInitialRoute(),
                             key: navigation.navigatorKey,
                             router: router.Router(),
                             guards: [AuthGuard()],
