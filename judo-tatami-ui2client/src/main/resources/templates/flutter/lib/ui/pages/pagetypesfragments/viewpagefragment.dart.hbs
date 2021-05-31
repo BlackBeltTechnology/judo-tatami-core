@@ -1,32 +1,39 @@
 //START viewpagefragment.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------
-    final {{ storeClassName page.dataElement.target.name }} targetStore;
+    final String idParam;
     {{# unless page.dataElement.isAccess }}
+    final {{ storeClassName page.dataElement.target.name }} targetStore;
     final {{ storeClassName page.dataElement.owner.name }} ownerStore;
     {{/ unless }}
     
-    const {{ fqClass page.name }}Page({Key key, @required this.targetStore{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/ unless }} }) : super(key: key);
+    const {{ fqClass page.name }}Page({Key key{{# unless page.dataElement.isAccess }}, @required this.targetStore, @required this.ownerStore{{/unless}}, @PathParam('id') this.idParam }) : super(key: key);
     
     @override
-    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState(targetStore: targetStore{{# unless page.dataElement.isAccess }}, ownerStore: ownerStore{{/ unless }});
+    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState(idParam: idParam{{# unless page.dataElement.isAccess }}, targetStore: targetStore, ownerStore: ownerStore{{/ unless }});
 }
 
 class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
-    final {{ storeClassName page.dataElement.target.name }} targetStore;
+    {{ storeClassName page.dataElement.target.name }} targetStore;
+    final String idParam;
     {{# unless page.dataElement.isAccess }}
     final {{ storeClassName page.dataElement.owner.name }} ownerStore;
     {{/ unless }}
 
     final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
 
-    _{{ fqClass page.name }}PageState({@required this.targetStore{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/ unless }} }){
-        pageStore.targetStore = targetStore;
-
+    _{{ fqClass page.name }}PageState({this.idParam{{# unless page.dataElement.isAccess }}, @required this.targetStore, @required this.ownerStore{{/ unless }} }){
         final navigation = locator<NavigationState>();
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
-        });
     {{# if page.dataElement.isRelationBehaviourTypeRefreshable }}
-        pageStore.refresh{{ className page.dataElement.target.name }}(targetStore).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+        {{# if page.dataElement.isAccess }}
+        targetStore = {{ storeClassName page.dataElement.target.name }}();
+        targetStore.internal__signedIdentifier = idParam;
+        {{/ if }}
+        pageStore.targetStore = targetStore;
+        pageStore
+            .refresh{{ className page.dataElement.target.name }}(targetStore)
+            .then((_) {
+                navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
+            })
+            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     {{/ if }}
     }
 //END viewpagefragment.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------
