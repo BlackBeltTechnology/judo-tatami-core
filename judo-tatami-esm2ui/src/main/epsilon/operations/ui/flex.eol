@@ -9,6 +9,8 @@ operation UI!ui::Flex wrapAndLabelFlex() : UI!ui::Flex {
     wrapper.stretch = self.stretch;
     self.stretch = UI!ui::Stretch#BOTH;
     
+    wrapper.~wrapper = true;
+    
     var label : UI!ui::Label = new UI!ui::Label();
     label.row = 1d;
     label.col = self.col;
@@ -32,9 +34,5 @@ operation UI!ui::Flex wrapAndLabelFlex() : UI!ui::Flex {
     wrapper.children.add(label);
     wrapper.children.add(self);
     return wrapper;
-}
-
-operation UI!ui::Flex isLabelWrapper() : Boolean {
-    return self.children.first().isKindOf(UI!ui::Label);
 }
 
