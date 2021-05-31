@@ -124,6 +124,7 @@ public class FlutterHelper {
         context.registerFunction("cleanup", FlutterHelper.class.getDeclaredMethod("cleanup", new Class[]{String.class}));
         context.registerFunction("getType", FlutterHelper.class.getDeclaredMethod("getType", new Class[]{VisualElement.class}));
         context.registerFunction("getWidgetTemplate", FlutterHelper.class.getDeclaredMethod("getWidgetTemplate", new Class[]{VisualElement.class}));
+        context.registerFunction("getXMIID", FlutterHelper.class.getDeclaredMethod("getXMIID", new Class[]{VisualElement.class}));
         context.registerFunction("mainAxisAlignment", FlutterHelper.class.getDeclaredMethod("mainAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("crossAxisAlignment", FlutterHelper.class.getDeclaredMethod("crossAxisAlignment", new Class[]{Flex.class}));
         context.registerFunction("mainAxisSize", FlutterHelper.class.getDeclaredMethod("mainAxisSize", new Class[]{Flex.class}));
@@ -258,6 +259,10 @@ public class FlutterHelper {
     public static String getWidgetTemplate(VisualElement visualElementType) {
         String componentsLocation = "templates/flutter/lib/ui/pages/widgets/";
         return componentsLocation + visualElementType.eClass().getInstanceClass().getSimpleName().toLowerCase() + ".dart.hbs";
+    }
+
+    public static String getXMIID(VisualElement visualElementType) {
+        return ((XMIResource) visualElementType.eResource()).getID(visualElementType);
     }
 
     @Deprecated

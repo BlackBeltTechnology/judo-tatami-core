@@ -42,7 +42,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
         try {
             errorMessage = null;
             {{ fqVariable relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
-                mask: '{
+                // mask: '{
                     {{~# with page.containers.[0] as |container| ~}}
                         {{~# each (getAttributeTypeNamesFromWidgets container) as |attributeName| ~}}
                             {{~ variable attributeName }}{{# unless @last }},{{/ unless ~}}
@@ -75,7 +75,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             errorMessage = null;
             targetStore.updateWith(await _actorRepository.{{ fqVariable relation.target.name }}GetByIdentifier(
                 targetStore,
-                mask: '{
+                // mask: '{
                     {{~# with page.containers.[0] as |container| ~}}
                         {{~# each (getAttributeTypeNamesFromWidgets container) as |attributeName| ~}}
                             {{~ variable attributeName }}{{# unless @last }},{{/ unless ~}}

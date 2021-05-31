@@ -11,6 +11,7 @@
 
 part of {{ pageLibraryName application.name page.name }};
 
+// Container xmi:id="{{ getXMIID this }}"
 Widget get{{ fqClass page.name }}Page{{ fqClass container.layoutType.name }}Body(BuildContext context
 
         {{~# if page.isPageTypeDashboard ~}}
