@@ -27,6 +27,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
         targetStore = {{ storeClassName page.dataElement.target.name }}();
         targetStore.internal__signedIdentifier = idParam;
         {{/ if }}
+        pageStore.targetStore = targetStore;
         pageStore
             .refresh{{ className page.dataElement.target.name }}(targetStore)
             .then((_) {
