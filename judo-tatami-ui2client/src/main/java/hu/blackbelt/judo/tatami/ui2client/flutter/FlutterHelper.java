@@ -106,6 +106,8 @@ public class FlutterHelper {
 
     @SneakyThrows
     public static void registerSpEL(StandardEvaluationContext context) {
+        context.registerFunction("uriPath", FlutterHelper.class.getDeclaredMethod("uriPath", new Class[]{String.class}));
+        context.registerFunction("uriPathWithIdParam", FlutterHelper.class.getDeclaredMethod("uriPathWithIdParam", new Class[]{String.class}));
         context.registerFunction("fqPath", FlutterHelper.class.getDeclaredMethod("fqPath", new Class[]{String.class}));
         context.registerFunction("fqClass", FlutterHelper.class.getDeclaredMethod("fqClass", new Class[]{String.class}));
         context.registerFunction("fqVariable", FlutterHelper.class.getDeclaredMethod("fqVariable", new Class[]{String.class}));
@@ -133,6 +135,7 @@ public class FlutterHelper {
         context.registerFunction("isTransientAttribute", FlutterHelper.class.getDeclaredMethod("isTransientAttribute", new Class[]{AttributeType.class}));
         context.registerFunction("multiplyCol", FlutterHelper.class.getDeclaredMethod("multiplyCol", new Class[]{Double.class}));
         context.registerFunction("validatableFlagNeed", FlutterHelper.class.getDeclaredMethod("validatableFlagNeed", new Class[]{RelationType.class}));
+        context.registerFunction("tableNavigateToViewHasIdParam", FlutterHelper.class.getDeclaredMethod("tableNavigateToViewHasIdParam", new Class[]{PageDefinition.class}));
         context.registerFunction("isEnumType", FlutterHelper.class.getDeclaredMethod("isEnumType", new Class[]{DataType.class}));
         context.registerFunction("isTimestampType", FlutterHelper.class.getDeclaredMethod("isTimestampType", new Class[]{DataType.class}));
         context.registerFunction("isBooleanDataType", FlutterHelper.class.getDeclaredMethod("isBooleanDataType", new Class[]{DataType.class}));
@@ -144,7 +147,9 @@ public class FlutterHelper {
         context.registerFunction("isValidateHere", FlutterHelper.class.getDeclaredMethod("isValidateHere", new Class[]{PageDefinition.class}));
         context.registerFunction("isSingleRelationDashboardPage", FlutterHelper.class.getDeclaredMethod("isSingleRelationDashboardPage", new Class[]{PageDefinition.class}));
         context.registerFunction("isCollectionRelationDashboardPage", FlutterHelper.class.getDeclaredMethod("isCollectionRelationDashboardPage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isBookmarkablePage", FlutterHelper.class.getDeclaredMethod("isBookmarkablePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isAccessTablePage", FlutterHelper.class.getDeclaredMethod("isAccessTablePage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isAccessViewPage", FlutterHelper.class.getDeclaredMethod("isAccessViewPage", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshViewTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshViewTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshTableTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshTableTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isViewTypePage", FlutterHelper.class.getDeclaredMethod("isViewTypePage", new Class[]{PageDefinition.class}));
@@ -253,6 +258,20 @@ public class FlutterHelper {
                 .replaceAll("/", "__")
                 .replaceAll("([a-z])([A-Z]+)", "$1_$2")
                 .toLowerCase();
+    }
+
+    public static String uriPath(String fqName) {
+        return stream(fqName.replaceAll("#", "::")
+                .replaceAll("\\.", "::")
+                .replaceAll("/", "::")
+                .replaceAll("_", "::")
+                .split("::"))
+                .map(String::toLowerCase)
+                .collect(Collectors.joining("-"));
+    }
+
+    public static String uriPathWithIdParam(String fqName) {
+        return uriPath(fqName) + "/:id";
     }
 
     @Deprecated
@@ -452,6 +471,10 @@ public class FlutterHelper {
                 );
     }
 
+    public static boolean tableNavigateToViewHasIdParam(PageDefinition page) {
+        return (page.getIsPageTypeTable() || page.getIsPageTypeDashboard()) && ((RelationType)page.getDataElement()).isIsAccess();
+    }
+
     public static boolean isEnumType (DataType type) {
         return type instanceof EnumerationType;
     }
@@ -519,9 +542,18 @@ public class FlutterHelper {
         return page.getIsPageTypeDashboard() && page.getRelationType().isIsCollection();
     }
 
+    public static boolean isBookmarkablePage(PageDefinition page){
+        return page.getIsPageTypeDashboard() || isAccessTablePage(page) || isAccessViewPage(page);
+    }
+
     public static boolean isAccessTablePage(PageDefinition page){
         if (page.getRelationType() == null) return false;
         return page.getIsPageTypeDashboard() || (page.getIsPageTypeTable() && page.getRelationType().isIsAccess());
+    }
+
+    public static boolean isAccessViewPage(PageDefinition page){
+        if (page.getRelationType() == null) return false;
+        return page.getIsPageTypeDashboard() || (page.getIsPageTypeView() && page.getRelationType().isIsAccess());
     }
 
     public static boolean isViewTypePage(PageDefinition page) {

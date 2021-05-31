@@ -8,12 +8,34 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.dart';
 import 'page_navigation.dart';
 
 import 'navigation_state.dart';
 
 class NavigationService {
+  static String getInitialRoute() {
+    if (!kIsWeb) {
+      return '/';
+    }
+
+    String fragment = Uri.base.fragment;
+
+    if (fragment == '/') {
+      return fragment;
+    }
+
+    bool bookmarkablePageMatched = bookmarkableRoutes.any((element) {
+      var regExp = pathToRegExp(element.path);
+      return regExp.hasMatch(fragment);
+    });
+
+    return bookmarkablePageMatched ? fragment : '/';
+  }
+
   static Future<PageNavigation> whereToGo(PageNavigation pageNavigation, [Object target, Object owner]) async {
     NavigationState navigationState = locator<NavigationState>();
     if(pageNavigation == null) return null;

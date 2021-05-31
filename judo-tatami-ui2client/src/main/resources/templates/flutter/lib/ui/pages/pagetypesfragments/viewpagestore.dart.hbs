@@ -89,6 +89,15 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                             {{~/ each ~}}
                             }{{# unless @last }},{{/ unless ~}}
                         {{~/ each ~}}
+                        {{~# unless (isEmptyList container.links) }},{{/ unless ~}}
+                        {{~# each container.links as |link| ~}}
+                            {{ variable link.dataElement.name ~}}
+                            {
+                            {{~# each link.columns as |column| ~}}
+                                {{~ variable column.attributeType.name }}{{# unless @last }},{{/ unless ~}}
+                            {{~/ each ~}}
+                            }{{# unless @last }},{{/ unless ~}}
+                        {{~/ each ~}}
                     {{~/ with ~}}
                 }',
             ));
