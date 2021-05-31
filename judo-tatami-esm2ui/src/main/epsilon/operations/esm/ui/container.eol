@@ -63,7 +63,7 @@ operation ESM!esm::ui::Container createFlexFromContainer(application : UI!ui::Ap
         component.~isInCard = self.frame or (self.~isInCard.isDefined() and self.~isInCard);
         var child = component.map(application, page);
         child.isInCard = component.~isInCard;
-        if (child.isKindOf(UI!ui::Flex) and child.isLabelWrapper()) {
+        if (child.~wrapper.isDefined()) {
             for (ch in child.children) {
                 ch.isInCard = child.isInCard;
             }

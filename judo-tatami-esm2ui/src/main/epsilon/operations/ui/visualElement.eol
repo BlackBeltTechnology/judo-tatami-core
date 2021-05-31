@@ -84,6 +84,8 @@ operation UI!ui::VisualElement wrapAndLabelVisualElement() : UI!ui::Flex {
     wrapper.stretch = self.stretch;
     self.stretch = UI!ui::Stretch#BOTH;
     
+    wrapper.~wrapper = true;
+    
     var label : UI!ui::Label = new UI!ui::Label();
     label.row = 1d;
     label.col = self.col;

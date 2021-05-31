@@ -203,8 +203,9 @@ operation UI!ui::Table createActionButtonGroupForTable() : UI!ui::Flex {
     buttonGroup.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
     buttonGroup.stretch = UI!ui::Stretch#NONE;
 
-    if (tableContainer.children.size() == 2 and tableContainer.children.get(0).isKindOf(UI!ui::Label)) {
-        tableContainer.children.add(1, buttonGroup);
+    if (tableContainer.~wrapper.isDefined()) {
+        tableContainer.children.add(tableIndex, buttonGroup);
+        tableContainer.row = tableContainer.row + 1d;
     } else {
         var wrapper = createVerticalFlex(self.name.anchor("Wrapper"), self.col, self.row + 1d);
         wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
@@ -219,34 +220,39 @@ operation UI!ui::Table createActionButtonGroupForTable() : UI!ui::Flex {
     return buttonGroup;
 }
 
-operation UI!ui::Table wrapAndLabelTable() : UI!ui::Flex {
-    var wrapper = createVerticalFlex(self.name.anchor("LabelWrapper"), self.col, self.row + 1d);
+operation UI!ui::Table wrapAndLabelTable(isInTablePage : Boolean) : UI!ui::Flex {
+    var wrapper = createVerticalFlex(self.name.anchor("LabelWrapper"), self.col, self.row);
     wrapper.crossAxisAlignment = UI!ui::CrossAxisAlignment#CENTER;
     wrapper.mainAxisAlignment = UI!ui::MainAxisAlignment#START;
     wrapper.stretch = self.stretch;
     self.stretch = UI!ui::Stretch#BOTH;
+    wrapper.~wrapper = true;
+    
+    if (not isInTablePage and (self.getIsLabelVisible() or self.getIsIconVisible())) {
+        var label : UI!ui::Label = new UI!ui::Label();
+	    label.row = 1d;
+	    label.col = self.col;
+	    label.stretch = UI!ui::Stretch#HORIZONTAL;
+	    label.name = self.name.anchor("Label"); 
+	    
+	    if (self.getIsLabelVisible()) {
+	        label.label = self.label;
+	        label.showLabel = true;
+	        label.labelMargin = new UI!ui::Margin();
+	    }
+	    
+	    if (self.getIsIconVisible()) {
+	        var icon : UI!ui::Icon = new UI!ui::Icon();
+	        icon.name = self.icon.name;
+	        label.icon = icon;
+	        label.showIcon = true;
+	        label.iconMargin = new UI!ui::Margin();
+	    }
+	    
+	    wrapper.row = self.row + 1d;
+	    wrapper.children.add(label);
+    }
 
-    var label : UI!ui::Label = new UI!ui::Label();
-    label.row = 1d;
-    label.col = self.col;
-    label.stretch = UI!ui::Stretch#HORIZONTAL;
-    label.name = self.name.anchor("Label"); 
-    
-    if (self.getIsLabelVisible()) {
-        label.label = self.label;
-        label.showLabel = true;
-        label.labelMargin = new UI!ui::Margin();
-    }
-    
-    if (self.getIsIconVisible()) {
-        var icon : UI!ui::Icon = new UI!ui::Icon();
-        icon.name = self.icon.name;
-        label.icon = icon;
-        label.showIcon = true;
-        label.iconMargin = new UI!ui::Margin();
-    }
-    
-    wrapper.children.add(label);
     wrapper.children.add(self);
     
     return wrapper;
