@@ -20,7 +20,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{/ each }}
     };
 
-    final String mask = '{
+    // final String mask = '{
     {{~# each (getAttributeTypeNamesFromColumnsAndAttributes page.containers.[0].tables.[0].filters relation.target.attributes) as |attributeName| ~}}
         {{ variable attributeName }}{{# unless @last }},{{/ unless }}
     {{~/ each ~}}
@@ -178,7 +178,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                 filterStoreList: availableFilterList,
                     {{/ if }}
                 queryLimit: queryLimit ?? {{ fqVariable relation.name }}QueryLimit,
-                mask: mask,
+                // mask: mask,
                 lastItem: isNext != null ?
                 (isNext ? {{ fqVariable relation.name }}StoreList.last : {{ fqVariable relation.name }}StoreList.first)
                     : null,
@@ -214,7 +214,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             return {{ fqVariable relation.name }}StoreList;
             {{ else }}
             {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
-                mask: mask,
+                // mask: mask,
             ));
             store = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
             return store;
@@ -228,7 +228,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                     {{# if relation.isFilterable }}
                 filterStoreList: availableFilterList,
                 queryLimit: queryLimit ?? {{ fqVariable relation.name }}QueryLimit,
-                mask: mask,
+                // mask: mask,
                 lastItem: isNext != null ?
                 (isNext ? ownerStore.{{ variable relation.name }}.last : ownerStore.{{ variable relation.name }}.first)
                     : null,
@@ -264,7 +264,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
             {{ else }}
             {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
                 ownerStore,
-                mask: mask,
+                // mask: mask,
             ));
             ownerStore.{{ variable relation.name }} = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
             return ownerStore.{{ variable relation.name }};

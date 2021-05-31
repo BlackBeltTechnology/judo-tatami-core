@@ -1,5 +1,5 @@
 {{~ log 'Text input field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
-//START textinput.dart.hbs-----{{ page.dataElement.target.name }}----------------------------------------------------------------------------
+//START xmi:id="{{ getXMIID this }}" textinput.dart.hbs-----{{ page.dataElement.target.name }}----------------------------------------------------------------------------
 {{# if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoInputText(

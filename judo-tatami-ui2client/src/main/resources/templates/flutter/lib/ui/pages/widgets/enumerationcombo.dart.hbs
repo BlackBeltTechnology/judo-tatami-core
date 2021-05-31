@@ -1,5 +1,5 @@
 {{~ log 'Enumeration combo generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' }}
-//START enumerationcombo.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------
+//START xmi:id="{{ getXMIID this }}" enumerationcombo.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------
 {{# if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
