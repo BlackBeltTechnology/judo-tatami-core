@@ -10,26 +10,20 @@
 
 library {{ variable name }}.ui.pages;
 
-import 'package:auto_route/auto_route_annotations.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:openapi_dart_common/openapi.dart';
-import 'package:judo_flutter_components/judo_flutter_components.dart';
-
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:auto_route/auto_route_annotations.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/repository/package.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_registry.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_service.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
 {{# each pages as |page| }}
-import '{{ pageStorePackageRelativePath page.name }}';
+export '{{ pageStorePackageRelativePath page.name }}';
 {{/ each }}
+
+export 'settings.dart';
+
+part 'blank_page.dart';
+part 'error_page.dart';
+
+

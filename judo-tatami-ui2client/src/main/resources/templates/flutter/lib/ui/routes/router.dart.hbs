@@ -11,13 +11,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_route/auto_route_annotations.dart';
 import '../guards/auth_guard.dart';
-import '../blank_page.dart';
-import '../error_page.dart';
-import '../settings.dart';
-
-{{# each application.pages as |page| }}
-import '../pages/{{ pageStorePackageRelativePath page.name }}';
-{{/ each }}
+import '../pages/package.dart';
 
 const List<AutoRoute> bookmarkableRoutes = [
     {{# each application.pages as |page| }}

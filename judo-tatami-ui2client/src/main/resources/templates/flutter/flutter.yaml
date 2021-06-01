@@ -325,27 +325,27 @@
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
-  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/filter_helper.dart'"
-  templateName: flutter/lib/ui/filter_helper.dart.hbs
+  pathExpression: >
+    #utilitiesFolderPath(#application.actor.name) + 'filter_helper.dart'
+  templateName: flutter/lib/ui/utilities/filter_helper.dart.hbs
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    #pagesUtilitiesPath(#application.actor.name) + 'filter_store.dart'
-  templateName: flutter/lib/ui/pages/utilities/filter_store.dart.hbs
-
-
-- overwriteExpression: true
-  factoryExpression: "{#application}"
-  pathExpression: >
-    #pagesUtilitiesPath(#application.actor.name) + 'table_helper_store.dart'
-  templateName: flutter/lib/ui/pages/utilities/table_helper_store.dart.hbs
+    #utilitiesFolderPath(#application.actor.name) + 'filter_store.dart'
+  templateName: flutter/lib/ui/utilities/filter_store.dart.hbs
 
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    #pagesUtilitiesPath(#application.actor.name) + 'package.dart'
-  templateName: flutter/lib/ui/pages/utilities/package.dart.hbs
+    #utilitiesFolderPath(#application.actor.name) + 'table_helper_store.dart'
+  templateName: flutter/lib/ui/utilities/table_helper_store.dart.hbs
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: >
+    #utilitiesFolderPath(#application.actor.name) + 'package.dart'
+  templateName: flutter/lib/ui/utilities/package.dart.hbs
 
 # ========================================
 # pages
@@ -562,10 +562,8 @@
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/settings.dart'
-  templateName: flutter/lib/ui/settings.dart.hbs
+    #pagesFolderPath(#application.actor.name) + 'settings.dart'
+  templateName: flutter/lib/ui/pages/settings.dart.hbs
 
 # ========================================
 # error page
@@ -573,10 +571,8 @@
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/error_page.dart'
-  templateName: flutter/lib/ui/error_page.dart.hbs
+    #pagesFolderPath(#application.actor.name) + 'error_page.dart'
+  templateName: flutter/lib/ui/pages/error_page.dart.hbs
 
 # ========================================
 # blank page
@@ -584,10 +580,8 @@
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) +
-    '/ui/blank_page.dart'
-  templateName: flutter/lib/ui/blank_page.dart.hbs
+    #pagesFolderPath(#application.actor.name) + 'blank_page.dart'
+  templateName: flutter/lib/ui/pages/blank_page.dart.hbs
 
 # ========================================
 # injector

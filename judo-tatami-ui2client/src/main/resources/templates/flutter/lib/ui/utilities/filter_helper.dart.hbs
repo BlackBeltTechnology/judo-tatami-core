@@ -7,12 +7,7 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:judo_flutter_components/judo_flutter_components.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/utilities/package.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
+part of judo.ui.pages.utility;
 
 Future<T> judoShowMenu<T>({@required BuildContext context, @required List<PopupMenuEntry<T>> items, @required GlobalKey buttonKey}) async {
     final RenderBox button = buttonKey.currentContext.findRenderObject() as RenderBox;
