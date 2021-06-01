@@ -70,13 +70,13 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     bool nextPageIsEmpty = false;
 
     @observable
-    int {{ fqVariable relation.name }}SortColumnIndex;
+    int {{ fqVariable relation.name }}SortColumnIndex = 0; // TODO: JNG-2716
 
-    @observable
-    String {{ fqVariable relation.name }}SortColumnName;
+            @observable
+    String {{ fqVariable relation.name }}SortColumnName = '{{ variable page.containers.[0].tables.[0].columns.[0].attributeType.name }}'; // TODO: JNG-2716
 
-    @observable
-    bool {{ fqVariable relation.name }}SortAsc;
+            @observable
+    bool {{ fqVariable relation.name }}SortAsc = false; // TODO: JNG-2716
 
     @observable
     Comparator {{ fqVariable relation.name }}SortCompare;
@@ -277,23 +277,8 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     }
 
     {{/ if }}
-    {{# if relation.isRelationBehaviourTypeRangeable }}
-        {{# unless relation.isCollection }}
-    @observable
-    int {{ fqVariable relation.name }}SortColumnIndex;
 
-    @observable
-    String {{ fqVariable relation.name }}SortColumnName;
-
-    @observable
-    bool {{ fqVariable relation.name }}SortAsc;
-
-    @observable
-    Comparator {{ fqVariable relation.name }}SortCompare;
-        {{/ unless }}
-    {{/ if }}
-
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=relation}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=relation table=page.containers.[0].tables.[0] }}
 
     {{# if relation.isRelationBehaviourTypeSetable }}
     @action

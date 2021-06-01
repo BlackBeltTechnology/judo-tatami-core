@@ -6,6 +6,18 @@
 ObservableFuture {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreRangeFuture;
 
 @observable
+int {{ fqVariable relation.name }}SortColumnIndexRange = 0; // TODO: JNG-2716
+
+@observable
+String {{ fqVariable relation.name }}SortColumnNameRange = '{{ table.filters.[0].attributeType.name }}'; // TODO: JNG-2716
+
+@observable
+bool {{ fqVariable relation.name }}SortAscRange = false; // TODO: JNG-2716
+
+@observable
+Comparator {{ fqVariable relation.name }}SortCompareRange;
+
+@observable
 List<{{ storeClassName relation.target.name }}> {{ fqVariable relation.name }}StoreRangeList = ObservableList<{{ storeClassName relation.target.name }}>();
 
 @computed
@@ -28,15 +40,15 @@ bool nextPageIsEmptyFor{{ fqClass relation.name }}Range = false;
 
 @action
 void {{ fqVariable relation.name }}SetSortRange({{ storeClassName relation.owner.name }} ownerStore, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList, String mask}) {
-    if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
-        {{ fqVariable relation.name }}SortAsc = true;
+    if ({{ fqVariable relation.name }}SortColumnIndexRange != sortColumnIndex) {
+        {{ fqVariable relation.name }}SortAscRange = true;
     } else {
-        {{ fqVariable relation.name }}SortAsc = !{{ fqVariable relation.name }}SortAsc;
+        {{ fqVariable relation.name }}SortAscRange = !{{ fqVariable relation.name }}SortAscRange;
     }
 
-    {{ fqVariable relation.name }}SortColumnIndex = sortColumnIndex;
-    {{ fqVariable relation.name }}SortColumnName = sortColumnName;
-    {{ fqVariable relation.name }}SortCompare = sortCompare;
+    {{ fqVariable relation.name }}SortColumnIndexRange = sortColumnIndex;
+    {{ fqVariable relation.name }}SortColumnNameRange = sortColumnName;
+    {{ fqVariable relation.name }}SortCompareRange = sortCompare;
 
     getRangeFor{{ fqClass relation.name }}(ownerStore, filterStoreList: filterStoreList, mask: mask).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
 }
@@ -52,8 +64,8 @@ Future<List<{{ storeClassName relation.target.name }}>> getRangeFor{{ fqClass re
 
         {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreRangeFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}RangeOf{{ fqClass relation.name }}To{{# if (isCreateTypePage page) }}Create{{ else }}Update{{/ if }}(
             ownerStore,
-            sortColumn: {{ fqVariable relation.name }}SortColumnName,
-            sortAscending: {{ fqVariable relation.name }}SortAsc,
+            sortColumn: {{ fqVariable relation.name }}SortColumnNameRange,
+            sortAscending: {{ fqVariable relation.name }}SortAscRange,
             queryLimit: queryLimit ?? {{ fqVariable relation.name }}QueryLimit,
             filterStoreList: filterStoreList,
             mask: mask,
