@@ -78,13 +78,13 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
     {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/embedded_table_paging_actions.dart.hbs table=table page=page relation=table.dataElement }}
 
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=table.dataElement}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=table.dataElement table=table }}
 {{/ each }}
 {{# each page.containers.[0].links as |link| }}
     @observable
     int {{ fqVariable link.dataElement.name }}QueryLimit = 5; // For judo link setter dialog
 
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=link.dataElement}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=link.dataElement table=link }}
 {{/ each }}
 
 {{# each page.dataElement.target.relations as |relation| }}
