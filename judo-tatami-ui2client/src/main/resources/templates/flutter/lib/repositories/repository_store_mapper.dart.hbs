@@ -84,15 +84,13 @@ class {{ repositoryStoreMapperClassName ap.name }} {
     {{/ if }}
     // Attributes
     {{# each attributes as |attribute| }}
-        {{# unless isReadOnly }}
-            {{~# if (isEnumType attribute.dataType) }}
+        {{~# if (isEnumType attribute.dataType) }}
     if (store.{{ variable attribute.name }} != null) {
         {{ variable class.name }}.{{ variable attribute.name }} = {{ fqClass transferObjectTypeName }}{{ className attribute.name }}Enum.values[store.{{ variable attribute.name }}.index];
     }
-            {{ else }}
+        {{ else }}
     {{ variable class.name }}.{{ variable attribute.name }} = store.{{ variable attribute.name }};
-            {{/ if }}
-        {{/ unless }}
+        {{/ if }}
     {{/ each }}
     // Relations
     {{# each relations as |relation| }}
