@@ -1,8 +1,8 @@
 {{ log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug' }}
 //START editpagestore.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------------
-class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
+class {{ pageStoreClassName page.name }} extends _{{ pageStoreClassName page.name }} with _${{ pageStoreClassName page.name }} {}
 
-abstract class _{{ fqClass page.name }}PageStore with Store {
+abstract class _{{ pageStoreClassName page.name }} with Store {
     {{# with page.relationType as |relation| }}
     {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
 

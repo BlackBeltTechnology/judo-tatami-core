@@ -1,16 +1,16 @@
 //START dashboardpagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------
     @override
-    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState();
+    State<StatefulWidget> createState() => _{{ pageStateClassName page.name }}();
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
-        final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
+class _{{ pageStateClassName page.name }} extends State<{{ pageClassName page.name }}> {
+        final {{ pageStoreClassName page.name }} pageStore = {{ pageStoreClassName page.name }}();
 
     {{# if page.dataElement }}
         {{ storeClassName page.dataElement.target.name }} targetStore;
     {{/ if }}
 
-        _{{ fqClass page.name }}PageState(){
+        _{{ pageStateClassName page.name }}(){
     {{# if page.dataElement }}
             pageStore.targetStore = targetStore;
     {{/ if }}
@@ -25,7 +25,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
                         pageStore.getterStatusSetFulfilled();
 
                         SchedulerBinding.instance.addPostFrameCallback((_) {
-                            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore?.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
+                            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page.name }}.title){{# if page.dataElement.target.representation }} + ' - ${targetStore?.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
                         });
                     } else {
                         var currentPageNavigation = navigationRegistry.getPageNavigationByRoute(Routes.{{ fqVariable application.name }}DashboardPage);

@@ -4,28 +4,28 @@
     final bool validatable;
     {{/ if }}
 
-    const {{ fqClass page.name }}Page({Key key, @required this.targetStore{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) : super(key: key);
+    const {{ pageClassName page.name }}({Key key, @required this.targetStore{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) : super(key: key);
 
     @override
     State<StatefulWidget> createState() =>
-        _{{ fqClass page.name }}PageState(targetStore: targetStore{{# if (validatableFlagNeed page.dataElement) }}, validatable: validatable{{/ if }});
+        _{{ pageStateClassName page.name }}(targetStore: targetStore{{# if (validatableFlagNeed page.dataElement) }}, validatable: validatable{{/ if }});
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+class _{{ pageStateClassName page.name }} extends State<{{ pageClassName page.name }}> {
 
     final {{ storeClassName page.dataElement.target.name }} targetStore;
     {{# if (validatableFlagNeed page.dataElement) }}
     final bool validatable;
     {{/ if }}
 
-    final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
+    final {{ pageStoreClassName page.name }} pageStore = {{ pageStoreClassName page.name }}();
 
-    _{{ fqClass page.name }}PageState({@required this.targetStore{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) {
+    _{{ pageStateClassName page.name }}({@required this.targetStore{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) {
         pageStore.targetStore = targetStore;
 
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page.name }}.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
         });
         {{# if (validatableFlagNeed page.dataElement) }}
         if (this.validatable != null) {

@@ -10,9 +10,9 @@
 
 part of {{ pageLibraryName application.name page.name }};
 
-class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable implements JudoTableDataInfo {
+class {{ dialogTableClassName table.pageDefinition table.dataElement.name }} implements JudoTableDataInfo {
 
-    const {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable(this.context, {this.disabled = false});
+    const {{ dialogTableClassName table.pageDefinition table.dataElement.name }}(this.context, {this.disabled = false});
 
     final BuildContext context;
     final bool disabled;

@@ -20,7 +20,7 @@ class {{ fqClass application.name }}NavigationItems {
     static List<NavigationItem> navigationItems = [
         {{# each application.navigationController.items as |item| }}
         NavigationItem(
-            route: Routes.{{ fqVariable item.target.name }}Page,
+            route: Routes.{{ pageClassVariableName item.target.name }},
           {{# if item.isIconVisible }}
             leading: Icon(getIconByString("{{ item.icon.name }}")),
           {{/ if }}

@@ -126,8 +126,8 @@
     {{/ if }}
     {{# if action.isCreateAction }}
         onPressed:{{# unless page.dataElement.isCollection }} ownerStore.{{ variable page.dataElement.name }} == null{{/ unless }}{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }}{{# unless page.dataElement.isCollection }} &&{{/ unless }} ownerStore.internal__updatable ?{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }}{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }} () async {
-            var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless page.dataElement.isAccess }},
-                arguments: {{ fqClass action.target.name }}PageArguments(ownerStore: ownerStore){{~/ unless }});
+            var created = await navigation.open(Routes.{{ pageClassVariableName action.target.name }}{{# unless page.dataElement.isAccess }},
+                arguments: {{ pageArgumentsClassName action.target.name }}(ownerStore: ownerStore){{~/ unless }});
             if (created != null) {
                 pageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess }}ownerStore ,{{/ unless }}created)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
@@ -145,8 +145,8 @@
         onPressed:{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} ownerStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
             {{ storeClassName page.dataElement.target.name }} cloned = {{ storeClassName page.dataElement.target.name }}();
             cloned.updateWith(targetStore);
-            var ret = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-            arguments: {{ fqClass action.target.name }}PageArguments(targetStore: cloned));
+            var ret = await navigation.open(Routes.{{ pageClassVariableName action.target.name }},
+            arguments: {{ pageArgumentsClassName action.target.name }}(targetStore: cloned));
             if (ret != null) {
                 targetStore.updateWith(cloned);
                 var updated = await pageStore.update{{ className page.relationType.target.name }}(targetStore)
@@ -185,14 +185,14 @@
     {{/ if }}
     {{# if action.isNavigationToPageAction }}
         onPressed: () async {
-            await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-                arguments: {{ fqClass action.target.name }}PageArguments(ownerStore: targetStore));
+            await navigation.open(Routes.{{ pageClassVariableName action.target.name }},
+                arguments: {{ pageArgumentsClassName action.target.name }}(ownerStore: targetStore));
         },
     {{/ if }}
     {{# if action.isCallOperationAction }}
         onPressed: () async {
             {{# if action.operation.input }}
-            var ret = await navigation.open(Routes.{{ fqVariable action.inputParameterPage.name }}Page);
+            var ret = await navigation.open(Routes.{{ pageClassVariableName action.inputParameterPage.name }});
             if (ret != null) {
                 {{# if action.isConfirmationTypeMandatory }}
                 {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
@@ -204,8 +204,8 @@
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                 {{# if action.operation.output }}
                 if (store != null) {
-                    await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
-                        arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(targetStore: store));
+                    await navigation.open(Routes.{{ pageClassVariableName action.outputParameterPage.name }},
+                        arguments: {{ pageArgumentsClassName action.outputParameterPage.name }}(targetStore: store));
                 }
                 {{/ if }}
                 {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
@@ -223,8 +223,8 @@
                     {{# if action.operation.output }}{{ storeClassName action.operation.output.target.name }} store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                     if (store != null) {
-                        await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
-                            arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(targetStore: store));
+                        await navigation.open(Routes.{{ pageClassVariableName action.outputParameterPage.name }},
+                            arguments: {{ pageArgumentsClassName action.outputParameterPage.name }}(targetStore: store));
                     }
                     {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
                     await pageStore.refresh{{ className page.relationType.target.name }}(targetStore);

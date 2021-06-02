@@ -31,7 +31,7 @@ abstract class _NavigationState with Store {
     final navigatorKey = GlobalKey<ExtendedNavigatorState>();
     final scaffoldKey = GlobalKey<ScaffoldState>(); // rethink this key place
 
-    String currentRoute = Routes.{{ fqVariable application.dashboard.name }}Page;
+    String currentRoute = Routes.{{ pageClassVariableName application.dashboard.name }};
     PageNavigation currentPageNavigation;
     final List<String> stack = [];
 

@@ -28,8 +28,8 @@ Observer(builder: (_) {
         {{#if rowAction.isViewAction}}
         navigateToViewPageAction: (element) async {
             if (element != null) {
-                var response = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page{{# if (tableNavigateToViewHasIdParam page) }}(id: element.internal__signedIdentifier){{/ if}},
-                arguments: {{ fqClass rowAction.target.name }}PageArguments({{# unless relation.isAccess}}ownerStore: targetStore, targetStore: element{{/ unless}}));
+                var response = await navigation.open(Routes.{{ pageClassVariableName rowAction.target.name }}{{# if (tableNavigateToViewHasIdParam page) }}(id: element.internal__signedIdentifier){{/ if}},
+                arguments: {{ pageArgumentsClassName rowAction.target.name }}({{# unless relation.isAccess}}ownerStore: targetStore, targetStore: element{{/ unless}}));
                 {{# unless relation.isMemberTypeTransient }}
                     {{# unless page.isPageTypeOperationOutput }}
                 if (response != null) {
@@ -45,8 +45,8 @@ Observer(builder: (_) {
         navigateToEditPageAction:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} (element) async {
             {{ storeClassName relationType.target.name }} cloned = {{ storeClassName relationType.target.name }}();
             cloned.updateWith(element);
-            var res = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,
-            arguments: {{ fqClass rowAction.target.name }}PageArguments(targetStore: cloned, validatable: pageStore.validatable));
+            var res = await navigation.open(Routes.{{ pageClassVariableName rowAction.target.name }},
+            arguments: {{ pageArgumentsClassName rowAction.target.name }}(targetStore: cloned, validatable: pageStore.validatable));
             if (res != null) {
                 element.updateWith(cloned);
                 var updated = await pageStore.update{{ className relation.name }}{{ className relation.target.name }}(element, targetStore)

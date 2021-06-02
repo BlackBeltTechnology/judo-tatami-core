@@ -13,9 +13,9 @@
 part of {{ pageLibraryName application.name page.name }};
 
 {{# with table.dataElement as |relation| }}
-class {{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore extends _{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore with _${{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore {}
+class {{ dialogStoreClassName page relation.name }} extends _{{ dialogStoreClassName page relation.name }} with _${{ dialogStoreClassName page relation.name }} {}
 
-abstract class _{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore with Store {
+abstract class _{{ dialogStoreClassName page relation.name }} with Store {
 
     final Map<String, FilterStore> stringFilterStoreMap = {
     {{# each table.filters as |filter| }}
@@ -44,15 +44,13 @@ abstract class _{{ fqClass relation.name }}{{ className relation.target.name }}D
     void addNewFilter(FilterStore newFilterStore) => availableFilterList.add(FilterStore.clone(newFilterStore));
 }
 
-Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }}> judoSelect{{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}Page({@required BuildContext context, {{ fqClass page.name }}PageStore pageStore{{# unless (isAccessTablePage page) }}, {{ storeClassName relation.owner.name }} ownerStore{{/ unless }}, bool dialogTypeAdder = false  }) async {
+Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }}> judoSelect{{ dialogClassName page relation.name }}({@required BuildContext context, {{ pageStoreClassName page.name }} pageStore{{# unless (isAccessTablePage page) }}, {{ storeClassName relation.owner.name }} ownerStore{{/ unless }}, bool dialogTypeAdder = false  }) async {
 {{# if relation.isRelationBehaviourTypeRangeable }}
     {{# unless (isAccessTablePage page) }}
         {{# unless relation.isMemberTypeTransient }}
     var addFilterButtonKey = GlobalKey();
 
-    var dialogHelperStore = {{ fqClass relation.name }}{{ className relation.target.name }}DialogFor{{ fqClass page.name }}PageHelperStore();
-
-
+    var dialogHelperStore = {{ dialogStoreClassName page relation.name }}();
 
     pageStore.getRangeFor{{ fqClass relation.name }}(
         ownerStore,
@@ -151,7 +149,7 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
                         case FutureStatus.rejected:
                           return Container();
                         case FutureStatus.fulfilled:
-                          var dataInfo = {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable(context, disabled: false);
+                          var dataInfo = {{ dialogTableClassName table.pageDefinition table.dataElement.name }}(context, disabled: false);
                           return JudoSelectorTable(
                             alignment: Alignment.center,
                             disabled: false,

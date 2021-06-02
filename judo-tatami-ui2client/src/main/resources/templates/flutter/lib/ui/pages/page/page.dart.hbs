@@ -37,7 +37,7 @@ part of {{ pageLibraryName application.name page.name }};
 {{/ if }}
 
 
-class {{ fqClass page.name }}Page extends StatefulWidget {
+class {{ pageClassName page.name }} extends StatefulWidget {
     static const String title = '{{ page.label }}';
 
 {{# if page.isPageTypeDashboard }}
@@ -84,7 +84,7 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     {{# each page.containers as |pageContainer| }}
                     {{# unless pageContainer.layoutType.original }}
                     if (MediaQuery.of(context).size.width >= {{ pageContainer.layoutType.minimumResolution }} && MediaQuery.of(context).size.width <= {{ pageContainer.layoutType.maximumResolution }}) {
-                        return get{{ fqClass page.name }}Page{{ fqClass pageContainer.layoutType.name }}Body(context
+                        return get{{ pageBodyClassName page.name pageContainer.layoutType.name }}(context
 
                             {{~# if page.isPageTypeDashboard ~}}
                             , pageStore
@@ -134,7 +134,7 @@ class {{ fqClass page.name }}Page extends StatefulWidget {
                     }
                     {{/ unless }}
                     {{/ each }}
-                    return get{{ fqClass page.name }}Page{{ fqClass application.defaultLayoutType.name }}Body(context
+                    return get{{ pageBodyClassName page.name application.defaultLayoutType.name }}(context
 
                         {{~# if page.isPageTypeDashboard ~}}
                         , pageStore

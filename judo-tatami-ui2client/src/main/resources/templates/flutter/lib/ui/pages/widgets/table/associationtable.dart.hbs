@@ -44,8 +44,8 @@ Observer(builder: (_) {
                 {{# if action.isViewAction }}
                 navigateToViewPageAction: (element) async {
                     if (element != null) {
-                        await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# if (tableNavigateToViewHasIdParam page) }}(id: element.internal__signedIdentifier){{/ if }},
-                            arguments: {{ fqClass action.target.name }}PageArguments({{# unless relation.isAccess}}ownerStore: ownerStore, targetStore: element{{/ unless}}));
+                        await navigation.open(Routes.{{ pageClassVariableName action.target.name }}{{# if (tableNavigateToViewHasIdParam page) }}(id: element.internal__signedIdentifier){{/ if }},
+                            arguments: {{ pageArgumentsClassName action.target.name }}({{# unless relation.isAccess}}ownerStore: ownerStore, targetStore: element{{/ unless}}));
                         {{# unless relation.isMemberTypeTransient }}
                         pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore{{/ unless }})
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
@@ -56,7 +56,7 @@ Observer(builder: (_) {
                 {{# if action.isCreateAction }}
                 // TODO: not sure this rowAction needed
                 navigateToCreatePageAction:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} (element) async {
-                    var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page);
+                    var created = await navigation.open(Routes.{{ pageClassVariableName action.target.name }});
                     if (created != null) {
                         pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore ,{{/ unless }}created)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
@@ -67,8 +67,8 @@ Observer(builder: (_) {
                 navigateToEditPageAction:{{# unless relation.isAccess }} ownerStore.internal__updatable ?{{/ unless }} (element) async {
                     {{ storeClassName relationType.target.name }} cloned = {{ storeClassName relationType.target.name }}();
                     cloned.updateWith(element);
-                    var res = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-                        arguments: {{ fqClass action.target.name }}PageArguments(targetStore: cloned));
+                    var res = await navigation.open(Routes.{{ pageClassVariableName action.target.name }},
+                        arguments: {{ pageArgumentsClassName action.target.name }}(targetStore: cloned));
                     if (res != null) {
                         element.updateWith(cloned);
                         var updated = await pageStore.update{{ className relation.target.name }}(element)

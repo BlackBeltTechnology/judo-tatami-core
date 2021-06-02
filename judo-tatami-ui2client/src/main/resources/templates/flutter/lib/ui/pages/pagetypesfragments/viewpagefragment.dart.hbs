@@ -5,22 +5,22 @@
     final {{ storeClassName page.dataElement.owner.name }} ownerStore;
     {{/ unless }}
     
-    const {{ fqClass page.name }}Page({Key key{{# unless page.dataElement.isAccess }}, @required this.targetStore, @required this.ownerStore{{/unless}}, @PathParam('id') this.idParam }) : super(key: key);
+    const {{ pageClassName page.name }}({Key key{{# unless page.dataElement.isAccess }}, @required this.targetStore, @required this.ownerStore{{/unless}}, @PathParam('id') this.idParam }) : super(key: key);
     
     @override
-    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState(idParam: idParam{{# unless page.dataElement.isAccess }}, targetStore: targetStore, ownerStore: ownerStore{{/ unless }});
+    State<StatefulWidget> createState() => _{{ pageStateClassName page.name }}(idParam: idParam{{# unless page.dataElement.isAccess }}, targetStore: targetStore, ownerStore: ownerStore{{/ unless }});
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+class _{{ pageStateClassName page.name }} extends State<{{ pageClassName page.name }}> {
     {{ storeClassName page.dataElement.target.name }} targetStore;
     final String idParam;
     {{# unless page.dataElement.isAccess }}
     final {{ storeClassName page.dataElement.owner.name }} ownerStore;
     {{/ unless }}
 
-    final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
+    final {{ pageStoreClassName page.name }} pageStore = {{ pageStoreClassName page.name }}();
 
-    _{{ fqClass page.name }}PageState({this.idParam{{# unless page.dataElement.isAccess }}, @required this.targetStore, @required this.ownerStore{{/ unless }} }){
+    _{{ pageStateClassName page.name }}({this.idParam{{# unless page.dataElement.isAccess }}, @required this.targetStore, @required this.ownerStore{{/ unless }} }){
         final navigation = locator<NavigationState>();
     {{# if page.dataElement.isRelationBehaviourTypeRefreshable }}
         {{# if page.dataElement.isAccess }}
@@ -31,7 +31,7 @@ class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Pag
         pageStore
             .refresh{{ className page.dataElement.target.name }}(targetStore)
             .then((_) {
-                navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
+                navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page.name }}.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
             })
             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     {{/ if }}

@@ -5,24 +5,24 @@
     {{/ unless }}
 
     {{# unless page.dataElement.isAccess }}
-    const {{ fqClass page.name }}Page({Key key, @required this.ownerStore}) : super(key: key);
+    const {{ pageClassName page.name }}({Key key, @required this.ownerStore}) : super(key: key);
     {{/ unless }}
 
     @override
-    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState({{# unless page.dataElement.isAccess }}ownerStore: ownerStore{{/ unless }});
+    State<StatefulWidget> createState() => _{{ pageStateClassName page.name }}({{# unless page.dataElement.isAccess }}ownerStore: ownerStore{{/ unless }});
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+class _{{ pageStateClassName page.name }} extends State<{{ pageClassName page.name }}> {
     {{# unless page.dataElement.isAccess }}
     final {{ storeClassName page.dataElement.owner.name }} ownerStore;
     {{/ unless }}
 
-    final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
+    final {{ pageStoreClassName page.name }} pageStore = {{ pageStoreClassName page.name }}();
 
-    _{{ fqClass page.name }}PageState({{# unless page.dataElement.isAccess }}{@required this.ownerStore}{{/ unless }}){
+    _{{ pageStateClassName page.name }}({{# unless page.dataElement.isAccess }}{@required this.ownerStore}{{/ unless }}){
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page.name }}.title));
         });
 
         pageStore.get{{ fqClass page.dataElement.name }}({{# unless page.dataElement.isAccess }} ownerStore {{/ unless }}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
