@@ -157,8 +157,8 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
                             col: 1,
                             row: {{ table.row }}-1 >= 6 ? {{ table.row }}-1 : 6,
                             dataInfo: dataInfo,
-                            sortAscending: pageStore.{{ fqVariable relation.name }}SortAsc,
-                            sortColumnIndex: pageStore.{{ fqVariable relation.name }}SortColumnIndex,
+                            sortAscending: pageStore.{{ fqVariable relation.name }}SortAscRange,
+                            sortColumnIndex: pageStore.{{ fqVariable relation.name }}SortColumnIndexRange,
                             onSort: (int columnIndex, bool asc) {
                                 pageStore.{{ fqVariable relation.name }}SetSortRange(
                                   ownerStore,
