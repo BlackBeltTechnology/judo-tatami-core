@@ -51,8 +51,8 @@ public class GeneratorIgnoreTest {
 
     @Test
     void testShouldExcludeExplicitFileInRoot() {
-        Path path1 = Paths.get(tmpTargetDir.toString(), "app.yaml");
-        Path path2 = Paths.get(tmpTargetDir.toString(), "lol.yaml");
+        Path path1 = absolutePathFor("app.yaml");
+        Path path2 = absolutePathFor("lol.yaml");
 
         assertTrue(generatorIgnore.shouldExcludeFile(path1));
         assertFalse(generatorIgnore.shouldExcludeFile(path2));
@@ -60,8 +60,8 @@ public class GeneratorIgnoreTest {
 
     @Test
     void testShouldExcludeFileInAnyLevel() {
-        Path path1 = Paths.get(tmpTargetDir.toString(), "first/second/third/theFile.php");
-        Path path2 = Paths.get(tmpTargetDir.toString(), "first/second/third/theFile.pdf");
+        Path path1 = absolutePathFor("first", "second", "third", "theFile.php");
+        Path path2 = absolutePathFor("first", "second", "third", "theFile.pdf");
 
         assertTrue(generatorIgnore.shouldExcludeFile(path1));
         assertFalse(generatorIgnore.shouldExcludeFile(path2));
@@ -69,9 +69,9 @@ public class GeneratorIgnoreTest {
 
     @Test
     void testShouldExcludeFilesOneLevelDeep() {
-        Path path1 = Paths.get(tmpTargetDir.toString(), "test/one/testing.txt");
-        Path path2 = Paths.get(tmpTargetDir.toString(), "test/two/testing.txt");
-        Path path3 = Paths.get(tmpTargetDir.toString(), "test/two/two-two/testing.txt");
+        Path path1 = absolutePathFor("test", "one", "testing.txt");
+        Path path2 = absolutePathFor("test", "two", "testing.txt");
+        Path path3 = absolutePathFor("test", "two", "two-two", "testing.txt");
 
         assertTrue(generatorIgnore.shouldExcludeFile(path1));
         assertTrue(generatorIgnore.shouldExcludeFile(path2));
@@ -80,14 +80,18 @@ public class GeneratorIgnoreTest {
 
     @Test
     void testShouldExcludeAllInFolder() {
-        Path path1 = Paths.get(tmpTargetDir.toString(), "folder-contents-to-ignore/one/testing.txt");
-        Path path2 = Paths.get(tmpTargetDir.toString(), "folder-contents-to-ignore/testing.txt");
-        Path path3 = Paths.get(tmpTargetDir.toString(), "folder-contents-to-ignore");
-        Path path4 = Paths.get(tmpTargetDir.toString(), "test//testing.txt");
+        Path path1 = absolutePathFor("folder-contents-to-ignore", "one", "testing.txt");
+        Path path2 = absolutePathFor("folder-contents-to-ignore", "testing.txt");
+        Path path3 = absolutePathFor("folder-contents-to-ignore");
+        Path path4 = absolutePathFor("test", "testing.txt");
 
         assertTrue(generatorIgnore.shouldExcludeFile(path1));
         assertTrue(generatorIgnore.shouldExcludeFile(path2));
         assertFalse(generatorIgnore.shouldExcludeFile(path3)); // only contents!
         assertFalse(generatorIgnore.shouldExcludeFile(path4));
+    }
+
+    Path absolutePathFor(String... relativePath) {
+        return Paths.get(tmpTargetDir.toString(), relativePath);
     }
 }

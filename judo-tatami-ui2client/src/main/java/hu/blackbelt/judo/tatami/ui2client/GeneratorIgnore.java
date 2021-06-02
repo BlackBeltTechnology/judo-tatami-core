@@ -18,7 +18,7 @@ public class GeneratorIgnore {
     private final Path targetPath;
 
     public GeneratorIgnore(Path targetPath) {
-        this.targetPath = targetPath;
+        this.targetPath = targetPath.normalize();
         try {
             globs = Files.readAllLines(Paths.get(targetPath.toString(), GeneratorIgnore.GENERATOR_IGNORE_FILE), StandardCharsets.UTF_8);
         } catch (IOException e) {
@@ -31,7 +31,7 @@ public class GeneratorIgnore {
     }
 
     public boolean shouldExcludeFile(Path absolutePath) {
-        Path relativePath = Paths.get(absolutePath.toString().replace(targetPath.toString() + separator, ""));
+        Path relativePath = Paths.get(absolutePath.normalize().toString().replace(targetPath.toString() + separator, ""));
         return globs.stream().anyMatch((glob) -> {
             final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:" + glob);
             return pathMatcher.matches(relativePath);
