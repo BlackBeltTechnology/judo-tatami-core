@@ -28,7 +28,7 @@ class _{{ pageStateClassName page.name }} extends State<{{ pageClassName page.na
                             navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page.name }}.title){{# if page.dataElement.target.representation }} + ' - ${targetStore?.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
                         });
                     } else {
-                        var currentPageNavigation = navigationRegistry.getPageNavigationByRoute(Routes.{{ fqVariable application.name }}DashboardPage);
+                        var currentPageNavigation = navigationRegistry.getPageNavigationByRoute(Routes.{{ pageClassVariableName application.dashboard.name }});
                         if (currentPageNavigation.createPage != null) {
                             navigation.navigateTo(currentPageNavigation.createPage.route);
                         } else {

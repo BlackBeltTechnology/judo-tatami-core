@@ -344,6 +344,7 @@ public class FlutterHelper {
         List<String> nameTokens = stream(packageName.replaceAll("#", "::")
                 .replaceAll("\\.", "::")
                 .replaceAll("/", "::")
+                .replaceAll("_", "::")
                 .split("::"))
                 .collect(Collectors.toList());
         if (nameTokens.size() > 2) {
@@ -729,7 +730,7 @@ public class FlutterHelper {
      * Calculates class name based on an ESM fq name including feature name separated with "." as feature separator.
      * Removes '_' from esm named element names
      *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators and "." as feature separator
+     * @param fqName the fully qualified name of a type with "::" as namespace separators and "." as feature separator, names match the pattern "[a-zA-Z0-9_]+"
      * @return camel case class name including feature name, e.g. Model::Package_a::Package_b::TypeName.feature -> PackageAPackageBTypeNameFeature
      */
     private static String getClassName(String fqName) {
@@ -746,10 +747,10 @@ public class FlutterHelper {
     }
 
     /**
-     * Calculates file name based on an ESM fq name.
+     * Calculates file name based on the ESM fq name without feature name, skipping model and package names.
      *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return file name based on fq name, e.g. Model::PackageOne::PackageTwo::TypeName -> package_one_package_two_type_name
+     * @param fqName the fully qualified name of a type with "::" as namespace separators, names match the pattern "[a-zA-Z0-9_]+"
+     * @return file name based on fq name, e.g. Model::PackageOne::PackageTwo::TypeName -> type_name
      */
     private static String getFileName(String fqName) {
         String[] splitted = fqName.split("::");
@@ -763,7 +764,7 @@ public class FlutterHelper {
     /**
      * Calculates relative path of a type. Path is relative to the model.
      *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
+     * @param fqName the fully qualified name of a type with "::" as namespace separators, names match the pattern "[a-zA-Z0-9_]+"
      * @return the packages of a type joined by "/", e.g. package1/package2/.../packagen/ if the type is enclosed by packages and empty string if it's not
      */
     private static String getPackagePath(String fqName) {
@@ -772,6 +773,7 @@ public class FlutterHelper {
             return "";
         }
         return packageNameTokens.stream()
+                .map(t -> getFileName(t))
                 .collect(Collectors.joining("/"))
                 .concat("/");
     }
@@ -779,8 +781,8 @@ public class FlutterHelper {
     /**
      * Calculates relative path of a type, based on {@link #getPackagePath(String)} and concatenates type name.
      *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return the relative path of a type including the type name, e.g. package1/package2/.../packagen/typeName/ or typeName/ if there are no packages
+     * @param fqName the fully qualified name of a type with "::" as namespace separators, names match the pattern "[a-zA-Z0-9_]+"
+     * @return the relative path of a type including the type name, e.g. package1/package2/.../packagen/type_name/ or typeName/ if there are no packages
      */
     private static String getTypeNamePath(String fqName) {
         return getPackagePath(fqName).concat(getFileName(fqName)).concat("/");
@@ -831,7 +833,7 @@ public class FlutterHelper {
      * Path is relative to store folder.
      *
      * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return relative path of a Store class, e.g. packageName1/packageName2/../typename__store.dart
+     * @return relative path of a Store class, e.g. package_name1/package_name2/../type_name__store.dart
      */
     public static String storeClassRelativePath(String fqName) {
         return getPackagePath(fqName).concat(getFileName(fqName) + "__store.dart");
@@ -843,7 +845,7 @@ public class FlutterHelper {
      *
      * @param actorName name of the actor of the application
      * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return relative path of a Store class, e.g. lib/actor/store/packageName1/packageName2/../typename__store.dart
+     * @return relative path of a Store class, e.g. lib/actor/store/package_name1/package_name2/../type_name__store.dart
      */
     public static String storeClassPath(String actorName, String fqName) {
         return storeFolderPath(actorName).concat(storeClassRelativePath(fqName));
@@ -878,7 +880,7 @@ public class FlutterHelper {
      * for the path. Path is relative to repository folder.
      *
      * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return relative path of a Repository class, e.g. packageName1/packageName2/../typename/repository.dart
+     * @return relative path of a Repository class, e.g. package_name1/package_name2/../type_name/repository.dart
      */
     public static String repositoryClassRelativePath(String fqName) {
         return getTypeNamePath(fqName).concat("repository.dart");
@@ -890,7 +892,7 @@ public class FlutterHelper {
      *
      * @param actorName name of the actor of the application
      * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return path of a Repository class, e.g. lib/actor/repository/packageName1/packageName2/../typename/repository.dart
+     * @return path of a Repository class, e.g. lib/actor/repository/package_name1/package_name2/../type_name/repository.dart
      */
     public static String repositoryClassPath(String actorName, String fqName) {
         return repositoryFolderPath(actorName).concat(repositoryClassRelativePath(fqName));
@@ -902,7 +904,7 @@ public class FlutterHelper {
      *
      * @param relationName name of the relation
      * @param ownerName the fully qualified name of owner of the relation with "::" as namespace separators
-     * @return relative path of a Repository class, e.g. packageName1/packageName2/../typename/relationname__repository.dart
+     * @return relative path of a Repository class, e.g. package_name1/package_name2/../type_name/relation_name__repository.dart
      */
     public static String repositoryRelationRelativePath(String ownerName, String relationName) {
         return getTypeNamePath(ownerName).concat(getFileName(relationName).concat("__repository.dart"));
@@ -914,7 +916,7 @@ public class FlutterHelper {
      * @param actorName name of the actor of the application
      * @param ownerName the fq name of the owner of the relation
      * @param relationName name of the relation
-     * @return path of a Repository class, e.g. lib/actor/repository/packageName1/packageName2/../typename/relationname__repository.dart
+     * @return path of a Repository class, e.g. lib/actor/repository/package_name1/package_name2/../type_name/relation_name__repository.dart
      */
     public static String repositoryRelationPath(String actorName, String ownerName, String relationName) {
         return repositoryFolderPath(actorName).concat(repositoryRelationRelativePath(ownerName, relationName));
@@ -989,7 +991,7 @@ public class FlutterHelper {
      * Calculates relative path of page stores based on {@link #getPageTypePath(String)} and concatenates "page.dart". Path is relative to the "pages" folder.
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return relative path of a page store, e.g. lib/actor/ui/pages/packageName1/packageName2/../typename/relationName/pageType/page.dart
+     * @return relative path of a page store, e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/page.dart
      */
     public static String pageStoreRelativePath(String pageName) {
         return getPageTypePath(pageName).concat("page.dart");
@@ -999,7 +1001,7 @@ public class FlutterHelper {
      * Calculates relative path of page folder package based on {@link #getPageTypePath(String)} and concatenates "package.dart". Path is relative to the "pages" folder.
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return relative path of a package collecting page stores, bodies, dialogs, etc., e.g. lib/actor/ui/pages/packageName1/packageName2/../typename/relationName/pageType/package.dart
+     * @return relative path of a package collecting page stores, bodies, dialogs, etc., e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/package.dart
      */
     public static String pageStorePackageRelativePath(String pageName) {
         return getPageTypePath(pageName).concat("package.dart");
@@ -1010,7 +1012,7 @@ public class FlutterHelper {
      *
      * @param actorName name of the actor of the application
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return e.g. lib/actor/ui/pages/packageName1/packageName2/../typename/relationName/pageType/store.dart
+     * @return e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/store.dart
      */
     public static String pageStorePath(String actorName, String pageName) {
         return pagesFolderPath(actorName).concat(pageStoreRelativePath(pageName));
@@ -1021,7 +1023,7 @@ public class FlutterHelper {
      *
      * @param actorName name of the actor of the application
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return e.g. packageName1/packageName2/.../typename/relationName/pageType/package.dart
+     * @return e.g. package_name1/package_name2/.../type_name/relation_name/pageType/package.dart
      */
     public static String pageStorePackagePath(String actorName, String pageName) {
         return pagesFolderPath(actorName).concat(pageStorePackageRelativePath(pageName));
@@ -1031,7 +1033,7 @@ public class FlutterHelper {
      * Calculates the page store class name.
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return
+     * @return e.g. PackageNameTypeNameRelationNamePageTypePageStore
      */
     public static String pageStoreClassName(String pageName) {
         return getPageClassName(pageName).concat("PageStore");
@@ -1041,7 +1043,7 @@ public class FlutterHelper {
      * Calculates the page class name.
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return
+     * @return e.g. PackageNameTypeNameRelationNamePageTypePage
      */
     public static String pageClassName(String pageName) {
         return getPageClassName(pageName).concat("Page");
@@ -1051,7 +1053,7 @@ public class FlutterHelper {
      * Calculates variable name for the page class name.
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return
+     * @return e.g. packageNameTypeNameRelationNamePageTypePage
      */
     public static String pageClassVariableName(String pageName) {
         String className = getPageClassName(pageName).concat("Page");
@@ -1062,7 +1064,7 @@ public class FlutterHelper {
      * Calculates the page state class name.
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return
+     * @return PackageNameTypeNameRelationNamePageTypePageState
      */
     public static String pageStateClassName(String pageName) {
         return getPageClassName(pageName).concat("PageState");
@@ -1072,7 +1074,7 @@ public class FlutterHelper {
      * Calculates the page arguments class name.
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return
+     * @return e.g. PackageNameTypeNameRelationNamePageTypePageArguments
      */
     public static String pageArgumentsClassName(String pageName) {
         return getPageClassName(pageName).concat("PageArguments");
@@ -1083,7 +1085,7 @@ public class FlutterHelper {
      *
      * @param actorName name of the actor of the application
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return library name of a package collecting page stores, bodies, dialogs, etc., e.g. packageName1.packageName2....typename.relationName.pageType
+     * @return library name of a package collecting page stores, bodies, dialogs, etc., e.g. package_name1.package_name2....type_name.relation_name.pagetype
      */
     public static String pageLibraryName(String actorName, String pageName) {
         String lib = getPageTypePath(pageName).replaceAll("/",".");
@@ -1091,10 +1093,11 @@ public class FlutterHelper {
     }
 
     /**
-     * Calculates relative path of page body based on {@link #getPageTypePath(String)} and concatenates the page body name based on the layout type. Path is relative to the "pages" folder.
+     * Calculates relative path of page body based on {@link #getPageTypePath(String)} and {@link #pageBodyFileName(String)}
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return e.g. packageName1/packageName2/../typename/relationName/pageType/layoutName/body.dart
+     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
+     * @return e.g. package_name1/package_name2/../type_name/relation_name/pageType/layoutName/body.dart
      */
     public static String pageBodyRelativePath(String pageName, String layoutTypeName) {
         return getPageTypePath(pageName).concat(pageBodyFileName(layoutTypeName));
@@ -1116,7 +1119,7 @@ public class FlutterHelper {
      * @param actorName name of the actor of the application
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
      * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @return e.g. lib/actor/ui/pages/packageName1/packageName2/../typename/relationName/pageType/layoutTypeName/body.dart
+     * @return e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/layoutTypeName/body.dart
      */
     public static String pageBodyPath(String actorName, String pageName, String layoutTypeName) {
         return pagesFolderPath(actorName).concat(pageBodyRelativePath(pageName, layoutTypeName));
@@ -1126,7 +1129,8 @@ public class FlutterHelper {
      * Calculates the page body class name.
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return
+     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
+     * @return e.g. PackageNameTypeNameRelationNamePageTypeLayoutTypePage
      */
     public static String pageBodyClassName(String pageName, String layoutTypeName) {
         return getPageClassName(pageName).concat(StringUtils.capitalize(layoutTypeName.toLowerCase())).concat("Page");
@@ -1137,21 +1141,22 @@ public class FlutterHelper {
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
      * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @param tableName name of the data element of the table, i.e. the name of the relation
-     * @return e.g. packageName1/packageName2/../typename/relationName/pageType/layoutTypeName/tableName_table.dart
+     * @param relationName name of the data element of the table, i.e. the name of the relation
+     * @return e.g. package_name1/package_name2/../type_name/relation_name/pageType/layoutTypeName/relation_name_table.dart
      */
-    public static String tableRelativePath(String pageName, String layoutTypeName, String tableName) {
-        return getPageTypePath(pageName).concat(tableFileName(layoutTypeName, tableName));
+    public static String tableRelativePath(String pageName, String layoutTypeName, String relationName) {
+        return getPageTypePath(pageName).concat(tableFileName(layoutTypeName, relationName));
     }
 
     /**
-     * Calculates table name based on the layout type
+     * Calculates table file name based on the layout type and the name of its data element.
      *
      * @param layoutTypeName the name of the layout: mobile, tablet, desktop
+     * @param relationName name of the data element of the table, i.e. the name of the relation
      * @return e.g. layoutTypeName/tableName_table.dart
      */
-    public static String tableFileName(String layoutTypeName, String tableName) {
-        return layoutTypeName.toLowerCase().concat("/").concat(getFileName(tableName).concat("__table.dart"));
+    public static String tableFileName(String layoutTypeName, String relationName) {
+        return layoutTypeName.toLowerCase().concat("/").concat(getFileName(relationName).concat("__table.dart"));
     }
 
     /**
@@ -1160,23 +1165,24 @@ public class FlutterHelper {
      * @param actorName name of the actor of the application
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
      * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @param tableName name of the data element of the table, i.e. the name of the relation
-     * @return e.g. lib/actor/ui/pages/packageName1/packageName2/../typename/relationName/pageType/layoutTypeName/tableName__table.dart
+     * @param relationName name of the data element of the table, i.e. the name of the relation
+     * @return e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/layoutTypeName/relation_name__table.dart
      */
-    public static String tablePath(String actorName, String pageName, String layoutTypeName, String tableName) {
-        return pagesFolderPath(actorName).concat(tableRelativePath(pageName, layoutTypeName, tableName));
+    public static String tablePath(String actorName, String pageName, String layoutTypeName, String relationName) {
+        return pagesFolderPath(actorName).concat(tableRelativePath(pageName, layoutTypeName, relationName));
     }
 
     /**
-     * Calculates dialog table name.
+     * Calculates table data info class name.
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param
-     * @return e.g. dialogs/relationName__table.dart
+     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
+     * @param relationName name of the dataElement of the table
+     * @return e.g. PackageNameTypeNameRelationNamePageTypeDataElementDataInfo
      */
-    public static String tableClassName(String pageName, String layoutTypeName, String tableName) {
+    public static String tableClassName(String pageName, String layoutTypeName, String relationName) {
         return getPageClassName(pageName).concat(StringUtils.capitalize(layoutTypeName.toLowerCase()))
-                .concat(getClassName(tableName)).concat("DataInfo");
+                .concat(getClassName(relationName)).concat("DataInfo");
     }
 
     /**
@@ -1184,7 +1190,7 @@ public class FlutterHelper {
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
      * @param relationName the name of a the relation
-     * @return e.g. packageName1/packageName2/../typename/relationName/pageType/dialogs/relationName.dart
+     * @return e.g. package_name1/package_name2/../type_name/relation_name/pageType/dialogs/relation_name.dart
      */
     public static String dialogRelativePath(String pageName, String relationName) {
         return getPageTypePath(pageName).concat(dialogFileName(relationName));
@@ -1194,7 +1200,7 @@ public class FlutterHelper {
      * Calculates dialog name based on the layout type
      *
      * @param relationName the name of a the relation
-     * @return e.g. dialogs/relationName.dart
+     * @return e.g. dialogs/relation_name.dart
      */
     public static String dialogFileName(String relationName) {
         return "dialogs/".concat(getFileName(relationName)).concat(".dart");
@@ -1206,7 +1212,7 @@ public class FlutterHelper {
      * @param actorName name of the actor of the application
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
      * @param relationName the name of a the relation
-     * @return e.g. lib/actor/ui/pages/packageName1/packageName2/../typename/relationName/pageType/dialogs/relationName.dart
+     * @return e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/dialogs/relation_name.dart
      */
     public static String dialogPath(String actorName, String pageName, String relationName) {
         return pagesFolderPath(actorName).concat(dialogRelativePath(pageName, relationName));
@@ -1215,9 +1221,9 @@ public class FlutterHelper {
     /**
      * Calculates dialog class name.
      *
-     * @param page
+     * @param page page definition with a name, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
      * @param relationName the name of a the relation
-     * @return e.g. dialogs/relationName__table.dart
+     * @return e.g. PackageNameTypeNameRelationNameTableDialog if page type is table and PackageNameTypeNameRelationNamePageTypeRelationNameDialog, if page type is not table
      */
     public static String dialogClassName(PageDefinition page, String relationName) {
         if (page.getIsPageTypeTable()) {
@@ -1229,9 +1235,9 @@ public class FlutterHelper {
     /**
      * Calculates dialog store class name.
      *
-     * @param page
+     * @param page page definition with a name, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
      * @param relationName the name of a the relation
-     * @return e.g. dialogs/relationName__table.dart
+     * @return e.g. PackageNameTypeNameRelationNameTableDialogStore if page type is table and PackageNameTypeNameRelationNamePageTypeRelationNameDialogStore, if page type is not table
      */
     public static String dialogStoreClassName(PageDefinition page, String relationName) {
         if (page.getIsPageTypeTable()) {
@@ -1245,7 +1251,7 @@ public class FlutterHelper {
      *
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
      * @param relationName the name of a the relation
-     * @return e.g. packageName1/packageName2/../typename/relationName/pageType/dialogs/relationName__table.dart
+     * @return e.g. package_name1/package_name2/../type_name/relation_name/pageType/dialogs/relation_name__table.dart
      */
     public static String dialogTableRelativePath(String pageName, String relationName) {
         return getPageTypePath(pageName).concat(dialogTableFileName(relationName));
@@ -1255,7 +1261,7 @@ public class FlutterHelper {
      * Calculates dialog table name.
      *
      * @param relationName the name of a the relation
-     * @return e.g. dialogs/relationName__table.dart
+     * @return e.g. dialogs/relation_name__table.dart
      */
     public static String dialogTableFileName(String relationName) {
         return "dialogs/".concat(getFileName(relationName)).concat("__table.dart");
@@ -1264,9 +1270,9 @@ public class FlutterHelper {
     /**
      * Calculates dialog table name.
      *
-     * @param page fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
+     * @param page page definition with a name, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
      * @param relationName the name of a the relation
-     * @return e.g. dialogs/relationName__table.dart
+     * @return e.g. PackageNameTypeNameRelationNameTableDialogTable if page type is table and PackageNameTypeNameRelationNamePageTypeRelationNameDialogTable, if page type is not table
      */
     public static String dialogTableClassName(PageDefinition page, String relationName) {
         if (page.getIsPageTypeTable()) {
@@ -1281,7 +1287,7 @@ public class FlutterHelper {
      * @param actorName name of the actor of the application
      * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
      * @param relationName the name of a the relation
-     * @return e.g. lib/actor/ui/pages/packageName1/packageName2/../typename/relationName/pageType/dialogs/relationName__table.dart
+     * @return e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pagetype/dialogs/relation_name__table.dart
      */
     public static String dialogTablePath(String actorName, String pageName, String relationName) {
         return pagesFolderPath(actorName).concat(dialogTableRelativePath(pageName, relationName));
@@ -1290,7 +1296,7 @@ public class FlutterHelper {
     // ui utilities
 
     /**
-     * Calculates the relative path of the "ui/utilities" folder. Uses  {@link #path(String)} to calculate actor name.
+     * Calculates the relative path of the "ui/utilities" folder.
      *
      * @param actorName name of the actor of the application
      * @return relative path of "pages" folder, e.g. lib/actor/ui/utilities/
