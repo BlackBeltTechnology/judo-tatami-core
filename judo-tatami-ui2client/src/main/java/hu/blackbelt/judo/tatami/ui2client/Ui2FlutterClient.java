@@ -68,7 +68,7 @@ public class Ui2FlutterClient {
                                              String openapiYamlNameTemplate,
                                              File overridePath
     ) throws Exception {
-
+        GeneratorIgnore generatorIgnore = new GeneratorIgnore(targetDirectory.toPath());
         UiModel uiModel = UiModel.loadUiModel(
                 UiModel.LoadArguments.uiLoadArgumentsBuilder().file(uiModelFile).name(modelName));
 
@@ -147,7 +147,7 @@ public class Ui2FlutterClient {
                                     .forEach(sourcePath -> {
                                         try {
                                             Path targetPath = destinationDir.resolve(sourceDir.relativize(sourcePath));
-                                            if (!Files.exists(targetPath)) {
+                                            if (!Files.exists(targetPath) && !generatorIgnore.shouldExcludeFile(targetPath)) {
                                                 Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
                                             }
                                         } catch (IOException e1) {

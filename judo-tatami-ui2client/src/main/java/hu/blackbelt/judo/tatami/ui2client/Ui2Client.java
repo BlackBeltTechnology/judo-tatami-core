@@ -198,12 +198,13 @@ public class Ui2Client {
     }
 
     public static Consumer<Map.Entry<Application, Collection<GeneratedFile>>> getDirectoryWriter(File directory, Function<Application, String> outputNameFunction, Log log) {
+        GeneratorIgnore generatorIgnore = new GeneratorIgnore(directory.toPath());
         return e -> {
             File output = new File(directory, outputNameFunction.apply(e.getKey()));
             e.getValue().stream().forEach(f -> {
                 File outFile = new File(output, f.getPath());
                 outFile.getParentFile().mkdirs();
-                if (!outFile.exists() || (f.getOverwrite())) {
+                if ((!outFile.exists() || (f.getOverwrite())) && !generatorIgnore.shouldExcludeFile(outFile.toPath())) {
                     try {
                         ByteStreams.copy(new ByteArrayInputStream(f.getContent()), new FileOutputStream(outFile));
                     } catch (Exception exception) {
