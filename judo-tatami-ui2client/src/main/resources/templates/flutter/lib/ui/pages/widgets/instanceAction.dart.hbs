@@ -92,7 +92,7 @@
         {{# if page.isPageTypeOperationInput }}
             bool success = await pageStore.operationCall(targetStore);
             if (success){
-                navigation.close(true); // must send back true to view page to trigger refresh if the operation call success
+                navigation.close(true); // must send back true to view page to trigger refresh if the operation call is successful
             }
         {{/ if }}
         },
