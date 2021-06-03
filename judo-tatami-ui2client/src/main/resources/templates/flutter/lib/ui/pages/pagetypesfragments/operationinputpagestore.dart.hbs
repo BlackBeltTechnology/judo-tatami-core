@@ -5,6 +5,8 @@ class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore
 abstract class _{{ fqClass page.name }}PageStore with Store {
     {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
 
+    Function operationCall;
+
     @observable
     String errorMessage;
 
@@ -32,7 +34,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 {{# each page.dataElement.target.relations as |relation| }}
     {{# unless isRelationKindStatic }}
         {{# unless isRelationKindAssociation }}
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/embedded_collection_table_order_action.dart.hbs page=page relation=relation}}
+    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/embedded_table_order_action.dart.hbs page=page relation=relation}}
         {{/ unless }}
     {{/ unless }}
     {{# if isRelationKindAggregation }}
