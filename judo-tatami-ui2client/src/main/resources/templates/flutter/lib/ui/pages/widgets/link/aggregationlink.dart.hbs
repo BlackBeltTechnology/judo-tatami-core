@@ -7,7 +7,7 @@ Observer(builder: (_) {
         label: AppLocalizations.of(context).lookUpValue(context, '{{ link.label }}'),
       {{/ if }}
       {{# if link.isIconVisible }}
-        icon: Icon(getIconByString("{{ link.icon.name }}")),
+        icon: Icon(getIconByString('{{ link.icon.name }}')),
       {{/ if }}
         inCard: {{ isInCard }},
         disabled: {{ disabled }},

@@ -12,7 +12,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/ if }}
       {{# if this.isIconVisible }}
-        icon: Icon(getIconByString("{{ this.icon.name }}")),
+        icon: Icon(getIconByString('{{ this.icon.name }}')),
       {{/ if }}
         initialValue: targetStore.{{ variable attributeType.name }}.toString(),
         readOnly: true,
@@ -33,7 +33,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/ if }}
       {{# if this.isIconVisible }}
-        icon: Icon(getIconByString("{{ this.icon.name }}")),
+        icon: Icon(getIconByString('{{ this.icon.name }}')),
       {{/ if }}
         onChanged: (value) => targetStore.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
         readOnly: {{ attributeType.isReadOnly }},
@@ -54,7 +54,7 @@ Observer(
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
       {{/ if }}
       {{# if this.isIconVisible }}
-        icon: Icon(getIconByString("{{ this.icon.name }}")),
+        icon: Icon(getIconByString('{{ this.icon.name }}')),
       {{/ if }}
         initialValue: targetStore.{{ variable attributeType.name }}.toString(),
         onChanged: (value) => targetStore.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),

@@ -22,7 +22,7 @@ class {{ fqClass application.name }}NavigationItems {
         NavigationItem(
             route: Routes.{{ pageClassVariableName item.target }},
           {{# if item.isIconVisible }}
-            leading: Icon(getIconByString("{{ item.icon.name }}")),
+            leading: Icon(getIconByString('{{ item.icon.name }}')),
           {{/ if }}
           {{# if item.isLabelVisible }}
             title: '{{ item.label }}',

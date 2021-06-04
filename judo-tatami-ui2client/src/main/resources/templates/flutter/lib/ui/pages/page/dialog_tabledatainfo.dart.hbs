@@ -56,7 +56,7 @@ class {{ dialogTableClassName table.pageDefinition table.dataElement.name }} imp
         {{# unless (isBooleanDataType column.attributeType.dataType) }}
             {{# unless (isEnumType column.attributeType.dataType) }}
         if (columnIndex == {{@index}}) {
-            return "{{ variable column.attributeType.name }}";
+            return '{{ variable column.attributeType.name }}';
         }
             {{/ unless }}
         {{/ unless }}

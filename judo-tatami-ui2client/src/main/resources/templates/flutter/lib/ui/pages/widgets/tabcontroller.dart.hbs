@@ -16,7 +16,7 @@ JudoTab(
     {{# each tabs as |tab| }}
         Tab(
         {{# if tab.element.isIconVisible }}
-            icon: Icon(getIconByString("{{ tab.element.icon.name }}")),
+            icon: Icon(getIconByString('{{ tab.element.icon.name }}')),
         {{/ if }}
         {{# if tab.element.isLabelVisible }}
             text: AppLocalizations.of(context).lookUpValue(context, '{{ tab.element.label }}'),

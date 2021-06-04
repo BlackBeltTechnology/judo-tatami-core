@@ -91,7 +91,7 @@ class {{ repositoryClassName class }} {
                 {{# each relation.target.attributes as |attribute| }}
                     {{# unless (isEnumType attribute.dataType) }}
                         {{# unless (isBooleanDataType attribute.dataType) }}
-      if (sortColumn == "{{ variable attribute.name }}" ) {
+      if (sortColumn == '{{ variable attribute.name }}' ) {
         orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
       }
                         {{/ unless }}
@@ -109,7 +109,7 @@ class {{ repositoryClassName class }} {
             if (element.filterValue == null ) return;
                 {{# each relation.target.attributes as |attribute| }}
                     {{# if attribute.isFilterable }}
-            if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
+            if (element.attributeName.uncapitalize() == '{{ variable attribute.name }}') {
                 var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
                         {{# if (isStringType attribute.dataType) }}
                 if(element.filterOperation == 'contain'){
@@ -180,7 +180,7 @@ class {{ repositoryClassName class }} {
                 {{# each relation.target.attributes as |attribute| }}
                     {{# unless (isEnumType attribute.dataType) }}
                         {{# unless (isBooleanDataType attribute.dataType) }}
-      if (sortColumn == "{{ variable attribute.name }}" ) {
+      if (sortColumn == '{{ variable attribute.name }}' ) {
         orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
       }
                         {{/ unless }}
@@ -198,7 +198,7 @@ class {{ repositoryClassName class }} {
             if (element.filterValue == null ) return;
                 {{# each relation.target.attributes as |attribute| }}
                     {{# if attribute.isFilterable }}
-            if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
+            if (element.attributeName.uncapitalize() == '{{ variable attribute.name }}') {
                 var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
                         {{# if (isStringType attribute.dataType) }}
                 if(element.filterOperation == 'contain'){
