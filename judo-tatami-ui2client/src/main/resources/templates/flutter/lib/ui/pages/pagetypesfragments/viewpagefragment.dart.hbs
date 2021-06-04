@@ -24,7 +24,7 @@ class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
     final {{ storeClassName page.dataElement.owner }} ownerStore;
     {{/ unless }}
     
-    final {{ pageStoreClassName page } pageStore = {{ pageStoreClassName page }}();
+    final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();
     
     _{{ pageStateClassName page }}({ {{# if (isPageWithIdParam page application) }}this.idParam{{ else  }}@required this.targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/ unless }} }){
         final navigation = locator<NavigationState>();
