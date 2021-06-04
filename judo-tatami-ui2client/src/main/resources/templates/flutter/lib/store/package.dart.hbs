@@ -16,6 +16,6 @@ import 'package:quiver/core.dart' show hash3;
 part 'package.g.dart';
 
 part 'enum_types.dart';
-{{# each classes ~}}
-part '{{ storeClassRelativePath name }}';
+{{# each classes as |class| ~}}
+part '{{ storeClassRelativePath class }}';
 {{/ each }}

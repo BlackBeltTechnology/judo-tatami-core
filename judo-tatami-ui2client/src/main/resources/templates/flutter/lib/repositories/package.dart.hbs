@@ -21,11 +21,11 @@ import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/ui/utilities/packa
 import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/utilities/package.dart';
 
 part 'mapper.dart';
-part '{{ repositoryClassRelativePath ap.name }}';
-{{# each application.relationTypes ~}}
-part '{{ repositoryRelationRelativePath owner.name name }}';
+part '{{ repositoryClassRelativePath ap }}';
+{{# each application.relationTypes as |relation| ~}}
+part '{{ repositoryRelationRelativePath relation }}';
 {{/ each }}
-{{# each classes ~}}
-    part '{{ repositoryClassRelativePath name }}';
+{{# each classes as |class| ~}}
+    part '{{ repositoryClassRelativePath class }}';
 {{/ each }}
 

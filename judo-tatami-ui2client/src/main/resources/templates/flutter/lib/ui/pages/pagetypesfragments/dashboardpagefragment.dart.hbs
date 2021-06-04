@@ -1,16 +1,16 @@
 //START dashboardpagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------
     @override
-    State<StatefulWidget> createState() => _{{ pageStateClassName page.name }}();
+    State<StatefulWidget> createState() => _{{ pageStateClassName page }}();
 }
 
-class _{{ pageStateClassName page.name }} extends State<{{ pageClassName page.name }}> {
-        final {{ pageStoreClassName page.name }} pageStore = {{ pageStoreClassName page.name }}();
+class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
+        final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();
 
     {{# if page.dataElement }}
-        {{ storeClassName page.dataElement.target.name }} targetStore;
+        {{ storeClassName page.dataElement.target }} targetStore;
     {{/ if }}
 
-        _{{ pageStateClassName page.name }}(){
+        _{{ pageStateClassName page }}(){
     {{# if page.dataElement }}
             pageStore.targetStore = targetStore;
     {{/ if }}
@@ -25,10 +25,10 @@ class _{{ pageStateClassName page.name }} extends State<{{ pageClassName page.na
                         pageStore.getterStatusSetFulfilled();
 
                         SchedulerBinding.instance.addPostFrameCallback((_) {
-                            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page.name }}.title){{# if page.dataElement.target.representation }} + ' - ${targetStore?.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
+                            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page }}.title){{# if page.dataElement.target.representation }} + ' - ${targetStore?.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
                         });
                     } else {
-                        var currentPageNavigation = navigationRegistry.getPageNavigationByRoute(Routes.{{ pageClassVariableName application.dashboard.name }});
+                        var currentPageNavigation = navigationRegistry.getPageNavigationByRoute(Routes.{{ pageClassVariableName application.dashboard }});
                         if (currentPageNavigation.createPage != null) {
                             navigation.navigateTo(currentPageNavigation.createPage.route);
                         } else {

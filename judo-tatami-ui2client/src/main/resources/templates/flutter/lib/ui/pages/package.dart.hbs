@@ -18,7 +18,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 
 {{# each pages as |page| }}
-export '{{ pageStorePackageRelativePath page.name }}';
+export '{{ pageStorePackageRelativePath page }}';
 {{/ each }}
 
 export 'settings.dart';

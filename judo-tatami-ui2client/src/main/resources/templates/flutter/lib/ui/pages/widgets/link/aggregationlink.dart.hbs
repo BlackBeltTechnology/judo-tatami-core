@@ -66,8 +66,8 @@ Observer(builder: (_) {
                     Icons.{{ action.icon.name }},
                 ),
                 onPressed: () async {
-                    var response = await navigation.open(Routes.{{ pageClassVariableName action.target.name }},
-                    arguments: {{ pageArgumentsClassName action.target.name }}({{# unless relation.isAccess }}ownerStore: targetStore, {{/ unless }}targetStore: targetStore.{{ variable relation.name }}));
+                    var response = await navigation.open(Routes.{{ pageClassVariableName action.target }},
+                    arguments: {{ pageArgumentsClassName action.target }}({{# unless relation.isAccess }}ownerStore: targetStore, {{/ unless }}targetStore: targetStore.{{ variable relation.name }}));
                     {{# unless relation.isMemberTypeTransient }}
                         {{# unless page.isPageTypeOperationOutput }}
                     if (response != null) {
@@ -86,10 +86,10 @@ Observer(builder: (_) {
                     Icons.{{ action.icon.name }},
                 ),
                 onPressed:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async {
-                    {{ storeClassName relationType.target.name }} cloned = {{ storeClassName relationType.target.name }}();
+                    {{ storeClassName relationType.target }} cloned = {{ storeClassName relationType.target }}();
                     cloned.updateWith(targetStore.{{ variable relation.name }});
-                    var res = await navigation.open(Routes.{{ pageClassVariableName action.target.name }},
-                    arguments: {{ pageArgumentsClassName action.target.name }}(targetStore: cloned, validatable: pageStore.validatable));
+                    var res = await navigation.open(Routes.{{ pageClassVariableName action.target }},
+                    arguments: {{ pageArgumentsClassName action.target }}(targetStore: cloned, validatable: pageStore.validatable));
                     if (res != null) {
                         targetStore.{{ variable relation.name }}.updateWith(cloned);
                         var updated = await pageStore.update{{ className relation.name }}{{ className relation.target.name }}(targetStore.{{ variable relation.name }}, targetStore)
@@ -124,8 +124,8 @@ Observer(builder: (_) {
                     Icons.{{ action.icon.name }},
                 ),
                 onPressed:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async {
-                    var created = await navigation.open(Routes.{{ pageClassVariableName action.target.name }}{{# unless relation.isAccess }},
-                        arguments: {{ pageArgumentsClassName action.target.name }}(ownerStore: targetStore, validatable: pageStore.validatable){{~/ unless }});
+                    var created = await navigation.open(Routes.{{ pageClassVariableName action.target }}{{# unless relation.isAccess }},
+                        arguments: {{ pageArgumentsClassName action.target }}(ownerStore: targetStore, validatable: pageStore.validatable){{~/ unless }});
                     if (created != null) {
                         pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));

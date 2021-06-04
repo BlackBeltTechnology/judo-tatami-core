@@ -10,8 +10,8 @@
     {{/ if }}
     {{# if action.isCreateAction }}
         onPressed:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            var created = await navigation.open(Routes.{{ pageClassVariableName action.target.name }}{{# unless relation.isAccess }},
-            arguments: {{ pageArgumentsClassName action.target.name }}(ownerStore: targetStore, validatable: pageStore.validatable){{~/ unless }});
+            var created = await navigation.open(Routes.{{ pageClassVariableName action.target }}{{# unless relation.isAccess }},
+            arguments: {{ pageArgumentsClassName action.target }}(ownerStore: targetStore, validatable: pageStore.validatable){{~/ unless }});
             if (created != null) {
                 pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
@@ -44,7 +44,7 @@
                 pageStore.add{{ fqClass relation.name }}(targetStore, selected)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
         {{ else }}
-            var temporaryList = List<{{ storeClassName relation.target.name }}>.from(targetStore.{{ variable relation.name }})
+            var temporaryList = List<{{ storeClassName relation.target }}>.from(targetStore.{{ variable relation.name }})
                 ..addAll(selected);
             targetStore.set{{ fqClass relation.name }}(temporaryList);
         {{/ if }}
@@ -73,8 +73,8 @@
     {{/ if }}
     {{# if action.isNavigationToPageAction }}
         onPressed: () async {
-            await navigation.open(Routes.{{ pageClassVariableName action.target.name }},
-            arguments: {{ pageArgumentsClassName action.target.name }}(ownerStore: targetStore));
+            await navigation.open(Routes.{{ pageClassVariableName action.target }},
+            arguments: {{ pageArgumentsClassName action.target }}(ownerStore: targetStore));
         },
     {{/ if }}
     {{# if this.isLabelVisible }}

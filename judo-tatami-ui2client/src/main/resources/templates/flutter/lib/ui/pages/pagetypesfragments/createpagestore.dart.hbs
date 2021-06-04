@@ -1,16 +1,16 @@
 {{ log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug' }}
 //START createpagestore.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------
-class {{ pageStoreClassName page.name }} extends _{{ pageStoreClassName page.name }} with _${{ pageStoreClassName page.name }} {}
+class {{ pageStoreClassName page }} extends _{{ pageStoreClassName page }} with _${{ pageStoreClassName page }} {}
 
-abstract class _{{ pageStoreClassName page.name }} with Store {
+abstract class _{{ pageStoreClassName page }} with Store {
     {{# with page.relationType as |relation| }}
-    {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
+    {{ repositoryClassName application.actor }} _actorRepository = locator<{{ repositoryClassName application.actor }}>();
 
     @observable
     String errorMessage;
 
     @observable
-    {{ storeClassName relation.target.name }} targetStore;
+    {{ storeClassName relation.target }} targetStore;
 
     {{# if (validatableFlagNeed relation) }}
     bool validatable = false;
@@ -18,7 +18,7 @@ abstract class _{{ pageStoreClassName page.name }} with Store {
 
     {{# if relation.isRelationBehaviourTypeCreateValidatable }}
     @action
-    Future<{{ storeClassName relation.target.name }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
+    Future<{{ storeClassName relation.target }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{{ storeClassName relation.target }} targetStore) async {
         try {
             errorMessage = null;
             return await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);

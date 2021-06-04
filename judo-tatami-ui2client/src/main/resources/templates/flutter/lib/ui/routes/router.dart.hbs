@@ -25,7 +25,7 @@ const List<AutoRoute> bookmarkableRoutes = [
         {{ else }}
         path: '/{{ uriPath page.name }}',
         {{/ if }}
-        page: {{ pageClassName page.name }},
+        page: {{ pageClassName page }},
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         guards: [AuthGuard],
     ),
@@ -38,7 +38,7 @@ const List<AutoRoute> otherRoutes = [
     {{# unless (isBookmarkablePage page) }}
     CustomRoute(
         path: '/{{ uriPath page.name }}',
-        page: {{ pageClassName page.name }},
+        page: {{ pageClassName page }},
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         guards: [AuthGuard],
     ),

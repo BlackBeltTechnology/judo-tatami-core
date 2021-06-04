@@ -10,7 +10,7 @@
 // Page: {{ page.name }}
 // Table: {{ table.name }}
 
-part of {{ pageLibraryName application.name page.name }};
+part of {{ pageLibraryName page }};
 
 {{# with table.dataElement as |relation| }}
 class {{ dialogStoreClassName page relation.name }} extends _{{ dialogStoreClassName page relation.name }} with _${{ dialogStoreClassName page relation.name }} {}
@@ -44,7 +44,7 @@ abstract class _{{ dialogStoreClassName page relation.name }} with Store {
     void addNewFilter(FilterStore newFilterStore) => availableFilterList.add(FilterStore.clone(newFilterStore));
 }
 
-Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }}> judoSelect{{ dialogClassName page relation.name }}({@required BuildContext context, {{ pageStoreClassName page.name }} pageStore{{# unless (isAccessTablePage page) }}, {{ storeClassName relation.owner.name }} ownerStore{{/ unless }}, bool dialogTypeAdder = false  }) async {
+Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target }}>{{ else }}{{ storeClassName relation.target }}{{/ if }}> judoSelect{{ dialogClassName page relation.name }}({@required BuildContext context, {{ pageStoreClassName page }} pageStore{{# unless (isAccessTablePage page) }}, {{ storeClassName relation.owner }} ownerStore{{/ unless }}, bool dialogTypeAdder = false  }) async {
 {{# if relation.isRelationBehaviourTypeRangeable }}
     {{# unless (isAccessTablePage page) }}
         {{# unless relation.isMemberTypeTransient }}
@@ -59,20 +59,20 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
     ).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
 
     {{# if relation.isCollection }}
-    ObservableList<{{ storeClassName relation.target.name }}> selected = ObservableList.of(ownerStore.{{ variable relation.name }});
-    List<{{ storeClassName relation.target.name }}> alreadyAddedItems = List.of(selected);
+    ObservableList<{{ storeClassName relation.target }}> selected = ObservableList.of(ownerStore.{{ variable relation.name }});
+    List<{{ storeClassName relation.target }}> alreadyAddedItems = List.of(selected);
     {{ else }}
-    ObservableList<{{ storeClassName relation.target.name }}> selected = <{{ storeClassName relation.target.name }}>[].asObservable();
+    ObservableList<{{ storeClassName relation.target }}> selected = <{{ storeClassName relation.target }}>[].asObservable();
     {{/ if }}
 
-    var tableHelperStore = TableHelperStore(selected, ({{ storeClassName relation.target.name }} value) => value?.internal__identifier);
+    var tableHelperStore = TableHelperStore(selected, ({{ storeClassName relation.target }} value) => value?.internal__identifier);
     {{# unless relation.isCollection }}
     if (ownerStore.{{ variable relation.name }} != null) {
         tableHelperStore.singleSelected = ownerStore.{{ variable relation.name }};
     }
     {{/ unless }}
 
-  return await showDialog<{{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }}>(
+  return await showDialog<{{# if relation.isCollection }}List<{{ storeClassName relation.target }}>{{ else }}{{ storeClassName relation.target }}{{/ if }}>(
     context: context,
     builder: (context) {
       return AlertDialog(
@@ -174,12 +174,12 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
                             rowList: pageStore.{{ fqVariable relation.name }}StoreRangeList,
                             dialogTypeAdder: dialogTypeAdder,
                             {{# if relation.isCollection }}
-                            alreadyAddedItemsComparator: ({{ storeClassName relation.target.name }} element) => alreadyAddedItems.firstWhere((selected) => tableHelperStore.getId(element) == tableHelperStore.getId(selected), orElse: () => null) != null,
+                            alreadyAddedItemsComparator: ({{ storeClassName relation.target }} element) => alreadyAddedItems.firstWhere((selected) => tableHelperStore.getId(element) == tableHelperStore.getId(selected), orElse: () => null) != null,
                             {{/ if }}
-                            multiSelectAction: ({{ storeClassName relation.target.name }} element) => tableHelperStore.selectRow(element),
-                            singleSelectAction: ({{ storeClassName relation.target.name }} element) => tableHelperStore.singleSelectRow(element),
-                            multiSelectedComparator: ({{ storeClassName relation.target.name }} element) => tableHelperStore.selected.firstWhere((selected) => tableHelperStore.getId(element) == tableHelperStore.getId(selected), orElse: () => null) != null,
-                            singleSelectedComparator: ({{ storeClassName relation.target.name }} element) => tableHelperStore.getId(tableHelperStore.singleSelected) == tableHelperStore.getId(element),
+                            multiSelectAction: ({{ storeClassName relation.target }} element) => tableHelperStore.selectRow(element),
+                            singleSelectAction: ({{ storeClassName relation.target }} element) => tableHelperStore.singleSelectRow(element),
+                            multiSelectedComparator: ({{ storeClassName relation.target }} element) => tableHelperStore.selected.firstWhere((selected) => tableHelperStore.getId(element) == tableHelperStore.getId(selected), orElse: () => null) != null,
+                            singleSelectedComparator: ({{ storeClassName relation.target }} element) => tableHelperStore.getId(tableHelperStore.singleSelected) == tableHelperStore.getId(element),
                           );
                       }
                     }),
@@ -243,7 +243,7 @@ Future<{{# if relation.isCollection }}List<{{ storeClassName relation.target.nam
               builder: (_) => ElevatedButton(
                 child: Text('Select'),
                 onPressed: tableHelperStore.selectButtonEnabled ? () {
-                  {{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }} result;
+                  {{# if relation.isCollection }}List<{{ storeClassName relation.target }}>{{ else }}{{ storeClassName relation.target }}{{/ if }} result;
                 {{# if relation.isCollection }}
                   if (dialogTypeAdder) {
                     result = selected

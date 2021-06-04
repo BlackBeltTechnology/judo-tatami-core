@@ -21,8 +21,8 @@ class NavigationRegistry {
     {{# with page.relationType as |relation| }}
         {{# if page.dataElement.isAccess }}
             {{# unless page.dataElement.isCollection }}
-    PageNavigation {{ pageClassVariableName page.name }} = PageNavigation(
-        route: Routes.{{ pageClassVariableName page.name }},
+    PageNavigation {{ pageClassVariableName page }} = PageNavigation(
+        route: Routes.{{ pageClassVariableName page }},
         isAccess: true,
         pageType:
             {{~# if page.isPageTypeDashboard ~}}
@@ -40,7 +40,7 @@ class NavigationRegistry {
             {{~# if page.isPageTypeTable ~}}
                 PageType.Table
             {{~/ if ~}},
-        page: {{ pageClassName page.name }},
+        page: {{ pageClassName page }},
         crudFunctions: {
             Crud.Read: {{# if relation.isRelationBehaviourTypeListable }}NavigationStore().get{{ fqClass relation.name }}{{ else }}null{{/ if }},
             Crud.Create: {{# if relation.isRelationBehaviourTypeCreatable }}NavigationStore().create{{ fqClass relation.name }}{{ else }}null{{/ if }},
@@ -64,23 +64,23 @@ class NavigationRegistry {
         {{# with page.relationType as |relation| }}
                 {{# if page.dataElement.isAccess }}
                     {{# unless page.dataElement.isCollection }}
-    {{ pageClassVariableName page.name }}.setPages(
+    {{ pageClassVariableName page }}.setPages(
         {{# each (getPagesByRelation application.pages page.dataElement) as |relationPage| }}
                 {{# if relationPage.isPageTypeView }}
                     {{# if page.isPageTypeDashboard }}
-        viewPage: {{ pageClassVariableName page.name }},
+        viewPage: {{ pageClassVariableName page }},
                     {{ else }}
-        viewPage: {{ pageClassVariableName relationPage.name }},
+        viewPage: {{ pageClassVariableName relationPage }},
                     {{/ if }}
                 {{/ if }}
                 {{# if relationPage.isPageTypeCreate }}
-        createPage: {{ pageClassVariableName relationPage.name }},
+        createPage: {{ pageClassVariableName relationPage }},
                 {{/ if }}
                 {{# if relationPage.isPageTypeUpdate }}
-        editPage: {{ pageClassVariableName relationPage.name }},
+        editPage: {{ pageClassVariableName relationPage }},
                 {{/ if }}
                 {{# if relationPage.isPageTypeTable }}
-        tablePage: {{ pageClassVariableName relationPage.name }},
+        tablePage: {{ pageClassVariableName relationPage }},
                 {{/ if }}
         {{/ each }}
     );
@@ -98,8 +98,8 @@ class NavigationRegistry {
             {{# with page.relationType as |relation| }}
                 {{# if page.dataElement.isAccess }}
                     {{# unless page.dataElement.isCollection }}
-        case Routes.{{ pageClassVariableName page.name }}:
-            return {{ pageClassVariableName page.name }};
+        case Routes.{{ pageClassVariableName page }}:
+            return {{ pageClassVariableName page }};
                     {{/ unless }}
                 {{/ if }}
             {{/ with }}
@@ -118,8 +118,8 @@ class NavigationRegistry {
                 {{# if page.dataElement.isAccess }}
                     {{# unless page.dataElement.isCollection }}
                         {{# if page.isPageTypeView }}
-        case Routes.{{ pageClassVariableName page.name }}:
-            return {{ pageArgumentsClassName page.name }}(targetStore: target);
+        case Routes.{{ pageClassVariableName page }}:
+            return {{ pageArgumentsClassName page }}(targetStore: target);
                         {{/ if }}
                     {{/ unless }}
                 {{/ if }}

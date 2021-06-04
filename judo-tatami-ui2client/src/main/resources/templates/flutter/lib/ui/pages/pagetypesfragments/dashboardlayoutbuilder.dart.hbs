@@ -23,7 +23,7 @@ return Observer(builder: (_) {
                 {{# each page.containers as |pageContainer| }}
                     {{# unless pageContainer.layoutType.original }}
                     if (MediaQuery.of(context).size.width >= {{ pageContainer.layoutType.minimumResolution }} && MediaQuery.of(context).size.width <= {{ pageContainer.layoutType.maximumResolution }}) {
-                        return get{{ pageBodyClassName page.name pageContainer.layoutType.name }}(context
+                        return get{{ pageBodyClassName page pageContainer.layoutType.name }}(context
 
                             {{~# if page.dataElement ~}}
                             , targetStore
@@ -38,7 +38,7 @@ return Observer(builder: (_) {
                     }
                         {{/ unless }}
                     {{/ each }}
-                    return get{{ pageBodyClassName page.name application.defaultLayoutType.name }}(context
+                    return get{{ pageBodyClassName page application.defaultLayoutType.name }}(context
 
                             {{~# if page.dataElement ~}}
                             , targetStore

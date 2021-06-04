@@ -40,6 +40,8 @@ operation ESM!esm::accesspoint::ActorType createClassType(application : UI!ui::A
     clazz.~originalActorType = self;
     
     clazz.name = self.fqName();
+    clazz.simpleName = self.name;
+    clazz.setPackageNameTokens(self);
                     
     application.dataElements.add(clazz);
     clazz.isActor = true;
@@ -62,4 +64,12 @@ operation ESM!esm::accesspoint::ActorType mapClassType(application : UI!ui::Appl
         clazz = self.createClassType(application);
     }
     return clazz;
+}
+
+operation UI!ui::data::ClassType setPackageNameTokens(source : ESM!esm::accesspoint::ActorType) {
+    var container = source.eContainer();
+    while (container.isTypeOf(ESM!esm::namespace::Package)) {
+        self.packageNameTokens.add(0, container.name);
+        container = container.eContainer();
+    } 
 }

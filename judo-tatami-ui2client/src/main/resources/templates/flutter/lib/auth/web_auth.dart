@@ -242,7 +242,7 @@ class WebAuth implements Auth {
 
   Future<void> _updatePrincipalAllowed() async {
     {{# if application.principal }}
-    {{ repositoryClassName application.name  }} _actorRepository = locator<{{ repositoryClassName application.name  }}>();
+    {{ repositoryClassName application.principal }} _actorRepository = locator<{{ repositoryClassName application.principal }}>();
 
     try {
       var principal = await _actorRepository.getPrincipal();

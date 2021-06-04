@@ -167,49 +167,47 @@ public class FlutterHelper {
         context.registerFunction("isEmptyList", FlutterHelper.class.getDeclaredMethod("isEmptyList", new Class[]{List.class}));
 
         //page store naming
-        context.registerFunction("storeFolderPath", FlutterHelper.class.getDeclaredMethod("storeFolderPath", new Class[]{String.class}));
-        context.registerFunction("storeClassRelativePath", FlutterHelper.class.getDeclaredMethod("storeClassRelativePath", new Class[]{String.class}));
-        context.registerFunction("storeClassPath", FlutterHelper.class.getDeclaredMethod("storeClassPath", new Class[]{String.class, String.class}));
-        context.registerFunction("storeClassName", FlutterHelper.class.getDeclaredMethod("storeClassName", new Class[]{String.class}));
+        context.registerFunction("storeFolderPath", FlutterHelper.class.getDeclaredMethod("storeFolderPath", new Class[]{ClassType.class}));
+        context.registerFunction("storeClassRelativePath", FlutterHelper.class.getDeclaredMethod("storeClassRelativePath", new Class[]{ClassType.class}));
+        context.registerFunction("storeClassPath", FlutterHelper.class.getDeclaredMethod("storeClassPath", new Class[]{ClassType.class, ClassType.class}));
+        context.registerFunction("storeClassName", FlutterHelper.class.getDeclaredMethod("storeClassName", new Class[]{ClassType.class}));
 
         //repository naming
-        context.registerFunction("repositoryFolderPath", FlutterHelper.class.getDeclaredMethod("repositoryFolderPath", new Class[]{String.class}));
-        context.registerFunction("repositoryClassPath", FlutterHelper.class.getDeclaredMethod("repositoryClassPath", new Class[]{String.class, String.class}));
-        context.registerFunction("repositoryRelationPath", FlutterHelper.class.getDeclaredMethod("repositoryRelationPath", new Class[]{String.class, String.class, String.class}));
-        context.registerFunction("repositoryClassRelativePath", FlutterHelper.class.getDeclaredMethod("repositoryClassRelativePath", new Class[]{String.class}));
-        context.registerFunction("repositoryRelationRelativePath", FlutterHelper.class.getDeclaredMethod("repositoryRelationRelativePath", new Class[]{String.class, String.class}));
-        context.registerFunction("repositoryClassName", FlutterHelper.class.getDeclaredMethod("repositoryClassName", new Class[]{String.class}));
-        context.registerFunction("repositoryStoreMapperClassName", FlutterHelper.class.getDeclaredMethod("repositoryStoreMapperClassName", new Class[]{String.class}));
-        context.registerFunction("repositoryRelationName", FlutterHelper.class.getDeclaredMethod("repositoryRelationName", new Class[]{String.class, String.class}));
+        context.registerFunction("repositoryFolderPath", FlutterHelper.class.getDeclaredMethod("repositoryFolderPath", new Class[]{ClassType.class}));
+        context.registerFunction("repositoryClassPath", FlutterHelper.class.getDeclaredMethod("repositoryClassPath", new Class[]{ClassType.class, ClassType.class}));
+        context.registerFunction("repositoryRelationPath", FlutterHelper.class.getDeclaredMethod("repositoryRelationPath", new Class[]{ClassType.class, RelationType.class}));
+        context.registerFunction("repositoryClassRelativePath", FlutterHelper.class.getDeclaredMethod("repositoryClassRelativePath", new Class[]{ClassType.class}));
+        context.registerFunction("repositoryRelationRelativePath", FlutterHelper.class.getDeclaredMethod("repositoryRelationRelativePath", new Class[]{RelationType.class}));
+        context.registerFunction("repositoryClassName", FlutterHelper.class.getDeclaredMethod("repositoryClassName", new Class[]{ClassType.class}));
+        context.registerFunction("repositoryStoreMapperClassName", FlutterHelper.class.getDeclaredMethod("repositoryStoreMapperClassName", new Class[]{ClassType.class}));
+        context.registerFunction("repositoryRelationName", FlutterHelper.class.getDeclaredMethod("repositoryRelationName", new Class[]{RelationType.class}));
 
         //page store naming
-        context.registerFunction("pagesFolderPath", FlutterHelper.class.getDeclaredMethod("pagesFolderPath", new Class[]{String.class}));
-        context.registerFunction("pagesUtilitiesPath", FlutterHelper.class.getDeclaredMethod("pagesUtilitiesPath", new Class[]{String.class}));
-        context.registerFunction("pageStorePath", FlutterHelper.class.getDeclaredMethod("pageStorePath", new Class[]{String.class, String.class}));
-        context.registerFunction("pageBodyPath", FlutterHelper.class.getDeclaredMethod("pageBodyPath", new Class[]{String.class, String.class, String.class}));
-        context.registerFunction("pageStorePackagePath", FlutterHelper.class.getDeclaredMethod("pageStorePackagePath", new Class[]{String.class, String.class}));
-        context.registerFunction("pageStorePackageRelativePath", FlutterHelper.class.getDeclaredMethod("pageStorePackageRelativePath", new Class[]{String.class}));
-        context.registerFunction("pageLibraryName", FlutterHelper.class.getDeclaredMethod("pageLibraryName", new Class[]{String.class, String.class}));
-        context.registerFunction("tablePath", FlutterHelper.class.getDeclaredMethod("tablePath", new Class[]{String.class, String.class, String.class, String.class}));
-        context.registerFunction("dialogPath", FlutterHelper.class.getDeclaredMethod("dialogPath", new Class[]{String.class, String.class, String.class}));
-        context.registerFunction("dialogTablePath", FlutterHelper.class.getDeclaredMethod("dialogTablePath", new Class[]{String.class, String.class, String.class}));
+        context.registerFunction("pagesFolderPath", FlutterHelper.class.getDeclaredMethod("pagesFolderPath", new Class[]{ClassType.class}));
+        context.registerFunction("pageStorePath", FlutterHelper.class.getDeclaredMethod("pageStorePath", new Class[]{PageDefinition.class}));
+        context.registerFunction("pageBodyPath", FlutterHelper.class.getDeclaredMethod("pageBodyPath", new Class[]{PageDefinition.class, String.class}));
+        context.registerFunction("pageStorePackagePath", FlutterHelper.class.getDeclaredMethod("pageStorePackagePath", new Class[]{PageDefinition.class}));
+        context.registerFunction("pageStorePackageRelativePath", FlutterHelper.class.getDeclaredMethod("pageStorePackageRelativePath", new Class[]{PageDefinition.class}));
+        context.registerFunction("pageLibraryName", FlutterHelper.class.getDeclaredMethod("pageLibraryName", new Class[]{PageDefinition.class}));
+        context.registerFunction("tablePath", FlutterHelper.class.getDeclaredMethod("tablePath", new Class[]{PageDefinition.class, String.class, String.class}));
+        context.registerFunction("dialogPath", FlutterHelper.class.getDeclaredMethod("dialogPath", new Class[]{PageDefinition.class, String.class}));
+        context.registerFunction("dialogTablePath", FlutterHelper.class.getDeclaredMethod("dialogTablePath", new Class[]{PageDefinition.class, String.class}));
         context.registerFunction("dialogTableFileName", FlutterHelper.class.getDeclaredMethod("dialogTableFileName", new Class[]{String.class}));
         context.registerFunction("dialogFileName", FlutterHelper.class.getDeclaredMethod("dialogFileName", new Class[]{String.class}));
         context.registerFunction("pageBodyFileName", FlutterHelper.class.getDeclaredMethod("pageBodyFileName", new Class[]{String.class}));
         context.registerFunction("tableFileName", FlutterHelper.class.getDeclaredMethod("tableFileName", new Class[]{String.class, String.class}));
-        context.registerFunction("pageStoreClassName", FlutterHelper.class.getDeclaredMethod("pageStoreClassName", new Class[]{String.class}));
-        context.registerFunction("pageBodyClassName", FlutterHelper.class.getDeclaredMethod("pageBodyClassName", new Class[]{String.class, String.class}));
-        context.registerFunction("pageClassName", FlutterHelper.class.getDeclaredMethod("pageClassName", new Class[]{String.class}));
-        context.registerFunction("pageClassVariableName", FlutterHelper.class.getDeclaredMethod("pageClassVariableName", new Class[]{String.class}));
-        context.registerFunction("pageStateClassName", FlutterHelper.class.getDeclaredMethod("pageStateClassName", new Class[]{String.class}));
-        context.registerFunction("pageArgumentsClassName", FlutterHelper.class.getDeclaredMethod("pageArgumentsClassName", new Class[]{String.class}));
-        context.registerFunction("tableClassName", FlutterHelper.class.getDeclaredMethod("tableClassName", new Class[]{String.class, String.class, String.class}));
+        context.registerFunction("pageStoreClassName", FlutterHelper.class.getDeclaredMethod("pageStoreClassName", new Class[]{PageDefinition.class}));
+        context.registerFunction("pageBodyClassName", FlutterHelper.class.getDeclaredMethod("pageBodyClassName", new Class[]{PageDefinition.class, String.class}));
+        context.registerFunction("pageClassName", FlutterHelper.class.getDeclaredMethod("pageClassName", new Class[]{PageDefinition.class}));
+        context.registerFunction("pageClassVariableName", FlutterHelper.class.getDeclaredMethod("pageClassVariableName", new Class[]{PageDefinition.class}));
+        context.registerFunction("pageStateClassName", FlutterHelper.class.getDeclaredMethod("pageStateClassName", new Class[]{PageDefinition.class}));
+        context.registerFunction("pageArgumentsClassName", FlutterHelper.class.getDeclaredMethod("pageArgumentsClassName", new Class[]{PageDefinition.class}));
         context.registerFunction("dialogClassName", FlutterHelper.class.getDeclaredMethod("dialogClassName", new Class[]{PageDefinition.class, String.class}));
         context.registerFunction("dialogTableClassName", FlutterHelper.class.getDeclaredMethod("dialogTableClassName", new Class[]{PageDefinition.class, String.class}));
         context.registerFunction("dialogStoreClassName", FlutterHelper.class.getDeclaredMethod("dialogStoreClassName", new Class[]{PageDefinition.class, String.class}));
 
         //utilities
-        context.registerFunction("utilitiesFolderPath", FlutterHelper.class.getDeclaredMethod("utilitiesFolderPath", new Class[]{String.class}));
+        context.registerFunction("utilitiesFolderPath", FlutterHelper.class.getDeclaredMethod("utilitiesFolderPath", new Class[]{ClassType.class}));
     }
 
     public static void registerHandlebars(Handlebars handlebars) {
@@ -726,584 +724,285 @@ public class FlutterHelper {
         return list.isEmpty();
     }
 
-    /**
-     * Calculates class name based on an ESM fq name including feature name separated with "." as feature separator.
-     * Removes '_' from esm named element names
-     *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators and "." as feature separator, names match the pattern "[a-zA-Z0-9_]+"
-     * @return camel case class name including feature name, e.g. Model::Package_a::Package_b::TypeName.feature -> PackageAPackageBTypeNameFeature
-     */
-    private static String getClassName(String fqName) {
-        String[] splitAtFeatureSeparator = fqName.split("\\.");
-        String[] splitAtNsSeparator = splitAtFeatureSeparator[0].split("::");
-        return stream(splitAtNsSeparator)
-                .skip(Math.min(1, splitAtNsSeparator.length - 1)) //skip model name if necessary
-                .map(s -> StringUtils.capitalize(stream(s.split("_")).map(t -> StringUtils.capitalize(t)).collect(Collectors.joining())))
-                .collect(Collectors.joining())
-                .concat(splitAtFeatureSeparator.length > 1 ?
-                                StringUtils.capitalize(stream(splitAtFeatureSeparator[1].split("_")).map(t -> StringUtils.capitalize(t)).collect(Collectors.joining())) :
-                                ""
-                        );
+    private static String getCamelCaseVersion(String token) {
+        return StringUtils.capitalize(stream(token.split("_")).map(t -> StringUtils.capitalize(t)).collect(Collectors.joining()));
     }
 
-    /**
-     * Calculates file name based on the ESM fq name without feature name, skipping model and package names.
-     *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators, names match the pattern "[a-zA-Z0-9_]+"
-     * @return file name based on fq name, e.g. Model::PackageOne::PackageTwo::TypeName -> type_name
-     */
-    private static String getFileName(String fqName) {
-        String[] splitted = fqName.split("::");
-        return stream(splitted)
-                .skip(Math.max(0, splitted.length - 1))
-                .collect(Collectors.joining())
-                .replaceAll("([a-z])([A-Z]+)", "$1_$2")
-                .toLowerCase();
+    private static String getFileNameVersion(String token) {
+        return token.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
     }
 
-    /**
-     * Calculates relative path of a type. Path is relative to the model.
-     *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators, names match the pattern "[a-zA-Z0-9_]+"
-     * @return the packages of a type joined by "/", e.g. package1/package2/.../packagen/ if the type is enclosed by packages and empty string if it's not
-     */
-    private static String getPackagePath(String fqName) {
-        List<String> packageNameTokens = getPackageNameTokens(fqName);
-        if (packageNameTokens.isEmpty()) {
+    private static String getClassName(ClassType type) {
+        return type.getPackageNameTokens().stream().map(t -> getCamelCaseVersion(t)).collect(Collectors.joining())
+                .concat(getCamelCaseVersion(type.getSimpleName()));
+    }
+
+    private static String getClassName(RelationType relation) {
+        return relation.getOwnerPackageNameTokens().stream().map(t -> getCamelCaseVersion(t)).collect(Collectors.joining())
+                .concat(getCamelCaseVersion(relation.getOwnerSimpleName())).concat(getCamelCaseVersion(relation.getName()));
+    }
+
+    private static String getClassName(OperationType operation) {
+        return operation.getOwnerPackageNameTokens().stream().map(t -> getCamelCaseVersion(t)).collect(Collectors.joining())
+                .concat(getCamelCaseVersion(operation.getOwnerSimpleName())).concat(getCamelCaseVersion(operation.getName()));
+    }
+
+    private static String getPackagePath(ClassType type) {
+        if(type.getPackageNameTokens().isEmpty()) {
             return "";
+        } else {
+            return type.getPackageNameTokens().stream().map(t -> getFileNameVersion(t)).collect(Collectors.joining("/"))
+                    .concat("/");
         }
-        return packageNameTokens.stream()
-                .map(t -> getFileName(t))
-                .collect(Collectors.joining("/"))
-                .concat("/");
     }
 
-    /**
-     * Calculates relative path of a type, based on {@link #getPackagePath(String)} and concatenates type name.
-     *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators, names match the pattern "[a-zA-Z0-9_]+"
-     * @return the relative path of a type including the type name, e.g. package1/package2/.../packagen/type_name/ or typeName/ if there are no packages
-     */
-    private static String getTypeNamePath(String fqName) {
-        return getPackagePath(fqName).concat(getFileName(fqName)).concat("/");
-    }
-
-    /**
-     * Calculates relative path of a type including the type name, based on {@link #getTypeNamePath(String)} and concatenates the given feature name.
-     *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return the relative path of a type including the type name and the feature name, e.g. package1/package2/.../packagen/fqName/featureName/ or fqName/featureName/ if there are no packages
-     */
-    private static String getFeaturePath(String fqName) {
-        String[] splitAtFeatureSeparator = fqName.split("\\.");
-        return getTypeNamePath(splitAtFeatureSeparator[0])
-                .concat(splitAtFeatureSeparator.length > 1 ? getFileName(splitAtFeatureSeparator[1]).concat("/") : "");
-    }
-
-    /**
-     * Calculates relative path of a page, which includes fully qualified type name, relation or operation name and page type.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return type name path or feature path and page type concatenated, e.g package/type/feature/pagetype/ or empty string if page name does not fit the above convention
-     */
-    private static String getPageTypePath(String pageName) {
-        String[] pageNameTokens = pageName.split("#");
-        if (pageNameTokens.length == 2) {
-            return getFeaturePath(pageNameTokens[0]).concat(pageNameTokens[1].toLowerCase()).concat("/");
+    private static String getPackagePath(RelationType relation) {
+        if(relation.getOwnerPackageNameTokens().isEmpty()) {
+            return "";
+        } else {
+            return relation.getOwnerPackageNameTokens().stream().map(t -> getFileNameVersion(t)).collect(Collectors.joining("/"))
+                    .concat("/");
         }
-        return "";
+    }
+
+    private static String getPackagePath(OperationType operation) {
+        if(operation.getOwnerPackageNameTokens().isEmpty()) {
+            return "";
+        } else {
+            return operation.getOwnerPackageNameTokens().stream().map(t -> getFileNameVersion(t)).collect(Collectors.joining("/"))
+                    .concat("/");
+        }
+    }
+
+    private static String getTypeNamePath(ClassType type) {
+        return getPackagePath(type).concat(getFileNameVersion(type.getSimpleName())).concat("/");
+    }
+
+    private static String getTypeNamePath(RelationType relation) {
+        return getPackagePath(relation).concat(getFileNameVersion(relation.getOwnerSimpleName())).concat("/");
+    }
+
+    private static String getTypeNamePath(OperationType operation) {
+        return getPackagePath(operation).concat(getFileNameVersion(operation.getOwnerSimpleName())).concat("/");
+    }
+
+    private static String getFeaturePath(RelationType relation) {
+        return getTypeNamePath(relation).concat(getFileNameVersion(relation.getName())).concat("/");
+    }
+
+    private static String getFeaturePath(OperationType operation) {
+        return getTypeNamePath(operation).concat(getFileNameVersion(operation.getName())).concat("/");
+    }
+
+    public static String getPageTypePath(PageDefinition page) {
+        if (page.getDataElement() != null && !(page.getPageType().equals(PageType.OPERATION_INPUT) || page.getPageType().equals(PageType.OPERATION_OUTPUT))) {
+            RelationType dataElement = (RelationType) page.getDataElement();
+            return getFeaturePath(dataElement).concat(page.getPageType().toString().toLowerCase()).concat("/");
+        } else if (page.getPageType().equals(PageType.OPERATION_INPUT) || page.getPageType().equals(PageType.OPERATION_OUTPUT)){
+            OperationType dataElement = (OperationType) (page.getDataElement().eContainer());
+            return getFeaturePath(dataElement).concat(page.getPageType().toString().toLowerCase()).concat("/");
+        }
+        ClassType actor = ((Application)page.eContainer()).getActor();
+        return getTypeNamePath(actor).concat(page.getPageType().toString().toLowerCase()).concat("/");
     }
 
     //store naming
 
-    /**
-     * Calculates the relative path of the "store" folder. Uses  {@link #path(String)} to calculate actor name.
-     *
-     * @param actorName name of the actor of the application
-     * @return relative path of "store" folder, e.g. lib/actor/store/
-     */
-    public static String storeFolderPath(String actorName) {
+    public static String storeFolderPath(ClassType actor) {
         return "lib/"
-            .concat(getFileName(actorName))
+            .concat(getFileNameVersion(actor.getSimpleName()))
             .concat("/store/");
     }
 
-    /**
-     * Calculates folder structure based on the package structure using {@link #getPackagePath(String)} and concatenates Store class name.
-     * Path is relative to store folder.
-     *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return relative path of a Store class, e.g. package_name1/package_name2/../type_name__store.dart
-     */
-    public static String storeClassRelativePath(String fqName) {
-        return getPackagePath(fqName).concat(getFileName(fqName) + "__store.dart");
+    public static String storeClassRelativePath(ClassType type) {
+        return getPackagePath(type).concat(getFileNameVersion(type.getSimpleName()).concat("__store.dart"));
     }
 
-    /**
-     * Calculates the relative path of a Store class. Uses {@link #storeFolderPath(String)} to calculate relative path of "store" folder
-     * and {@link #storeClassRelativePath(String)} to calculate folder structure based on the package structure and the file name of the Store class.
-     *
-     * @param actorName name of the actor of the application
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return relative path of a Store class, e.g. lib/actor/store/package_name1/package_name2/../type_name__store.dart
-     */
-    public static String storeClassPath(String actorName, String fqName) {
-        return storeFolderPath(actorName).concat(storeClassRelativePath(fqName));
+    public static String storeClassPath(ClassType actor, ClassType type) {
+        return storeFolderPath(actor).concat(storeClassRelativePath(type));
     }
 
-    /**
-     * Calculates the Store class name. Uses {@link #fqClassWithoutModel(String)} to remove model name from the fully qualified name and capitalizes package names.
-     *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return the class name of a Store class, e.g. Package1Package2..TypeNameStore
-     */
-    public static String storeClassName(String fqName) {
-        return getClassName(fqName) + "Store";
+    public static String storeClassName(ClassType type) {
+        return getClassName(type).concat("Store");
     }
 
     //repository naming
 
-    /**
-     * Calculates the relative path of the "repository" folder. Uses  {@link #path(String)} to calculate actor name.
-     *
-     * @param actorName name of the actor of the application
-     * @return relative path of "repository" folder, e.g. lib/actor/repository/
-     */
-    public static String repositoryFolderPath(String actorName) {
+    public static String repositoryFolderPath(ClassType actor) {
         return "lib/"
-                .concat(getFileName(actorName))
+                .concat(getFileNameVersion(actor.getSimpleName()))
                 .concat("/repository/");
     }
 
-    /**
-     * Calculates folder structure based on the package structure and type name using {@link #getTypeNamePath(String)}
-     * for the path. Path is relative to repository folder.
-     *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return relative path of a Repository class, e.g. package_name1/package_name2/../type_name/repository.dart
-     */
-    public static String repositoryClassRelativePath(String fqName) {
-        return getTypeNamePath(fqName).concat("repository.dart");
+    public static String repositoryClassRelativePath(ClassType type) {
+        return getTypeNamePath(type).concat("repository.dart");
     }
 
-    /**
-     * Calculates the path of a Repository class. Uses {@link #repositoryFolderPath(String)} to calculate relative path of "repository" folder
-     * and {@link #repositoryClassRelativePath(String)} to calculate folder structure and file name.
-     *
-     * @param actorName name of the actor of the application
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return path of a Repository class, e.g. lib/actor/repository/package_name1/package_name2/../type_name/repository.dart
-     */
-    public static String repositoryClassPath(String actorName, String fqName) {
-        return repositoryFolderPath(actorName).concat(repositoryClassRelativePath(fqName));
+    public static String repositoryClassPath(ClassType actor, ClassType type) {
+        return repositoryFolderPath(actor).concat(repositoryClassRelativePath(type));
     }
 
-    /**
-     * Calculates folder structure based on the package structure and type name using {@link #getTypeNamePath(String)}
-     * and concatenates file name based on relation name.
-     *
-     * @param relationName name of the relation
-     * @param ownerName the fully qualified name of owner of the relation with "::" as namespace separators
-     * @return relative path of a Repository class, e.g. package_name1/package_name2/../type_name/relation_name__repository.dart
-     */
-    public static String repositoryRelationRelativePath(String ownerName, String relationName) {
-        return getTypeNamePath(ownerName).concat(getFileName(relationName).concat("__repository.dart"));
+    public static String repositoryRelationRelativePath(RelationType relation) {
+        return getTypeNamePath(relation)
+                .concat(getFileNameVersion(relation.getName()).concat("__repository.dart"));
     }
 
-    /**
-     * Calculates the relative path of a Repository class. Uses {@link #repositoryFolderPath(String)} and {@link #repositoryRelationRelativePath(String, String)}.
-     *
-     * @param actorName name of the actor of the application
-     * @param ownerName the fq name of the owner of the relation
-     * @param relationName name of the relation
-     * @return path of a Repository class, e.g. lib/actor/repository/package_name1/package_name2/../type_name/relation_name__repository.dart
-     */
-    public static String repositoryRelationPath(String actorName, String ownerName, String relationName) {
-        return repositoryFolderPath(actorName).concat(repositoryRelationRelativePath(ownerName, relationName));
+    public static String repositoryRelationPath(ClassType actor, RelationType relation) {
+        return repositoryFolderPath(actor).concat(repositoryRelationRelativePath(relation));
     }
 
-    /**
-     * Calculates the Repository class name. Uses {@link #fqClassWithoutModel(String)} to remove model name from the fully qualified name and capitalizes package names.
-     *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return the class name of a Repository class, e.g. Package1Package2..TypeNameRepository
-     */
-    public static String repositoryClassName(String fqName) {
-        return getClassName(fqName).concat("Repository");
+    public static String repositoryClassName(ClassType type) {
+        return getClassName(type).concat("Repository");
     }
 
-    /**
-     * Calculates the RepositoryStoreMapper class name. Uses {@link #repositoryClassName(String)} to calculate Repository class name and concatenates "StoreMapper" to it.
-     *
-     * @param fqName the fully qualified name of a type with "::" as namespace separators
-     * @return the class name of a RepositoryStoreMapper class, e.g. Package1Package2..TypeNameRepositoryStoreMapper
-     */
-    public static String repositoryStoreMapperClassName(String fqName) {
-        return repositoryClassName(fqName).concat("StoreMapper");
+    public static String repositoryStoreMapperClassName(ClassType type) {
+        return repositoryClassName(type).concat("StoreMapper");
     }
 
-    /**
-     * Calculates the Repository class name for relations.
-     * Uses {@link #fqClassWithoutModel(String)} to remove model name from the fully qualified name of the owner name and capitalizes package names, then adds the relation name capitalized.
-     *
-     * @param ownerName the fully qualified name of the relation's owner with "::" as namespace separators
-     * @param relationName the name of a the relation
-     * @return the class name of a Repository class, e.g. Package1Package2..TypeNameRelationNameRepository
-     */
-    public static String repositoryRelationName(String ownerName, String relationName) {
-        return getClassName(ownerName).concat(StringUtils.capitalize(relationName)).concat("Repository");
+    public static String repositoryRelationName(RelationType relation) {
+        return getClassName(relation).concat("Repository");
     }
 
     //page store naming
 
-    private static String getPageClassName(String pageName) {
-        String[] pageNameTokens = pageName.split("#");
-        if (pageNameTokens.length == 2) {
-            return getClassName(pageNameTokens[0])
-                    .concat(StringUtils.capitalize(pageNameTokens[1].toLowerCase()));
+    private static String getPageClassName(PageDefinition page) {
+        if (page.getDataElement() != null && !(page.getPageType().equals(PageType.OPERATION_INPUT) || page.getPageType().equals(PageType.OPERATION_OUTPUT))) {
+            RelationType dataElement = (RelationType) page.getDataElement();
+            return getClassName(dataElement).concat(StringUtils.capitalize(page.getPageType().toString().toLowerCase()));
+        } else if (page.getPageType().equals(PageType.OPERATION_INPUT) || page.getPageType().equals(PageType.OPERATION_OUTPUT)){
+            OperationType dataElement = (OperationType) (page.getDataElement().eContainer());
+            return getClassName(dataElement).concat(StringUtils.capitalize(page.getPageType().toString().toLowerCase()));
         }
-        return "";
+        ClassType actor = ((Application)page.eContainer()).getActor();
+        return getClassName(actor).concat(StringUtils.capitalize(page.getPageType().toString().toLowerCase()));
     }
 
-    /**
-     * Calculates the relative path of the "pages" folder. Uses {@link #path(String)} to calculate actor name.
-     *
-     * @param actorName name of the actor of the application
-     * @return relative path of "pages" folder, e.g. lib/actor/ui/pages/
-     */
-    public static String pagesFolderPath(String actorName) {
+    public static String pagesFolderPath(ClassType actor) {
         return "lib/"
-                .concat(getFileName(actorName))
+                .concat(getFileNameVersion(actor.getSimpleName()))
                 .concat("/ui/pages/");
     }
 
-    /**
-     * Calculates the relative path of the "pages/utilities" folder. Uses {@link #pagesFolderPath(String)} to calculate "pages" path.
-     *
-     * @param actorName name of the actor of the application
-     * @return relative path of "pages" folder, e.g. lib/actor/ui/pages/utilities/
-     */
-    public static String pagesUtilitiesPath(String actorName) {
-        return pagesFolderPath(actorName).concat("utilities/");
+    public static String pageStoreRelativePath(PageDefinition page) {
+        return getPageTypePath(page).concat("page.dart");
     }
 
-    /**
-     * Calculates relative path of page stores based on {@link #getPageTypePath(String)} and concatenates "page.dart". Path is relative to the "pages" folder.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return relative path of a page store, e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/page.dart
-     */
-    public static String pageStoreRelativePath(String pageName) {
-        return getPageTypePath(pageName).concat("page.dart");
+    public static String pageStorePackageRelativePath(PageDefinition page) {
+        return getPageTypePath(page).concat("package.dart");
     }
 
-    /**
-     * Calculates relative path of page folder package based on {@link #getPageTypePath(String)} and concatenates "package.dart". Path is relative to the "pages" folder.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return relative path of a package collecting page stores, bodies, dialogs, etc., e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/package.dart
-     */
-    public static String pageStorePackageRelativePath(String pageName) {
-        return getPageTypePath(pageName).concat("package.dart");
+    public static String pageStorePath(PageDefinition page) {
+        return pagesFolderPath(((Application)page.eContainer()).getActor()).concat(pageStoreRelativePath(page));
     }
 
-    /**
-     * Calculates path of page store by concatenating {@link #pagesFolderPath(String)} and {@link #pageStoreRelativePath(String)}
-     *
-     * @param actorName name of the actor of the application
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/store.dart
-     */
-    public static String pageStorePath(String actorName, String pageName) {
-        return pagesFolderPath(actorName).concat(pageStoreRelativePath(pageName));
+    public static String pageStorePackagePath(PageDefinition page) {
+        return pagesFolderPath(((Application)page.eContainer()).getActor()).concat(pageStorePackageRelativePath(page));
     }
 
-    /**
-     * Calculates path of page packages by concatenating {@link #pagesFolderPath(String)} and {@link #pageStorePackageRelativePath(String)}.
-     *
-     * @param actorName name of the actor of the application
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return e.g. package_name1/package_name2/.../type_name/relation_name/pageType/package.dart
-     */
-    public static String pageStorePackagePath(String actorName, String pageName) {
-        return pagesFolderPath(actorName).concat(pageStorePackageRelativePath(pageName));
+    public static String pageStoreClassName(PageDefinition page) {
+        return getPageClassName(page).concat("PageStore");
     }
 
-    /**
-     * Calculates the page store class name.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return e.g. PackageNameTypeNameRelationNamePageTypePageStore
-     */
-    public static String pageStoreClassName(String pageName) {
-        return getPageClassName(pageName).concat("PageStore");
+    public static String pageClassName(PageDefinition page) {
+        return getPageClassName(page).concat("Page");
     }
 
-    /**
-     * Calculates the page class name.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return e.g. PackageNameTypeNameRelationNamePageTypePage
-     */
-    public static String pageClassName(String pageName) {
-        return getPageClassName(pageName).concat("Page");
-    }
-
-    /**
-     * Calculates variable name for the page class name.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return e.g. packageNameTypeNameRelationNamePageTypePage
-     */
-    public static String pageClassVariableName(String pageName) {
-        String className = getPageClassName(pageName).concat("Page");
+    public static String pageClassVariableName(PageDefinition page) {
+        String className = getPageClassName(page).concat("Page");
         return className.substring(0, 1).toLowerCase() + className.substring(1);
     }
 
-    /**
-     * Calculates the page state class name.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return PackageNameTypeNameRelationNamePageTypePageState
-     */
-    public static String pageStateClassName(String pageName) {
-        return getPageClassName(pageName).concat("PageState");
+    public static String pageStateClassName(PageDefinition page) {
+        return getPageClassName(page).concat("PageState");
     }
 
-    /**
-     * Calculates the page arguments class name.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return e.g. PackageNameTypeNameRelationNamePageTypePageArguments
-     */
-    public static String pageArgumentsClassName(String pageName) {
-        return getPageClassName(pageName).concat("PageArguments");
+    public static String pageArgumentsClassName(PageDefinition page) {
+        return getPageClassName(page).concat("PageArguments");
     }
 
-    /**
-     * Calculates library name of page packages which include page stores, bodies, dialogs, tables, etc of a page.
-     *
-     * @param actorName name of the actor of the application
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @return library name of a package collecting page stores, bodies, dialogs, etc., e.g. package_name1.package_name2....type_name.relation_name.pagetype
-     */
-    public static String pageLibraryName(String actorName, String pageName) {
-        String lib = getPageTypePath(pageName).replaceAll("/",".");
-        return getFileName(actorName).concat(".ui.pages.").concat(lib.substring(0, lib.length() - 1));
+    public static String pageLibraryName(PageDefinition page) {
+        String lib = getPageTypePath(page).replaceAll("/",".");
+        return getFileNameVersion(((Application)page.eContainer()).getActor().getSimpleName()).concat(".ui.pages.").concat(lib.substring(0, lib.length() - 1));
     }
 
-    /**
-     * Calculates relative path of page body based on {@link #getPageTypePath(String)} and {@link #pageBodyFileName(String)}
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @return e.g. package_name1/package_name2/../type_name/relation_name/pageType/layoutName/body.dart
-     */
-    public static String pageBodyRelativePath(String pageName, String layoutTypeName) {
-        return getPageTypePath(pageName).concat(pageBodyFileName(layoutTypeName));
+    public static String pageBodyRelativePath(PageDefinition page, String layoutTypeName) {
+        return getPageTypePath(page).concat(pageBodyFileName(layoutTypeName));
     }
 
-    /**
-     * Calculates page body name based on the layout type.
-     *
-     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @return e.g. layoutName/body.dart
-     */
     public static String pageBodyFileName(String layoutTypeName) {
         return layoutTypeName.toLowerCase().concat("/body.dart");
     }
 
-    /**
-     * Calculates path of page body by concatenating {@link #pagesFolderPath(String)} and {@link #pageBodyRelativePath(String, String)}
-     *
-     * @param actorName name of the actor of the application
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @return e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/layoutTypeName/body.dart
-     */
-    public static String pageBodyPath(String actorName, String pageName, String layoutTypeName) {
-        return pagesFolderPath(actorName).concat(pageBodyRelativePath(pageName, layoutTypeName));
+    public static String pageBodyPath(PageDefinition page, String layoutTypeName) {
+        return pagesFolderPath(((Application)page.eContainer()).getActor()).concat(pageBodyRelativePath(page, layoutTypeName));
     }
 
-    /**
-     * Calculates the page body class name.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @return e.g. PackageNameTypeNameRelationNamePageTypeLayoutTypePage
-     */
-    public static String pageBodyClassName(String pageName, String layoutTypeName) {
-        return getPageClassName(pageName).concat(StringUtils.capitalize(layoutTypeName.toLowerCase())).concat("Page");
+    public static String pageBodyClassName(PageDefinition page, String layoutTypeName) {
+        return getPageClassName(page).concat(StringUtils.capitalize(layoutTypeName.toLowerCase())).concat("Page");
     }
 
-    /**
-     * Calculates relative path of a data table based on {@link #getPageTypePath(String)} and {@link #tableFileName(String, String)}.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @param relationName name of the data element of the table, i.e. the name of the relation
-     * @return e.g. package_name1/package_name2/../type_name/relation_name/pageType/layoutTypeName/relation_name_table.dart
-     */
-    public static String tableRelativePath(String pageName, String layoutTypeName, String relationName) {
-        return getPageTypePath(pageName).concat(tableFileName(layoutTypeName, relationName));
+    public static String tableRelativePath(PageDefinition page, String layoutTypeName, String relationName) {
+        return getPageTypePath(page).concat(tableFileName(layoutTypeName, relationName));
     }
 
-    /**
-     * Calculates table file name based on the layout type and the name of its data element.
-     *
-     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @param relationName name of the data element of the table, i.e. the name of the relation
-     * @return e.g. layoutTypeName/tableName_table.dart
-     */
     public static String tableFileName(String layoutTypeName, String relationName) {
-        return layoutTypeName.toLowerCase().concat("/").concat(getFileName(relationName).concat("__table.dart"));
+        return layoutTypeName.toLowerCase().concat("/").concat(getFileNameVersion(relationName).concat("__table.dart"));
     }
 
-    /**
-     * Calculates path of a table data info by concatenating {@link #pagesFolderPath(String)} and {@link #tableRelativePath(String, String, String)}
-     *
-     * @param actorName name of the actor of the application
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @param relationName name of the data element of the table, i.e. the name of the relation
-     * @return e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/layoutTypeName/relation_name__table.dart
-     */
-    public static String tablePath(String actorName, String pageName, String layoutTypeName, String relationName) {
-        return pagesFolderPath(actorName).concat(tableRelativePath(pageName, layoutTypeName, relationName));
+    public static String tablePath(PageDefinition page, String layoutTypeName, String relationName) {
+        return pagesFolderPath(((Application)page.eContainer()).getActor()).concat(tableRelativePath(page, layoutTypeName, relationName));
     }
 
-    /**
-     * Calculates table data info class name.
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param layoutTypeName the name of the layout: mobile, tablet, desktop
-     * @param relationName name of the dataElement of the table
-     * @return e.g. PackageNameTypeNameRelationNamePageTypeDataElementDataInfo
-     */
-    public static String tableClassName(String pageName, String layoutTypeName, String relationName) {
-        return getPageClassName(pageName).concat(StringUtils.capitalize(layoutTypeName.toLowerCase()))
-                .concat(getClassName(relationName)).concat("DataInfo");
+    public static String dialogRelativePath(PageDefinition page, String relationName) {
+        return getPageTypePath(page).concat(dialogFileName(relationName));
     }
 
-    /**
-     * Calculates relative path of a dialog based on {@link #getPageTypePath(String)} and {@link #dialogFileName(String)}
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param relationName the name of a the relation
-     * @return e.g. package_name1/package_name2/../type_name/relation_name/pageType/dialogs/relation_name.dart
-     */
-    public static String dialogRelativePath(String pageName, String relationName) {
-        return getPageTypePath(pageName).concat(dialogFileName(relationName));
-    }
-
-    /**
-     * Calculates dialog name based on the layout type
-     *
-     * @param relationName the name of a the relation
-     * @return e.g. dialogs/relation_name.dart
-     */
     public static String dialogFileName(String relationName) {
-        return "dialogs/".concat(getFileName(relationName)).concat(".dart");
+        return "dialogs/".concat(getFileNameVersion(relationName)).concat(".dart");
     }
 
-    /**
-     * Calculates path of a dialog by concatenating {@link #pagesFolderPath(String)} and {@link #dialogRelativePath(String, String)}
-     *
-     * @param actorName name of the actor of the application
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param relationName the name of a the relation
-     * @return e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pageType/dialogs/relation_name.dart
-     */
-    public static String dialogPath(String actorName, String pageName, String relationName) {
-        return pagesFolderPath(actorName).concat(dialogRelativePath(pageName, relationName));
+    public static String dialogPath(PageDefinition page, String relationName) {
+        return pagesFolderPath(((Application)page.eContainer()).getActor()).concat(dialogRelativePath(page, relationName));
     }
 
-    /**
-     * Calculates dialog class name.
-     *
-     * @param page page definition with a name, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param relationName the name of a the relation
-     * @return e.g. PackageNameTypeNameRelationNameTableDialog if page type is table and PackageNameTypeNameRelationNamePageTypeRelationNameDialog, if page type is not table
-     */
     public static String dialogClassName(PageDefinition page, String relationName) {
         if (page.getIsPageTypeTable()) {
-            return getPageClassName(page.getName()).concat("Dialog");
+            return getPageClassName(page).concat("Dialog");
         }
-        return getPageClassName(page.getName()).concat(getClassName(relationName)).concat("Dialog");
+        return getPageClassName(page).concat(getCamelCaseVersion(relationName)).concat("Dialog");
     }
 
-    /**
-     * Calculates dialog store class name.
-     *
-     * @param page page definition with a name, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param relationName the name of a the relation
-     * @return e.g. PackageNameTypeNameRelationNameTableDialogStore if page type is table and PackageNameTypeNameRelationNamePageTypeRelationNameDialogStore, if page type is not table
-     */
     public static String dialogStoreClassName(PageDefinition page, String relationName) {
         if (page.getIsPageTypeTable()) {
-            return getPageClassName(page.getName()).concat("DialogStore");
+            return getPageClassName(page).concat("DialogStore");
         }
-        return getPageClassName(page.getName()).concat(getClassName(relationName)).concat("DialogStore");
+        return getPageClassName(page).concat(getCamelCaseVersion(relationName)).concat("DialogStore");
     }
 
-    /**
-     * Calculates relative path of a dialog table based on {@link #getPageTypePath(String)} and {@link #dialogTableFileName(String)}
-     *
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param relationName the name of a the relation
-     * @return e.g. package_name1/package_name2/../type_name/relation_name/pageType/dialogs/relation_name__table.dart
-     */
-    public static String dialogTableRelativePath(String pageName, String relationName) {
-        return getPageTypePath(pageName).concat(dialogTableFileName(relationName));
+    public static String dialogTableRelativePath(PageDefinition page, String relationName) {
+        return getPageTypePath(page).concat(dialogTableFileName(relationName));
     }
 
-    /**
-     * Calculates dialog table name.
-     *
-     * @param relationName the name of a the relation
-     * @return e.g. dialogs/relation_name__table.dart
-     */
     public static String dialogTableFileName(String relationName) {
-        return "dialogs/".concat(getFileName(relationName)).concat("__table.dart");
+        return "dialogs/".concat(getFileNameVersion(relationName)).concat("__table.dart");
     }
 
-    /**
-     * Calculates dialog table name.
-     *
-     * @param page page definition with a name, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param relationName the name of a the relation
-     * @return e.g. PackageNameTypeNameRelationNameTableDialogTable if page type is table and PackageNameTypeNameRelationNamePageTypeRelationNameDialogTable, if page type is not table
-     */
     public static String dialogTableClassName(PageDefinition page, String relationName) {
         if (page.getIsPageTypeTable()) {
-            return getPageClassName(page.getName()).concat("DialogTable");
+            return getPageClassName(page).concat("DialogTable");
         }
-        return getPageClassName(page.getName()).concat(getClassName(relationName)).concat("DialogTable");
+        return getPageClassName(page).concat(getCamelCaseVersion(relationName)).concat("DialogTable");
     }
 
-    /**
-     * Calculates path of a dialog table by concatenating {@link #pagesFolderPath(String)} and {@link #dialogTableRelativePath(String, String)}
-     *
-     * @param actorName name of the actor of the application
-     * @param pageName fq name of page, which consists of fq type name, feature name (operation or relation) and page type, e.g. Model::Package::Type.feature#PageType or Model::Package::Type#Dashboard
-     * @param relationName the name of a the relation
-     * @return e.g. lib/actor/ui/pages/package_name1/package_name2/../type_name/relation_name/pagetype/dialogs/relation_name__table.dart
-     */
-    public static String dialogTablePath(String actorName, String pageName, String relationName) {
-        return pagesFolderPath(actorName).concat(dialogTableRelativePath(pageName, relationName));
+    public static String dialogTablePath(PageDefinition page, String relationName) {
+        return pagesFolderPath(((Application)page.eContainer()).getActor()).concat(dialogTableRelativePath(page, relationName));
     }
 
     // ui utilities
 
-    /**
-     * Calculates the relative path of the "ui/utilities" folder.
-     *
-     * @param actorName name of the actor of the application
-     * @return relative path of "pages" folder, e.g. lib/actor/ui/utilities/
-     */
-    public static String utilitiesFolderPath(String actorName) {
+    public static String utilitiesFolderPath(ClassType actor) {
         return "lib/"
-                .concat(getFileName(actorName))
+                .concat(getFileNameVersion(actor.getSimpleName()))
                 .concat("/ui/utilities/");
     }
 }

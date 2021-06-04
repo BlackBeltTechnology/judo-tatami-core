@@ -9,7 +9,7 @@
 // Application: {{ application.name }}
 // Container: {{ container.name }}
 
-part of {{ pageLibraryName application.name page.name }};
+part of {{ pageLibraryName page }};
 {{# if page.isPageTypeView }}
 {{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs }}
 {{/ if }}
@@ -37,7 +37,7 @@ part of {{ pageLibraryName application.name page.name }};
 {{/ if }}
 
 
-class {{ pageClassName page.name }} extends StatefulWidget {
+class {{ pageClassName page }} extends StatefulWidget {
     static const String title = '{{ page.label }}';
 
 {{# if page.isPageTypeDashboard }}
@@ -84,7 +84,7 @@ class {{ pageClassName page.name }} extends StatefulWidget {
                     {{# each page.containers as |pageContainer| }}
                     {{# unless pageContainer.layoutType.original }}
                     if (MediaQuery.of(context).size.width >= {{ pageContainer.layoutType.minimumResolution }} && MediaQuery.of(context).size.width <= {{ pageContainer.layoutType.maximumResolution }}) {
-                        return get{{ pageBodyClassName page.name pageContainer.layoutType.name }}(context
+                        return get{{ pageBodyClassName page pageContainer.layoutType.name }}(context
 
                             {{~# if page.isPageTypeDashboard ~}}
                             , pageStore
@@ -134,7 +134,7 @@ class {{ pageClassName page.name }} extends StatefulWidget {
                     }
                     {{/ unless }}
                     {{/ each }}
-                    return get{{ pageBodyClassName page.name application.defaultLayoutType.name }}(context
+                    return get{{ pageBodyClassName page application.defaultLayoutType.name }}(context
 
                         {{~# if page.isPageTypeDashboard ~}}
                         , pageStore

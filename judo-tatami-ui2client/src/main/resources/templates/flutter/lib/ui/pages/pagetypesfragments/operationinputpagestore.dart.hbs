@@ -1,15 +1,15 @@
 {{ log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug' }}
 //START operationinputpagestore.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------
-class {{ pageStoreClassName page.name }} extends _{{ pageStoreClassName page.name }} with _${{ pageStoreClassName page.name }} {}
+class {{ pageStoreClassName page }} extends _{{ pageStoreClassName page }} with _${{ pageStoreClassName page }} {}
 
-abstract class _{{ pageStoreClassName page.name }} with Store {
-    {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
+abstract class _{{ pageStoreClassName page }} with Store {
+    {{ repositoryClassName application.actor }} _actorRepository = locator<{{ repositoryClassName application.actor }}>();
 
     @observable
     String errorMessage;
 
     @observable
-    {{ storeClassName page.dataElement.target.name }} targetStore;
+    {{ storeClassName page.dataElement.target }} targetStore;
 
     // TODO: review that this is necessary in all cases
     bool validatable = false;
