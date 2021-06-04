@@ -147,9 +147,9 @@ public class FlutterHelper {
         context.registerFunction("isValidateHere", FlutterHelper.class.getDeclaredMethod("isValidateHere", new Class[]{PageDefinition.class}));
         context.registerFunction("isSingleRelationDashboardPage", FlutterHelper.class.getDeclaredMethod("isSingleRelationDashboardPage", new Class[]{PageDefinition.class}));
         context.registerFunction("isCollectionRelationDashboardPage", FlutterHelper.class.getDeclaredMethod("isCollectionRelationDashboardPage", new Class[]{PageDefinition.class}));
-        context.registerFunction("isBookmarkablePage", FlutterHelper.class.getDeclaredMethod("isBookmarkablePage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isBookmarkablePage", FlutterHelper.class.getDeclaredMethod("isBookmarkablePage", new Class[]{PageDefinition.class, Application.class}));
         context.registerFunction("isAccessTablePage", FlutterHelper.class.getDeclaredMethod("isAccessTablePage", new Class[]{PageDefinition.class}));
-        context.registerFunction("isAccessViewPage", FlutterHelper.class.getDeclaredMethod("isAccessViewPage", new Class[]{PageDefinition.class}));
+        context.registerFunction("isPageWithIdParam", FlutterHelper.class.getDeclaredMethod("isPageWithIdParam", new Class[]{PageDefinition.class, Application.class}));
         context.registerFunction("isRefreshViewTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshViewTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshTableTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshTableTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isViewTypePage", FlutterHelper.class.getDeclaredMethod("isViewTypePage", new Class[]{PageDefinition.class}));
@@ -571,8 +571,8 @@ public class FlutterHelper {
         return page.getIsPageTypeDashboard() && page.getRelationType().isIsCollection();
     }
 
-    public static boolean isBookmarkablePage(PageDefinition page){
-        return page.getIsPageTypeDashboard() || isAccessTablePage(page) || isAccessViewPage(page);
+    public static boolean isBookmarkablePage(PageDefinition page, Application application){
+        return isAccessTablePage(page) || isPageWithIdParam(page, application);
     }
 
     public static boolean isAccessTablePage(PageDefinition page){
@@ -580,9 +580,9 @@ public class FlutterHelper {
         return page.getIsPageTypeDashboard() || (page.getIsPageTypeTable() && page.getRelationType().isIsAccess());
     }
 
-    public static boolean isAccessViewPage(PageDefinition page){
+    public static boolean isPageWithIdParam(PageDefinition page, Application application){
         if (page.getRelationType() == null) return false;
-        return page.getIsPageTypeDashboard() || (page.getIsPageTypeView() && page.getRelationType().isIsAccess());
+        return page.getIsPageTypeView() && page.getRelationType().isIsAccess() && application.getNavigationController().getItems().stream().noneMatch( i -> i.getTarget().getFQName().equals(page.getFQName()));
     }
 
     public static boolean isViewTypePage(PageDefinition page) {

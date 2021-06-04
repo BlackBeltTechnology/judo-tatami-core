@@ -15,12 +15,12 @@ import '../pages/package.dart';
 
 const List<AutoRoute> bookmarkableRoutes = [
     {{# each application.pages as |page| }}
-    {{# if (isBookmarkablePage page) }}
+    {{# if (isBookmarkablePage page application) }}
     CustomRoute(
         {{# if page.isPageTypeDashboard }}
         initial: true,
         path: '/',
-        {{ else if page.isPageTypeView }}
+        {{ else if (isPageWithIdParam page application) }}
         path: '/{{ uriPathWithIdParam page.name }}',
         {{ else }}
         path: '/{{ uriPath page.name }}',
@@ -35,7 +35,7 @@ const List<AutoRoute> bookmarkableRoutes = [
 
 const List<AutoRoute> otherRoutes = [
     {{# each application.pages as |page| }}
-    {{# unless (isBookmarkablePage page) }}
+    {{# unless (isBookmarkablePage page application) }}
     CustomRoute(
         path: '/{{ uriPath page.name }}',
         page: {{ pageClassName page }},
