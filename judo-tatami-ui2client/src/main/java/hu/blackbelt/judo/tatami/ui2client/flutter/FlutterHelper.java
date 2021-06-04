@@ -732,90 +732,74 @@ public class FlutterHelper {
         return token.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
     }
 
+    private static String getClassNameOfTokens(List<String> tokens) {
+        return tokens.stream().map(t -> getCamelCaseVersion(t)).collect(Collectors.joining());
+    }
+
     private static String getClassName(ClassType type) {
-        return type.getPackageNameTokens().stream().map(t -> getCamelCaseVersion(t)).collect(Collectors.joining())
+        return getClassNameOfTokens(type.getPackageNameTokens())
                 .concat(getCamelCaseVersion(type.getSimpleName()));
     }
 
     private static String getClassName(RelationType relation) {
-        return relation.getOwnerPackageNameTokens().stream().map(t -> getCamelCaseVersion(t)).collect(Collectors.joining())
+        return getClassNameOfTokens(relation.getOwnerPackageNameTokens())
                 .concat(getCamelCaseVersion(relation.getOwnerSimpleName())).concat(getCamelCaseVersion(relation.getName()));
     }
 
     private static String getClassName(OperationType operation) {
-        return operation.getOwnerPackageNameTokens().stream().map(t -> getCamelCaseVersion(t)).collect(Collectors.joining())
+        return getClassNameOfTokens(operation.getOwnerPackageNameTokens())
                 .concat(getCamelCaseVersion(operation.getOwnerSimpleName())).concat(getCamelCaseVersion(operation.getName()));
     }
 
-    private static String getPackagePath(ClassType type) {
-        if(type.getPackageNameTokens().isEmpty()) {
+    private static String getPathOfTokens(List<String> tokens) {
+        if(tokens.isEmpty()) {
             return "";
         } else {
-            return type.getPackageNameTokens().stream().map(t -> getFileNameVersion(t)).collect(Collectors.joining("/"))
-                    .concat("/");
-        }
-    }
-
-    private static String getPackagePath(RelationType relation) {
-        if(relation.getOwnerPackageNameTokens().isEmpty()) {
-            return "";
-        } else {
-            return relation.getOwnerPackageNameTokens().stream().map(t -> getFileNameVersion(t)).collect(Collectors.joining("/"))
-                    .concat("/");
-        }
-    }
-
-    private static String getPackagePath(OperationType operation) {
-        if(operation.getOwnerPackageNameTokens().isEmpty()) {
-            return "";
-        } else {
-            return operation.getOwnerPackageNameTokens().stream().map(t -> getFileNameVersion(t)).collect(Collectors.joining("/"))
-                    .concat("/");
+            return tokens.stream().map(t -> getFileNameVersion(t)).collect(Collectors.joining("/")).concat("/");
         }
     }
 
     private static String getTypeNamePath(ClassType type) {
-        return getPackagePath(type).concat(getFileNameVersion(type.getSimpleName())).concat("/");
+        List<String> tokens = type.getPackageNameTokens();
+        tokens.add(type.getSimpleName());
+        return getPathOfTokens(tokens);
     }
 
     private static String getTypeNamePath(RelationType relation) {
-        return getPackagePath(relation).concat(getFileNameVersion(relation.getOwnerSimpleName())).concat("/");
-    }
-
-    private static String getTypeNamePath(OperationType operation) {
-        return getPackagePath(operation).concat(getFileNameVersion(operation.getOwnerSimpleName())).concat("/");
-    }
-
-    private static String getFeaturePath(RelationType relation) {
-        return getTypeNamePath(relation).concat(getFileNameVersion(relation.getName())).concat("/");
-    }
-
-    private static String getFeaturePath(OperationType operation) {
-        return getTypeNamePath(operation).concat(getFileNameVersion(operation.getName())).concat("/");
+        List<String> tokens = relation.getOwnerPackageNameTokens();
+        tokens.add(relation.getOwnerSimpleName());
+        return getPathOfTokens(tokens);
     }
 
     public static String getPageTypePath(PageDefinition page) {
+        List<String> tokens =  new ArrayList<>();
         if (page.getDataElement() != null && !(page.getPageType().equals(PageType.OPERATION_INPUT) || page.getPageType().equals(PageType.OPERATION_OUTPUT))) {
             RelationType dataElement = (RelationType) page.getDataElement();
-            return getFeaturePath(dataElement).concat(page.getPageType().toString().toLowerCase()).concat("/");
+            tokens.addAll(dataElement.getOwnerPackageNameTokens());
+            tokens.add(dataElement.getOwnerSimpleName());
+            tokens.add(dataElement.getName());
         } else if (page.getPageType().equals(PageType.OPERATION_INPUT) || page.getPageType().equals(PageType.OPERATION_OUTPUT)){
             OperationType dataElement = (OperationType) (page.getDataElement().eContainer());
-            return getFeaturePath(dataElement).concat(page.getPageType().toString().toLowerCase()).concat("/");
+            tokens.addAll(dataElement.getOwnerPackageNameTokens());
+            tokens.add(dataElement.getOwnerSimpleName());
+            tokens.add(dataElement.getName());
+        } else {
+            ClassType actor = ((Application)page.eContainer()).getActor();
+            tokens.addAll(actor.getPackageNameTokens());
+            tokens.add(actor.getSimpleName());
         }
-        ClassType actor = ((Application)page.eContainer()).getActor();
-        return getTypeNamePath(actor).concat(page.getPageType().toString().toLowerCase()).concat("/");
+        tokens.add(page.getPageType().toString().toLowerCase());
+        return getPathOfTokens(tokens);
     }
 
     //store naming
 
     public static String storeFolderPath(ClassType actor) {
-        return "lib/"
-            .concat(getFileNameVersion(actor.getSimpleName()))
-            .concat("/store/");
+        return getPathOfTokens(new ArrayList<>(Arrays.asList("lib", actor.getSimpleName(), "store")));
     }
 
     public static String storeClassRelativePath(ClassType type) {
-        return getPackagePath(type).concat(getFileNameVersion(type.getSimpleName()).concat("__store.dart"));
+        return getPathOfTokens(type.getPackageNameTokens()).concat(getFileNameVersion(type.getSimpleName()).concat("__store.dart"));
     }
 
     public static String storeClassPath(ClassType actor, ClassType type) {
@@ -829,9 +813,7 @@ public class FlutterHelper {
     //repository naming
 
     public static String repositoryFolderPath(ClassType actor) {
-        return "lib/"
-                .concat(getFileNameVersion(actor.getSimpleName()))
-                .concat("/repository/");
+        return getPathOfTokens(new ArrayList<>(Arrays.asList("lib", actor.getSimpleName(), "repository")));
     }
 
     public static String repositoryClassRelativePath(ClassType type) {
@@ -878,9 +860,7 @@ public class FlutterHelper {
     }
 
     public static String pagesFolderPath(ClassType actor) {
-        return "lib/"
-                .concat(getFileNameVersion(actor.getSimpleName()))
-                .concat("/ui/pages/");
+        return getPathOfTokens(new ArrayList<>(Arrays.asList("lib", actor.getSimpleName(), "ui", "pages")));
     }
 
     public static String pageStoreRelativePath(PageDefinition page) {
@@ -1001,8 +981,6 @@ public class FlutterHelper {
     // ui utilities
 
     public static String utilitiesFolderPath(ClassType actor) {
-        return "lib/"
-                .concat(getFileNameVersion(actor.getSimpleName()))
-                .concat("/ui/utilities/");
+        return getPathOfTokens(new ArrayList<>(Arrays.asList("lib", actor.getSimpleName(), "ui", "utilities")));
     }
 }
