@@ -8,23 +8,24 @@
     final {{ storeClassName page.dataElement.owner }} ownerStore;
     {{/ unless }}
     
-    const {{ fqClass page.name }}Page({Key key{{# if (isPageWithIdParam page application) }}, @PathParam('id') this.idParam{{ else }}, @required this.targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/unless}} }) : super(key: key);
+    const {{ pageClassName page }}({Key key{{# if (isPageWithIdParam page application) }}, @PathParam('id') this.idParam{{ else }}, @required this.targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/unless}} }) : super(key: key);
     
     @override
-    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState({{# if (isPageWithIdParam page application) }}idParam: idParam{{ else  }}targetStore: targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, ownerStore: ownerStore{{/ unless }});
+    State<StatefulWidget> createState() => _{{ pageStateClassName page }}({{# if (isPageWithIdParam page application) }}idParam: idParam{{ else  }}targetStore: targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, ownerStore: ownerStore{{/ unless }});
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
     {{# if (isPageWithIdParam page application) }}
     final String idParam;
     {{/ if }}
-    {{ storeClassName page.dataElement.target.name }} targetStore;
+    {{ storeClassName page.dataElement.target }} targetStore;
+    final String idParam;
     {{# unless page.dataElement.isAccess }}
     final {{ storeClassName page.dataElement.owner }} ownerStore;
     {{/ unless }}
-
-    final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();
-
+    
+    final {{ pageStoreClassName page } pageStore = {{ pageStoreClassName page }}();
+    
     _{{ pageStateClassName page }}({ {{# if (isPageWithIdParam page application) }}this.idParam{{ else  }}@required this.targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/ unless }} }){
         final navigation = locator<NavigationState>();
     {{# if page.dataElement.isRelationBehaviourTypeRefreshable }}
