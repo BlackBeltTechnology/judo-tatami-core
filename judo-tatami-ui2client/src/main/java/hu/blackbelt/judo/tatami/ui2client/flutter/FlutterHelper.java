@@ -543,12 +543,12 @@ public class FlutterHelper {
     }
 
     public static boolean isBookmarkablePage(PageDefinition page, Application application){
-        return page.getIsPageTypeDashboard() || isAccessTablePage(page) || isPageWithIdParam(page, application);
+        return isAccessTablePage(page) || isPageWithIdParam(page, application);
     }
 
     public static boolean isAccessTablePage(PageDefinition page){
         if (page.getRelationType() == null) return false;
-        return page.getIsPageTypeTable() && page.getRelationType().isIsAccess();
+        return page.getIsPageTypeDashboard() || (page.getIsPageTypeTable() && page.getRelationType().isIsAccess());
     }
 
     public static boolean isPageWithIdParam(PageDefinition page, Application application){
