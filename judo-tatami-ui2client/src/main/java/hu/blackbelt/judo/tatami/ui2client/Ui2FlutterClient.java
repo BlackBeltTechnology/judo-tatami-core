@@ -38,13 +38,21 @@ public class Ui2FlutterClient {
     public static ClientGenerator getFlutterClientGenerator(UiModel uiModel, List<URI> overridedScriptUris) throws IOException, UiModelResourceSupport.UiValidationException {
         List<URI> scriptUris = new ArrayList<>();
         scriptUris.add(calculateUi2ClientTemplateScriptURI());
-        scriptUris.addAll(overridedScriptUris);
 
+//        String uriPath = "templates" + File.separator + "flutter";
+        String uriPath = "templates";
+        for (URI uri : overridedScriptUris) {
+            URI uriRoot = uri;
+            if (uriPath != null && !uriPath.trim().equals("")) {
+                uriRoot = UriHelper.calculateRelativeURI(uri, uriPath);
+            }
+            scriptUris.add(uriRoot);
+        }
         List<GeneratorTemplate> generatorTemplates = new ArrayList<>();
-        generatorTemplates.addAll(GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI("flutter/" + FLUTTER_YAML).toURL()));
+        generatorTemplates.addAll(GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI("flutter" + File.separator + FLUTTER_YAML).normalize().toURL()));
         // Search for overrided flutter yaml files
         for (URI uri : overridedScriptUris) {
-            Collection<GeneratorTemplate> overridedTemplates = GeneratorTemplate.loadYamlURL(UriHelper.calculateRelativeURI(uri, FLUTTER_YAML).toURL());
+            Collection<GeneratorTemplate> overridedTemplates = GeneratorTemplate.loadYamlURL(UriHelper.calculateRelativeURI(uri, "templates" + File.separator + FLUTTER_YAML).normalize().toURL());
             Collection<GeneratorTemplate> replaceableTemplates = new HashSet<>();
             generatorTemplates.forEach(t -> {
                 overridedTemplates.stream().filter(o -> o.getTemplateName().equals(t.getTemplateName())).forEach(f -> replaceableTemplates.add(f));

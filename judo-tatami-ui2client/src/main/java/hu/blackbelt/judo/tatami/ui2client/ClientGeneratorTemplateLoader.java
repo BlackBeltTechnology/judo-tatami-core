@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.ui2client;
 
-import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
 import com.github.jknack.handlebars.io.URLTemplateLoader;
 import lombok.extern.slf4j.Slf4j;
