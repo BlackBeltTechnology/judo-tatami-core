@@ -43,7 +43,7 @@ const List<AutoRoute> otherRoutes = [
         {{ else }}
         path: '/{{ uriPath page.name }}',
         {{/ if }}
-        page: {{ pageClassName page.name }},
+        page: {{ pageClassName page }},
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         guards: [AuthGuard],
     ),
