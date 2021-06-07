@@ -19,7 +19,6 @@ class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
     final String idParam;
     {{/ if }}
     {{ storeClassName page.dataElement.target }} targetStore;
-    final String idParam;
     {{# unless page.dataElement.isAccess }}
     final {{ storeClassName page.dataElement.owner }} ownerStore;
     {{/ unless }}

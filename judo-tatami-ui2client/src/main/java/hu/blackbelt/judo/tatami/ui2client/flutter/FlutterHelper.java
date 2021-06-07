@@ -339,17 +339,22 @@ public class FlutterHelper {
     }
 
     public static String packageName(String packageName) {
-        List<String> nameTokens = stream(packageName.replaceAll("#", "::")
-                .replaceAll("\\.", "::")
-                .replaceAll("/", "::")
-                .replaceAll("_", "::")
+        List<String> nameTokens = stream(packageName
                 .split("::"))
                 .collect(Collectors.toList());
         if (nameTokens.size() > 2) {
             nameTokens.remove(0);
             nameTokens.remove(nameTokens.size() - 1);
             return nameTokens.stream()
-                    .map(s -> StringUtils.capitalize(s))
+                    .map(s -> StringUtils.capitalize(
+                            stream(s.replaceAll("#", "::")
+                                    .replaceAll("\\.", "::")
+                                    .replaceAll("/", "::")
+                                    .replaceAll("_", "::")
+                                    .split("::"))
+                                    .map(t -> StringUtils.capitalize(t))
+                            .collect(Collectors.joining())
+                    ))
                     .collect(Collectors.joining());
         }
         return null;
