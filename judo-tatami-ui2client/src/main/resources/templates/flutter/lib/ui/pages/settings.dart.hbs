@@ -9,19 +9,19 @@
 // Application: {{ application.name }}
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
-import 'package:flutter/scheduler.dart';
-
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/auth/auth.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/scaffold.dart';
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 import 'package:openapi_dart_common/openapi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package.dart';
 
 part 'settings.g.dart';
 

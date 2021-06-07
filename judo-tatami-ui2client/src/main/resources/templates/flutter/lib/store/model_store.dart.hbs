@@ -9,19 +9,19 @@
 
 part of {{ variable application.actor.name }}.store;
 
-class {{ storeClassName name }} extends _{{ storeClassName name }}
-    with _${{ storeClassName name }} {
+class {{ storeClassName self }} extends _{{ storeClassName self }}
+    with _${{ storeClassName self }} {
 
-    {{ storeClassName name }}() : super();
+    {{ storeClassName self }}() : super();
 
-    {{ storeClassName name }}.clone({{ storeClassName name }} storeToClone) : super.clone(storeToClone);
+    {{ storeClassName self }}.clone({{ storeClassName self }} storeToClone) : super.clone(storeToClone);
 
 }
 
-abstract class _{{ storeClassName name }} with Store {
-  _{{ storeClassName name }}();
+abstract class _{{ storeClassName self }} with Store {
+  _{{ storeClassName self }}();
 
-  _{{ storeClassName name }}.clone({{ storeClassName name }} storeToClone) {
+  _{{ storeClassName self }}.clone({{ storeClassName self }} storeToClone) {
     internal__identifier = storeToClone.internal__identifier;
     internal__signedIdentifier = storeToClone.internal__signedIdentifier;
     internal__referenceIdentifier = storeToClone.internal__referenceIdentifier;
@@ -43,7 +43,7 @@ abstract class _{{ storeClassName name }} with Store {
     }
       {{ else }}
     if (storeToClone.{{ variable name }} != null) {
-      {{ variable name }} = {{ storeClassName target.name }}.clone(storeToClone.{{ variable name }});
+      {{ variable name }} = {{ storeClassName target }}.clone(storeToClone.{{ variable name }});
     } else {
       {{ variable name }} = null;
     }
@@ -82,11 +82,11 @@ abstract class _{{ storeClassName name }} with Store {
     {{# if isCollection }}
 
   @observable
-  var {{ variable name }} = ObservableList<{{ storeClassName target.name }}>();
+  var {{ variable name }} = ObservableList<{{ storeClassName target }}>();
     {{ else }}
 
   @observable
-  {{ storeClassName target.name }} {{ variable name }};
+  {{ storeClassName target }} {{ variable name }};
     {{/ if }}
   {{/ each }}
 
@@ -103,13 +103,13 @@ abstract class _{{ storeClassName name }} with Store {
   {{# each relations }}
     {{# if isCollection }}
   @action
-  void set{{ className name }}(List<{{ storeClassName target.name }}> {{ variable name }}) {
+  void set{{ className name }}(List<{{ storeClassName target }}> {{ variable name }}) {
     this.{{ variable name }}.clear();
     this.{{ variable name }}.addAll({{ variable name }});
   }
     {{ else }}
   @action
-  void set{{ className name }}({{ storeClassName target.name }} {{ variable name }}) {
+  void set{{ className name }}({{ storeClassName target }} {{ variable name }}) {
     this.{{ variable name }} = {{ variable name }};
   }
     {{/ if }}
@@ -120,7 +120,7 @@ abstract class _{{ storeClassName name }} with Store {
   @override
   bool operator ==(Object other) =>
     identical(this, other) ||
-    other is _{{ storeClassName name }} &&
+    other is _{{ storeClassName self }} &&
         runtimeType == other.runtimeType &&
         (
           (
@@ -142,7 +142,7 @@ abstract class _{{ storeClassName name }} with Store {
   int get hashCode => hash3(internal__signedIdentifier, internal__identifier, internal__referenceIdentifier);
 
   @action
-  void updateWith({{ storeClassName name }} storeToClone) {
+  void updateWith({{ storeClassName self }} storeToClone) {
     internal__identifier = storeToClone.internal__identifier;
     internal__signedIdentifier = storeToClone.internal__signedIdentifier;
     internal__referenceIdentifier = storeToClone.internal__referenceIdentifier;
@@ -163,7 +163,7 @@ abstract class _{{ storeClassName name }} with Store {
     }
       {{ else }}
     if (storeToClone.{{ variable name }} != null) {
-      {{ variable name }} = {{ storeClassName target.name }}.clone(storeToClone.{{ variable name }});
+      {{ variable name }} = {{ storeClassName target }}.clone(storeToClone.{{ variable name }});
     } else {
       {{ variable name }} = null;
     }

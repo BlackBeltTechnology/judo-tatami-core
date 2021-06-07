@@ -7,7 +7,7 @@ ObservableFuture {{ variable relation.owner.name }}{{ fqClass relation.name }}St
 
 {{# if relation.isRelationBehaviourTypeCreatable }}
 @action
-Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
+Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{{ storeClassName relation.target }} targetStore) async {
     try {
         errorMessage = null;
         {{# if page.isPageTypeView }}
@@ -25,7 +25,7 @@ Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess }}{{
 {{/ if }}
 {{# if relation.isRelationBehaviourTypeAddable }}
 @action
-Future<List<{{ storeClassName relation.target.name }}>> add{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, List<{{ storeClassName relation.target.name }}> selectedStore) async {
+Future<List<{{ storeClassName relation.target }}>> add{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, List<{{ storeClassName relation.target }}> selectedStore) async {
     try {
         {{# if page.isPageTypeView }}
         await _actorRepository.{{ fqVariable relation.owner.name }}Add{{ fqClass relation.name }}(ownerStore, selectedStore);
@@ -43,7 +43,7 @@ Future<List<{{ storeClassName relation.target.name }}>> add{{ fqClass relation.n
 {{/ if }}
 {{# if relation.isRelationBehaviourTypeRemovable }}
 @action
-Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {{ storeClassName relation.target.name }} selectedStore) async {
+Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, {{ storeClassName relation.target }} selectedStore) async {
     try {
         errorMessage = null;
         {{# if page.isPageTypeView }}
@@ -61,7 +61,7 @@ Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner.
 {{/ if }}
 {{# if relation.isRelationBehaviourTypeListable }}
 @action
-{{# if relation.isCollection }}Future<List<{{ storeClassName relation.target.name }}>>{{ else }}Future<{{ storeClassName relation.target.name }}>{{/ if }} get{{ fqClass relation.name }}({{# unless relation.isAccess }}{{ storeClassName relation.owner.name }} ownerStore{{/ unless }}) async {
+{{# if relation.isCollection }}Future<List<{{ storeClassName relation.target }}>>{{ else }}Future<{{ storeClassName relation.target }}>{{/ if }} get{{ fqClass relation.name }}({{# unless relation.isAccess }}{{ storeClassName relation.owner }} ownerStore{{/ unless }}) async {
     try {
         errorMessage = null;
     {{# if relation.isAccess }}
@@ -87,7 +87,7 @@ Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner.
 {{/ if }}
 {{# if relation.isRelationBehaviourTypeSetable }}
 @action
-Future<void> set{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }} selectedStore) async {
+Future<void> set{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, {{# if relation.isCollection }}List<{{ storeClassName relation.target }}>{{ else }}{{ storeClassName relation.target }}{{/ if }} selectedStore) async {
     try {
         {{# if page.isPageTypeView }}
         await _actorRepository.{{ fqVariable relation.owner.name }}Set{{ fqClass relation.name }}(ownerStore, selectedStore);
@@ -104,7 +104,7 @@ Future<void> set{{ fqClass relation.name }}({{ storeClassName relation.owner.nam
 {{/ if }}
 {{# if relation.isRelationBehaviourTypeUnsetable }}
 @action
-Future<void> unset{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore) async {
+Future<void> unset{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore) async {
     try {
     {{# if page.isPageTypeView }}
         await _actorRepository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(ownerStore);
@@ -121,7 +121,7 @@ Future<void> unset{{ fqClass relation.name }}({{ storeClassName relation.owner.n
 {{/ if }}
 {{# if relation.isRelationBehaviourTypeDeletable }}
 @action
-Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore, {{ storeClassName relation.owner.name }} ownerStore) async {
+Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore, {{ storeClassName relation.owner }} ownerStore) async {
     try {
         errorMessage = null;
     {{# if page.isPageTypeView }}
@@ -139,7 +139,7 @@ Future<void> delete{{ className relation.name }}{{ className relation.target.nam
 {{/ if }}
 {{# if relation.isRelationBehaviourTypeUpdatable }}
 @action
-Future<{{ storeClassName relation.target.name }}> update{{ className relation.name }}{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore, {{ storeClassName relation.owner.name }} ownerStore) async {
+Future<{{ storeClassName relation.target }}> update{{ className relation.name }}{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore, {{ storeClassName relation.owner }} ownerStore) async {
     try {
         errorMessage = null;
     {{# if page.isPageTypeView }}

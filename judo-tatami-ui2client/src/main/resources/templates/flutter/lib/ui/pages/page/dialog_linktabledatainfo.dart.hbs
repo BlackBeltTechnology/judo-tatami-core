@@ -8,11 +8,11 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-part of {{ variable application.name }}.ui.pages.dialogs.tables;
+part of {{ pageLibraryName page }};
 
-class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable implements JudoTableDataInfo {
+class {{ dialogTableClassName table.pageDefinition table.dataElement.name }} implements JudoTableDataInfo {
 
-    const {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable(this.context, {this.disabled = false});
+    const {{ dialogTableClassName table.pageDefinition table.dataElement.name }}(this.context, {this.disabled = false});
 
     final BuildContext context;
     final bool disabled;
@@ -56,7 +56,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}DialogTable
         {{# unless (isBooleanDataType part.attributeType.dataType) }}
             {{# unless (isEnumType part.attributeType.dataType) }}
         if (columnIndex == {{@index}}) {
-            return "{{ variable part.attributeType.name }}";
+            return '{{ variable part.attributeType.name }}';
         }
             {{/ unless }}
         {{/ unless }}
