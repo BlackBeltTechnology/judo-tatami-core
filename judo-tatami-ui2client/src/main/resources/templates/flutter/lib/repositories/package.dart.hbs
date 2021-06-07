@@ -17,15 +17,15 @@ import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/injector/injector.
 import 'package:openapi_dart_common/openapi.dart';
 import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/rest/lib/api.dart';
 import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/store/package.dart';
-import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/ui/pages/dialogs/helper_stores/package.dart';
+import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/ui/utilities/package.dart';
 import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/utilities/package.dart';
 
 part 'mapper.dart';
-part '{{ repositoryClassRelativePath ap.name }}';
-{{# each application.relationTypes ~}}
-part '{{ repositoryRelationRelativePath name owner.name }}';
+part '{{ repositoryClassRelativePath ap }}';
+{{# each application.relationTypes as |relation| ~}}
+part '{{ repositoryRelationRelativePath relation }}';
 {{/ each }}
-{{# each classes ~}}
-    part '{{ repositoryClassRelativePath name }}';
+{{# each classes as |class| ~}}
+    part '{{ repositoryClassRelativePath class }}';
 {{/ each }}
 

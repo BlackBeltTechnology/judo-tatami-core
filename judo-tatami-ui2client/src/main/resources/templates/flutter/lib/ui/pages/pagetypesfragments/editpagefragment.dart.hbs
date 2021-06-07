@@ -1,31 +1,31 @@
 //START editpagefragment.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------
-    final {{ storeClassName page.dataElement.target.name }} targetStore;
+    final {{ storeClassName page.dataElement.target }} targetStore;
     {{# if (validatableFlagNeed page.dataElement) }}
     final bool validatable;
     {{/ if }}
 
-    const {{ fqClass page.name }}Page({Key key, @required this.targetStore{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) : super(key: key);
+    const {{ pageClassName page }}({Key key, @required this.targetStore{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) : super(key: key);
 
     @override
     State<StatefulWidget> createState() =>
-        _{{ fqClass page.name }}PageState(targetStore: targetStore{{# if (validatableFlagNeed page.dataElement) }}, validatable: validatable{{/ if }});
+        _{{ pageStateClassName page }}(targetStore: targetStore{{# if (validatableFlagNeed page.dataElement) }}, validatable: validatable{{/ if }});
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
 
-    final {{ storeClassName page.dataElement.target.name }} targetStore;
+    final {{ storeClassName page.dataElement.target }} targetStore;
     {{# if (validatableFlagNeed page.dataElement) }}
     final bool validatable;
     {{/ if }}
 
-    final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
+    final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();
 
-    _{{ fqClass page.name }}PageState({@required this.targetStore{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) {
+    _{{ pageStateClassName page }}({@required this.targetStore{{# if (validatableFlagNeed page.dataElement) }}, this.validatable{{/ if }} }) {
         pageStore.targetStore = targetStore;
 
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page }}.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
         });
         {{# if (validatableFlagNeed page.dataElement) }}
         if (this.validatable != null) {

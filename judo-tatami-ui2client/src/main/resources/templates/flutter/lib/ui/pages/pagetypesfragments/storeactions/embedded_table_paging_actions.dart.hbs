@@ -34,7 +34,7 @@ void {{ variable relation.name }}TablePreviousPage() {
 }
 
 @computed
-List<{{ storeClassName relation.target.name }}> get {{ variable relation.name }}TablePagingList {
+List<{{ storeClassName relation.target }}> get {{ variable relation.name }}TablePagingList {
     int subListStart = {{ variable relation.name }}TablePageNumber * {{ variable relation.name }}QueryLimit;
     int subListEnd;
     if ({{ variable relation.name }}TableNextEnable) {

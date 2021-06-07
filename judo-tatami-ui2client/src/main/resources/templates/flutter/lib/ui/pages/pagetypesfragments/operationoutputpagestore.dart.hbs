@@ -1,16 +1,16 @@
 {{ log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug' }}
 //START operationoutputpagestore.dart.hbs-----{{ page.name }}--------------------------------------------------------------------------------
-class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
+class {{ pageStoreClassName page }} extends _{{ pageStoreClassName page }} with _${{ pageStoreClassName page }} {}
 
-abstract class _{{ fqClass page.name }}PageStore with Store {
+abstract class _{{ pageStoreClassName page }} with Store {
 {{# with page.dataElement as |relation| }}
-    {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
+    {{ repositoryClassName application.actor }} _actorRepository = locator<{{ repositoryClassName application.actor }}>();
 
     @observable
     String errorMessage;
 
     @observable
-    {{ storeClassName relation.target.name }} targetStore;
+    {{ storeClassName relation.target }} targetStore;
 
     @observable
     ObservableFuture {{ fqVariable relation.name }}StoreFuture;
@@ -20,7 +20,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
     {{# if relation.isRelationBehaviourTypeRefreshable }}
     @action
-    Future<void> refresh{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
+    Future<void> refresh{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore) async {
         try {
             errorMessage = null;
             targetStore.updateWith(await _actorRepository.{{ fqVariable relation.target.name }}GetByIdentifier(targetStore));
@@ -33,7 +33,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeUpdatable }}
     @action
-    Future<{{ storeClassName relation.target.name }}> update{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
+    Future<{{ storeClassName relation.target }}> update{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore) async {
         try {
             errorMessage = null;
             return await _actorRepository.{{ fqVariable relation.target.name }}Update(targetStore);
@@ -46,7 +46,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeDeletable }}
     @action
-    Future<void> delete{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
+    Future<void> delete{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore) async {
         try {
             errorMessage = null;
             await _actorRepository.{{ fqVariable relation.target.name }}Delete(targetStore);
@@ -59,7 +59,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeCreateValidatable }}
     @action
-    Future<{{ storeClassName relation.target.name }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
+    Future<{{ storeClassName relation.target }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{{ storeClassName relation.target }} targetStore) async {
         try {
             errorMessage = null;
             return await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);
@@ -106,7 +106,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     //OPERATIONS
     {{# each page.dataElement.target.operations as |operation| }}
     @action
-    {{# if operation.output }}Future<{{# if operation.output.isCollection }}List<{{ storeClassName operation.output.target.name }}>{{ else }}{{ storeClassName operation.output.target.name }}{{/ if }}>{{ else }}Future<void>{{/ if }} {{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}{{ storeClassName operation.input.target.name }} targetStore, {{/ if }}{{# if operation.isMapped }}{{ storeClassName operation.owner.name }} ownerStore{{/ if }}) async {
+    {{# if operation.output }}Future<{{# if operation.output.isCollection }}List<{{ storeClassName operation.output.target }}>{{ else }}{{ storeClassName operation.output.target }}{{/ if }}>{{ else }}Future<void>{{/ if }} {{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}{{ storeClassName operation.input.target }} targetStore, {{/ if }}{{# if operation.isMapped }}{{ storeClassName operation.owner }} ownerStore{{/ if }}) async {
         try {
             errorMessage = null;
             {{# if operation.output }}return {{/ if }}await _actorRepository.{{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}targetStore, {{/ if }}{{# if operation.isMapped }}ownerStore{{/ if }});

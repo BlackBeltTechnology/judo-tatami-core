@@ -28,8 +28,8 @@ Observer(builder: (_) {
         {{#if rowAction.isViewAction}}
         navigateToViewPageAction: (element) async {
             if (element != null) {
-                var response = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page{{# if (tableNavigateToViewHasIdParam page) }}(id: element.internal__signedIdentifier){{/ if}},
-                arguments: {{ fqClass rowAction.target.name }}PageArguments({{# unless relation.isAccess}}ownerStore: targetStore, targetStore: element{{/ unless}}));
+                var response = await navigation.open(Routes.{{ pageClassVariableName rowAction.target }}{{# if (tableNavigateToViewHasIdParam page) }}(id: element.internal__signedIdentifier){{/ if}},
+                arguments: {{ pageArgumentsClassName rowAction.target }}({{# unless relation.isAccess}}ownerStore: targetStore, targetStore: element{{/ unless}}));
                 {{# unless relation.isMemberTypeTransient }}
                     {{# unless page.isPageTypeOperationOutput }}
                 if (response != null) {
@@ -43,10 +43,10 @@ Observer(builder: (_) {
         {{/ if }}
         {{# if rowAction.isEditAction }}
         navigateToEditPageAction:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} (element) async {
-            {{ storeClassName relationType.target.name }} cloned = {{ storeClassName relationType.target.name }}();
+            {{ storeClassName relationType.target }} cloned = {{ storeClassName relationType.target }}();
             cloned.updateWith(element);
-            var res = await navigation.open(Routes.{{ fqVariable rowAction.target.name }}Page,
-            arguments: {{ fqClass rowAction.target.name }}PageArguments(targetStore: cloned, validatable: pageStore.validatable));
+            var res = await navigation.open(Routes.{{ pageClassVariableName rowAction.target }},
+            arguments: {{ pageArgumentsClassName rowAction.target }}(targetStore: cloned, validatable: pageStore.validatable));
             if (res != null) {
                 element.updateWith(cloned);
                 var updated = await pageStore.update{{ className relation.name }}{{ className relation.target.name }}(element, targetStore)
@@ -78,7 +78,7 @@ Observer(builder: (_) {
             {{# if relation.isRelationBehaviourTypeRemovable }}
             pageStore.remove{{ fqClass relation.name }}(targetStore, element);
             {{ else }}
-            var temporaryList = List<{{ storeClassName relation.target.name }}>.from(targetStore.{{ variable relation.name }})
+            var temporaryList = List<{{ storeClassName relation.target }}>.from(targetStore.{{ variable relation.name }})
                 ..remove(element);
             targetStore.set{{ fqClass relation.name }}(temporaryList);
             {{/ if }}

@@ -2,41 +2,41 @@
     {{# if (isPageWithIdParam page application) }}
     final String idParam;
     {{ else }}
-    final {{ storeClassName page.dataElement.target.name }} targetStore;
+    final {{ storeClassName page.dataElement.target }} targetStore;
     {{/ if }}
     {{# unless page.dataElement.isAccess }}
-    final {{ storeClassName page.dataElement.owner.name }} ownerStore;
+    final {{ storeClassName page.dataElement.owner }} ownerStore;
     {{/ unless }}
     
-    const {{ fqClass page.name }}Page({Key key{{# if (isPageWithIdParam page application) }}, @PathParam('id') this.idParam{{ else }}, @required this.targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/unless}} }) : super(key: key);
+    const {{ pageClassName page }}({Key key{{# if (isPageWithIdParam page application) }}, @PathParam('id') this.idParam{{ else }}, @required this.targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/unless}} }) : super(key: key);
     
     @override
-    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState({{# if (isPageWithIdParam page application) }}idParam: idParam{{ else  }}targetStore: targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, ownerStore: ownerStore{{/ unless }});
+    State<StatefulWidget> createState() => _{{ pageStateClassName page }}({{# if (isPageWithIdParam page application) }}idParam: idParam{{ else  }}targetStore: targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, ownerStore: ownerStore{{/ unless }});
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
     {{# if (isPageWithIdParam page application) }}
     final String idParam;
     {{/ if }}
-    {{ storeClassName page.dataElement.target.name }} targetStore;
+    {{ storeClassName page.dataElement.target }} targetStore;
     {{# unless page.dataElement.isAccess }}
-    final {{ storeClassName page.dataElement.owner.name }} ownerStore;
+    final {{ storeClassName page.dataElement.owner }} ownerStore;
     {{/ unless }}
-
-    final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
-
-    _{{ fqClass page.name }}PageState({ {{# if (isPageWithIdParam page application) }}this.idParam{{ else  }}@required this.targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/ unless }} }){
+    
+    final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();
+    
+    _{{ pageStateClassName page }}({ {{# if (isPageWithIdParam page application) }}this.idParam{{ else  }}@required this.targetStore{{/ if }}{{# unless page.dataElement.isAccess }}, @required this.ownerStore{{/ unless }} }){
         final navigation = locator<NavigationState>();
     {{# if page.dataElement.isRelationBehaviourTypeRefreshable }}
         {{# if (isPageWithIdParam page application) }}
-        targetStore = {{ storeClassName page.dataElement.target.name }}();
+        targetStore = {{ storeClassName page.dataElement.target }}();
         targetStore.internal__signedIdentifier = idParam;
         {{/ if }}
         pageStore.targetStore = targetStore;
         pageStore
             .refresh{{ className page.dataElement.target.name }}(targetStore)
             .then((_) {
-                navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
+                navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page }}.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
             })
             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     {{/ if }}

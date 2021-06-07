@@ -8,7 +8,7 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-part of {{ variable application.name }}.ui.pages.{{ fqVariable table.pageContainer.layoutType.name }}.tables;
+part of {{ pageLibraryName page }};
 
 class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass table.pageContainer.layoutType.name }}Table implements JudoTableDataInfo {
 
@@ -75,7 +75,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
         {{# unless (isBooleanDataType column.attributeType.dataType) }}
             {{# unless (isEnumType column.attributeType.dataType) }}
         if (columnIndex == {{@index}}) {
-            return "{{ variable column.attributeType.name }}";
+            return '{{ variable column.attributeType.name }}';
         }
             {{/ unless }}
         {{/ unless }}

@@ -1,20 +1,20 @@
 //START operationinputpagefragment.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------
     @override
-    _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState();
+    _{{ pageStateClassName page }} createState() => _{{ pageStateClassName page }}();
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
 
-    final {{ storeClassName page.dataElement.target.name }} targetStore = {{ storeClassName page.dataElement.target.name }}();
+    final {{ storeClassName page.dataElement.target }} targetStore = {{ storeClassName page.dataElement.target }}();
 
-    final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
+    final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();
 
-    _{{ fqClass page.name }}PageState(){
+    _{{ pageStateClassName page }}(){
         pageStore.targetStore = targetStore;
 
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page }}.title));
         });
     }
 //END operationinputpagefragment.dart.hbs-----{{ page.name }}--------------------------------------------------------------------------------

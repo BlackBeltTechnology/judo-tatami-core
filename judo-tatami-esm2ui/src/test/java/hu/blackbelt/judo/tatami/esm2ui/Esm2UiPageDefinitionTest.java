@@ -340,37 +340,37 @@ public class Esm2UiPageDefinitionTest {
         assertTrue(uiE3.isPresent());
         
         final Optional<PageDefinition> e2op1InputPage = application.get().getPages().stream()
-                .filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e2.getName()) && c.getName().contains(operation1.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().contains(e2.getName()) && c.getName().contains(operation1.getName())).findAny();
         assertTrue(e2op1InputPage.isPresent());
         assertTrue(e2op1InputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e2op1InputPage.get().getDataElement().eContainer().eContainer().equals(uiE2.get()));
         
         final Optional<PageDefinition> e2op2OutputPage = application.get().getPages().stream()
-                .filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e2.getName()) && c.getName().contains(operation2.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().contains(e2.getName()) && c.getName().contains(operation2.getName())).findAny();
         assertTrue(e2op2OutputPage.isPresent());
         assertTrue(e2op2OutputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e2op2OutputPage.get().getDataElement().eContainer().eContainer().equals(uiE2.get()));
         
         final Optional<PageDefinition> e3op1InputPage = application.get().getPages().stream()
-                .filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation1.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().contains(e3.getName()) && c.getName().contains(operation1.getName())).findAny();
         assertTrue(e3op1InputPage.isPresent());
         assertTrue(e3op1InputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e3op1InputPage.get().getDataElement().eContainer().eContainer().equals(uiE3.get()));
         
         final Optional<PageDefinition> e3op2OutputPage = application.get().getPages().stream()
-                .filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation2.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().contains(e3.getName()) && c.getName().contains(operation2.getName())).findAny();
         assertTrue(e3op2OutputPage.isPresent());
         assertTrue(e3op2OutputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e3op2OutputPage.get().getDataElement().eContainer().eContainer().equals(uiE3.get()));
         
         final Optional<PageDefinition> e3op3InputPage = application.get().getPages().stream()
-                .filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation3.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_INPUT) && c.getName().contains(e3.getName()) && c.getName().contains(operation3.getName())).findAny();
         assertTrue(e3op3InputPage.isPresent());
         assertTrue(e3op3InputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e3op3InputPage.get().getDataElement().eContainer().eContainer().equals(uiE3.get()));
         
         final Optional<PageDefinition> e3op3OutputPage = application.get().getPages().stream()
-                .filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().endsWith(e3.getName()) && c.getName().contains(operation3.getName())).findAny();
+                .filter(c -> c.getPageType().equals(PageType.OPERATION_OUTPUT) && c.getName().contains(e3.getName()) && c.getName().contains(operation3.getName())).findAny();
         assertTrue(e3op3OutputPage.isPresent());
         assertTrue(e3op3OutputPage.get().getDataElement() instanceof OperationParameterType);
         assertTrue(e3op3OutputPage.get().getDataElement().eContainer().eContainer().equals(uiE3.get()));

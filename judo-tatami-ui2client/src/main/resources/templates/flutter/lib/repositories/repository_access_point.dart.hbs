@@ -14,21 +14,21 @@
 part of {{ variable ap.name }}.repository;
 
 @lazySingleton
-class {{ repositoryClassName ap.name }}{{# if application.relationTypes }} with {{ else }}{{# if classes }} with {{/ if }}{{/ if }}
-{{# each application.relationTypes ~}}
-    {{ repositoryRelationName name owner.name }}{{# unless @last }},{{/ unless }} {{# if @last }}{{# if classes ~}}, {{/ if }} {{/ if }}
+class {{ repositoryClassName application.actor }}{{# if application.relationTypes }} with {{ else }}{{# if classes }} with {{/ if }}{{/ if }}
+{{# each application.relationTypes as |relation| ~}}
+    {{ repositoryRelationName relation }}{{# unless @last }},{{/ unless }} {{# if @last }}{{# if classes ~}}, {{/ if }} {{/ if }}
 {{/ each }}
-{{# each classes ~}}
-    {{ repositoryClassName name }}{{# unless @last }},{{/ unless }}
+{{# each classes as |class| ~}}
+    {{ repositoryClassName class }}{{# unless @last }},{{/ unless }}
 {{/ each }} {
 
 {{# if application.principal }}
   //////////////////////////////////////////////////////////////////////////////
   // GET Principal
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ storeClassName application.principal.name }}> getPrincipal() async {
+  Future<{{ storeClassName application.principal }}> getPrincipal() async {
     {{ fqClass application.principal.transferObjectTypeName }} {{ variable application.principal.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable application.actor.name }}Principal();
-    return {{ repositoryStoreMapperClassName application.actor.name }}.create{{ storeClassName application.principal.name }}From{{ fqClass application.principal.name }}({{ variable application.principal.name }}Response);
+    return {{ repositoryStoreMapperClassName application.actor }}.create{{ storeClassName application.principal }}From{{ fqClass application.principal.name }}({{ variable application.principal.name }}Response);
 
   }
 {{/ if }}
