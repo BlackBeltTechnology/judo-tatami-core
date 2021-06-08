@@ -29,7 +29,7 @@ Observer(builder: (_) {
                 {{# if part }}
             if (element.{{ variable part.attributeType.name }} != null) {
                 if (ret.length > 0) ret = ret + ' - ';
-                ret = ret + ({{> templates/flutter/lib/ui/pages/widgets/link/linkformatter.dart.hbs part=part dataName=(className link.dataElement.target.name) parameterVariable='element' }});
+                ret = ret + ({{> flutter/lib/ui/pages/widgets/link/linkformatter.dart.hbs part=part dataName=(className link.dataElement.target.name) parameterVariable='element' }});
             }
                 {{/ if }}
             {{/ each }}
@@ -43,7 +43,7 @@ Observer(builder: (_) {
                     {{# unless attributeType.isReadOnly }}
         setAction: targetStore.internal__updatable ? () async {
             var selected =
-            {{> templates/flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation }}
+            {{> flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation }}
             if (selected != null) {
                         {{# if relation.isRelationBehaviourTypeSetable }}
                 pageStore.set{{ fqClass relation.name }}(targetStore, selected)

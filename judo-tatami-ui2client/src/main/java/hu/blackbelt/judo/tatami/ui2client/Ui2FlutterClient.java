@@ -40,13 +40,14 @@ public class Ui2FlutterClient {
         scriptUris.add(calculateUi2ClientTemplateScriptURI());
 
 //        String uriPath = "templates" + File.separator + "flutter";
-        String uriPath = "templates";
+        String uriPath = "templates/";
         for (URI uri : overridedScriptUris) {
             URI uriRoot = uri;
+//            scriptUris.add(uriRoot);
             if (uriPath != null && !uriPath.trim().equals("")) {
                 uriRoot = UriHelper.calculateRelativeURI(uri, uriPath);
+                scriptUris.add(uriRoot);
             }
-            scriptUris.add(uriRoot);
         }
         List<GeneratorTemplate> generatorTemplates = new ArrayList<>();
         generatorTemplates.addAll(GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI("flutter" + File.separator + FLUTTER_YAML).normalize().toURL()));
