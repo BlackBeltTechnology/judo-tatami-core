@@ -28,14 +28,12 @@ Observer(builder: (_) {
         {{#if rowAction.isViewAction}}
         navigateToViewPageAction: (element) async {
             if (element != null) {
-                var response = await navigation.open(Routes.{{ pageClassVariableName rowAction.target }}{{# if (tableNavigateToViewHasIdParam page) }}(id: element.internal__signedIdentifier){{/ if}},
+                await navigation.open(Routes.{{ pageClassVariableName rowAction.target }}{{# if (tableNavigateToViewHasIdParam page) }}(id: element.internal__signedIdentifier){{/ if}},
                 arguments: {{ pageArgumentsClassName rowAction.target }}({{# unless relation.isAccess}}ownerStore: targetStore, targetStore: element{{/ unless}}));
                 {{# unless relation.isMemberTypeTransient }}
                     {{# unless page.isPageTypeOperationOutput }}
-                if (response != null) {
-                    pageStore.refresh{{ className relation.owner.name }}(targetStore)
-                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                }
+                pageStore.refresh{{ className relation.owner.name }}(targetStore)
+                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                     {{/ unless }}
                 {{/ unless }}
             }

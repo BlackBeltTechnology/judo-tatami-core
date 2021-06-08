@@ -37,7 +37,12 @@ const List<AutoRoute> otherRoutes = [
     {{# each application.pages as |page| }}
     {{# unless (isBookmarkablePage page application) }}
     CustomRoute(
+        {{# if page.isPageTypeDashboard }}
+        initial: true,
+        path: '/',
+        {{ else }}
         path: '/{{ uriPath page.name }}',
+        {{/ if }}
         page: {{ pageClassName page }},
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         guards: [AuthGuard],
