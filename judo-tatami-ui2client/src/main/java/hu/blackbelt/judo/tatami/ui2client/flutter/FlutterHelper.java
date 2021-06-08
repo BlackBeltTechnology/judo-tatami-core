@@ -865,7 +865,10 @@ public class FlutterHelper {
     }
 
     public static String repositoryRelationName(RelationType relation) {
-        return getClassName(relation).concat("Repository");
+        return relation.getOwnerPackageNameTokens().stream().map(t -> getCamelCaseVersion(t)).collect(Collectors.joining())
+                .concat(getCamelCaseVersion(relation.getOwnerSimpleName()))
+                .concat("RepositoryFor")
+                .concat(getCamelCaseVersion(relation.getName()));
     }
 
     //page store naming
