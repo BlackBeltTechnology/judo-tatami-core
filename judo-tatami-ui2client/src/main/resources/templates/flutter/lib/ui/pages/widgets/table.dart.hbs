@@ -1,15 +1,15 @@
 //START xmi:id="{{ getXMIID this }}" table.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------------------
 // {{ dataElement.relationKind }} TABLE
 {{# if dataElement.isRelationKindStatic }}
-{{> templates/flutter/lib/ui/pages/widgets/table/associationtable.dart.hbs table=this }}
+{{> flutter/lib/ui/pages/widgets/table/associationtable.dart.hbs table=this }}
 {{/ if }}
 {{# if dataElement.isRelationKindAssociation }}
-{{> templates/flutter/lib/ui/pages/widgets/table/associationtable.dart.hbs table=this }}
+{{> flutter/lib/ui/pages/widgets/table/associationtable.dart.hbs table=this }}
 {{/ if }}
 {{# if dataElement.isRelationKindAggregation }}
-{{> templates/flutter/lib/ui/pages/widgets/table/aggregationtable.dart.hbs table=this }}
+{{> flutter/lib/ui/pages/widgets/table/aggregationtable.dart.hbs table=this }}
 {{/ if }}
 {{# if dataElement.isRelationKindComposition }}
-{{> templates/flutter/lib/ui/pages/widgets/table/aggregationtable.dart.hbs table=this }}
+{{> flutter/lib/ui/pages/widgets/table/aggregationtable.dart.hbs table=this }}
 {{/ if }}
 //END table.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------------

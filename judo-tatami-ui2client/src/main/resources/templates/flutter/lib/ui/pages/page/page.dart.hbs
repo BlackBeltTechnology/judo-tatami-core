@@ -11,29 +11,29 @@
 
 part of {{ pageLibraryName page }};
 {{# if page.isPageTypeView }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeTable }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagestore.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/tablepagestore.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeCreate }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/createpagestore.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/createpagestore.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeUpdate }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagestore.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/editpagestore.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeDashboard }}
     {{# if page.relationType.isCollection }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagestore.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/tablepagestore.dart.hbs }}
     {{ else }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/viewpagestore.dart.hbs }}
     {{/ if }}
 {{/ if }}
 {{# if page.isPageTypeOperationInput }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/operationinputpagestore.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/operationinputpagestore.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeOperationOutput }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/operationoutputpagestore.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/operationoutputpagestore.dart.hbs }}
 {{/ if }}
 
 
@@ -42,28 +42,28 @@ class {{ pageClassName page }} extends StatefulWidget {
 
 {{# if page.isPageTypeDashboard }}
     {{# if page.relationType.isCollection }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs }}
     {{ else }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardpagefragment.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/dashboardpagefragment.dart.hbs }}
     {{/ if }}
 {{/ if }}
 {{# if page.isPageTypeTable }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/tablepagefragment.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeView }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/viewpagefragment.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/viewpagefragment.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeCreate }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/createpagefragment.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/createpagefragment.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeUpdate }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/editpagefragment.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/editpagefragment.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeOperationInput }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/operationinputpagefragment.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/operationinputpagefragment.dart.hbs }}
 {{/ if }}
 {{# if page.isPageTypeOperationOutput }}
-{{> templates/flutter/lib/ui/pages/pagetypesfragments/operationoutputpagefragment.dart.hbs }}
+{{> flutter/lib/ui/pages/pagetypesfragments/operationoutputpagefragment.dart.hbs }}
 {{/ if }}
 
     {{# if (isInputWidgetMapNeed page) }}
@@ -78,7 +78,7 @@ class {{ pageClassName page }} extends StatefulWidget {
     Widget build(BuildContext context) {
 
         {{# if (isSingleRelationDashboardPage page) }}
-        {{> templates/flutter/lib/ui/pages/pagetypesfragments/dashboardlayoutbuilder.dart.hbs }}
+        {{> flutter/lib/ui/pages/pagetypesfragments/dashboardlayoutbuilder.dart.hbs }}
         {{ else }}
         return LayoutBuilder(builder: (context, constraints) {
                     {{# each page.containers as |pageContainer| }}
