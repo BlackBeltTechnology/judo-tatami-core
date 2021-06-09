@@ -18,7 +18,7 @@ bool {{ fqVariable relation.name }}SortAscRange = false; // TODO: JNG-2716
 Comparator {{ fqVariable relation.name }}SortCompareRange;
 
 @observable
-List<{{ storeClassName relation.target.name }}> {{ fqVariable relation.name }}StoreRangeList = ObservableList<{{ storeClassName relation.target.name }}>();
+List<{{ storeClassName relation.target }}> {{ fqVariable relation.name }}StoreRangeList = ObservableList<{{ storeClassName relation.target }}>();
 
 @computed
 int get {{ variable relation.name }}TableForRangeItemsRangeStart => nextPageCounterFor{{ fqClass relation.name }}Range * {{ fqVariable relation.name }}QueryLimit + 1;
@@ -39,7 +39,7 @@ bool get previousButtonEnableFor{{ fqClass relation.name }}Range => nextPageCoun
 bool nextPageIsEmptyFor{{ fqClass relation.name }}Range = false;
 
 @action
-void {{ fqVariable relation.name }}SetSortRange({{ storeClassName relation.owner.name }} ownerStore, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList, String mask}) {
+void {{ fqVariable relation.name }}SetSortRange({{ storeClassName relation.owner }} ownerStore, BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {List<FilterStore> filterStoreList, String mask}) {
     if ({{ fqVariable relation.name }}SortColumnIndexRange != sortColumnIndex) {
         {{ fqVariable relation.name }}SortAscRange = true;
     } else {
@@ -54,7 +54,7 @@ void {{ fqVariable relation.name }}SetSortRange({{ storeClassName relation.owner
 }
 
 @action
-Future<List<{{ storeClassName relation.target.name }}>> getRangeFor{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {List<FilterStore> filterStoreList, int queryLimit, String mask, bool isNext}) async {
+Future<List<{{ storeClassName relation.target }}>> getRangeFor{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, {List<FilterStore> filterStoreList, int queryLimit, String mask, bool isNext}) async {
     try {
         errorMessage = null;
 
@@ -77,7 +77,7 @@ Future<List<{{ storeClassName relation.target.name }}>> getRangeFor{{ fqClass re
                 : null,
         ));
 
-        List<{{ storeClassName relation.target.name }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreRangeFuture;
+        List<{{ storeClassName relation.target }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreRangeFuture;
         if (nextItemsList.isEmpty) {
             nextPageIsEmptyFor{{ fqClass relation.name }}Range = true;
             return {{ fqVariable relation.name }}StoreRangeList;

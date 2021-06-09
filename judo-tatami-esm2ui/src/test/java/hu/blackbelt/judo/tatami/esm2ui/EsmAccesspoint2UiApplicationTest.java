@@ -378,7 +378,7 @@ public class EsmAccesspoint2UiApplicationTest {
         assertTrue(uiEntityForCreateAndUpdate.get().isIsForCreateOrUpdateType());
         
         final Optional<PageDefinition> uiDashboard = application.get().getPages().stream()
-                .filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
+                .filter(d -> d.getName().startsWith(EsmUtils.getNamespaceElementFQName(actor)) &&  d.getName().endsWith("#Dashboard") && d.getIsPageTypeDashboard()).findAny();
         assertTrue(uiDashboard.isPresent());
         assertEquals(uiRelation.get(), uiDashboard.get().getDataElement());
         assertTrue(uiDashboard.get().getContainers().stream().filter(c -> c.getLayoutType().isOriginal()).findFirst().isPresent());
@@ -418,7 +418,7 @@ public class EsmAccesspoint2UiApplicationTest {
         assertTrue(uiRelation3.isPresent());
         
         final Optional<PageDefinition> uiDashboard3 = application3.get().getPages().stream()
-                .filter(d -> d.getName().equals(EsmUtils.getNamespaceElementFQName(actor3) + "#Dashboard") && d.getIsPageTypeDashboard()).findAny();
+                .filter(d -> d.getName().startsWith(EsmUtils.getNamespaceElementFQName(actor3)) && d.getName().endsWith("#Dashboard") && d.getIsPageTypeDashboard()).findAny();
         assertTrue(uiDashboard3.isPresent());
         assertEquals(uiRelation3.get(), uiDashboard3.get().getDataElement());
        

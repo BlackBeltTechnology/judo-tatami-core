@@ -12,23 +12,20 @@ import 'package:auto_route/auto_route.dart';
 import 'package:auto_route/auto_route_annotations.dart';
 import '../guards/auth_guard.dart';
 import '../pages/package.dart';
-import '../blank_page.dart';
-import '../error_page.dart';
-import '../settings.dart';
 
 const List<AutoRoute> bookmarkableRoutes = [
-    {{# each layout.pageContainers as |container| }}
-    {{# if (isBookmarkablePage container.owner application) }}
+    {{# each application.pages as |page| }}
+    {{# if (isBookmarkablePage page application) }}
     CustomRoute(
-        {{# if container.owner.isPageTypeDashboard }}
+        {{# if page.isPageTypeDashboard }}
         initial: true,
         path: '/',
-        {{ else if (isPageWithIdParam container.owner application) }}
-        path: '/{{ uriPathWithIdParam container.owner.name }}',
+        {{ else if (isPageWithIdParam page application) }}
+        path: '/{{ uriPathWithIdParam page.name }}',
         {{ else }}
-        path: '/{{ uriPath container.owner.name }}',
+        path: '/{{ uriPath page.name }}',
         {{/ if }}
-        page: {{ fqClass container.owner.name }}Page,
+        page: {{ pageClassName page }},
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         guards: [AuthGuard],
     ),
@@ -37,11 +34,16 @@ const List<AutoRoute> bookmarkableRoutes = [
 ];
 
 const List<AutoRoute> otherRoutes = [
-    {{# each layout.pageContainers as |container| }}
-    {{# unless (isBookmarkablePage container.owner application) }}
+    {{# each application.pages as |page| }}
+    {{# unless (isBookmarkablePage page application) }}
     CustomRoute(
-        path: '/{{ uriPath container.owner.name }}',
-        page: {{ fqClass container.owner.name }}Page,
+        {{# if page.isPageTypeDashboard }}
+        initial: true,
+        path: '/',
+        {{ else }}
+        path: '/{{ uriPath page.name }}',
+        {{/ if }}
+        page: {{ pageClassName page }},
         transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
         guards: [AuthGuard],
     ),

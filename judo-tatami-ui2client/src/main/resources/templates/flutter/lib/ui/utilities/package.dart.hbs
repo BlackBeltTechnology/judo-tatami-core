@@ -8,16 +8,22 @@
 // Template name: {{ template.templateName }}
 // Application: {{ application.name }}
 
-library {{ variable application.name }}.ui.pages.dialogs.helperStores;
+library judo.ui.pages.utility;
 
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import 'package:judo_icon_helper/icons_helper.dart';
 
-import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:judo_flutter_components/judo_flutter_components.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/store/package.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 
 part 'package.g.dart';
-
 part 'filter_store.dart';
+part 'filter_helper.dart';
 part 'table_helper_store.dart';
+

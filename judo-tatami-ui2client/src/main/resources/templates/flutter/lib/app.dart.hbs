@@ -31,7 +31,7 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 
 Future<bool> hasActorMenuAccess() async {
 {{# if application.principal }}
-    {{ repositoryClassName application.name  }} _actorRepository = locator<{{ repositoryClassName application.name  }}>();
+    {{ repositoryClassName application.actor }} _actorRepository = locator<{{ repositoryClassName application.actor }}>();
 
     try {
         var principal = await _actorRepository.getPrincipal();

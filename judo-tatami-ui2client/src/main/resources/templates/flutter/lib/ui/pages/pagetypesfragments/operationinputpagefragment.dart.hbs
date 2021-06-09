@@ -5,24 +5,24 @@
     const {{ fqClass page.name }}Page({Key key, @required this.operationCall}) : super(key: key);
 
     @override
-    _{{ fqClass page.name }}PageState createState() => _{{ fqClass page.name }}PageState(operationCall: operationCall);
+    _{{ pageStateClassName page }} createState() => _{{ pageStateClassName page }}(operationCall: operationCall);
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
+class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
 
-    final {{ storeClassName page.dataElement.target.name }} targetStore = {{ storeClassName page.dataElement.target.name }}();
+    final {{ storeClassName page.dataElement.target }} targetStore = {{ storeClassName page.dataElement.target }}();
 
-    final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
+    final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();
 
     final Function operationCall;
 
-    _{{ fqClass page.name }}PageState({@required this.operationCall}){
+    _{{ pageStateClassName page }}(@required this.operationCall}){
         pageStore.targetStore = targetStore;
         pageStore.operationCall = operationCall;
 
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title));
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page }}.title));
         });
     }
 //END operationinputpagefragment.dart.hbs-----{{ page.name }}--------------------------------------------------------------------------------

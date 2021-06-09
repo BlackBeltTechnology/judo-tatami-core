@@ -1,16 +1,16 @@
 {{ log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug' }}
 //START tablepagestore.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------
-class {{ fqClass page.name }}PageStore extends _{{ fqClass page.name }}PageStore with _${{ fqClass page.name }}PageStore {}
+class {{ pageStoreClassName page }} extends _{{ pageStoreClassName page }} with _${{ pageStoreClassName page }} {}
 
-abstract class _{{ fqClass page.name }}PageStore with Store {
+abstract class _{{ pageStoreClassName page }} with Store {
     {{# with page.relationType as |relation| }}
-    {{ repositoryClassName application.actor.name }} _actorRepository = locator<{{ repositoryClassName application.actor.name }}>();
+    {{ repositoryClassName application.actor }} _actorRepository = locator<{{ repositoryClassName application.actor }}>();
 
     @observable
     String errorMessage;
 
     @observable
-    {{ storeClassName relation.target.name }} targetStore;
+    {{ storeClassName relation.target }} targetStore;
 
     {{# each page.containers.[0].tables as |table| }}
         {{# if table.pageDefinition.relationType.isFilterable }}
@@ -48,7 +48,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{# if relation.isCollection }}
         {{# if page.dataElement.isAccess }}
     @observable
-    List<{{ storeClassName relation.target.name }}> {{ fqVariable relation.name }}StoreList = ObservableList<{{ storeClassName relation.target.name }}>();
+    List<{{ storeClassName relation.target }}> {{ fqVariable relation.name }}StoreList = ObservableList<{{ storeClassName relation.target }}>();
 
     @computed
     bool get nextButtonEnable => {{ fqVariable relation.name }}StoreList.length == {{ fqVariable relation.name }}QueryLimit && !nextPageIsEmpty;
@@ -83,7 +83,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
 
     @action
-    void {{ fqVariable relation.name }}SetSort({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare) {
+    void {{ fqVariable relation.name }}SetSort({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare) {
 
         if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
           {{ fqVariable relation.name }}SortAsc = true;
@@ -107,7 +107,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{ else }}
     {{# if page.dataElement.isAccess }}
     @observable
-    {{ storeClassName relation.target.name }} store;
+    {{ storeClassName relation.target }} store;
     {{/ if }}
     {{/ if }}
 
@@ -116,7 +116,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
     {{# if relation.isRelationBehaviourTypeCreatable }}
     @action
-    Future<{{ storeClassName relation.target.name }}> create{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
+    Future<{{ storeClassName relation.target }}> create{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{{ storeClassName relation.target }} targetStore) async {
         try {
             errorMessage = null;
             var created = await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);
@@ -131,7 +131,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
 	{{# if relation.isRelationBehaviourTypeAddable }}
     @action
-    Future<List<{{ storeClassName relation.target.name }}>> add{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, List<{{ storeClassName relation.target.name }}> selectedStore) async {
+    Future<List<{{ storeClassName relation.target }}>> add{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, List<{{ storeClassName relation.target }}> selectedStore) async {
         try {
             await _actorRepository.{{ fqVariable relation.owner.name }}Add{{ fqClass relation.name }}(ownerStore, selectedStore);
             ownerStore.{{ variable relation.name }}.addAll(selectedStore);
@@ -145,7 +145,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeRemovable }}
     @action
-    Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {{ storeClassName relation.target.name }} selectedStore) async {
+    Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, {{ storeClassName relation.target }} selectedStore) async {
         try {
             errorMessage = null;
             {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}Remove{{ fqClass relation.name }}(ownerStore, [selectedStore]));
@@ -160,7 +160,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeListable }}
     @action
-    {{# if relation.isCollection }}Future<List<{{ storeClassName relation.target.name }}>>{{ else }}Future<{{ storeClassName relation.target.name }}>{{/ if }} get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{ int queryLimit, bool isNext }) async {
+    {{# if relation.isCollection }}Future<List<{{ storeClassName relation.target }}>>{{ else }}Future<{{ storeClassName relation.target }}>{{/ if }} get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{ int queryLimit, bool isNext }) async {
         try {
             errorMessage = null;
         {{# if relation.isCollection }}
@@ -187,7 +187,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                     : null,
             ));
 
-            List<{{ storeClassName relation.target.name }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
+            List<{{ storeClassName relation.target }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
             if (nextItemsList.isEmpty) {
                 nextPageIsEmpty = true;
                 return {{ fqVariable relation.name }}StoreList;
@@ -238,7 +238,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
                     {{/ if }}
             ));
 
-            List<{{ storeClassName relation.target.name }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
+            List<{{ storeClassName relation.target }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
             if (nextItemsList.isEmpty) {
                 nextButtonEnable = false;
                 return ownerStore.{{ variable relation.name }};
@@ -282,7 +282,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
 
     {{# if relation.isRelationBehaviourTypeSetable }}
     @action
-    Future<void> set{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore, {{# if relation.isCollection }}List<{{ storeClassName relation.target.name }}>{{ else }}{{ storeClassName relation.target.name }}{{/ if }} selectedStore) async {
+    Future<void> set{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, {{# if relation.isCollection }}List<{{ storeClassName relation.target }}>{{ else }}{{ storeClassName relation.target }}{{/ if }} selectedStore) async {
         try {
             errorMessage = null;
             await _actorRepository.{{ fqVariable relation.owner.name }}Set{{ fqClass relation.name }}(ownerStore, selectedStore);
@@ -296,7 +296,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeUnsetable }}
     @action
-    Future<void> unset{{ fqClass relation.name }}({{ storeClassName relation.owner.name }} ownerStore) async {
+    Future<void> unset{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore) async {
         try {
             errorMessage = null;
             await _actorRepository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(ownerStore);
@@ -310,7 +310,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeDeletable }}
     @action
-    Future<void> delete{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore{{# unless relation.isAccess }}, {{ storeClassName relation.owner.name }} ownerStore{{/ unless }}) async {
+    Future<void> delete{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore{{# unless relation.isAccess }}, {{ storeClassName relation.owner }} ownerStore{{/ unless }}) async {
         try {
             errorMessage = null;
             await _actorRepository.{{ fqVariable relation.target.name }}Delete(targetStore);
@@ -324,7 +324,7 @@ abstract class _{{ fqClass page.name }}PageStore with Store {
     {{/ if }}
     {{# if relation.isRelationBehaviourTypeUpdatable }}
     @action
-    Future<{{ storeClassName relation.target.name }}> update{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore) async {
+    Future<{{ storeClassName relation.target }}> update{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore) async {
         try {
             errorMessage = null;
             return await _actorRepository.{{ fqVariable relation.target.name }}Update(targetStore);

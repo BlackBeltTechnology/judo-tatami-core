@@ -1,23 +1,23 @@
 //START operationoutputpagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------
-    final {{ storeClassName page.dataElement.target.name }} targetStore;
+    final {{ storeClassName page.dataElement.target }} targetStore;
 
-    const {{ fqClass page.name }}Page({Key key, @required this.targetStore}) : super(key: key);
+    const {{ pageClassName page }}({Key key, @required this.targetStore}) : super(key: key);
     
     @override
-    State<StatefulWidget> createState() => _{{ fqClass page.name }}PageState(targetStore: targetStore);
+    State<StatefulWidget> createState() => _{{ pageStateClassName page }}(targetStore: targetStore);
 }
 
-class _{{ fqClass page.name }}PageState extends State<{{ fqClass page.name }}Page> {
-    final {{ storeClassName page.dataElement.target.name }} targetStore;
+class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
+    final {{ storeClassName page.dataElement.target }} targetStore;
 
-    final {{ fqClass page.name }}PageStore pageStore = {{ fqClass page.name }}PageStore();
+    final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();
 
-    _{{ fqClass page.name }}PageState({@required this.targetStore}){
+    _{{ pageStateClassName page }}({@required this.targetStore}){
         pageStore.targetStore = targetStore;
 
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {
-            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ fqClass page.name }}Page.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
+            navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page }}.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
         });
     }
 //END operationoutputpagefragment.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------

@@ -11,29 +11,29 @@
 
 part of {{ variable ap.name }}.repository;
 
-class {{ repositoryClassName class.name }} {
+class {{ repositoryClassName class }} {
 
   //////////////////////////////////////////////////////////////////////////////
   // TEMPLATE (Default)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}Default() async {
+  Future<{{ storeClassName class }}> {{ fqVariable class.name }}Default() async {
     // TODO: NOT SUPPORTED YET
     // {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}TemplateInstance{{ fqClass name }}();
-    // return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
-    return {{ storeClassName class.name }}();
+    // return {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName class }}From{{ fqClass class.name }}({{ variable class.name }}Response);
+    return {{ storeClassName class }}();
   }
   {{# if class.isMapped }}
 
   //////////////////////////////////////////////////////////////////////////////
   // REFRESH (Reload with Signed ID)
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}GetByIdentifier({{ storeClassName class.name }} target, {String mask}) async {
+  Future<{{ storeClassName class }}> {{ fqVariable class.name }}GetByIdentifier({{ storeClassName class }} target, {String mask}) async {
     var queryCustomizer = {{ modelName class.name }}Extension{{ packageName class.name }}QueryCustomizer{{ className class.name }}();
     if (mask != null) {
         queryCustomizer.mask = mask;
     }
     {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}RefreshInstance{{ fqClass name }}(target.internal__signedIdentifier, input: queryCustomizer);
-    return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
+    return {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName class }}From{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
   {{# if class.isClassBehaviourTypeUpdateValidatable }}
@@ -41,10 +41,10 @@ class {{ repositoryClassName class.name }} {
   //////////////////////////////////////////////////////////////////////////////
   // VALIDATE UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}ValidateForUpdate({{ storeClassName class.name }} target) async {
-    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ repositoryStoreMapperClassName ap.name }}.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ storeClassName class.name }}(target);
+  Future<{{ storeClassName class }}> {{ fqVariable class.name }}ValidateForUpdate({{ storeClassName class }} target) async {
+    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ repositoryStoreMapperClassName ap }}.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ storeClassName class }}(target);
     {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}ValidateUpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
-    return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
+    return {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName class }}From{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
   {{# if class.isClassBehaviourTypeDeletable }}
@@ -52,7 +52,7 @@ class {{ repositoryClassName class.name }} {
   //////////////////////////////////////////////////////////////////////////////
   // DELETE
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable class.name }}Delete({{ storeClassName class.name }} target) async {
+  Future<void> {{ fqVariable class.name }}Delete({{ storeClassName class }} target) async {
     return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}DeleteInstance{{ fqClass name }}(target.internal__signedIdentifier);
   }
   {{/ if }}
@@ -61,10 +61,10 @@ class {{ repositoryClassName class.name }} {
   //////////////////////////////////////////////////////////////////////////////
   // UPDATE
   //////////////////////////////////////////////////////////////////////////////
-  Future<{{ storeClassName class.name }}> {{ fqVariable class.name }}Update({{ storeClassName class.name }} target) async {
-    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ repositoryStoreMapperClassName ap.name }}.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ storeClassName class.name }}(target);
+  Future<{{ storeClassName class }}> {{ fqVariable class.name }}Update({{ storeClassName class }} target) async {
+    {{ fqClass class.transferObjectTypeName }}ForCreateAndUpdate {{ variable class.name }}Request = {{ repositoryStoreMapperClassName ap }}.create{{ fqClass class.name }}ForCreateAndUpdateFrom{{ storeClassName class }}(target);
     {{ fqClass class.transferObjectTypeName }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}UpdateInstance{{ fqClass name }}(target.internal__signedIdentifier, {{ variable class.name }}Request);
-    return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName class.name }}From{{ fqClass class.name }}({{ variable class.name }}Response);
+    return {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName class }}From{{ fqClass class.name }}({{ variable class.name }}Response);
   }
   {{/ if }}
   {{# each class.relations as |relation| }}
@@ -73,9 +73,9 @@ class {{ repositoryClassName class.name }} {
   //////////////////////////////////////////////////////////////////////////////
   // GET CREATE RANGE FOR {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ storeClassName relation.target.name }}>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToCreate({{ storeClassName class.name }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask, {{ storeClassName relation.target.name }} lastItem, bool reverse }) async {
+  Future<List<{{ storeClassName relation.target }}>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToCreate({{ storeClassName class }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask, {{ storeClassName relation.target }} lastItem, bool reverse }) async {
     // Use this when JNG-2028 is done
-    // {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }} {{ variable class.name }}Request = {{ repositoryStoreMapperClassName ap.name }}.create{{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}From{{ storeClassName class.name }}(target);
+    // {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }} {{ variable class.name }}Request = {{ repositoryStoreMapperClassName ap }}.create{{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}From{{ storeClassName class }}(target);
 
     var {{ variable class.name }}Request = {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}{{ className relation.name }}();
 
@@ -91,7 +91,7 @@ class {{ repositoryClassName class.name }} {
                 {{# each relation.target.attributes as |attribute| }}
                     {{# unless (isEnumType attribute.dataType) }}
                         {{# unless (isBooleanDataType attribute.dataType) }}
-      if (sortColumn == "{{ variable attribute.name }}" ) {
+      if (sortColumn == '{{ variable attribute.name }}' ) {
         orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
       }
                         {{/ unless }}
@@ -109,7 +109,7 @@ class {{ repositoryClassName class.name }} {
             if (element.filterValue == null ) return;
                 {{# each relation.target.attributes as |attribute| }}
                     {{# if attribute.isFilterable }}
-            if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
+            if (element.attributeName.uncapitalize() == '{{ variable attribute.name }}') {
                 var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
                         {{# if (isStringType attribute.dataType) }}
                 if(element.filterOperation == 'contain'){
@@ -142,7 +142,7 @@ class {{ repositoryClassName class.name }} {
             {{/ if }}
 
     if (reverse != null && lastItem != null) {
-      seek.lastItem = {{ repositoryStoreMapperClassName ap.name }}.create{{ fqClass relation.target.name }}From{{ storeClassName relation.target.name }}(lastItem);
+      seek.lastItem = {{ repositoryStoreMapperClassName ap }}.create{{ fqClass relation.target.name }}From{{ storeClassName relation.target }}(lastItem);
       seek.reverse = reverse;
     }
     seek.limit = queryLimit ?? 5;
@@ -155,16 +155,16 @@ class {{ repositoryClassName class.name }} {
 
 
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}GetRangeReference{{ fqClass relation.name }}(input: {{ variable class.name }}Request);
-    return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
-      {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
+    return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target }}>(
+      {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName relation.target }}From{{ fqClass relation.target.name }}).toList();
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // GET UPDATE RANGE FOR {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<List<{{ storeClassName relation.target.name }}>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToUpdate({{ storeClassName class.name }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask, {{ storeClassName relation.target.name }} lastItem, bool reverse }) async {
+  Future<List<{{ storeClassName relation.target }}>> {{ fqVariable class.name }}RangeOf{{ fqClass relation.name }}ToUpdate({{ storeClassName class }} target, { String sortColumn, bool sortAscending, List<FilterStore> filterStoreList, int queryLimit, String mask, {{ storeClassName relation.target }} lastItem, bool reverse }) async {
     // Use this when JNG-2028 is done
-    // {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }} {{ variable class.name }}Request = {{ repositoryStoreMapperClassName ap.name }}.create{{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}From{{ storeClassName class.name }}(target);
+    // {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }} {{ variable class.name }}Request = {{ repositoryStoreMapperClassName ap }}.create{{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}From{{ storeClassName class }}(target);
 
     var {{ variable class.name }}Request = {{ modelName ap.name }}Extension{{ packageName class.name }}GetRangeInput{{ className class.name }}{{ className relation.name }}();
 
@@ -180,7 +180,7 @@ class {{ repositoryClassName class.name }} {
                 {{# each relation.target.attributes as |attribute| }}
                     {{# unless (isEnumType attribute.dataType) }}
                         {{# unless (isBooleanDataType attribute.dataType) }}
-      if (sortColumn == "{{ variable attribute.name }}" ) {
+      if (sortColumn == '{{ variable attribute.name }}' ) {
         orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
       }
                         {{/ unless }}
@@ -198,7 +198,7 @@ class {{ repositoryClassName class.name }} {
             if (element.filterValue == null ) return;
                 {{# each relation.target.attributes as |attribute| }}
                     {{# if attribute.isFilterable }}
-            if (element.attributeName.uncapitalize() == "{{ variable attribute.name }}") {
+            if (element.attributeName.uncapitalize() == '{{ variable attribute.name }}') {
                 var filter = {{ modelName relation.target.name }}ExtensionFilterBy{{ openApiDataType attribute.dataType.name }}();
                         {{# if (isStringType attribute.dataType) }}
                 if(element.filterOperation == 'contain'){
@@ -231,7 +231,7 @@ class {{ repositoryClassName class.name }} {
             {{/ if }}
 
     if (reverse != null && lastItem != null) {
-      seek.lastItem = {{ repositoryStoreMapperClassName ap.name }}.create{{ fqClass relation.target.name }}From{{ storeClassName relation.target.name }}(lastItem);
+      seek.lastItem = {{ repositoryStoreMapperClassName ap }}.create{{ fqClass relation.target.name }}From{{ storeClassName relation.target }}(lastItem);
       seek.reverse = reverse;
     }
     seek.limit = queryLimit ?? 5;
@@ -243,8 +243,8 @@ class {{ repositoryClassName class.name }} {
     {{ variable class.name }}Request.queryCustomizer = queryCustomizer;
 
     List<{{ fqClass relation.target.transferObjectTypeName }}> {{ variable relation.target.name }}ListResponse = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}GetRangeReference{{ fqClass relation.name }}(input: {{ variable class.name }}Request);
-    return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target.name }}>(
-      {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName relation.target.name }}From{{ fqClass relation.target.name }}).toList();
+    return {{ variable relation.target.name }}ListResponse.map<{{ storeClassName relation.target }}>(
+      {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName relation.target }}From{{ fqClass relation.target.name }}).toList();
   }
       {{/ if }}
       {{# if relation.isRelationBehaviourTypeSetable }}
@@ -253,7 +253,7 @@ class {{ repositoryClassName class.name }} {
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable relation.name }} (Collection)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable class.name }}Set{{ fqClass relation.name }}({{ storeClassName class.name }} target, List<{{ storeClassName relation.target.name }}> selected) async {
+  Future<void> {{ fqVariable class.name }}Set{{ fqClass relation.name }}({{ storeClassName class }} target, List<{{ storeClassName relation.target }}> selected) async {
     List<dynamic> itemsToSet = selected.map<dynamic>((s) => {"__signedIdentifier": s.internal__signedIdentifier}).toList();
     return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}SetReference{{ className relation.name }}(target.internal__signedIdentifier, input: itemsToSet);
   }
@@ -262,7 +262,7 @@ class {{ repositoryClassName class.name }} {
   //////////////////////////////////////////////////////////////////////////////
   // SET {{ variable relation.name }} (Single)
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable class.name }}Set{{ fqClass relation.name }}({{ storeClassName class.name }} target, {{ storeClassName relation.target.name }} selected) async {
+  Future<void> {{ fqVariable class.name }}Set{{ fqClass relation.name }}({{ storeClassName class }} target, {{ storeClassName relation.target }} selected) async {
     return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}SetReference{{ className relation.name }}(target.internal__signedIdentifier, SingleReference().copyWith(internal__signedIdentifier: selected.internal__signedIdentifier));
   }
         {{/ if }}
@@ -272,7 +272,7 @@ class {{ repositoryClassName class.name }} {
   //////////////////////////////////////////////////////////////////////////////
   // UNSET {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable class.name }}Unset{{ fqClass relation.name }}({{ storeClassName class.name }} target) async {
+  Future<void> {{ fqVariable class.name }}Unset{{ fqClass relation.name }}({{ storeClassName class }} target) async {
     return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}UnsetReference{{ className relation.name }}(target.internal__signedIdentifier);
   }
       {{/ if }}
@@ -281,7 +281,7 @@ class {{ repositoryClassName class.name }} {
   //////////////////////////////////////////////////////////////////////////////
   // ADD {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable class.name }}Add{{ fqClass relation.name }}({{ storeClassName class.name }} target, List<{{ storeClassName relation.target.name }}> selected) async {
+  Future<void> {{ fqVariable class.name }}Add{{ fqClass relation.name }}({{ storeClassName class }} target, List<{{ storeClassName relation.target }}> selected) async {
     List<dynamic> itemsToAdd = selected.map<dynamic>((s) => {"__signedIdentifier": s.internal__signedIdentifier}).toList();
     return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}AddReference{{ className relation.name }}(target.internal__signedIdentifier, itemsToAdd);
   }
@@ -291,7 +291,7 @@ class {{ repositoryClassName class.name }} {
   //////////////////////////////////////////////////////////////////////////////
   // REMOVE {{ variable relation.name }}
   //////////////////////////////////////////////////////////////////////////////
-  Future<void> {{ fqVariable class.name }}Remove{{ fqClass relation.name }}({{ storeClassName class.name }} target, List<{{ storeClassName relation.target.name }}> selected) async {
+  Future<void> {{ fqVariable class.name }}Remove{{ fqClass relation.name }}({{ storeClassName class }} target, List<{{ storeClassName relation.target }}> selected) async {
     List<dynamic> itemsToRemove = selected.map<dynamic>((s) => {"__signedIdentifier": s.internal__signedIdentifier}).toList();
     return await DefaultApi(locator<ApiClient>()).{{ fqVariable class.transferObjectTypeName }}RemoveReference{{ className relation.name }}(target.internal__signedIdentifier, itemsToRemove);
   }
@@ -302,15 +302,15 @@ class {{ repositoryClassName class.name }} {
   //////////////////////////////////////////////////////////////////////////////
   // OPERATION {{ variable operation.name }}
   //////////////////////////////////////////////////////////////////////////////
-      {{# if operation.output }}Future<{{# if operation.output.isCollection }}List<{{ storeClassName operation.output.target.name }}>{{ else }}{{ storeClassName operation.output.target.name }}{{/ if }}>{{ else }}Future<void>{{/ if }} {{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}{{ storeClassName operation.input.target.name }} targetStore, {{/ if }}{{# if operation.isMapped }}{{ storeClassName class.name }} ownerStore{{/ if }}) async {
-      {{# if operation.input }}{{ fqClass operation.input.target.transferObjectTypeName }} {{ fqVariable operation.input.target.name }}Input = {{ repositoryStoreMapperClassName ap.name }}.create{{ fqClass operation.input.target.name }}From{{ storeClassName operation.input.target.name }}(targetStore);{{/ if }}
+      {{# if operation.output }}Future<{{# if operation.output.isCollection }}List<{{ storeClassName operation.output.target }}>{{ else }}{{ storeClassName operation.output.target }}{{/ if }}>{{ else }}Future<void>{{/ if }} {{ fqVariable operation.owner.name }}{{ className operation.name }}({{# if operation.input }}{{ storeClassName operation.input.target }} targetStore, {{/ if }}{{# if operation.isMapped }}{{ storeClassName class }} ownerStore{{/ if }}) async {
+      {{# if operation.input }}{{ fqClass operation.input.target.transferObjectTypeName }} {{ fqVariable operation.input.target.name }}Input = {{ repositoryStoreMapperClassName ap }}.create{{ fqClass operation.input.target.name }}From{{ storeClassName operation.input.target }}(targetStore);{{/ if }}
       {{# if operation.output }}
           {{# if operation.output.isCollection }}
       List<{{ fqClass operation.output.target.transferObjectTypeName }}> {{ fqVariable operation.output.target.name }}Output = await DefaultApi(locator<ApiClient>()).{{ fqVariable operation.owner.transferObjectTypeName }}{{ className operation.name }}({{# if operation.isMapped }}ownerStore.internal__signedIdentifier, {{/ if }}{{# if operation.input }}{{# if operation.input.isOptional }}input: {{/ if }}{{# if operation.input.isCollection }}[{{ fqVariable operation.input.target.name }}Input]{{ else }}{{ fqVariable operation.input.target.name }}Input{{/ if }}{{/ if }});
-      return {{ fqVariable operation.output.target.name }}Output.map<{{ storeClassName operation.output.target.name }}>((e) => {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName operation.output.target.name }}From{{ fqClass operation.output.target.name }}(e)).toList();
+      return {{ fqVariable operation.output.target.name }}Output.map<{{ storeClassName operation.output.target }}>((e) => {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName operation.output.target }}From{{ fqClass operation.output.target.name }}(e)).toList();
           {{ else }}
       {{ fqClass operation.output.target.transferObjectTypeName }} {{ fqVariable operation.output.target.name }}Output = await DefaultApi(locator<ApiClient>()).{{ fqVariable operation.owner.transferObjectTypeName }}{{ className operation.name }}({{# if operation.isMapped }}ownerStore.internal__signedIdentifier, {{/ if }}{{# if operation.input }}{{# if operation.input.isOptional }}input: {{/ if }}{{# if operation.input.isCollection }}[{{ fqVariable operation.input.target.name }}Input]{{ else }}{{ fqVariable operation.input.target.name }}Input{{/ if }}{{/ if }});
-      return {{ repositoryStoreMapperClassName ap.name }}.create{{ storeClassName operation.output.target.name }}From{{ fqClass operation.output.target.name }}({{ fqVariable operation.output.target.name }}Output);
+      return {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName operation.output.target }}From{{ fqClass operation.output.target.name }}({{ fqVariable operation.output.target.name }}Output);
           {{/ if }}
       {{ else }}
       return await DefaultApi(locator<ApiClient>()).{{ fqVariable operation.owner.transferObjectTypeName }}{{ className operation.name }}({{# if operation.isMapped }}ownerStore.internal__signedIdentifier, {{/ if }}{{# if operation.input }}{{# if operation.input.isOptional }}input: {{/ if }}{{# if operation.input.isCollection }}[{{ fqVariable operation.input.target.name }}Input]{{ else }}{{ fqVariable operation.input.target.name }}Input{{/ if }}{{/ if }});

@@ -9,55 +9,55 @@
 // Application: {{ application.name }}
 // Container: {{ container.name }}
 
-part of {{ variable application.name }}.ui.pages.{{ variable container.layoutType.name }};
+part of {{ pageLibraryName page }};
 
 // Container xmi:id="{{ getXMIID this }}"
-Widget get{{ fqClass page.name }}Page{{ fqClass container.layoutType.name }}Body(BuildContext context
+Widget get{{ pageBodyClassName page container.layoutType.name }}(BuildContext context
 
         {{~# if page.isPageTypeDashboard ~}}
             {{~# unless page.dataElement.isCollection ~}}
                 {{~# if page.dataElement ~}}
-        , {{ storeClassName page.dataElement.target.name }} targetStore
+        , {{ storeClassName page.dataElement.target }} targetStore
                 {{~/ if ~}}
             {{~/ unless ~}}
-        , {{ fqClass page.name }}PageStore pageStore
+        , {{ pageStoreClassName page }} pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeTable ~}}
             {{~# unless page.dataElement.isAccess ~}}
-        , {{ storeClassName page.dataElement.owner.name }} ownerStore
+        , {{ storeClassName page.dataElement.owner }} ownerStore
             {{~/ unless ~}}
-        , {{ fqClass page.name }}PageStore pageStore
+        , {{ pageStoreClassName page }} pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeView ~}}
-        , {{ storeClassName page.dataElement.target.name }} targetStore
+        , {{ storeClassName page.dataElement.target }} targetStore
         {{~# unless page.dataElement.isAccess ~}}
-        , {{ storeClassName page.dataElement.owner.name }} ownerStore
+        , {{ storeClassName page.dataElement.owner }} ownerStore
         {{~/ unless ~}}
-        , {{ fqClass page.name }}PageStore pageStore
+        , {{ pageStoreClassName page }} pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeUpdate ~}}
-        , {{ storeClassName page.dataElement.target.name }} targetStore, {{ fqClass page.name }}PageStore pageStore
+        , {{ storeClassName page.dataElement.target }} targetStore, {{ pageStoreClassName page }} pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeCreate ~}}
-        , {{ storeClassName page.dataElement.target.name }} targetStore
+        , {{ storeClassName page.dataElement.target }} targetStore
         {{~# unless page.dataElement.isAccess ~}}
-        , {{ storeClassName page.dataElement.owner.name }} ownerStore
+        , {{ storeClassName page.dataElement.owner }} ownerStore
         {{~/ unless ~}}
-        , {{ fqClass page.name }}PageStore pageStore
+        , {{ pageStoreClassName page }} pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeOperationInput ~}}
-        , {{ storeClassName page.dataElement.target.name }} targetStore
-        , {{ fqClass page.name }}PageStore pageStore
+        , {{ storeClassName page.dataElement.target }} targetStore
+        , {{ pageStoreClassName page }} pageStore
         {{~/ if ~}}
 
         {{~# if page.isPageTypeOperationOutput ~}}
-        , {{ storeClassName page.dataElement.target.name }} targetStore
-        , {{ fqClass page.name }}PageStore pageStore
+        , {{ storeClassName page.dataElement.target }} targetStore
+        , {{ pageStoreClassName page }} pageStore
         {{~/ if ~}}
 
         {{~# if (isInputWidgetMapNeed page) ~}}

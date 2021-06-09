@@ -10,7 +10,7 @@ operation ESM!esm::`operation`::Operation createViewPageForOperationOutput(appli
     page.~application = application;
     page.~originalOperation = self;
         
-    page.name = self.name.anchor("OperationOutputPageView", clazz.name);
+    page.name = (clazz.name + "." + self.name).anchor("Output");
     page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
     
     var pageContainer = new UI!ui::PageContainer();
@@ -50,7 +50,7 @@ operation ESM!esm::`operation`::Operation createFormPageForOperationInput(applic
     page.~application = application;
     page.~originalOperation = self;
         
-    page.name = self.name.anchor("OperationInputPageForm", clazz.name);
+    page.name = (clazz.name + "." + self.name).anchor("Input");
     page.pageType = UI!ui::PageType#OPERATION_INPUT;
 
     var pageContainer = new UI!ui::PageContainer();
@@ -96,7 +96,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationInput(appli
     page.~application = application;
     page.~originalOperation = self;
     
-    page.name = self.name.anchor("OperationInputPageTable", clazz.name);
+    page.name = (clazz.name + "." + self.name).anchor("InputTable");
     page.pageType = UI!ui::PageType#OPERATION_INPUT;
     
     var pageContainer = new UI!ui::PageContainer();
@@ -138,7 +138,7 @@ operation ESM!esm::`operation`::Operation createTablePageForOperationOutput(appl
     page.~application = application;
     page.~originalOperation = self;
     
-    page.name = self.name.anchor("OperationOutputPageTable", clazz.name);
+    page.name = (clazz.name + "." + self.name).anchor("OutputTable");
     page.pageType = UI!ui::PageType#OPERATION_OUTPUT;
     
     var pageContainer = new UI!ui::PageContainer();

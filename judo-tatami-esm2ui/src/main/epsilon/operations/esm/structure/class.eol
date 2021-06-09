@@ -43,6 +43,8 @@ operation ESM!esm::structure::Class createClassType(application : UI!ui::Applica
     
     clazz.name = self.fqName();
     clazz.transferObjectTypeName = self.transferObjectTypeName();
+    clazz.simpleName = self.name;
+    clazz.setPackageNameTokens(self);
     
     clazz.isMapped = self.isMapped();
 
@@ -151,5 +153,13 @@ operation ESM!esm::structure::Class getAllPossibleRelationBehaviours() : Set {
 
 operation ESM!esm::structure::TransferObjectType isTableDefined() : Boolean {
     return self.table.isDefined() and self.table.columns.size() > 0;
+}
+
+operation UI!ui::data::ClassType setPackageNameTokens(source : ESM!esm::structure::TransferObjectType) {
+    var container = source.eContainer();
+    while (container.isTypeOf(ESM!esm::namespace::Package)) {
+        self.packageNameTokens.add(0, container.name);
+        container = container.eContainer();
+    } 
 }
 

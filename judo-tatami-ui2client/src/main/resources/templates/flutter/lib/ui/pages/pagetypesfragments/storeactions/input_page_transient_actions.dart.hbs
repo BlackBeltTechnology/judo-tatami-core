@@ -3,7 +3,7 @@
 // {{ className relation.name }} input page transient actions
 
 @action
-Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess }}{{ storeClassName relation.owner.name }} ownerStore, {{/ unless }}{{ storeClassName relation.target.name }} targetStore) async {
+Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{{ storeClassName relation.target }} targetStore) async {
     try {
         errorMessage = null;
         ownerStore.{{ variable relation.name }}{{# if relation.isCollection }}.add(targetStore){{ else }} = targetStore{{/ if }};
@@ -14,7 +14,7 @@ Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess }}{{
 }
 
 @action
-Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore, {{ storeClassName relation.owner.name }} ownerStore) async {
+Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore, {{ storeClassName relation.owner }} ownerStore) async {
     try {
         errorMessage = null;
         {{# if relation.isCollection }}ownerStore.{{ variable relation.name }}.remove(targetStore){{ else }}ownerStore.{{ variable relation.name }} = null{{/ if }};
@@ -25,7 +25,7 @@ Future<void> delete{{ className relation.name }}{{ className relation.target.nam
 }
 
 @action
-Future<{{ storeClassName relation.target.name }}> update{{ className relation.name }}{{ className relation.target.name }}({{ storeClassName relation.target.name }} targetStore, {{ storeClassName relation.owner.name }} ownerStore) async {
+Future<{{ storeClassName relation.target }}> update{{ className relation.name }}{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore, {{ storeClassName relation.owner }} ownerStore) async {
     try {
         errorMessage = null;
         return targetStore;

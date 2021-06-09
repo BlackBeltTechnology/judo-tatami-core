@@ -92,7 +92,7 @@
         {{# if page.isPageTypeOperationInput }}
             bool success = await pageStore.operationCall(targetStore);
             if (success){
-                navigation.close(true); // must send back true to view page to trigger refresh if the operation call is successful
+               navigation.close(true); // must send back true to view page to trigger refresh if the operation call is successful
             }
         {{/ if }}
         },
@@ -129,8 +129,8 @@
     {{/ if }}
     {{# if action.isCreateAction }}
         onPressed:{{# unless page.dataElement.isCollection }} ownerStore.{{ variable page.dataElement.name }} == null{{/ unless }}{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }}{{# unless page.dataElement.isCollection }} &&{{/ unless }} ownerStore.internal__updatable ?{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }}{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }} () async {
-            var created = await navigation.open(Routes.{{ fqVariable action.target.name }}Page{{# unless page.dataElement.isAccess }},
-                arguments: {{ fqClass action.target.name }}PageArguments(ownerStore: ownerStore){{~/ unless }});
+            var created = await navigation.open(Routes.{{ pageClassVariableName action.target }}{{# unless page.dataElement.isAccess }},
+                arguments: {{ pageArgumentsClassName action.target }}(ownerStore: ownerStore){{~/ unless }});
             if (created != null) {
                 pageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess }}ownerStore ,{{/ unless }}created)
                     .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
@@ -146,10 +146,10 @@
     {{/ if }}
     {{# if  action.isEditAction }}
         onPressed:{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} ownerStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            {{ storeClassName page.dataElement.target.name }} cloned = {{ storeClassName page.dataElement.target.name }}();
+            {{ storeClassName page.dataElement.target }} cloned = {{ storeClassName page.dataElement.target }}();
             cloned.updateWith(targetStore);
-            var ret = await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-            arguments: {{ fqClass action.target.name }}PageArguments(targetStore: cloned));
+            var ret = await navigation.open(Routes.{{ pageClassVariableName action.target }},
+            arguments: {{ pageArgumentsClassName action.target }}(targetStore: cloned));
             if (ret != null) {
                 targetStore.updateWith(cloned);
                 var updated = await pageStore.update{{ className page.relationType.target.name }}(targetStore)
@@ -188,25 +188,25 @@
     {{/ if }}
     {{# if action.isNavigationToPageAction }}
         onPressed: () async {
-            await navigation.open(Routes.{{ fqVariable action.target.name }}Page,
-                arguments: {{ fqClass action.target.name }}PageArguments(ownerStore: targetStore));
+            await navigation.open(Routes.{{ pageClassVariableName action.target }},
+                arguments: {{ pageArgumentsClassName action.target }}(ownerStore: targetStore));
         },
     {{/ if }}
     {{# if action.isCallOperationAction }}
         onPressed: () async {
             {{# if action.operation.input }}
             {{# if action.operation.output }}{{ storeClassName action.operation.output.target.name }} store;{{/ if }}
-            var ret = await navigation.open(Routes.{{ fqVariable action.inputParameterPage.name }}Page,
-                arguments: {{ fqClass action.inputParameterPage.name }}PageArguments(
+            var ret = await navigation.open(Routes.{{ pageClassVariableName action.inputParameterPage }},
+                arguments: {{ pageArgumentsClassName action.inputParameterPage }}(
                     operationCall: ({{ storeClassName action.operation.input.target.name }} input) async {
                         bool callSuccessful = true;
                 {{# if action.isConfirmationTypeMandatory }}
-                        {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
+                    {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
                 {{/ if }}
                 {{# if action.isConfirmationTypeConditional }}
-                        {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
+                    {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
                 {{/ if }}
-                        {{# if action.operation.output }}store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}(input, {{# if action.operation.isMapped }}targetStore{{/ if }})
+                {{# if action.operation.output }}store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
                             .catchError((error) {
                                 ErrorHandler.showErrorSnack(context, error.message);
                                 callSuccessful = false;
@@ -216,10 +216,10 @@
                 )
             );
                 {{# if action.operation.output }}
-            if (store != null) {
-                await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
-                    arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(targetStore: store));
-            }
+                if (store != null) {
+                    await navigation.open(Routes.{{ pageClassVariableName action.outputParameterPage }},
+                        arguments: {{ pageArgumentsClassName action.outputParameterPage }}(targetStore: store));
+                }
                 {{/ if }}
                 {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
             if (ret != null) {
@@ -228,23 +228,23 @@
                 {{/ if }}
             {{ else }}
                 {{# if action.isConfirmationTypeMandatory }}
-                {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
+                    {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
                 {{/ if }}
                 {{# if action.isConfirmationTypeConditional }}
-                {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
+                    {{> templates/flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
                 {{/ if }}
                 {{# if action.operation.output }}
-                    {{# if action.operation.output }}{{ storeClassName action.operation.output.target.name }} store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
+                    {{# if action.operation.output }}{{ storeClassName action.operation.output.target }} store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
                         .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                     if (store != null) {
-                        await navigation.open(Routes.{{ fqVariable action.outputParameterPage.name }}Page,
-                            arguments: {{ fqClass action.outputParameterPage.name }}PageArguments(targetStore: store));
+                        await navigation.open(Routes.{{ pageClassVariableName action.outputParameterPage }},
+                            arguments: {{ pageArgumentsClassName action.outputParameterPage }}(targetStore: store));
                     }
                     {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
                     await pageStore.refresh{{ className page.relationType.target.name }}(targetStore);
                     {{/ if }}
                 {{ else }}
-            {{# if action.operation.output }}{{ storeClassName action.operation.output.target.name }} store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
+            {{# if action.operation.output }}{{ storeClassName action.operation.output.target }} store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
                 .whenComplete(() => judoAlert(context: context, title: 'Successful operation', text: '{{ this.label }} called successfully.'))
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
                     {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
@@ -259,7 +259,7 @@
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
     {{/ if }}
     {{# if this.isIconVisible }}
-        icon: Icon(getIconByString("{{ this.icon.name }}")),
+        icon: Icon(getIconByString('{{ this.icon.name }}')),
     {{/ if }}
         rounded: true,
     ){{# if (isObserverButton this page.dataElement action) }}
