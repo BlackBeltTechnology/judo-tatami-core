@@ -188,7 +188,7 @@ abstract class _{{ pageStoreClassName page }} with Store {
             ));
 
             List<{{ storeClassName relation.target }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
-            if (nextItemsList.isEmpty) {
+            if (nextItemsList.isEmpty && isNext != null) {
                 nextPageIsEmpty = true;
                 return {{ fqVariable relation.name }}StoreList;
             }
@@ -239,7 +239,7 @@ abstract class _{{ pageStoreClassName page }} with Store {
             ));
 
             List<{{ storeClassName relation.target }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
-            if (nextItemsList.isEmpty) {
+            if (nextItemsList.isEmpty && isNext != null) {
                 nextButtonEnable = false;
                 return ownerStore.{{ variable relation.name }};
             }
