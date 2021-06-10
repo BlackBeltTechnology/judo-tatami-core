@@ -50,10 +50,10 @@ public class Ui2FlutterClient {
             }
         }
         List<GeneratorTemplate> generatorTemplates = new ArrayList<>();
-        generatorTemplates.addAll(GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI("flutter" + File.separator + FLUTTER_YAML).normalize().toURL()));
+        generatorTemplates.addAll(GeneratorTemplate.loadYamlURL(Ui2Client.calculateUi2ClientTemplateScriptURI("flutter" + "/" + FLUTTER_YAML).normalize().toURL()));
         // Search for overrided flutter yaml files
         for (URI uri : overridedScriptUris) {
-            Collection<GeneratorTemplate> overridedTemplates = GeneratorTemplate.loadYamlURL(UriHelper.calculateRelativeURI(uri, "templates" + File.separator + FLUTTER_YAML).normalize().toURL());
+            Collection<GeneratorTemplate> overridedTemplates = GeneratorTemplate.loadYamlURL(UriHelper.calculateRelativeURI(uri, "templates" + "/" + FLUTTER_YAML).normalize().toURL());
             Collection<GeneratorTemplate> replaceableTemplates = new HashSet<>();
             generatorTemplates.forEach(t -> {
                 overridedTemplates.stream().filter(o -> o.getTemplateName().equals(t.getTemplateName())).forEach(f -> replaceableTemplates.add(f));
