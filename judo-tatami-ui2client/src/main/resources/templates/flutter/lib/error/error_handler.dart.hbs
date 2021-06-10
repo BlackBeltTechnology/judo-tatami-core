@@ -63,15 +63,21 @@ class ErrorHandler {
     static void showErrorSnack(BuildContext context, String jsonMessage) {
       if (context == null || jsonMessage == null) return;
 
-      List errorMessageList;
-      List errorList;
       try {
-        errorMessageList = jsonDecode(jsonMessage);
-        errorList = (errorMessageList).map<ErrorHandler>((e) {
-          return fromJson(e);
-        }).toList();
-        errorList.forEach((element) => _showJudoSnack(context, AppLocalizations.of(context).lookUpValue(context, element.message), element.level));
+        var decodedErrorJson = jsonDecode(jsonMessage);
+        if (decodedErrorJson is List) {
+          List errorList = (decodedErrorJson).map<ErrorHandler>((e) {
+            return fromJson(e);
+          }).toList();
+          errorList.forEach((element) => _showJudoSnack(context, AppLocalizations.of(context).lookUpValue(context, element.message), element.level));
+        } else {
+          ErrorHandler errorHandler = fromJson(decodedErrorJson);
+          _showJudoSnack(context, AppLocalizations.of(context).lookUpValue(context, errorHandler.message), errorHandler.level);
+        }
       } on Exception catch(error) {
+        print(error);
+        _showJudoSnack(context, AppLocalizations.of(context).lookUpValue(context, 'Something went wrong. Please contact with the system admins.'), ErrorLevel.error);
+      } on Error catch(error) {
         print(error);
         _showJudoSnack(context, AppLocalizations.of(context).lookUpValue(context, 'Something went wrong. Please contact with the system admins.'), ErrorLevel.error);
       }

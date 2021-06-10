@@ -195,18 +195,18 @@
     {{# if action.isCallOperationAction }}
         onPressed: () async {
             {{# if action.operation.input }}
-            {{# if action.operation.output }}{{ storeClassName action.operation.output.target.name }} store;{{/ if }}
+            {{# if action.operation.output }}{{ storeClassName action.operation.output.target }} store;{{/ if }}
             var ret = await navigation.open(Routes.{{ pageClassVariableName action.inputParameterPage }},
                 arguments: {{ pageArgumentsClassName action.inputParameterPage }}(
-                    operationCall: ({{ storeClassName action.operation.input.target.name }} input) async {
+                    operationCall: ({{ storeClassName action.operation.input.target }} input) async {
                         bool callSuccessful = true;
                 {{# if action.isConfirmationTypeMandatory }}
-                    {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
+                        {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
                 {{/ if }}
                 {{# if action.isConfirmationTypeConditional }}
-                    {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
+                        {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
                 {{/ if }}
-                {{# if action.operation.output }}store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
+                        {{# if action.operation.output }}store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}(input, {{# if action.operation.isMapped }}targetStore{{/ if }})
                             .catchError((error) {
                                 ErrorHandler.showErrorSnack(context, error.message);
                                 callSuccessful = false;
@@ -216,10 +216,10 @@
                 )
             );
                 {{# if action.operation.output }}
-                if (store != null) {
-                    await navigation.open(Routes.{{ pageClassVariableName action.outputParameterPage }},
-                        arguments: {{ pageArgumentsClassName action.outputParameterPage }}(targetStore: store));
-                }
+            if (store != null) {
+                await navigation.open(Routes.{{ pageClassVariableName action.outputParameterPage }},
+                    arguments: {{ pageArgumentsClassName action.outputParameterPage }}(targetStore: store));
+            }
                 {{/ if }}
                 {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
             if (ret != null) {

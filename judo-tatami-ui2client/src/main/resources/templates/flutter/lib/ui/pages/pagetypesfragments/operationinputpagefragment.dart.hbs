@@ -2,7 +2,7 @@
 
     final Function operationCall;
 
-    const {{ fqClass page.name }}Page({Key key, @required this.operationCall}) : super(key: key);
+    const {{ pageClassName page }}({Key key, @required this.operationCall}) : super(key: key);
 
     @override
     _{{ pageStateClassName page }} createState() => _{{ pageStateClassName page }}(operationCall: operationCall);
@@ -16,7 +16,7 @@ class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
 
     final Function operationCall;
 
-    _{{ pageStateClassName page }}(@required this.operationCall}){
+    _{{ pageStateClassName page }}({@required this.operationCall}){
         pageStore.targetStore = targetStore;
         pageStore.operationCall = operationCall;
 
