@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.tatami.ui2client;
 
-import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
 import com.github.jknack.handlebars.io.URLTemplateLoader;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,7 @@ import java.net.URL;
 public class ClientGeneratorTemplateLoader extends URLTemplateLoader {
     final URI root;
     final ClientGeneratorTemplateLoader parent;
-
+    final String contextPath;
     /**
      * Creates a new {@link ClientGeneratorTemplateLoader}.
      *
@@ -24,9 +23,10 @@ public class ClientGeneratorTemplateLoader extends URLTemplateLoader {
      * @param prefix The view prefix. Required.
      * @param suffix The view suffix. Required.
      */
-    public ClientGeneratorTemplateLoader(final ClientGeneratorTemplateLoader parent, final URI root, final String prefix, final String suffix) {
+    public ClientGeneratorTemplateLoader(final ClientGeneratorTemplateLoader parent, final URI root, final String contextPath, final String prefix, final String suffix) {
         this.root = root;
         this.parent = parent;
+        this.contextPath = contextPath;
         setPrefix(prefix);
         setSuffix(suffix);
     }
@@ -38,7 +38,7 @@ public class ClientGeneratorTemplateLoader extends URLTemplateLoader {
      * @param prefix The view prefix. Required.
      */
     public ClientGeneratorTemplateLoader(final URI root, final String prefix) {
-        this(null, root, prefix, DEFAULT_SUFFIX);
+        this(null, root, UriHelper.lastPart(root.toString()), prefix, DEFAULT_SUFFIX);
     }
 
     /**
@@ -49,7 +49,7 @@ public class ClientGeneratorTemplateLoader extends URLTemplateLoader {
      * @param prefix The view prefix. Required.
      */
     public ClientGeneratorTemplateLoader(final ClientGeneratorTemplateLoader parent, final URI root, final String prefix) {
-        this(parent, root, prefix, DEFAULT_SUFFIX);
+        this(parent, root, UriHelper.lastPart(root.toString()), prefix, DEFAULT_SUFFIX);
     }
 
     /**
@@ -69,20 +69,24 @@ public class ClientGeneratorTemplateLoader extends URLTemplateLoader {
      * @param root The base URI used for loading.. Required.
      */
     public ClientGeneratorTemplateLoader(final ClientGeneratorTemplateLoader parent, final URI root) {
-        this(parent, root, "/");
+        this(parent, root, UriHelper.lastPart(root.toString()), "/", DEFAULT_SUFFIX);
     }
 
 
     @Override
     public TemplateSource sourceAt(final String location) throws IOException {
+        String loc = location;
+        if (location.startsWith(contextPath + "/")) {
+            loc = location.substring(contextPath.length() + 1);
+        }
         try {
-            return super.sourceAt(location);
+            return super.sourceAt(loc);
         } catch (IOException ex) {
             // try next loader in the chain.
             log.trace("Unable to resolve: {}, trying next loader in the chain.", location);
         }
         if (parent != null) {
-            return parent.sourceAt(location);
+            return parent.sourceAt(loc);
         } else {
             throw new FileNotFoundException(location);
         }

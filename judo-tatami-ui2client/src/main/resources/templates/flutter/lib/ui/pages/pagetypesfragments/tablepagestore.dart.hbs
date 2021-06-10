@@ -278,7 +278,7 @@ abstract class _{{ pageStoreClassName page }} with Store {
 
     {{/ if }}
 
-    {{> templates/flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=relation table=page.containers.[0].tables.[0] }}
+    {{> flutter/lib/ui/pages/pagetypesfragments/storeactions/range_actions.dart.hbs page=page relation=relation table=page.containers.[0].tables.[0] }}
 
     {{# if relation.isRelationBehaviourTypeSetable }}
     @action
