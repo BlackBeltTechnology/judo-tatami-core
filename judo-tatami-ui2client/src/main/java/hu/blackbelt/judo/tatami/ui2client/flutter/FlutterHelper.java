@@ -876,13 +876,13 @@ public class FlutterHelper {
     private static String getPageClassName(PageDefinition page) {
         if (page.getDataElement() != null && !(page.getPageType().equals(PageType.OPERATION_INPUT) || page.getPageType().equals(PageType.OPERATION_OUTPUT))) {
             RelationType dataElement = (RelationType) page.getDataElement();
-            return getClassName(dataElement).concat(StringUtils.capitalize(page.getPageType().toString().toLowerCase()));
+            return getClassName(dataElement).concat(getCamelCaseVersion(page.getPageType().toString().toLowerCase()));
         } else if (page.getPageType().equals(PageType.OPERATION_INPUT) || page.getPageType().equals(PageType.OPERATION_OUTPUT)){
             OperationType dataElement = (OperationType) (page.getDataElement().eContainer());
-            return getClassName(dataElement).concat(StringUtils.capitalize(page.getPageType().toString().toLowerCase()));
+            return getClassName(dataElement).concat(getCamelCaseVersion(page.getPageType().toString().toLowerCase()));
         }
         ClassType actor = ((Application)page.eContainer()).getActor();
-        return getClassName(actor).concat(StringUtils.capitalize(page.getPageType().toString().toLowerCase()));
+        return getClassName(actor).concat(getCamelCaseVersion(page.getPageType().toString().toLowerCase()));
     }
 
     public static String pagesFolderPath(ClassType actor) {
