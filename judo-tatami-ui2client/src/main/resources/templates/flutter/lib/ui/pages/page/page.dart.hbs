@@ -190,11 +190,10 @@ class {{ pageClassName page }} extends StatefulWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                     return JudoLoadingProgress();
                 } else if (snapshot.connectionState == ConnectionState.done) {
-                    pageStore.targetStore = snapshot.data;
-                    return layout;
-                } else {
-                    return Container();
+                    targetStore.updateWith(snapshot.data);
                 }
+                // always return original layout once network call finishes with any status
+                return layout;
             },
         );
         {{ else }}
