@@ -78,7 +78,7 @@ Future<List<{{ storeClassName relation.target }}>> getRangeFor{{ fqClass relatio
         ));
 
         List<{{ storeClassName relation.target }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreRangeFuture;
-        if (nextItemsList.isEmpty) {
+        if (nextItemsList.isEmpty && isNext != null) {
             nextPageIsEmptyFor{{ fqClass relation.name }}Range = true;
             return {{ fqVariable relation.name }}StoreRangeList;
         }
