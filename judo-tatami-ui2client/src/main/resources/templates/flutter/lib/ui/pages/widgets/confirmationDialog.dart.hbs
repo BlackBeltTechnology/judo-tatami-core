@@ -3,14 +3,14 @@
 {{# if action.isConfirmationTypeMandatory }}
 bool confirmation = await judoConfirmationDialog(context: context, confirmationMessage: AppLocalizations.of(context).lookUpValue(context, '{{ action.confirmationMessage }}'));
 if(!confirmation) {
-    return;
+    return{{# if action.operation.input }} false{{/ if }};
 }
 {{/ if }}
 {{# if action.isConfirmationTypeConditional }}
 if(targetStore.{{ variable action.confirmationCondition.name }}) {
     bool confirmation = await judoConfirmationDialog(context: context, confirmationMessage: AppLocalizations.of(context).lookUpValue(context, '{{ action.confirmationMessage }}'));
     if(!confirmation) {
-        return;
+        return{{# if action.operation.input }} false{{/ if }};
     }
 }
 {{/ if }}

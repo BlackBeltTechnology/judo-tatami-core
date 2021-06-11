@@ -1,6 +1,11 @@
 //START operationinputpagefragment.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------
+
+    final Function operationCall;
+
+    const {{ pageClassName page }}({Key key, @required this.operationCall}) : super(key: key);
+
     @override
-    _{{ pageStateClassName page }} createState() => _{{ pageStateClassName page }}();
+    _{{ pageStateClassName page }} createState() => _{{ pageStateClassName page }}(operationCall: operationCall);
 }
 
 class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
@@ -9,8 +14,11 @@ class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
 
     final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();
 
-    _{{ pageStateClassName page }}(){
+    final Function operationCall;
+
+    _{{ pageStateClassName page }}({@required this.operationCall}){
         pageStore.targetStore = targetStore;
+        pageStore.operationCall = operationCall;
 
         final navigation = locator<NavigationState>();
         SchedulerBinding.instance.addPostFrameCallback((_) {

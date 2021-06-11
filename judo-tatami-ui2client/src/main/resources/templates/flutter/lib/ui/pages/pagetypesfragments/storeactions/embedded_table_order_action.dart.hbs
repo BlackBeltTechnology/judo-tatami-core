@@ -1,6 +1,7 @@
 {{log 'Embedded table collaction order action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug'}}
-//START embedded_collection_table_order_action.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------
+//START embedded_table_order_action.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------
 // {{ className relation.name }} embedded table order
+{{# if relation.isCollection }}
 
 @observable
 int {{ fqVariable relation.name }}SortColumnIndex;
@@ -14,7 +15,6 @@ bool {{ fqVariable relation.name }}SortAsc;
 @observable
 Comparator {{ fqVariable relation.name }}SortCompare;
 
-{{# if relation.isCollection }}
 @action
 void {{ fqVariable relation.name }}SetSort(BuildContext context, String sortColumnName, int sortColumnIndex, bool asc, Comparator sortCompare, {{ storeClassName relation.owner }} store) {
     if ({{ fqVariable relation.name }}SortColumnIndex != sortColumnIndex) {
@@ -30,4 +30,4 @@ void {{ fqVariable relation.name }}SetSort(BuildContext context, String sortColu
 }
 {{/if}}
 
-//END embedded_collection_table_order_action.dart.hbs-----{{relaltion.name}}-----------------------------------------------------------------------------------
+//END embedded_table_order_action.dart.hbs-----{{relaltion.name}}-----------------------------------------------------------------------------------
