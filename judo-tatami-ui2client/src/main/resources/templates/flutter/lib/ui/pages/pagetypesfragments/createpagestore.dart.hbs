@@ -16,6 +16,16 @@ abstract class _{{ pageStoreClassName page }} with Store {
     bool validatable = false;
     {{/ if }}
 
+    @action
+    Future<{{ storeClassName relation.target }}> getDefaults() async {
+        try {
+            return await _actorRepository.{{ fqVariable relation.target.name }}Default();
+        } on ApiException catch (error) {
+            errorMessage = "Could not load default values";
+            throw error;
+        }
+    }
+
     {{# if relation.isRelationBehaviourTypeCreateValidatable }}
     @action
     Future<{{ storeClassName relation.target }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{{ storeClassName relation.target }} targetStore) async {
