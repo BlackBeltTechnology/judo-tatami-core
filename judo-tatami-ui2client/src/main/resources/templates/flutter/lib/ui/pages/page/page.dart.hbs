@@ -80,108 +80,125 @@ class {{ pageClassName page }} extends StatefulWidget {
         {{# if (isSingleRelationDashboardPage page) }}
         {{> flutter/lib/ui/pages/pagetypesfragments/dashboardlayoutbuilder.dart.hbs }}
         {{ else }}
-        return LayoutBuilder(builder: (context, constraints) {
-                    {{# each page.containers as |pageContainer| }}
-                    {{# unless pageContainer.layoutType.original }}
-                    if (MediaQuery.of(context).size.width >= {{ pageContainer.layoutType.minimumResolution }} && MediaQuery.of(context).size.width <= {{ pageContainer.layoutType.maximumResolution }}) {
-                        return get{{ pageBodyClassName page pageContainer.layoutType.name }}(context
+        LayoutBuilder layout = LayoutBuilder(builder: (context, constraints) {
+            {{# each page.containers as |pageContainer| }}
+            {{# unless pageContainer.layoutType.original }}
+            if (MediaQuery.of(context).size.width >= {{ pageContainer.layoutType.minimumResolution }} && MediaQuery.of(context).size.width <= {{ pageContainer.layoutType.maximumResolution }}) {
+                return get{{ pageBodyClassName page pageContainer.layoutType.name }}(context
 
-                            {{~# if page.isPageTypeDashboard ~}}
-                            , pageStore
-                            {{~/ if ~}}
+                    {{~# if page.isPageTypeDashboard ~}}
+                    , pageStore
+                    {{~/ if ~}}
 
-                            {{~# if page.isPageTypeTable ~}}
-                                {{~# unless page.dataElement.isAccess ~}}
-                            , ownerStore
-                                {{~/ unless ~}}
-                            , pageStore
-                            {{~/ if ~}}
-
-                            {{~# if page.isPageTypeView ~}}
-                            , targetStore
-                                {{~# unless page.dataElement.isAccess ~}}
-                            , ownerStore
-                                {{~/ unless ~}}
-                            , pageStore
-                            {{~/ if ~}}
-
-                            {{~# if page.isPageTypeUpdate ~}}
-                            , targetStore, pageStore
-                            {{~/ if ~}}
-
-                            {{~# if page.isPageTypeCreate ~}}
-                            , targetStore
-                                {{~# unless page.dataElement.isAccess ~}}
-                            , ownerStore
-                                {{~/ unless ~}}
-                            , pageStore
-                            {{~/ if ~}}
-
-                            {{~# if page.isPageTypeOperationInput ~}}
-                            , targetStore
-                            , pageStore
-                            {{~/ if ~}}
-
-                            {{~# if page.isPageTypeOperationOutput ~}}
-                            , targetStore
-                            , pageStore
-                            {{~/ if ~}}
-
-                            {{~# if (isInputWidgetMapNeed page) ~}}
-                            , inputWidgetKeyMap
-                            {{~/ if ~}}
-                        );
-                    }
-                    {{/ unless }}
-                    {{/ each }}
-                    return get{{ pageBodyClassName page application.defaultLayoutType.name }}(context
-
-                        {{~# if page.isPageTypeDashboard ~}}
-                        , pageStore
-                        {{~/ if ~}}
-
-                        {{~# if page.isPageTypeTable ~}}
+                    {{~# if page.isPageTypeTable ~}}
                         {{~# unless page.dataElement.isAccess ~}}
-                        , ownerStore
+                    , ownerStore
                         {{~/ unless ~}}
-                        , pageStore
-                        {{~/ if ~}}
+                    , pageStore
+                    {{~/ if ~}}
 
-                        {{~# if page.isPageTypeView ~}}
-                        , targetStore
+                    {{~# if page.isPageTypeView ~}}
+                    , targetStore
                         {{~# unless page.dataElement.isAccess ~}}
-                        , ownerStore
+                    , ownerStore
                         {{~/ unless ~}}
-                        , pageStore
-                        {{~/ if ~}}
+                    , pageStore
+                    {{~/ if ~}}
 
-                        {{~# if page.isPageTypeUpdate ~}}
-                        , targetStore, pageStore
-                        {{~/ if ~}}
+                    {{~# if page.isPageTypeUpdate ~}}
+                    , targetStore, pageStore
+                    {{~/ if ~}}
 
-                        {{~# if page.isPageTypeCreate ~}}
-                        , targetStore
+                    {{~# if page.isPageTypeCreate ~}}
+                    , targetStore
                         {{~# unless page.dataElement.isAccess ~}}
-                        , ownerStore
+                    , ownerStore
                         {{~/ unless ~}}
-                        , pageStore
-                        {{~/ if ~}}
+                    , pageStore
+                    {{~/ if ~}}
 
-                        {{~# if page.isPageTypeOperationInput ~}}
-                        , targetStore
-                        , pageStore
-                        {{~/ if ~}}
+                    {{~# if page.isPageTypeOperationInput ~}}
+                    , targetStore
+                    , pageStore
+                    {{~/ if ~}}
 
-                        {{~# if page.isPageTypeOperationOutput ~}}
-                        , targetStore
-                        , pageStore
-                        {{~/ if ~}}
+                    {{~# if page.isPageTypeOperationOutput ~}}
+                    , targetStore
+                    , pageStore
+                    {{~/ if ~}}
 
-                        {{~# if (isInputWidgetMapNeed page) ~}}
-                        , inputWidgetKeyMap
-                        {{~/ if ~}}
-                    );
+                    {{~# if (isInputWidgetMapNeed page) ~}}
+                    , inputWidgetKeyMap
+                    {{~/ if ~}}
+                );
+            }
+            {{/ unless }}
+            {{/ each }}
+            return get{{ pageBodyClassName page application.defaultLayoutType.name }}(context
+
+                {{~# if page.isPageTypeDashboard ~}}
+                , pageStore
+                {{~/ if ~}}
+
+                {{~# if page.isPageTypeTable ~}}
+                {{~# unless page.dataElement.isAccess ~}}
+                , ownerStore
+                {{~/ unless ~}}
+                , pageStore
+                {{~/ if ~}}
+
+                {{~# if page.isPageTypeView ~}}
+                , targetStore
+                {{~# unless page.dataElement.isAccess ~}}
+                , ownerStore
+                {{~/ unless ~}}
+                , pageStore
+                {{~/ if ~}}
+
+                {{~# if page.isPageTypeUpdate ~}}
+                , targetStore, pageStore
+                {{~/ if ~}}
+
+                {{~# if page.isPageTypeCreate ~}}
+                , targetStore
+                {{~# unless page.dataElement.isAccess ~}}
+                , ownerStore
+                {{~/ unless ~}}
+                , pageStore
+                {{~/ if ~}}
+
+                {{~# if page.isPageTypeOperationInput ~}}
+                , targetStore
+                , pageStore
+                {{~/ if ~}}
+
+                {{~# if page.isPageTypeOperationOutput ~}}
+                , targetStore
+                , pageStore
+                {{~/ if ~}}
+
+                {{~# if (isInputWidgetMapNeed page) ~}}
+                , inputWidgetKeyMap
+                {{~/ if ~}}
+            );
         });
+
+        {{# if page.isPageTypeCreate }}
+        return FutureBuilder<{{ storeClassName page.relationType.target }}>(
+            future: pageStore.getDefaults(),
+            builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                    return JudoLoadingProgress();
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                    targetStore.updateWith(snapshot.data);
+                }
+                // always return original layout once network call finishes with any status
+                return layout;
+            },
+        );
+        {{ else }}
+        return layout;
+        {{/ if }}
         {{/ if }}
     }
 }

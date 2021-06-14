@@ -39,6 +39,7 @@ Observer(
       {{# if this.isIconVisible }}
         icon: Icon(getIconByString('{{ this.icon.name }}')),
       {{/ if }}
+        initialValue: targetStore.{{ variable attributeType.name }},
         onChanged: (value) => targetStore.set{{ className attributeType.name }}(value.toString()),
         readOnly: {{ attributeType.isReadOnly }},
     ){{# if enabledBy }}

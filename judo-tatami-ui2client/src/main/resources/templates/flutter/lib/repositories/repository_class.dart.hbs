@@ -13,15 +13,16 @@ part of {{ variable ap.name }}.repository;
 
 class {{ repositoryClassName class }} {
 
+  {{# if class.isClassBehaviourTypeTemplateable }}
   //////////////////////////////////////////////////////////////////////////////
   // TEMPLATE (Default)
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ storeClassName class }}> {{ fqVariable class.name }}Default() async {
-    // TODO: NOT SUPPORTED YET
-    // {{ fqClass class.name }} {{ variable class.name }}Response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}TemplateInstance{{ fqClass name }}();
-    // return {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName class }}From{{ fqClass class.name }}({{ variable class.name }}Response);
-    return {{ storeClassName class }}();
+    final response = await DefaultApi(locator<ApiClient>()).{{ repositoryTemplateRequestMethodName class }}();
+    {{ fqClass class.transferObjectTypeName }} data = {{ fqClass class.transferObjectTypeName }}.fromJson(response.toJson());
+    return {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName class }}From{{ fqClass class.name }}(data);
   }
+  {{/ if }}
   {{# if class.isMapped }}
 
   //////////////////////////////////////////////////////////////////////////////

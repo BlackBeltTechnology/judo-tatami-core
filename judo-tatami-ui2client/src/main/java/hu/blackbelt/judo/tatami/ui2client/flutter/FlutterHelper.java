@@ -181,6 +181,7 @@ public class FlutterHelper {
         context.registerFunction("repositoryClassName", FlutterHelper.class.getDeclaredMethod("repositoryClassName", new Class[]{ClassType.class}));
         context.registerFunction("repositoryStoreMapperClassName", FlutterHelper.class.getDeclaredMethod("repositoryStoreMapperClassName", new Class[]{ClassType.class}));
         context.registerFunction("repositoryRelationName", FlutterHelper.class.getDeclaredMethod("repositoryRelationName", new Class[]{RelationType.class}));
+        context.registerFunction("repositoryTemplateRequestMethodName", FlutterHelper.class.getDeclaredMethod("repositoryTemplateRequestMethodName", new Class[]{ClassType.class}));
 
         //page store naming
         context.registerFunction("pagesFolderPath", FlutterHelper.class.getDeclaredMethod("pagesFolderPath", new Class[]{ClassType.class}));
@@ -832,6 +833,10 @@ public class FlutterHelper {
     }
 
     //repository naming
+    public static String repositoryTemplateRequestMethodName(ClassType classType) {
+        String prefix = StringUtils.uncapitalize(fqClass(classType.getTransferObjectTypeName()));
+        return prefix + "GetTemplate" + className(classType.getName());
+    }
 
     public static String repositoryFolderPath(ClassType actor) {
         return "lib/"
