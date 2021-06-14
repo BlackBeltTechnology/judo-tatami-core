@@ -276,14 +276,40 @@ rule CreateReferencePropertyDefinitionReferenceForCreateAndUpdate
             s.eContainer.changeable and
             not asmUtils.annotatedAsTrue(s.eContainer, "transient")
 
-        var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy")
-            .selectOne(a | a.details.get("value") == s.details.get("value"));
+        var mappedReference = asmUtils.getMappedReference(s.eContainer).orElse(null);
+        if (mappedReference.isDefined() and mappedReference.containment) {
+            var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy")
+                .selectOne(a | a.details.get("value") == s.details.get("value"));
 
-		if (s.eContainer.many) {
-		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationForCreateAndUpdate").getReference();
-		} else {
-		    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationForCreateAndUpdate").getReference();
-		}
+            if (s.eContainer.many) {
+                t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationForCreateAndUpdate").getReference();
+            } else {
+                t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationForCreateAndUpdate").getReference();
+            }
+        } else {
+            var targetFQName = asmUtils.getClassifierFQName(s.eContainer.eReferenceType);
+            var optionalTargetType = ASM!EClass.all.selectOne(r | asmUtils.annotatedAsTrue(r, "optional") and asmUtils.getExtensionAnnotationValue(r, "override", false).orElse(null) == targetFQName);
+
+            if (optionalTargetType.isDefined()) {
+                var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(optionalTargetType, "exposedBy")
+                    .selectOne(a | a.details.get("value") == s.details.get("value"));
+
+                if (s.eContainer.many) {
+                    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclaration").getReference();
+                } else {
+                    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclaration").getReference();
+                }
+            } else {
+                log.error("Optional type is NOT DEFINED for: " + targetFQName);
+                var targetTypeExposedByAnnotation = asmUtils.getExtensionAnnotationListByName(s.eContainer.eReferenceType, "exposedBy")
+                    .selectOne(a | a.details.get("value") == s.details.get("value"));
+                if (s.eContainer.many) {
+                    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectArraySchemaDeclarationForCreateAndUpdate").getReference();
+                } else {
+                    t.ref = targetTypeExposedByAnnotation.equivalent("CreateTransferObjectSingleSchemaDeclarationForCreateAndUpdate").getReference();
+                }
+            }
+        }
 
         s.equivalent("CreateReferencePropertyDefinitionForCreateAndUpdate").ref = t;
 }
