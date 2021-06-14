@@ -18,7 +18,7 @@ class {{ repositoryClassName class }} {
   // TEMPLATE (Default)
   //////////////////////////////////////////////////////////////////////////////
   Future<{{ storeClassName class }}> {{ fqVariable class.name }}Default() async {
-    final response = await DefaultApi(locator<ApiClient>()).{{ fqVariable class.name }}GetTemplate{{ className class.name }}();
+    final response = await DefaultApi(locator<ApiClient>()).{{ repositoryTemplateRequestMethodName class }}();
     {{ fqClass class.transferObjectTypeName }} data = {{ fqClass class.transferObjectTypeName }}.fromJson(response.toJson());
     return {{ repositoryStoreMapperClassName ap }}.create{{ storeClassName class }}From{{ fqClass class.name }}(data);
   }
