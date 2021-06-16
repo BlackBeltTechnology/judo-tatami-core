@@ -90,13 +90,11 @@ class {{ repositoryClassName class }} {
     // Sort Attributes
     if (sortColumn != null) {
                 {{# each relation.target.attributes as |attribute| }}
-                    {{# unless (isEnumType attribute.dataType) }}
-                        {{# unless (isBooleanDataType attribute.dataType) }}
+                    {{# if (isSortableDataType attribute.dataType) }}
       if (sortColumn == '{{ variable attribute.name }}' ) {
         orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
       }
-                        {{/ unless }}
-                    {{/ unless }}
+                    {{/ if }}
                 {{/ each }}
       if (orderBy.attribute != null) {
           orderBy.descending = sortAscending == null ? false : !sortAscending;
@@ -179,13 +177,11 @@ class {{ repositoryClassName class }} {
     // Sort Attributes
     if (sortColumn != null) {
                 {{# each relation.target.attributes as |attribute| }}
-                    {{# unless (isEnumType attribute.dataType) }}
-                        {{# unless (isBooleanDataType attribute.dataType) }}
+                    {{# if (isSortableDataType attribute.dataType) }}
       if (sortColumn == '{{ variable attribute.name }}' ) {
         orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.{{ variable attribute.name }};
       }
-                        {{/ unless }}
-                    {{/ unless }}
+                    {{/ if }}
                 {{/ each }}
       if (orderBy.attribute != null) {
           orderBy.descending = sortAscending == null ? false : !sortAscending;

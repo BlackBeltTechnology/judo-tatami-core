@@ -1,70 +1,26 @@
 {{~ log 'Date field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
 //START xmi:id="{{ getXMIID this }}" dateinput.dart.hbs-----{{ page.dataElement.target.name }}----------------------------------------------------------------------------
-{{# if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoDateInput(
-        key: UniqueKey(),
+        key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
         col: {{ col }},
         row: {{ row }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         initialDate: targetStore.{{ variable attributeType.name }},
-      {{# if this.isLabelVisible }}
+        {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/ if }}
+        {{/ if }}
         inCard: {{ isInCard }},
-      {{# if this.isIconVisible }}
+        {{# if this.isIconVisible }}
         icon: Icon(getIconByString('{{ this.icon.name }}')),
-      {{/ if }}
-        readOnly: true,
-    ),
-),
-{{/ if }}
-
-{{# if (isCreateTypePage page) }}
-Observer(
-    builder: (_) => JudoDateInput(
-        key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ col }},
-        row: {{ row }},
+        {{/ if }}
+        readOnly: {{# if (isViewTypePage page) }}true{{ else }}{{ attributeType.isReadOnly }}{{/ if }},
+        {{# unless (isViewTypePage page) }}
         mandatory: {{ attributeType.isRequired }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-        initialDate: targetStore.{{ variable attributeType.name }},
-      {{# if this.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/ if }}
-      {{# if this.isIconVisible }}
-        icon: Icon(getIconByString('{{ this.icon.name }}')),
-      {{/ if }}
-        inCard: {{ isInCard }},
         onChanged: (value) => targetStore.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
         lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
-        readOnly: {{ attributeType.isReadOnly }},
+        {{/ unless }}
     ),
 ),
-{{/ if }}
-
-{{# if page.isPageTypeUpdate }}
-Observer(
-    builder: (_) => JudoDateInput(
-        key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ col }},
-        row: {{ row }},
-        mandatory: {{ attributeType.isRequired }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-        initialDate: targetStore.{{ variable attributeType.name }},
-      {{# if this.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/ if }}
-      {{# if this.isIconVisible }}
-        icon: Icon(getIconByString('{{ this.icon.name }}')),
-      {{/ if }}
-        inCard: {{ isInCard }},
-        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value),
-        firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
-        lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line
-        readOnly: {{ attributeType.isReadOnly }},
-    ),
-),
-{{/ if }}
 //END dateinput.dart.hbs-----{{ page.dataElement.target.name }}------------------------------------------------------------------------------

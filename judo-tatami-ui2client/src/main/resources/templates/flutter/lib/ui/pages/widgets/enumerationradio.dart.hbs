@@ -1,9 +1,8 @@
 {{~ log 'Radio generation for' (variable application.name) '-' (fqClass page.name)'page' level='debug' ~}}
 //START xmi:id="{{ getXMIID this }}" enumerationradio.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------
-{{# if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
-        key: UniqueKey(),
+        key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
         col: {{ col }},
         row: {{ row }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
@@ -11,41 +10,10 @@ Observer(
         getLabel: (element) => AppLocalizations.of(context).lookUpValue(context, element.toString().split('.').last),
         getValue: (element) => element,
         groupValue: targetStore.{{ variable attributeType.name }},
-        readOnly: true,
-    )
-),
-{{/ if }}
-
-{{# if (isCreateTypePage page) }}
-Observer(
-    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
-        key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ col }},
-        row: {{ row }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-        items: {{ className attributeType.dataType.name }}.values,
-        getLabel: (element) => AppLocalizations.of(context).lookUpValue(context, element.toString().split('.').last),
-        getValue: (element) => element,
-        groupValue: targetStore.{{ variable attributeType.name }},
+        readOnly: {{# if (isViewTypePage page) }}true{{ else }}{{ attributeType.isReadOnly }}{{/ if }},
+        {{# unless (isViewTypePage page) }}
         onChanged: (value) => targetStore.set{{ className attributeType.name }}(value),
-        readOnly: {{ attributeType.isReadOnly }},
+        {{/ unless }}
     )
 ),
-{{/ if }}
-{{# if page.isPageTypeUpdate }}
-Observer(
-    builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
-        key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ col }},
-        row: {{ row }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-        items: {{ className attributeType.dataType.name }}.values,
-        getLabel: (element) => AppLocalizations.of(context).lookUpValue(context, element.toString().split('.').last),
-        getValue: (element) => element,
-        groupValue: targetStore.{{ variable attributeType.name }},
-        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value),
-        readOnly: {{ attributeType.isReadOnly }},
-    )
-),
-{{/ if }}
 //END enumerationradio.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------

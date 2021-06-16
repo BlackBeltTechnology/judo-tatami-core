@@ -1,65 +1,24 @@
 {{~ log 'Numeric field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
 //START xmi:id="{{ getXMIID this }}" numericinput.dart.hbs-----{{ page.dataElement.target.name }}-------------------------------------------------------------------------
-{{# if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoNumericInput(
-        key: UniqueKey(),
+        key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
         col: {{ col }},
         row: {{ row }},
         inCard: {{ isInCard }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{# if this.isLabelVisible }}
+        {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/ if }}
-      {{# if this.isIconVisible }}
+        {{/ if }}
+        {{# if this.isIconVisible }}
         icon: Icon(getIconByString('{{ this.icon.name }}')),
-      {{/ if }}
+        {{/ if }}
         initialValue: targetStore.{{ variable attributeType.name }}.toString(),
-        readOnly: true,
+        readOnly: {{# if (isViewTypePage page) }}true{{ else }}{{ attributeType.isReadOnly }}{{/ if }},
+        {{# unless (isViewTypePage page) }}
+        mandatory: {{ attributeType.isRequired }},
+        onChanged: (value) => targetStore.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
+        {{/ unless }}
     )
 ),
-{{/ if }}
-
-{{# if (isCreateTypePage page) }}
-{{# if enabledBy }}Observer(
-    builder: (_) => {{/ if }}JudoNumericInput(
-        key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ col }},
-        row: {{ row }},
-        inCard: {{ isInCard }},
-        mandatory: {{ attributeType.isRequired }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{# if this.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/ if }}
-      {{# if this.isIconVisible }}
-        icon: Icon(getIconByString('{{ this.icon.name }}')),
-      {{/ if }}
-        onChanged: (value) => targetStore.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
-        readOnly: {{ attributeType.isReadOnly }},
-    ){{# if enabledBy }}
-){{/ if }},
-{{/ if }}
-
-{{# if page.isPageTypeUpdate }}
-{{# if enabledBy }}Observer(
-    builder: (_) => {{/ if }}JudoNumericInput(
-        key: inputWidgetKeyMap['{{ name }}'],
-        col: {{ col }},
-        row: {{ row }},
-        inCard: {{ isInCard }},
-        mandatory: {{ attributeType.isRequired }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{# if this.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/ if }}
-      {{# if this.isIconVisible }}
-        icon: Icon(getIconByString('{{ this.icon.name }}')),
-      {{/ if }}
-        initialValue: targetStore.{{ variable attributeType.name }}.toString(),
-        onChanged: (value) => targetStore.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
-        readOnly: {{ attributeType.isReadOnly }},
-    ){{# if enabledBy }}
-){{/ if }},
-{{/ if }}
 //END numericinput.dart.hbs-----{{ page.dataElement.target.name }}---------------------------------------------------------------------------

@@ -26,11 +26,9 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                   AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
                   style: JudoComponentCustomizer.get().getTableHeaderTextStyle(Theme.of(context)),
                 ),
-                {{# unless (isBooleanDataType column.attributeType.dataType) }}
-                    {{# unless (isEnumType column.attributeType.dataType) }}
+                {{# if (isSortableDataType column.attributeType.dataType) }}
                 onSort: onSort,
-                    {{/ unless }}
-                {{/ unless }}
+                {{/ if }}
             ),
             {{/ each }}
             {{# each table.rowActions as |action| }}
@@ -54,8 +52,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
     @override
     Comparator getSortComparator(int columnIndex, bool asc) {
         {{# each columns as |column| }}
-            {{# unless (isBooleanDataType column.attributeType.dataType) }}
-                {{# unless (isEnumType column.attributeType.dataType) }}
+            {{# if (isSortableDataType column.attributeType.dataType) }}
         // dataType: {{ column.attributeType.dataType }}
         if (columnIndex == {{@index}}) {
             if (asc) {
@@ -64,21 +61,18 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
                 return (a, b) => b.{{ variable column.attributeType.name }}.compareTo(a.{{ variable column.attributeType.name }});
             }
         }
-                {{/ unless }}
-            {{/ unless }}
+            {{/ if }}
         {{/ each }}
     }
 
     @override
     String getColumnFieldByIndex(int columnIndex, bool asc) {
     {{# each columns as |column| }}
-        {{# unless (isBooleanDataType column.attributeType.dataType) }}
-            {{# unless (isEnumType column.attributeType.dataType) }}
+        {{# if (isSortableDataType column.attributeType.dataType) }}
         if (columnIndex == {{@index}}) {
             return '{{ variable column.attributeType.name }}';
         }
-            {{/ unless }}
-        {{/ unless }}
+        {{/ if }}
     {{/ each }}
     }
 
