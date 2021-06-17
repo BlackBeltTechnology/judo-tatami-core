@@ -28,6 +28,17 @@ class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
     {{/ if }}
 
     final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();
+    {{# if page.isPageTypeCreate }}
+        {{# if page.relationType.target.isClassBehaviourTypeTemplateable }}
+    Future<{{ storeClassName page.relationType.target }}> futureTemplate;
+
+    @override
+    void initState() {
+        super.initState();
+        futureTemplate = pageStore.getDefaults();
+    }
+        {{/if}}
+    {{/ if }}
 
 
     _{{ pageStateClassName page }}({{# unless page.dataElement.isAccess }}{ @required this.ownerStore,{{# unless (validatableFlagNeed page.dataElement) }} } {{/ unless }}{{/ unless }}{{# if (validatableFlagNeed page.dataElement) }}{{# if page.dataElement.isAccess }}{ {{/ if }} this.validatable }{{/ if }} ) {
