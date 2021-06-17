@@ -16,6 +16,7 @@ abstract class _{{ pageStoreClassName page }} with Store {
     bool validatable = false;
     {{/ if }}
 
+    {{# if relation.target.isClassBehaviourTypeTemplateable }}
     @action
     Future<{{ storeClassName relation.target }}> getDefaults() async {
         try {
@@ -25,6 +26,7 @@ abstract class _{{ pageStoreClassName page }} with Store {
             throw error;
         }
     }
+    {{/if}}
 
     {{# if relation.isRelationBehaviourTypeCreateValidatable }}
     @action
