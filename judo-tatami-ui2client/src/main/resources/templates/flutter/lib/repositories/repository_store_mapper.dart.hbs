@@ -143,11 +143,11 @@ class {{ repositoryStoreMapperClassName ap }} {
                 {{# unless isMemberTypeTransient }}
     if (store.{{ variable relation.name }} != null) {
                     {{# if isCollection }}
-      {{ variable class.name }}.{{ variable relation.name }} = store.{{ variable relation.name }}.map<{{ fqClass target.transferObjectTypeName }}ForCreateAndUpdate>((store) {
-        return create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ storeClassName target }}(store);
+      {{ variable class.name }}.{{ variable relation.name }} = store.{{ variable relation.name }}.map<{{# if (isOptionalAggregationRelation relation) }}{{ modelName application.name }}OptionalTransferobjecttypes{{ packageName relation.target.name }}{{ className relation.target.name }}{{ else }}{{ fqClass target.transferObjectTypeName }}ForCreateAndUpdate{{/ if }}>((store) {
+          return {{# if (isOptionalAggregationRelation relation) }}create{{ modelName application.name }}OptionalTransferobjecttypes{{ packageName relation.target.name }}{{ className relation.target.name }}{{ else }}create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ storeClassName target }}{{/ if }}(store);
       }).toList();
                     {{ else }}
-      {{ variable class.name }}.{{ variable relation.name }} = create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ storeClassName target }}(store.{{ variable relation.name }});
+      {{ variable class.name }}.{{ variable relation.name }} = {{# if (isOptionalAggregationRelation relation) }}create{{ modelName application.name }}OptionalTransferobjecttypes{{ packageName relation.target.name }}{{ className relation.target.name }}{{ else }}create{{ fqClass target.name }}ForCreateAndUpdateFrom{{ storeClassName target }}{{/ if }}(store.{{ variable relation.name }});
                     {{/ if }}
     }
                 {{/ unless }}
@@ -159,9 +159,9 @@ class {{ repositoryStoreMapperClassName ap }} {
   {{/ if }}
 
   // For rangeable handling
-  {{# if isOptional }}
-      {{# each relations as |relation| }}
-          {{# if relation.isRelationBehaviourTypeRangeable }}
+{{# if isOptional }}
+  {{# each relations as |relation| }}
+      {{# if relation.isRelationBehaviourTypeRangeable }}
   static {{ modelName ../../name }}Extension{{ packageName ../../name }}GetRangeInput{{ className ../../name }}{{ className relation.name }} create{{ modelName ../../name }}Extension{{ packageName ../../name }}GetRangeInput{{ className ../../name }}{{ className relation.name }}From{{ storeClassName class }}({{ storeClassName class }} store) {
     if (store == null) {
       return null;
@@ -176,8 +176,11 @@ class {{ repositoryStoreMapperClassName ap }} {
 
     {{ variable ../../name }}.owner = optional{{ className ../../name }};
   }
-          {{/ if }}
-      {{/ each }}
+      {{/ if }}
+  {{/ each }}
+{{/ if }}
+
+{{# if (isOptionalClassMapper class) }}
   static {{ modelName ../../name }}OptionalTransferobjecttypes{{ packageName name }}{{ className name }} create{{ modelName ../../name }}OptionalTransferobjecttypes{{ packageName name }}{{ className name }}({{ storeClassName class }} store) {
     if (store == null) {
       return null;
@@ -218,8 +221,7 @@ class {{ repositoryStoreMapperClassName ap }} {
     {{/ each }}
     return optional{{ className name }};
   }
-
-  {{/ if }}
+{{/ if }}
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 {{/ each }}

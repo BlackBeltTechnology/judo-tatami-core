@@ -3,6 +3,9 @@
 {{# with dataElement as |relation| }}
 Observer(builder: (_) {
     return JudoLink(
+      {{# unless (isViewTypePage page) }}
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable relation.name }}'].message,
+      {{/ unless }}
       {{# if link.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ link.label }}'),
       {{/ if }}
@@ -129,23 +132,6 @@ Observer(builder: (_) {
                     if (created != null) {
                         pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
                             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        {{# unless page.isPageTypeUpdate }}
-                            {{# unless page.isPageTypeView }}
-                                {{# unless page.isPageTypeOperationOutput }}
-                                    {{# unless page.dataElement.isRelationKindAggregation }}
-                                        {{# unless page.dataElement.isRelationKindComposition }}
-                                            {{# unless relation.isMemberTypeTransient }}
-                        var validate = await pageStore.validate({{# unless page.dataElement.isAccess }}targetStore, {{/ unless }}targetStore)
-                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        if (validate != null) {
-                            targetStore.updateWith(validate);
-                        }
-                                            {{/ unless }}
-                                        {{/ unless }}
-                                    {{/ unless }}
-                                {{/ unless }}
-                            {{/ unless }}
-                        {{/ unless }}
                     }
                 }{{# unless relation.isAccess }} : null{{/ unless }}
             ) : null,

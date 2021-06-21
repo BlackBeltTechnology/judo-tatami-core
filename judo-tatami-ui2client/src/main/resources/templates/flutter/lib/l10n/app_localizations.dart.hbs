@@ -120,6 +120,8 @@ class AppLocalizations {
             return AppLocalizations.of(context).{{ l10nLabelName 'Next' }}();
           case 'Previous':
             return AppLocalizations.of(context).{{ l10nLabelName 'Previous' }}();
+          case 'Please make sure all fields are filled in correctly.':
+            return AppLocalizations.of(context).{{ l10nLabelName 'Please make sure all fields are filled in correctly.' }}();
           case 'Something went wrong. Please contact with the system admins.':
             return AppLocalizations.of(context).{{ l10nLabelName 'Something went wrong. Please contact with the system admins.' }}();
           default:
@@ -436,6 +438,14 @@ class AppLocalizations {
         return Intl.message(
             'Previous',
             name: '{{ l10nLabelName 'Previous' }}',
+            args: [],
+            locale: localeName,
+        );
+    }
+    String {{ l10nLabelName 'Please make sure all fields are filled in correctly.' }}() {
+        return Intl.message(
+            'Please make sure all fields are filled in correctly.',
+            name: '{{ l10nLabelName 'Please make sure all fields are filled in correctly.' }}',
             args: [],
             locale: localeName,
         );
