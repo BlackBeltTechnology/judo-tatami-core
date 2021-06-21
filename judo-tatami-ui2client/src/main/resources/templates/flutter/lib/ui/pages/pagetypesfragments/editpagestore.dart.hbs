@@ -12,6 +12,16 @@ abstract class _{{ pageStoreClassName page }} with Store {
     @observable
     {{ storeClassName relation.target }} targetStore;
 
+    @observable
+    ObservableMap<String, ErrorMessage> validationAttributeErrorMessageMap = {
+    {{# each relation.target.attributes as |attribute| }}
+        '{{ variable attribute.name }}' : ErrorMessage(),
+    {{/ each }}
+    {{# each relation.target.relations as |targetRelation| }}
+        '{{ variable targetRelation.name }}' : ErrorMessage(),
+    {{/ each }}
+    }.asObservable();
+
     {{# if (validatableFlagNeed relation) }}
     bool validatable = true;
     {{/ if }}

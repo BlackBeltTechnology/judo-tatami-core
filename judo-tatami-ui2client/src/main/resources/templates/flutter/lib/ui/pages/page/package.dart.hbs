@@ -34,6 +34,11 @@ import 'package:{{ modelPackage application.name }}/{{ path application.name }}/
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_handler.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_message.dart';
+
+{{# if page.isPageTypeView }}
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/pages/package.dart';
+{{/if}}
 
 part 'package.g.dart';
 part 'page.dart';
@@ -58,4 +63,3 @@ part '{{ tableFileName container.layoutType.name table.dataElement.name }}';
     {{/ each }}
   {{/ unless }}
 {{/ each }}
-

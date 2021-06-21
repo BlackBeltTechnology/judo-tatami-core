@@ -19,11 +19,11 @@ Observer(
     ),
 ),
 {{/ if }}
-
 {{# if (isCreateTypePage page) }}
 Observer(
     builder: (_) => JudoDateInput(
         key: inputWidgetKeyMap['{{ name }}'],
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         col: {{ col }},
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
@@ -43,11 +43,11 @@ Observer(
     ),
 ),
 {{/ if }}
-
 {{# if page.isPageTypeUpdate }}
 Observer(
     builder: (_) => JudoDateInput(
         key: inputWidgetKeyMap['{{ name }}'],
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         col: {{ col }},
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},

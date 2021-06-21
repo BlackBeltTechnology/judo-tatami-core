@@ -23,6 +23,7 @@ Observer(
     builder: (_) => JudoSwitch(
         col: {{ col }},
         row: {{ row }},
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         mandatory: {{ attributeType.isRequired }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{# if this.isLabelVisible }}
@@ -43,6 +44,7 @@ Observer(
     builder: (_) => JudoSwitch(
         col: {{ col }},
         row: {{ row }},
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         mandatory: {{ attributeType.isRequired }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
       {{# if this.isLabelVisible }}
