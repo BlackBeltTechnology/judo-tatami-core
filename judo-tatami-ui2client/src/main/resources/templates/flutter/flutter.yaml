@@ -61,14 +61,6 @@
 # ========================================
 - overwriteExpression: true
   factoryExpression: "{#application}"
-  pathExpression: >
-    'lib/' +
-    #path(#application.actor.name) + '/error/' +
-    'error_handler.dart'
-  templateName: flutter/lib/error/error_handler.dart.hbs
-
-- overwriteExpression: true
-  factoryExpression: "{#application}"
   pathExpression: "'lib/' + #path(#application.actor.name) + '/error/error_message.dart'"
   templateName: flutter/lib/error/error_message.dart
 

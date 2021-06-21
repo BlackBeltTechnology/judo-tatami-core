@@ -74,18 +74,16 @@ class ErrorHandler {
 
           bool fieldErrorsExist = false;
 
-          if (validationAttributeErrorMessageMap != null) {
-            validationAttributeErrorMessageMap.forEach((attribute, errorMessage) {
-              ErrorHandler selectedError = errorList.firstWhere((error) => error.location == attribute, orElse: () => null);
-              if (selectedError != null) {
-                errorList.removeWhere((error) => error.location == selectedError.location);
-                errorMessage.setMessage(AppLocalizations.of(context).lookUpValue(context, selectedError.message));
-                fieldErrorsExist = true;
-              } else {
-                errorMessage.clearMessage();
-              }
-            });
-          }
+          validationAttributeErrorMessageMap?.forEach((attribute, errorMessage) {
+            ErrorHandler selectedError = errorList.firstWhere((error) => error.location == attribute, orElse: () => null);
+            if (selectedError != null) {
+              errorList.removeWhere((error) => error.location == selectedError.location);
+              errorMessage.setMessage(AppLocalizations.of(context).lookUpValue(context, selectedError.message));
+              fieldErrorsExist = true;
+            } else {
+              errorMessage.clearMessage();
+            }
+          });
 
           if (fieldErrorsExist) {
             _showJudoSnack(context, AppLocalizations.of(context).lookUpValue(context, 'Please make sure all fields are filled in correctly.'), ErrorLevel.error);
