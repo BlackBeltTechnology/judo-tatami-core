@@ -98,6 +98,13 @@ rule CreatePrimitiveAccessorExpressionAnnotation
 	    
 	    t.details.add(getter);
 	    t.details.add(getterDialect);
+
+	    if (s.getterExpression.parameterType.isDefined()) {
+            var getterParameterType = new ASM!EStringToStringMapEntry;
+            getterParameterType.key = "getter.parameter";
+            getterParameterType.value = asmUtils.getClassifierFQName(s.getterExpression.parameterType.asmEquivalent());
+            t.details.add(getterParameterType);
+        }
 	    
 	    if (s.setterExpression.isDefined()) {
 		    var setter = new ASM!EStringToStringMapEntry;
@@ -110,6 +117,13 @@ rule CreatePrimitiveAccessorExpressionAnnotation
 		    
 		    t.details.add(setter);
 	        t.details.add(setterDialect);
+
+	        if (s.setterExpression.parameterType.isDefined()) {
+                var setterParameterType = new ASM!EStringToStringMapEntry;
+                setterParameterType.key = "setter.parameter";
+                setterParameterType.value = asmUtils.getClassifierFQName(s.setterExpression.parameterType.asmEquivalent());
+                t.details.add(setterParameterType);
+            }
 	    }
         
         s.asmEquivalent().eAnnotations.add(t);
@@ -134,7 +148,14 @@ rule CreateReferenceAccessorExpressionAnnotation
 	    t.details.add(getter);
 	    t.details.add(getterDialect);
 	    
-	    if (s.setterExpression.isDefined()) {
+	    if (s.getterExpression.parameterType.isDefined()) {
+            var getterParameterType = new ASM!EStringToStringMapEntry;
+            getterParameterType.key = "getter.parameter";
+            getterParameterType.value = asmUtils.getClassifierFQName(s.getterExpression.parameterType.asmEquivalent());
+            t.details.add(getterParameterType);
+        }
+
+        if (s.setterExpression.isDefined()) {
 		    var setter = new ASM!EStringToStringMapEntry;
 		    setter.key = "setter";
 		    setter.value = s.setterExpression.expression;
@@ -145,6 +166,13 @@ rule CreateReferenceAccessorExpressionAnnotation
 		    
 		    t.details.add(setter);
 	        t.details.add(setterDialect);
+
+	        if (s.setterExpression.parameterType.isDefined()) {
+                var setterParameterType = new ASM!EStringToStringMapEntry;
+                setterParameterType.key = "setter.parameter";
+                setterParameterType.value = asmUtils.getClassifierFQName(s.setterExpression.parameterType.asmEquivalent());
+                t.details.add(setterParameterType);
+            }
 	    }
         
         s.asmEquivalent().eAnnotations.add(t);

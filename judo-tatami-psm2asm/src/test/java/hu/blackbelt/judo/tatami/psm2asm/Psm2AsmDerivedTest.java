@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.util.Optional;
 
+import hu.blackbelt.judo.meta.psm.service.*;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -50,12 +51,6 @@ import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
-import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
-import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
-import hu.blackbelt.judo.meta.psm.service.TransferOperationBehaviourType;
-import hu.blackbelt.judo.meta.psm.service.UnboundOperation;
-import hu.blackbelt.judo.meta.psm.service.UnmappedTransferObjectType;
 import hu.blackbelt.judo.meta.psm.type.BooleanType;
 import hu.blackbelt.judo.meta.psm.type.CustomType;
 import hu.blackbelt.judo.meta.psm.type.NumericType;
@@ -119,14 +114,20 @@ public class Psm2AsmDerivedTest {
 		MeasuredType measuredType = newMeasuredTypeBuilder().withName("measuredType").withStoreUnit(unit)
 				.withPrecision(5).withScale(3).build();
 
+		TransferObjectType parameter = newUnmappedTransferObjectTypeBuilder().withName("Parameter")
+				.withAttributes(newTransferAttributeBuilder()
+						.withName("x")
+						.withDataType(strType)
+						.build())
+				.build();
+
 		EntityType entity1 = newEntityTypeBuilder().withName("entity1").build();
 		EntityType entity2 = newEntityTypeBuilder().withName("entity2").build();
 		EntityType entity3 = newEntityTypeBuilder().withName("entity3").withSuperEntityTypes(ImmutableList.of(entity2))
 				.build();
 
 		DataProperty stringDataProperty = newDataPropertyBuilder().withName("a1").withDataType(strType)
-				.withGetterExpression(newDataExpressionTypeBuilder().withExpression("self.a1"))
-				.build();
+				.withGetterExpression(newDataExpressionTypeBuilder().withExpression("self.a1").withParameterType(parameter)).build();
 		DataProperty customDataProperty = newDataPropertyBuilder().withName("a2").withDataType(custom)
 				.withGetterExpression(newDataExpressionTypeBuilder().withExpression("self.a2")).build();
 		DataProperty boolDataProperty = newDataPropertyBuilder().withName("a3").withDataType(boolType)
@@ -146,7 +147,7 @@ public class Psm2AsmDerivedTest {
 		entity1.getNavigationProperties().addAll(ImmutableList.of(navProp));
 
 		Model model = newModelBuilder().withName("M").withElements(
-				ImmutableList.of(entity1, entity2, entity3, strType, intType, boolType, custom, measuredType, m))
+				ImmutableList.of(entity1, entity2, entity3, strType, intType, boolType, custom, measuredType, parameter, m))
 				.build();
 
 		psmModel.addContent(model);
@@ -235,13 +236,14 @@ public class Psm2AsmDerivedTest {
 		assertTrue(asmStrConstraint.getDetails().get("maxLength").equals(String.valueOf(strType.getMaxLength())));
 		final EAnnotation asmStrExpr = asmStrDataProperty.get().getEAnnotation(EXPRESSION_SOURCE);
 		assertThat(asmStrExpr, IsNull.notNullValue());
-		assertThat(asmStrExpr.getDetails().size(), IsEqual.equalTo(2));
+		assertThat(asmStrExpr.getDetails().size(), IsEqual.equalTo(3));
 		assertTrue(asmStrExpr.getDetails().containsKey("getter"));
 		assertTrue(
 				asmStrExpr.getDetails().get("getter").equals(stringDataProperty.getGetterExpression().getExpression()));
 		assertTrue(asmStrExpr.getDetails().containsKey("getter.dialect"));
 		assertTrue(asmStrExpr.getDetails().get("getter.dialect")
 				.equals(stringDataProperty.getGetterExpression().getDialect().toString()));
+		assertThat(asmStrExpr.getDetails().get("getter.parameter"), IsEqual.equalTo(model.getName() + "." + parameter.getName()));
 
 		final EAnnotation asmCustomConstraint = asmCustomDataProperty.get().getEAnnotation(CONSTRAINTS_SOURCE);
 		assertThat(asmCustomConstraint, IsNull.notNullValue());
