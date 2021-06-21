@@ -173,17 +173,11 @@ public class EsmOperation2PsmOperationTest {
                         .withLower(OUTPUT_PARAMETER_CARDINALITY_LOWER)
                         .withUpper(OUTPUT_PARAMETER_CARDINALITY_UPPER)
                         .build())
-                .withFaults(Arrays.asList(
-                        newParameterBuilder()
-                                .withName(FAULT1_NAME)
-                                .withLower(1).withUpper(1)
-                                .withTarget(fault1Type)
-                                .build(),
-                        newParameterBuilder()
-                                .withName(FAULT2_NAME)
-                                .withLower(1).withUpper(1)
-                                .withTarget(fault2Type)
-                                .build()));
+                .withFaults(newParameterBuilder()
+                        .withName(FAULT1_NAME)
+                        .withLower(1).withUpper(1)
+                        .withTarget(fault1Type)
+                        .build());
     }
 
     @Test
