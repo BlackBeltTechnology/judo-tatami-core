@@ -9,12 +9,14 @@
 // Application: {{ application.name }}
 
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/auth/auth.dart';
+import 'package:{{ modelPackage application.name }}/{{ path application.name }}/error/error_message.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/injector/injector.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/navigation/navigation_state.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/utilities/package.dart';
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/ui/routes/router.gr.dart' as router;
 import 'package:{{ modelPackage application.name }}/{{ path application.name }}/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:mobx/mobx.dart';
 import 'dart:convert';
 import 'package:judo_flutter_components/judo_flutter_components.dart';
 import 'package:openapi_dart_common/openapi.dart';
@@ -60,7 +62,7 @@ class ErrorHandler {
       _showJudoSnack(context, message, ErrorLevel.complete);
     }
 
-    static void showErrorSnack(BuildContext context, String jsonMessage) {
+    static void showErrorSnack(BuildContext context, String jsonMessage, { ObservableMap<String, ErrorMessage> validationAttributeErrorMessageMap }) {
       if (context == null || jsonMessage == null) return;
 
       try {
@@ -69,6 +71,24 @@ class ErrorHandler {
           List errorList = (decodedErrorJson).map<ErrorHandler>((e) {
             return fromJson(e);
           }).toList();
+
+          bool fieldErrorsExist = false;
+
+          validationAttributeErrorMessageMap?.forEach((attribute, errorMessage) {
+            ErrorHandler selectedError = errorList.firstWhere((error) => error.location == attribute, orElse: () => null);
+            if (selectedError != null) {
+              errorList.removeWhere((error) => error.location == selectedError.location);
+              errorMessage.setMessage(AppLocalizations.of(context).lookUpValue(context, selectedError.message));
+              fieldErrorsExist = true;
+            } else {
+              errorMessage.clearMessage();
+            }
+          });
+
+          if (fieldErrorsExist) {
+            _showJudoSnack(context, AppLocalizations.of(context).lookUpValue(context, 'Please make sure all fields are filled in correctly.'), ErrorLevel.error);
+          }
+          
           errorList.forEach((element) => _showJudoSnack(context, AppLocalizations.of(context).lookUpValue(context, element.message), element.level));
         } else {
           ErrorHandler errorHandler = fromJson(decodedErrorJson);

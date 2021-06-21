@@ -15,7 +15,11 @@
             {{# unless page.dataElement.isRelationKindAggregation }}
                 {{# unless page.dataElement.isRelationKindComposition }}
             var res = await pageStore.validate(targetStore)
-                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                .catchError((error) => ErrorHandler.showErrorSnack(
+                    context,
+                    error.message,
+                    validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
+                ));
             if (res != null) {
                 navigation.close(targetStore);
             }
@@ -25,7 +29,11 @@
                 {{# if page.dataElement.isRelationBehaviourTypeUpdateValidatable }}
             if (pageStore.validatable){
                 var res = await pageStore.validate(targetStore)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                    .catchError((error) => ErrorHandler.showErrorSnack(
+                        context,
+                        error.message,
+                        validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
+                    ));
                 if (res != null) {
                     navigation.close(targetStore);
                 }
@@ -38,7 +46,11 @@
                 {{# if page.dataElement.isRelationBehaviourTypeUpdateValidatable }}
             if (pageStore.validatable){
                 var res = await pageStore.validate(targetStore)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                    .catchError((error) => ErrorHandler.showErrorSnack(
+                        context,
+                        error.message,
+                        validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
+                    ));
                 if (res != null) {
                     navigation.close(targetStore);
                 }
@@ -52,7 +64,11 @@
             {{# unless page.dataElement.isRelationKindAggregation }}
                 {{# unless page.dataElement.isRelationKindComposition }}
             var res = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
-                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                .catchError((error) => ErrorHandler.showErrorSnack(
+                    context,
+                    error.message,
+                    validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
+                ));
             if (res != null) {
                 navigation.close(targetStore);
             }
@@ -62,7 +78,11 @@
                 {{# if page.dataElement.isRelationBehaviourTypeCreateValidatable }}
             if (pageStore.validatable){
                 var res = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                    .catchError((error) => ErrorHandler.showErrorSnack(
+                        context,
+                        error.message,
+                        validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
+                    ));
                 if (res != null) {
                     navigation.close(targetStore);
                 }
@@ -77,7 +97,11 @@
                 {{# if page.dataElement.isRelationBehaviourTypeCreateValidatable }}
             if (pageStore.validatable){
                 var res = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                    .catchError((error) => ErrorHandler.showErrorSnack(
+                        context,
+                        error.message,
+                        validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
+                    ));
                 if (res != null) {
                     navigation.close(targetStore);
                 }
@@ -90,7 +114,7 @@
             {{/ if }}
         {{/ if }}
         {{# if page.isPageTypeOperationInput }}
-            bool success = await pageStore.operationCall(targetStore);
+            bool success = await pageStore.operationCall(targetStore, pageStore);
             if (success){
                navigation.close(true); // must send back true to view page to trigger refresh if the operation call is successful
             }
@@ -198,7 +222,7 @@
             {{# if action.operation.output }}{{ storeClassName action.operation.output.target }} store;{{/ if }}
             var ret = await navigation.open(Routes.{{ pageClassVariableName action.inputParameterPage }},
                 arguments: {{ pageArgumentsClassName action.inputParameterPage }}(
-                    operationCall: ({{ storeClassName action.operation.input.target }} input) async {
+                    operationCall: ({{ storeClassName action.operation.input.target }} input, {{ pageStoreClassName action.inputParameterPage }} inputPageStore) async {
                         bool callSuccessful = true;
                 {{# if action.isConfirmationTypeMandatory }}
                         {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
@@ -208,7 +232,11 @@
                 {{/ if }}
                         {{# if action.operation.output }}store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}(input, {{# if action.operation.isMapped }}targetStore{{/ if }})
                             .catchError((error) {
-                                ErrorHandler.showErrorSnack(context, error.message);
+                                ErrorHandler.showErrorSnack(
+                                    context,
+                                    error.message,
+                                    validationAttributeErrorMessageMap: inputPageStore.validationAttributeErrorMessageMap
+                                );
                                 callSuccessful = false;
                             });
                         return callSuccessful;

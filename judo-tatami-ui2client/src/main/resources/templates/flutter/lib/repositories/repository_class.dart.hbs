@@ -143,7 +143,7 @@ class {{ repositoryClassName class }} {
             {{/ if }}
 
     if (reverse != null && lastItem != null) {
-      seek.lastItem = {{ repositoryStoreMapperClassName ap }}.create{{ fqClass relation.target.name }}From{{ storeClassName relation.target }}(lastItem);
+      seek.lastItem = {{ repositoryStoreMapperClassName ap }}.create{{ modelName relation.target.name }}OptionalTransferobjecttypes{{ packageName relation.target.name }}{{ className relation.target.name }}(lastItem);
       seek.reverse = reverse;
     }
     seek.limit = queryLimit ?? 5;
@@ -232,7 +232,7 @@ class {{ repositoryClassName class }} {
             {{/ if }}
 
     if (reverse != null && lastItem != null) {
-      seek.lastItem = {{ repositoryStoreMapperClassName ap }}.create{{ fqClass relation.target.name }}From{{ storeClassName relation.target }}(lastItem);
+      seek.lastItem = {{ repositoryStoreMapperClassName ap }}.create{{ modelName relation.target.name }}OptionalTransferobjecttypes{{ packageName relation.target.name }}{{ className relation.target.name }}(lastItem);
       seek.reverse = reverse;
     }
     seek.limit = queryLimit ?? 5;

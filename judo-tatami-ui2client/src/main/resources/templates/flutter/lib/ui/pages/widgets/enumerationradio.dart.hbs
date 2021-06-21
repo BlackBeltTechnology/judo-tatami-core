@@ -20,6 +20,7 @@ Observer(
 Observer(
     builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
         key: inputWidgetKeyMap['{{ name }}'],
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         col: {{ col }},
         row: {{ row }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
@@ -36,6 +37,7 @@ Observer(
 Observer(
     builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
         key: inputWidgetKeyMap['{{ name }}'],
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         col: {{ col }},
         row: {{ row }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},

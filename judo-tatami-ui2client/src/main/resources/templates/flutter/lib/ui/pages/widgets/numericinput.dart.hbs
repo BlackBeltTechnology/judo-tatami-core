@@ -21,9 +21,10 @@ Observer(
 {{/ if }}
 
 {{# if (isCreateTypePage page) }}
-{{# if enabledBy }}Observer(
-    builder: (_) => {{/ if }}JudoNumericInput(
+Observer(
+    builder: (_) => JudoNumericInput(
         key: inputWidgetKeyMap['{{ name }}'],
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         col: {{ col }},
         row: {{ row }},
         inCard: {{ isInCard }},
@@ -37,14 +38,15 @@ Observer(
       {{/ if }}
         onChanged: (value) => targetStore.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
         readOnly: {{ attributeType.isReadOnly }},
-    ){{# if enabledBy }}
-){{/ if }},
+    )
+),
 {{/ if }}
 
 {{# if page.isPageTypeUpdate }}
-{{# if enabledBy }}Observer(
-    builder: (_) => {{/ if }}JudoNumericInput(
+Observer(
+    builder: (_) => JudoNumericInput(
         key: inputWidgetKeyMap['{{ name }}'],
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         col: {{ col }},
         row: {{ row }},
         inCard: {{ isInCard }},
@@ -59,7 +61,7 @@ Observer(
         initialValue: targetStore.{{ variable attributeType.name }}.toString(),
         onChanged: (value) => targetStore.set{{ className attributeType.name }}({{ dartType attributeType.dataType }}.parse(value)),
         readOnly: {{ attributeType.isReadOnly }},
-    ){{# if enabledBy }}
-){{/ if }},
+    )
+),
 {{/ if }}
 //END numericinput.dart.hbs-----{{ page.dataElement.target.name }}---------------------------------------------------------------------------

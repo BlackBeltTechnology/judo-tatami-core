@@ -25,6 +25,7 @@ Observer(
 Observer(
     builder: (_) => JudoDateTimeInput(
         key: inputWidgetKeyMap['{{ name }}'],
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         col: {{ col }},
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
@@ -50,6 +51,7 @@ Observer(
 Observer(
     builder: (_) => JudoDateTimeInput(
         key: inputWidgetKeyMap['{{ name }}'],
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         col: {{ col }},
         row: {{ row }},
         mandatory: {{ attributeType.isRequired }},
