@@ -1,71 +1,28 @@
 {{~ log 'Text input field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
 //START xmi:id="{{ getXMIID this }}" textinput.dart.hbs-----{{ page.dataElement.target.name }}----------------------------------------------------------------------------
-{{# if (isViewTypePage page) }}
 Observer(
     builder: (_) => JudoInputText(
-        key: UniqueKey(),
-        col: {{ col }},
-        row: {{ row }},
-        maxLength: {{ attributeType.dataType.maxLength }} ?? 250,
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{# if this.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/ if }}
-      {{# if this.isIconVisible }}
-        icon: Icon(getIconByString('{{ this.icon.name }}')),
-      {{/ if }}
-        inCard: {{ isInCard }},
-        initialValue: targetStore.{{ variable attributeType.name }},
-        readOnly: true,
-    )
-),
-{{/ if }}
-
-{{# if (isCreateTypePage page) }}
-Observer(
-    builder: (_) => JudoInputText(
-        key: inputWidgetKeyMap['{{ name }}'],
+        key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
+        {{# if (isPageValidatable page) }}
         errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
+        {{/ if }}
         col: {{ col }},
         row: {{ row }},
-        mandatory: {{ attributeType.isRequired }},
         maxLength: {{ attributeType.dataType.maxLength }} ?? 250,
         disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{# if this.isLabelVisible }}
+        {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/ if }}
-      {{# if this.isIconVisible }}
+        {{/ if }}
+        {{# if this.isIconVisible }}
         icon: Icon(getIconByString('{{ this.icon.name }}')),
-      {{/ if }}
+        {{/ if }}
         inCard: {{ isInCard }},
         initialValue: targetStore.{{ variable attributeType.name }},
-        onChanged: (value) => targetStore.set{{ className attributeType.name }}(value.toString()),
-        readOnly: {{ attributeType.isReadOnly }},
-    )
-),
-{{/ if }}
-
-{{# if page.isPageTypeUpdate }}
-Observer(
-    builder: (_) => JudoInputText(
-        key: inputWidgetKeyMap['{{ name }}'],
-        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
-        col: {{ col }},
-        row: {{ row }},
+        readOnly: {{# if (isViewTypePage page) }}true{{ else }}{{ attributeType.isReadOnly }}{{/ if }},
+        {{# unless (isViewTypePage page) }}
         mandatory: {{ attributeType.isRequired }},
-        maxLength: {{ attributeType.dataType.maxLength }} ?? 250,
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
-      {{# if this.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-      {{/ if }}
-      {{# if this.isIconVisible }}
-        icon: Icon(getIconByString('{{ this.icon.name }}')),
-      {{/ if }}
-        inCard: {{ isInCard }},
-        initialValue: targetStore.{{ variable attributeType.name }},
         onChanged: (value) => targetStore.set{{ className attributeType.name }}(value.toString()),
-        readOnly: {{ attributeType.isReadOnly }},
+        {{/ unless }}
     )
 ),
-{{/ if }}
 //END textinput.dart.hbs-----{{ page.dataElement.target.name }}------------------------------------------------------------------------------
