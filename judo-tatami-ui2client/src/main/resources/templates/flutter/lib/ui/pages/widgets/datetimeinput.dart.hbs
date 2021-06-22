@@ -3,6 +3,9 @@
 Observer(
     builder: (_) => JudoDateTimeInput(
         key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
+        {{# if (isPageValidatable page) }}
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
+        {{/ if }}
         col: {{ col }},
         row: {{ row }},
         disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},

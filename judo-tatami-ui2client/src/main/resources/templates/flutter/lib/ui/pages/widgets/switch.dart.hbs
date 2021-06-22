@@ -4,6 +4,9 @@ Observer(
     builder: (_) => JudoSwitch(
         col: {{ col }},
         row: {{ row }},
+        {{# if (isPageValidatable page) }}
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
+        {{/ if }}
         disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),

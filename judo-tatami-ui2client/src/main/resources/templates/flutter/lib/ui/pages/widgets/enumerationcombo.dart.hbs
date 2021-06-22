@@ -3,6 +3,9 @@
 Observer(
     builder: (_) => JudoComboBox<{{ className attributeType.dataType.name }}>(
         key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
+        {{# if (isPageValidatable page) }}
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
+        {{/ if }}
         col: {{ col }},
         row: {{ row }},
         {{# if this.isIconVisible }}

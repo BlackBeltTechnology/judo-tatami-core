@@ -15,23 +15,6 @@
             if (created != null) {
                 pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-        {{# unless page.isPageTypeUpdate }}
-            {{# unless page.isPageTypeView }}
-                {{# unless page.isPageTypeOperationOutput }}
-                    {{# unless page.dataElement.isRelationKindAggregation }}
-                        {{# unless page.dataElement.isRelationKindComposition }}
-                            {{# unless relation.isMemberTypeTransient }}
-                var validate = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                if (validate != null) {
-                    targetStore.updateWith(validate);
-                }
-                            {{/ unless }}
-                        {{/ unless }}
-                    {{/ unless }}
-                {{/ unless }}
-            {{/ unless }}
-        {{/ unless }}
             }
         }{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
     {{/ if }}

@@ -3,6 +3,9 @@
 Observer(
     builder: (_) => JudoInputText(
         key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
+        {{# if (isPageValidatable page) }}
+        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
+        {{/ if }}
         col: {{ col }},
         row: {{ row }},
         multiline: true,

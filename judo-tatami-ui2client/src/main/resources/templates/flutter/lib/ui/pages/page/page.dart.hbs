@@ -184,18 +184,22 @@ class {{ pageClassName page }} extends StatefulWidget {
         });
 
         {{# if page.isPageTypeCreate }}
+            {{# if page.relationType.target.isClassBehaviourTypeTemplateable }}
         return FutureBuilder<{{ storeClassName page.relationType.target }}>(
-            future: pageStore.getDefaults(),
+            future: futureTemplate,
             builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                    return JudoLoadingProgress();
-                } else if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                } else if (snapshot.hasData) {
                     targetStore.updateWith(snapshot.data);
+                    return layout;
                 }
-                // always return original layout once network call finishes with any status
-                return layout;
+                return JudoLoadingProgress();
             },
         );
+            {{ else }}
+        return layout;
+            {{/ if }}
         {{ else }}
         return layout;
         {{/ if }}

@@ -167,6 +167,8 @@ public class FlutterHelper {
         context.registerFunction("getAttributeTypeNamesFromColumnsAndAttributes", FlutterHelper.class.getDeclaredMethod("getAttributeTypeNamesFromColumnsAndAttributes", new Class[]{EList.class, EList.class}));
         context.registerFunction("getAttributeTypeNamesFromWidgets", FlutterHelper.class.getDeclaredMethod("getAttributeTypeNamesFromWidgets", new Class[]{Container.class}));
         context.registerFunction("isEmptyList", FlutterHelper.class.getDeclaredMethod("isEmptyList", new Class[]{List.class}));
+        context.registerFunction("isOptionalClassMapper", FlutterHelper.class.getDeclaredMethod("isOptionalClassMapper", new Class[]{ClassType.class}));
+        context.registerFunction("isOptionalAggregationRelation", FlutterHelper.class.getDeclaredMethod("isOptionalAggregationRelation", new Class[]{RelationType.class}));
 
         //page store naming
         context.registerFunction("storeFolderPath", FlutterHelper.class.getDeclaredMethod("storeFolderPath", new Class[]{ClassType.class}));
@@ -185,7 +187,7 @@ public class FlutterHelper {
         context.registerFunction("repositoryRelationName", FlutterHelper.class.getDeclaredMethod("repositoryRelationName", new Class[]{RelationType.class}));
         context.registerFunction("repositoryTemplateRequestMethodName", FlutterHelper.class.getDeclaredMethod("repositoryTemplateRequestMethodName", new Class[]{ClassType.class}));
 
-        //page store naming
+        //page naming
         context.registerFunction("pagesFolderPath", FlutterHelper.class.getDeclaredMethod("pagesFolderPath", new Class[]{ClassType.class}));
         context.registerFunction("pageStorePath", FlutterHelper.class.getDeclaredMethod("pageStorePath", new Class[]{PageDefinition.class}));
         context.registerFunction("pageBodyPath", FlutterHelper.class.getDeclaredMethod("pageBodyPath", new Class[]{PageDefinition.class, String.class}));
@@ -230,6 +232,14 @@ public class FlutterHelper {
 
     public static String mainAxisSize(Flex flex) {
         return flex.getMainAxisSize().getLiteral().toLowerCase();
+    }
+
+    public static boolean isOptionalClassMapper(ClassType classType) {
+        return classType.isIsMapped() || classType.getRelations().stream().anyMatch(RelationType::getIsRelationBehaviourTypeRangeable);
+    }
+
+    public static boolean isOptionalAggregationRelation(RelationType relation) {
+        return !relation.getIsRelationKindComposition();
     }
 
     public static String crossAxisAlignment(Flex flex) {

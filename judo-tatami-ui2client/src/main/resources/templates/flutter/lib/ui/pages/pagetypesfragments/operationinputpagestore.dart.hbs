@@ -13,6 +13,16 @@ abstract class _{{ pageStoreClassName page }} with Store {
     @observable
     {{ storeClassName page.dataElement.target }} targetStore;
 
+    @observable
+    ObservableMap<String, ErrorMessage> validationAttributeErrorMessageMap = {
+    {{# each page.dataElement.target.attributes as |attribute| }}
+        '{{ variable attribute.name }}' : ErrorMessage(),
+    {{/ each }}
+    {{# each page.dataElement.target.relations as |targetRelation| }}
+        '{{ variable targetRelation.name }}' : ErrorMessage(),
+    {{/ each }}
+    }.asObservable();
+
     // TODO: review that this is necessary in all cases
     bool validatable = false;
 
