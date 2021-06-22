@@ -154,7 +154,7 @@ public class Esm2UiOperationsTest {
     private void transform() throws Exception {
         log.info(esmModel.getDiagnosticsAsString());
         assertTrue(esmModel.isValid());
-        validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+        //validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
         // Make transformation which returns the trace with the serialized URI's
         esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, false, uiModel, new Slf4jLog(log),
                 calculateEsm2UiTransformationScriptURI());
@@ -524,10 +524,14 @@ public class Esm2UiOperationsTest {
                                         newOperationFormBuilder()
                                         .withName("op1")
                                         .withOperation("op1")
+                                        .withShowLabel(true)
+                                        .withLabel("op1")
                                         .build(),
                                         newOperationFormBuilder()
                                         .withName("op2")
                                         .withOperation("op2")
+                                        .withShowLabel(true)
+                                        .withLabel("op2")
                                         .build())
                                 .build()))
                 .build();
@@ -550,10 +554,14 @@ public class Esm2UiOperationsTest {
                                         newOperationFormBuilder()
                                         .withName("op1")
                                         .withOperation("op1")
+                                        .withShowLabel(true)
+                                        .withLabel("op1")
                                         .build(),
                                         newOperationFormBuilder()
                                         .withName("op2")
                                         .withOperation("op2")
+                                        .withShowLabel(true)
+                                        .withLabel("op2")
                                         .build())
                                 .build()))
                 .build();
@@ -574,14 +582,20 @@ public class Esm2UiOperationsTest {
                                         newOperationFormBuilder()
                                         .withName("op1")
                                         .withOperation("op1")
+                                        .withShowLabel(true)
+                                        .withLabel("op1")
                                         .build(),
                                         newOperationFormBuilder()
                                         .withName("op2")
                                         .withOperation("op2")
+                                        .withShowLabel(true)
+                                        .withLabel("op2")
                                         .build(),
                                         newOperationFormBuilder()
                                         .withName("op3")
                                         .withOperation("op3")
+                                        .withShowLabel(true)
+                                        .withLabel("op3")
                                         .build())
                                 .build()))
                 .build();

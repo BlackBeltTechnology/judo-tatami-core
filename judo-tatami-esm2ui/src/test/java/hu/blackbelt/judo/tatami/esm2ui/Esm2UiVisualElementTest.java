@@ -987,6 +987,7 @@ public class Esm2UiVisualElementTest {
                  .withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3)
                  .withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
         OperationForm operationForm = newOperationFormBuilder().withName("operation").withOperation("operation")
+                .withShowLabel(true).withLabel("operation")
                 .withRow(1).withCol(2).withFit(Fit.LOOSE).withStretch(Stretch.NONE)
                 .build();
         
