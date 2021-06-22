@@ -139,6 +139,7 @@ public class FlutterHelper {
         context.registerFunction("isEnumType", FlutterHelper.class.getDeclaredMethod("isEnumType", new Class[]{DataType.class}));
         context.registerFunction("isTimestampType", FlutterHelper.class.getDeclaredMethod("isTimestampType", new Class[]{DataType.class}));
         context.registerFunction("isBooleanDataType", FlutterHelper.class.getDeclaredMethod("isBooleanDataType", new Class[]{DataType.class}));
+        context.registerFunction("isSortableDataType", FlutterHelper.class.getDeclaredMethod("isSortableDataType", new Class[]{DataType.class}));
         context.registerFunction("isDateType", FlutterHelper.class.getDeclaredMethod("isDateType", new Class[]{DataType.class}));
         context.registerFunction("isStringType", FlutterHelper.class.getDeclaredMethod("isStringType", new Class[]{DataType.class}));
         context.registerFunction("isBooleanType", FlutterHelper.class.getDeclaredMethod("isBooleanType", new Class[]{DataType.class}));
@@ -150,6 +151,7 @@ public class FlutterHelper {
         context.registerFunction("isBookmarkablePage", FlutterHelper.class.getDeclaredMethod("isBookmarkablePage", new Class[]{PageDefinition.class, Application.class}));
         context.registerFunction("isAccessTablePage", FlutterHelper.class.getDeclaredMethod("isAccessTablePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isPageWithIdParam", FlutterHelper.class.getDeclaredMethod("isPageWithIdParam", new Class[]{PageDefinition.class, Application.class}));
+        context.registerFunction("isPageValidatable", FlutterHelper.class.getDeclaredMethod("isPageValidatable", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshViewTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshViewTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshTableTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshTableTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isViewTypePage", FlutterHelper.class.getDeclaredMethod("isViewTypePage", new Class[]{PageDefinition.class}));
@@ -222,6 +224,10 @@ public class FlutterHelper {
     }
     public static boolean isTransientAttribute (AttributeType attributeType) {
         return MemberType.TRANSIENT == attributeType.getMemberType();
+    }
+
+    public static boolean isSortableDataType (DataType dataType) {
+        return !isBooleanDataType(dataType) && !isEnumType(dataType);
     }
 
     public static String mainAxisSize(Flex flex) {
@@ -571,6 +577,10 @@ public class FlutterHelper {
                 inputList.add(element);
             }
         }
+    }
+
+    public static boolean isPageValidatable(PageDefinition page){
+        return page.getIsPageTypeCreate() || page.getIsPageTypeUpdate();
     }
 
     public static boolean isValidateHere(PageDefinition page){

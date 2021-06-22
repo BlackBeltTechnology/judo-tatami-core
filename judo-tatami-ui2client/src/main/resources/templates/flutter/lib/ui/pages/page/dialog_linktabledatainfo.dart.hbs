@@ -23,11 +23,9 @@ class {{ dialogTableClassName table.pageDefinition table.dataElement.name }} imp
             {{# each parts as |part| }}
             DataColumn(
                 label: Text(AppLocalizations.of(context).lookUpValue(context, '{{ part.label }}')),
-                {{# unless (isBooleanDataType part.attributeType.dataType) }}
-                    {{# unless (isEnumType part.attributeType.dataType) }}
+                {{# if (isSortableDataType part.attributeType.dataType) }}
                 onSort: onSort,
-                    {{/ unless }}
-                {{/ unless }}
+                {{/ if }}
             ),
             {{/ each }}
         ];
@@ -36,8 +34,7 @@ class {{ dialogTableClassName table.pageDefinition table.dataElement.name }} imp
     @override
     Comparator getSortComparator(int columnIndex, bool asc) {
         {{# each parts as |part| }}
-            {{# unless (isBooleanDataType part.attributeType.dataType) }}
-                {{# unless (isEnumType part.attributeType.dataType) }}
+            {{# if (isSortableDataType part.attributeType.dataType) }}
         if (columnIndex == {{@index}}) {
             if (asc) {
                 return (a, b) => a.{{ variable part.attributeType.name }}.compareTo(b.{{ variable part.attributeType.name }});
@@ -45,21 +42,18 @@ class {{ dialogTableClassName table.pageDefinition table.dataElement.name }} imp
                 return (a, b) => b.{{ variable part.attributeType.name }}.compareTo(a.{{ variable part.attributeType.name }});
             }
         }
-                {{/ unless }}
-            {{/ unless }}
+            {{/ if }}
         {{/ each }}
     }
 
     @override
     String getColumnFieldByIndex(int columnIndex, bool asc) {
     {{# each parts as |part| }}
-        {{# unless (isBooleanDataType part.attributeType.dataType) }}
-            {{# unless (isEnumType part.attributeType.dataType) }}
+        {{# if (isSortableDataType part.attributeType.dataType) }}
         if (columnIndex == {{@index}}) {
             return '{{ variable part.attributeType.name }}';
         }
-            {{/ unless }}
-        {{/ unless }}
+        {{/ if }}
     {{/ each }}
     }
 
