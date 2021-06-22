@@ -151,7 +151,7 @@ public class FlutterHelper {
         context.registerFunction("isBookmarkablePage", FlutterHelper.class.getDeclaredMethod("isBookmarkablePage", new Class[]{PageDefinition.class, Application.class}));
         context.registerFunction("isAccessTablePage", FlutterHelper.class.getDeclaredMethod("isAccessTablePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isPageWithIdParam", FlutterHelper.class.getDeclaredMethod("isPageWithIdParam", new Class[]{PageDefinition.class, Application.class}));
-        context.registerFunction("isPageValidatable", FlutterHelper.class.getDeclaredMethod("isPageValidatable", new Class[]{PageDefinition.class, Application.class}));
+        context.registerFunction("isPageValidatable", FlutterHelper.class.getDeclaredMethod("isPageValidatable", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshViewTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshViewTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshTableTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshTableTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isViewTypePage", FlutterHelper.class.getDeclaredMethod("isViewTypePage", new Class[]{PageDefinition.class}));
