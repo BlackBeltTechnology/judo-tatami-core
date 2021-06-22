@@ -238,10 +238,14 @@ public class Esm2UiPageDefinitionTest {
                                         newOperationFormBuilder()
                                         .withName("op1")
                                         .withOperation("op1")
+                                        .withShowLabel(true)
+                                        .withLabel("op1")
                                         .build(),
                                         newOperationFormBuilder()
                                         .withName("op2")
                                         .withOperation("op2")
+                                        .withShowLabel(true)
+                                        .withLabel("op2")
                                         .build())
                                 .build()))
                 .build();
@@ -264,10 +268,14 @@ public class Esm2UiPageDefinitionTest {
                                         newOperationFormBuilder()
                                         .withName("op1")
                                         .withOperation("op1")
+                                        .withShowLabel(true)
+                                        .withLabel("op1")
                                         .build(),
                                         newOperationFormBuilder()
                                         .withName("op2")
                                         .withOperation("op2")
+                                        .withShowLabel(true)
+                                        .withLabel("op2")
                                         .build())
                                 .build()))
                 .build();
@@ -288,14 +296,20 @@ public class Esm2UiPageDefinitionTest {
                                         newOperationFormBuilder()
                                         .withName("op1")
                                         .withOperation("op1")
+                                        .withShowLabel(true)
+                                        .withLabel("op1")
                                         .build(),
                                         newOperationFormBuilder()
                                         .withName("op2")
                                         .withOperation("op2")
+                                        .withShowLabel(true)
+                                        .withLabel("op2")
                                         .build(),
                                         newOperationFormBuilder()
                                         .withName("op3")
                                         .withOperation("op3")
+                                        .withShowLabel(true)
+                                        .withLabel("op3")
                                         .build())
                                 .build()))
                 .build();

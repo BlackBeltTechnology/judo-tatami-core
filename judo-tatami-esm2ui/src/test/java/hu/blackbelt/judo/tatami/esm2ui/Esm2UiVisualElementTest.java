@@ -23,21 +23,7 @@ import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumer
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newPasswordTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newTimestampTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newActionButtonBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataColumnBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDataFieldBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newDividerBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newGroupBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newIconBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newOperationFormBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newPlaceholderBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTabBarBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTabularReferenceFieldBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTextFieldBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectFormBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectTableBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.newTransferObjectViewBuilder;
-import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.useTransferObjectView;
+import static hu.blackbelt.judo.meta.esm.ui.util.builder.UiBuilders.*;
 import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.calculateUiValidationScriptURI;
 import static hu.blackbelt.judo.meta.ui.runtime.UiEpsilonValidator.validateUi;
 import static hu.blackbelt.judo.meta.ui.runtime.UiModel.buildUiModel;
@@ -213,12 +199,20 @@ public class Esm2UiVisualElementTest {
                 .withName(ACTOR_TYPE_NAME)
                 .withRealm("sandbox")
                 .build();
-        
+
+        StringType str = newStringTypeBuilder().withName("string")
+                .withMaxLength(256).build();
+
+        DataMember attribute = newDataMemberBuilder().withName("attr")
+                .withDataType(str).build();
+        attribute.setBinding(attribute);
+
         final EntityType e1 = newEntityTypeBuilder()
                 .withName(ENTITY_TYPE_NAME_1)
                 .withCreateable(false)
                 .withUpdateable(false)
                 .withDeleteable(false)
+                .withAttributes(attribute)
                 .build();
         useEntityType(e1).withMappedEntity(e1).build();
         
@@ -233,7 +227,7 @@ public class Esm2UiVisualElementTest {
         useActorType(actor).withAccesses(access1).build();
         
         final Model model = newModelBuilder().withName(MODEL_NAME)
-                .withElements(actor, e1).build();
+                .withElements(actor, e1, str).build();
 
         SimpleOrderModel.addUiElementsToTransferObjects(model);
         
@@ -993,6 +987,7 @@ public class Esm2UiVisualElementTest {
                  .withIconName(SimpleOrderModel.getIconName(passwordAttribute)).withDataFeature(passwordAttribute).withCol(3)
                  .withStretch(Stretch.NONE).withFit(Fit.LOOSE).build();
         OperationForm operationForm = newOperationFormBuilder().withName("operation").withOperation("operation")
+                .withShowLabel(true).withLabel("operation")
                 .withRow(1).withCol(2).withFit(Fit.LOOSE).withStretch(Stretch.NONE)
                 .build();
         
