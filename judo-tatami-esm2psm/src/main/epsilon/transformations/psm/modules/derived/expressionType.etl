@@ -13,6 +13,9 @@ rule CreateGetterExpressionForDataProperty
     guard: s.getterExpression.isDefined()
             and s.getterExpression.trim().length() > 0   
         t.expression = s.getterExpression;
+        if (s.getterParameterType.isDefined()) {
+            t.parameterType = s.getterParameterType.getPSMTransferObjectTypeEquivalent();
+        }
         log.debug("Created Data Expression Type for Data Property: " + s.name);
 }
 
@@ -23,6 +26,9 @@ rule CreateGetterExpressionForStaticData
      guard: s.getterExpression.isDefined()
             and s.getterExpression.trim().length() > 0
          t.expression = s.getterExpression;
+         if (s.getterParameterType.isDefined()) {
+             t.parameterType = s.getterParameterType.getPSMTransferObjectTypeEquivalent();
+         }
          log.debug("Created Data Expression Type for Static Data: " + s.name);
 }
 
@@ -39,6 +45,9 @@ rule CreateGetterExpressionForNavigationProperty
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!ReferenceExpressionType {
         t.expression = s.getterExpression;
+        if (s.getterParameterType.isDefined()) {
+            t.parameterType = s.getterParameterType.getPSMTransferObjectTypeEquivalent();
+        }
         log.debug("Created Reference Expression Type for Navigation Property: " + s.name);
 }
 
@@ -47,6 +56,9 @@ rule CreateGetterExpressionForStaticNavigation
     transform s : ESM!StaticNavigation
     to t : JUDOPSM!ReferenceExpressionType {
         t.expression = s.getterExpression;
+        if (s.getterParameterType.isDefined()) {
+            t.parameterType = s.getterParameterType.getPSMTransferObjectTypeEquivalent();
+        }
         log.debug("Created Reference Expression Type for Static Navigation: " + s.name);
 }
 
@@ -81,6 +93,9 @@ rule CreateGetterExpressionForTransferObjectRelationBinding
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!ReferenceExpressionType {
         t.expression = s.getterExpression;
+        if (s.getterParameterType.isDefined()) {
+            t.parameterType = s.getterParameterType.getPSMTransferObjectTypeEquivalent();
+        }
         log.debug("Created Reference Expression Type for Transfer Object Relation Binding: " + s.name);
 }
 
@@ -89,6 +104,9 @@ rule CreateGetterExpressionForAccessTransferObjectRelationWithBinding
     transform s : ESM!Access
     to t : JUDOPSM!ReferenceExpressionType {
         t.expression = s.getterExpression;
+        if (s.getterParameterType.isDefined()) {
+            t.parameterType = s.getterParameterType.getPSMTransferObjectTypeEquivalent();
+        }
         log.debug("Created Reference Expression Type for access Transfer Object Relation With Binding: " + s.name);
 }
 
@@ -98,7 +116,10 @@ rule CreateGetterExpressionForExposedGraphSelector
     transform s : ESM!OneWayRelationMember
     to t : JUDOPSM!ReferenceExpressionType {
         t.expression = s.getterExpression;
-        log.debug("Created Reference Expression Type for Exposed Graph Selector: " + s.name);    
+        if (s.getterParameterType.isDefined()) {
+            t.parameterType = s.getterParameterType.getPSMTransferObjectTypeEquivalent();
+        }
+        log.debug("Created Reference Expression Type for Exposed Graph Selector: " + s.name);
 }
 
 @lazy
@@ -106,6 +127,9 @@ rule CreateGetterExpressionForStaticDataAsTransferAttributeBinding
     transform s : ESM!DataMember
        to t: JUDOPSM!DataExpressionType {
      t.expression = s.getterExpression;
+     if (s.getterParameterType.isDefined()) {
+         t.parameterType = s.getterParameterType.getPSMTransferObjectTypeEquivalent();
+     }
      log.debug("Created Data Expression Type for Static Data for Transfer Attribute Binding: " + s.name);
 }
 
