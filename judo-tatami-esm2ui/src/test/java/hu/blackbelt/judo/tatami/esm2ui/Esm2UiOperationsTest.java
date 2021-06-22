@@ -154,7 +154,7 @@ public class Esm2UiOperationsTest {
     private void transform() throws Exception {
         log.info(esmModel.getDiagnosticsAsString());
         assertTrue(esmModel.isValid());
-        //validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
+        validateEsm(new Slf4jLog(log), esmModel, calculateEsmValidationScriptURI());
         // Make transformation which returns the trace with the serialized URI's
         esm2UiTransformationTrace = executeEsm2UiTransformation(esmModel, "default", 12, false, uiModel, new Slf4jLog(log),
                 calculateEsm2UiTransformationScriptURI());
