@@ -132,6 +132,7 @@ public class FlutterHelper {
         context.registerFunction("filterDataType", FlutterHelper.class.getDeclaredMethod("filterDataType", new Class[]{DataType.class}));
         context.registerFunction("dataTypeToOperationType", FlutterHelper.class.getDeclaredMethod("dataTypeToOperationType", new Class[]{DataType.class}));
         context.registerFunction("getDistinctDataTypes", FlutterHelper.class.getDeclaredMethod("getDistinctDataTypes", new Class[]{EList.class}));
+        context.registerFunction("isDataTypeFilterable", FlutterHelper.class.getDeclaredMethod("isDataTypeFilterable", new Class[]{DataType.class}));
         context.registerFunction("isTransientAttribute", FlutterHelper.class.getDeclaredMethod("isTransientAttribute", new Class[]{AttributeType.class}));
         context.registerFunction("multiplyCol", FlutterHelper.class.getDeclaredMethod("multiplyCol", new Class[]{Double.class}));
         context.registerFunction("validatableFlagNeed", FlutterHelper.class.getDeclaredMethod("validatableFlagNeed", new Class[]{RelationType.class}));
@@ -236,6 +237,11 @@ public class FlutterHelper {
 
     public static boolean isOptionalClassMapper(ClassType classType) {
         return classType.isIsMapped() || classType.getRelations().stream().anyMatch(RelationType::getIsRelationBehaviourTypeRangeable);
+    }
+
+    public static boolean isDataTypeFilterable(DataType dataType) {
+        String name = openApiDataType(dataType.getName());
+        return !name.startsWith("_") && !name.endsWith("Operation");
     }
 
     public static boolean isOptionalAggregationRelation(RelationType relation) {

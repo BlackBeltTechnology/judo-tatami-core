@@ -1,0 +1,60 @@
+//////////////////////////////////////////////////////////////////////////////
+// G E N E R A T E D    C L A S S
+// ------------------------------
+// Factory expression: {{{ cleanup template.factoryExpression }}}
+// Path expression: {{{ cleanup template.pathExpression }}}
+// Overwrite: {{{ cleanup template.overwriteExpression }}}
+// Template name: {{ template.templateName }}
+// Application: {{ application.name }}
+
+part of {{ variable ap.name }}.repository;
+
+typedef FilterCreator = dynamic Function(FilterStore filterStore);
+
+enum filter_key {
+{{# each dataTypes as |dataType| }}
+    {{# if (isDataTypeFilterable dataType) }}
+    {{ openApiDataType dataType.name }},
+    {{/if}}
+{{/ each }}
+}
+
+{{# each dataTypes as |dataType| }}
+{{# if (isDataTypeFilterable dataType) }}
+{{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }} createFilterBy{{ openApiDataType dataType.name }}(FilterStore filterStore) {
+    {{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }} filter = {{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}();
+{{# if (isStringType dataType) }}
+    if (filterStore.filterOperation == 'contain') {
+        filter.value = '%' + (filterStore.filterValue ?? '') + '%';
+        filter.operator_ = {{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}OperatorEnum.like;
+    } else if (filterStore.filterOperation == 'beginWith') {
+        filter.value = (filterStore.filterValue ?? '') + '%';
+        filter.operator_ = {{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}OperatorEnum.like;
+    } else {
+        filter.value = filterStore.filterValue as String;
+        filter.operator_ = filterStore.filterOperation.toEnum<{{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}OperatorEnum>({{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}OperatorEnum.values);
+    }
+{{/ if }}
+{{# if (isEnumType dataType) }}
+    filter.value = (filterStore.filterValue.toString().split('.').last).toEnum<{{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}ValueEnum>({{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}ValueEnum.values);
+    filter.operator_ = filterStore.filterOperation.toEnum<{{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}OperatorEnum>({{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}OperatorEnum.values);
+{{/if}}
+{{# unless (isStringType dataType) }}
+    {{# unless (isEnumType dataType) }}
+    filter.value = filterStore.filterValue as {{ dartType dataType }};
+    filter.operator_ = filterStore.filterOperation.toEnum<{{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}OperatorEnum>({{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}OperatorEnum.values);
+    {{/ unless }}
+{{/ unless }}
+    return filter;
+}
+{{/ if }}
+
+{{/ each }}
+
+const Map<filter_key, FilterCreator> repository_filters = {
+{{# each dataTypes as |dataType| }}
+    {{# if (isDataTypeFilterable dataType) }}
+    filter_key.{{ openApiDataType dataType.name }}: createFilterBy{{ openApiDataType dataType.name }},
+    {{/ if }}
+{{/ each }}
+};
