@@ -53,7 +53,7 @@ class {{ fqClass table.pageDefinition.name }}{{ fqClass table.name }}{{ fqClass 
     Comparator getSortComparator(int columnIndex, bool asc) {
         {{# each columns as |column| }}
             {{# if (isSortableDataType column.attributeType.dataType) }}
-        // dataType: {{ column.attributeType.dataType }}
+        // dataType: {{ column.attributeType.dataType.name }}
         if (columnIndex == {{@index}}) {
             if (asc) {
                 return (a, b) => a.{{ variable column.attributeType.name }}.compareTo(b.{{ variable column.attributeType.name }});
