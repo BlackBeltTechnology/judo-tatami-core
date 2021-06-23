@@ -117,8 +117,8 @@
 - overwriteExpression: true
   factoryExpression: "{#application}"
   pathExpression: >
-    #repositoryFolderPath(#application.actor) + 'repository_helpers.dart'
-  templateName: flutter/lib/repositories/repository_helpers.dart.hbs
+    #repositoryFolderPath(#application.actor) + 'repository_filters.dart'
+  templateName: flutter/lib/repositories/repository_filters.dart.hbs
   templateContext:
     - name: ap
       expression: "#application.actor"

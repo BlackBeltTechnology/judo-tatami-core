@@ -21,7 +21,7 @@ import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/ui/utilities/packa
 import 'package:{{ modelPackage ap.name }}/{{ path ap.name }}/utilities/package.dart';
 
 part 'mapper.dart';
-part 'repository_helpers.dart';
+part 'repository_filters.dart';
 part '{{ repositoryClassRelativePath ap }}';
 {{# each application.relationTypes as |relation| ~}}
 part '{{ repositoryRelationRelativePath relation }}';

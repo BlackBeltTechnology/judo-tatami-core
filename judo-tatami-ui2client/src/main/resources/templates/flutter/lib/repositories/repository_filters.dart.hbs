@@ -9,6 +9,8 @@
 
 part of {{ variable ap.name }}.repository;
 
+typedef FilterCreator = dynamic Function(FilterStore filterStore);
+
 enum filter_key {
 {{# each dataTypes as |dataType| }}
     {{# if (isDataTypeFilterable dataType) }}
@@ -19,8 +21,8 @@ enum filter_key {
 
 {{# each dataTypes as |dataType| }}
 {{# if (isDataTypeFilterable dataType) }}
-AmsExtensionFilterBy{{ openApiDataType dataType.name }} createFilterBy{{ openApiDataType dataType.name }}(FilterStore filterStore) {
-    AmsExtensionFilterBy{{ openApiDataType dataType.name }} filter = AmsExtensionFilterBy{{ openApiDataType dataType.name }}();
+{{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }} createFilterBy{{ openApiDataType dataType.name }}(FilterStore filterStore) {
+    {{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }} filter = {{ modelName dataType.name }}ExtensionFilterBy{{ openApiDataType dataType.name }}();
 {{# if (isStringType dataType) }}
     if (filterStore.filterOperation == 'contain') {
         filter.value = '%' + (filterStore.filterValue ?? '') + '%';
@@ -49,7 +51,7 @@ AmsExtensionFilterBy{{ openApiDataType dataType.name }} createFilterBy{{ openApi
 
 {{/ each }}
 
-Map<filter_key, Function> filters = {
+const Map<filter_key, FilterCreator> repository_filters = {
 {{# each dataTypes as |dataType| }}
     {{# if (isDataTypeFilterable dataType) }}
     filter_key.{{ openApiDataType dataType.name }}: createFilterBy{{ openApiDataType dataType.name }},
