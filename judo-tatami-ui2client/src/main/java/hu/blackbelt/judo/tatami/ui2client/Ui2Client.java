@@ -6,8 +6,11 @@ import com.google.common.io.ByteStreams;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.ui.Application;
+import hu.blackbelt.judo.meta.ui.NamedElement;
+import hu.blackbelt.judo.meta.ui.data.ClassType;
 import hu.blackbelt.judo.tatami.ui2client.GeneratorTemplate.TemplateEvaulator;
 import lombok.SneakyThrows;
+import org.eclipse.emf.common.util.ECollections;
 import org.slf4j.LoggerFactory;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -31,6 +34,26 @@ public class Ui2Client {
     public static final String TEMPLATE_ROOT_TATAMI_UI_2_CLIENT = "templates/";
     public static final String NAME = "name";
 
+    public static Comparator<NamedElement> compareFqName = (NamedElement e1, NamedElement e2) -> e1.getFQName().compareTo(e2.getFQName());
+
+    public static void sortRelations(ClientGenerator clientGenerator) {
+
+        clientGenerator.getModelResourceSupport().getStreamOfUiApplication().forEach(app -> {
+            ECollections.sort(app.getDataElements(), compareFqName);
+            ECollections.sort(app.getDataTypes(), compareFqName);
+            ECollections.sort(app.getPages(), compareFqName);
+
+        });
+
+        clientGenerator.getModelResourceSupport().getStreamOfUiDataClassType()
+                .forEach(classType -> {
+                    ECollections.sort(classType.getAttributes(), compareFqName);
+                    ECollections.sort(classType.getRelations(), compareFqName);
+                    ECollections.sort(classType.getOperations(), compareFqName);
+                });
+
+    }
+
     public static Map<Application, Collection<GeneratedFile>> executeUi2ClientGenerationByApplication(ClientGenerator clientGenerator) throws Exception {
         return executeUi2ClientGenerationByApplication(clientGenerator, (Application a) -> true, log);
     }
@@ -41,6 +64,7 @@ public class Ui2Client {
 
     public static Map<Application, Collection<GeneratedFile>> executeUi2ClientGenerationByApplication(ClientGenerator clientGenerator, Predicate<Application> applicationPredicate, Log log) throws Exception {
 
+        sortRelations(clientGenerator);
         Map<Application, Collection<GeneratedFile>> sourcesByApplication = new ConcurrentHashMap<>();
         clientGenerator.getModelResourceSupport().getStreamOfUiApplication().forEach(app -> { sourcesByApplication.put(app, ConcurrentHashMap.newKeySet()); });
 
