@@ -8,18 +8,25 @@ import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.runtime.EsmModel;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
+import hu.blackbelt.judo.meta.ui.*;
+import hu.blackbelt.judo.meta.ui.impl.NamedElementImpl;
 import hu.blackbelt.judo.meta.ui.runtime.UiUtils;
 import hu.blackbelt.judo.meta.ui.runtime.UiModel;
+import hu.blackbelt.judo.meta.ui.support.UiModelResourceSupport;
 import hu.blackbelt.judo.tatami.core.TransformationTraceUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.epsilon.common.util.UriUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
@@ -123,6 +130,20 @@ public class Esm2Ui {
         executionContext.executeProgram(etlExecutionContext);
         executionContext.commit();
         executionContext.close();
+
+        final Iterable<Notifier> contents = uiModel.getResource().getResourceSet()::getAllContents;
+
+        StreamSupport.stream(contents.spliterator(), false)
+                .filter(e -> NamedElement.class.isAssignableFrom(e.getClass())).map(e -> (NamedElement) e)
+                .forEach(e -> ( (XMLResource) e.eResource()).setID(e,  e.eClass().getName() + "@" +e.getFQName().replaceAll("#", "/").replaceAll("::", "/")));
+
+
+        for (Class clazz : new Class[] {Action.class, Icon.class, Frame.class, Margin.class, Padding.class, Size.class, SizeConstraint.class, Align.class}) {
+            StreamSupport.stream(contents.spliterator(), false)
+                    .filter(e -> clazz.isAssignableFrom(e.getClass()))
+                    .map(e -> (EObject) e)
+                    .forEach(e -> ((XMLResource) e.eResource()).setID(e, ((XMLResource) e.eResource()).getID(e.eContainer()) + "/" + e.eClass().getName()));
+        }
 
         List<EObject> traceModel = getTransformationTraceFromEtlExecutionContext(ESM_2_UI_URI_POSTFIX, etlExecutionContext);
         return Esm2UiTransformationTrace.esm2UiTransformationTraceBuilder()
