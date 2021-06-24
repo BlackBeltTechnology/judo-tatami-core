@@ -175,6 +175,18 @@ rule CreateAssociationEndRelation
 		if (s.partner.isDefined()) {
 			t.eOpposite = s.partner.equivalent("CreateAssociationEndRelation");
 		}
+
+        if (s.reverseCascadeDelete) {
+            var reverseCascadeDeleteAnnotation = new ASM!EAnnotation();
+            reverseCascadeDeleteAnnotation.source = asmUtils.getAnnotationUri("reverseCascadeDelete");
+
+            var reverseCascadeDelete = new ASM!EStringToStringMapEntry;
+            reverseCascadeDelete.key = "value";
+            reverseCascadeDelete.value = "true";
+            reverseCascadeDeleteAnnotation.details.add(reverseCascadeDelete);
+
+            t.eAnnotations.add(reverseCascadeDeleteAnnotation);
+        }
 }
 
 rule CreateContainmentRelation
