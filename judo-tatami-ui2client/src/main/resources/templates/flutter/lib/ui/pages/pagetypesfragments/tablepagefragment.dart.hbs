@@ -1,4 +1,4 @@
-//START tablepagefragment.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START tablepagefragment.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------{{/ if }}
 {{# with page.relationType as |relation| }}
     {{# unless page.dataElement.isAccess }}
     final {{ storeClassName page.dataElement.owner }} ownerStore;
@@ -28,4 +28,4 @@ class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
         pageStore.get{{ fqClass page.dataElement.name }}({{# unless page.dataElement.isAccess }} ownerStore {{/ unless }}).catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     }
 {{/ with }}
-//END tablepagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END tablepagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------{{/ if }}

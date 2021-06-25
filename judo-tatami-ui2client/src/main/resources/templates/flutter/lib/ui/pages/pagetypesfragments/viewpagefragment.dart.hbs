@@ -1,4 +1,4 @@
-//START viewpagefragment.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START viewpagefragment.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------{{/ if }}
     {{# if (isPageWithIdParam page application) }}
     final String idParam;
     {{ else }}
@@ -41,4 +41,4 @@ class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
             .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     {{/ if }}
     }
-//END viewpagefragment.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------
+        {{# if addDebugToTemplate }}//END viewpagefragment.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------{{/ if }}

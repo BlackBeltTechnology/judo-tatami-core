@@ -1,7 +1,7 @@
 {{ log 'Divider generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" divider.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" divider.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}
 JudoDivider(
     col: {{ col }},
     row: {{ row }},
 ),
-//END divider.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END divider.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}

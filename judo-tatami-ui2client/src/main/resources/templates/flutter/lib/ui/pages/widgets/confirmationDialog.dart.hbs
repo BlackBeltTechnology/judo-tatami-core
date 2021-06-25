@@ -1,5 +1,5 @@
 {{ log 'Confirmation dialog generation for' (variable application.name) '-' (fqClass page.name)'page' (fqClass container.layoutType.name) level='debug' ~}}
-//START confirmationDialog.dart.hbs---------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START confirmationDialog.dart.hbs----------------------------------------------------------------------------------------------------{{/ if }}
 {{# if action.isConfirmationTypeMandatory }}
 bool confirmation = await judoConfirmationDialog(context: context, confirmationMessage: AppLocalizations.of(context).lookUpValue(context, '{{ action.confirmationMessage }}'));
 if(!confirmation) {
@@ -14,4 +14,4 @@ if(targetStore.{{ variable action.confirmationCondition.name }}) {
     }
 }
 {{/ if }}
-//END confirmationDialog.dart.hbs---------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END confirmationDialog.dart.hbs----------------------------------------------------------------------------------------------------{{/ if }}

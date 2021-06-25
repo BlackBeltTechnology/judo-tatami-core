@@ -1,8 +1,8 @@
 {{ log 'Icon generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" iconimage.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" iconimage.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------{{/ if }}
 JudoIcon(
     col: {{ col }},
     row: {{ row }},
     icon: Icon(getIconByString('{{ icon.name }}')),
 ),
-//END iconimage.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END iconimage.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------{{/ if }}

@@ -1,5 +1,5 @@
 {{ log 'Input transient action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' }}
-//START input_page_transient_actions.dart.hbs-----{{ relaltion.name }}---------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START input_page_transient_actions.dart.hbs-----{{ relaltion.name }}---------------------------------------------------------------------------------{{/ if }}
 // {{ className relation.name }} input page transient actions
 
 @action
@@ -35,4 +35,4 @@ Future<{{ storeClassName relation.target }}> update{{ className relation.name }}
     }
 }
 
-//END input_page_transient_actions.dart.hbs-----{{ relaltion.name }}-----------------------------------------------------------------------------------
+        {{# if addDebugToTemplate }}//END input_page_transient_actions.dart.hbs-----{{ relaltion.name }}-----------------------------------------------------------------------------------{{/ if }}

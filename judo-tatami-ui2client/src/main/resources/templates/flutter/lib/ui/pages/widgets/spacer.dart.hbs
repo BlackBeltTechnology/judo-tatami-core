@@ -1,7 +1,7 @@
 {{ log 'Spacer generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" spacer.dart.hbs-----{{ page.name }}--------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" spacer.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}
 JudoSpacer(
     col: {{ col }},
     row: {{ row }},
 ),
-//END spacer.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END spacer.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}

@@ -33,6 +33,7 @@ public class Ui2Client {
 
     public static final String TEMPLATE_ROOT_TATAMI_UI_2_CLIENT = "templates/";
     public static final String NAME = "name";
+    public static final Boolean CLIENT_TEMPLATE_DEBUG = System.getProperty("clientTemplateDebug") != null;
 
     public static Comparator<NamedElement> compareFqName = (NamedElement e1, NamedElement e2) -> e1.getFQName().compareTo(e2.getFQName());
 
@@ -84,11 +85,13 @@ public class Ui2Client {
 
                 if (templateEvaulator.getTemplate() != null || generatorTemplate.isCopy()) {
                     applications.forEach(application -> {
+                        evaulationContext.setVariable("addDebugToTemplate", CLIENT_TEMPLATE_DEBUG);
                         evaulationContext.setVariable("applications", applications);
                         evaulationContext.setVariable("application", application);
                         templateEvaulator.getFactoryExpressionResult(application, Collection.class).stream().forEach(element -> {
                             tasks.add(CompletableFuture.supplyAsync(() -> {
                                 StandardEvaluationContext templateContext = clientGenerator.createSpringEvaulationContext();
+                                templateContext.setVariable("addDebugToTemplate", CLIENT_TEMPLATE_DEBUG);
                                 templateContext.setVariable("applications", applications);
                                 templateContext.setVariable("application", application);
                                 templateContext.setVariable("template", generatorTemplate);
@@ -96,6 +99,7 @@ public class Ui2Client {
 
                                 Context.Builder contextBuilder = Context
                                         .newBuilder(element)
+                                        .combine("addDebugToTemplate", CLIENT_TEMPLATE_DEBUG)
                                         .combine("applications", applications)
                                         .combine("application", application)
                                         .combine("template", generatorTemplate)
@@ -139,6 +143,7 @@ public class Ui2Client {
 
                 if (templateEvaulator.getTemplate() != null || generatorTemplate.isCopy()) {
 
+                    evaulationContext.setVariable("addDebugToTemplate", CLIENT_TEMPLATE_DEBUG);
                     evaulationContext.setVariable("applications", applications);
                     evaulationContext.setVariable("template", generatorTemplate);
 
@@ -146,12 +151,14 @@ public class Ui2Client {
                         tasks.add(CompletableFuture.supplyAsync(() -> {
 
                             StandardEvaluationContext templateContext = clientGenerator.createSpringEvaulationContext();
+                            templateContext.setVariable("addDebugToTemplate", CLIENT_TEMPLATE_DEBUG);
                             templateContext.setVariable("applications", applications);
                             templateContext.setVariable("template", generatorTemplate);
                             templateContext.setVariable("self", element);
 
                             Context.Builder contextBuilder = Context
                                     .newBuilder(element)
+                                    .combine("addDebugToTemplate", CLIENT_TEMPLATE_DEBUG)
                                     .combine("applications", applications)
                                     .combine("template", generatorTemplate)
                                     .combine("self", element);

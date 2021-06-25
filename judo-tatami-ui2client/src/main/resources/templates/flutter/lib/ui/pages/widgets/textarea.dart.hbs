@@ -1,5 +1,5 @@
 {{~ log 'Text area input field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" textarea.dart.hbs-----{{ page.dataElement.target.name }}-----------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" textarea.dart.hbs-----{{ page.dataElement.target.name }}-----------------------------------------------------------------------------{{/ if }}
 Observer(
     builder: (_) => JudoInputText(
         key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
@@ -26,4 +26,4 @@ Observer(
         {{/ unless }}
     )
 ),
-//END textarea.dart.hbs-----{{ page.dataElement.target.name }}-------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END textarea.dart.hbs-----{{ page.dataElement.target.name }}-------------------------------------------------------------------------------{{/ if }}

@@ -1,5 +1,5 @@
 {{ log 'Aggregation action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' ~}}
-//START aggregationAction.dart.hbs-----{{ relation.name }}-----------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START aggregationAction.dart.hbs-----{{ relation.name }}-----------------------------------------------------------------------------------{{/ if }}
 {{# if (isObserverButton this page.dataElement action) }}Observer(
     builder: (_) => {{/ if }}JudoButton(
         col: {{ col }},
@@ -69,4 +69,4 @@
         rounded: true,
     ){{# if (isObserverButton this page.dataElement action) }}
 ){{/ if }},
-//END aggregationAction.dart.hbs-----{{ relation.name }}-------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END aggregationAction.dart.hbs-----{{ relation.name }}-------------------------------------------------------------------------------------{{/ if }}

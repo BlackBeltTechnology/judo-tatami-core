@@ -1,4 +1,4 @@
-//START xmi:id="{{ getXMIID this }}" formatted.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" formatted.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------{{/ if }}
 {{# if column }}
 {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass table.name)'table' (variable dataName) (variable column.attributeType.name) level='debug' ~}}
 {{# if (isNumericType column.attributeType.dataType) }}
@@ -46,4 +46,4 @@ JudoText(
     text: targetStore.{{ variable attributeType.name }}.toString(),
 ),
 {{/ if }}
-//END formatted.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END formatted.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------------------{{/ if }}

@@ -1,5 +1,5 @@
 {{ log 'Stored aggregation action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' }}
-//START input_page_stored_aggregation_actions.dart.hbs-----{{ relaltion.name }}---------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START input_page_stored_aggregation_actions.dart.hbs-----{{ relaltion.name }}---------------------------------------------------------------------------------{{/ if }}
 // {{ className relation.name }} stored aggregation in-memory actions
 
 @observable
@@ -51,4 +51,4 @@ Future<void> unset{{ fqClass relation.name }}({{ storeClassName relation.owner }
     }
 }
 
-//END input_page_stored_aggregation_actions.dart.hbs-----{{ relaltion.name }}-----------------------------------------------------------------------------------
+        {{# if addDebugToTemplate }}//END input_page_stored_aggregation_actions.dart.hbs-----{{ relaltion.name }}-----------------------------------------------------------------------------------{{/ if }}

@@ -1,5 +1,5 @@
 {{~ log 'Radio generation for' (variable application.name) '-' (fqClass page.name)'page' level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" enumerationradio.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" enumerationradio.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------{{/ if }}
 Observer(
     builder: (_) => JudoRadio<{{ className attributeType.dataType.name }}>(
         key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
@@ -19,4 +19,4 @@ Observer(
         {{/ unless }}
     )
 ),
-//END enumerationradio.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END enumerationradio.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------{{/ if }}
