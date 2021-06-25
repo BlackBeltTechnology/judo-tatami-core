@@ -7,8 +7,12 @@ Observer(
         errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         {{/ if }}
         col: {{ col }},
-        row: {{ row }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
+        {{# if disabled }}
+            disabled: true,
+        {{ else if enabledBy }}
+            disabled: !((targetStore?.{{ variable enabledBy.name }}) ?? false),
+        {{/ if }}
         use24HourFormat: true,
         initialDate: targetStore.{{ variable attributeType.name }},
         {{# if this.isLabelVisible }}
@@ -17,9 +21,9 @@ Observer(
         {{# if this.isIconVisible }}
         icon: Icon(getIconByString('{{ this.icon.name }}')),
         {{/ if }}
-        inCard: {{ isInCard }},
+        {{# if isInCard }}inCard: true,{{/ if }}
         {{# unless (isViewTypePage page) }}
-        mandatory: {{ attributeType.isRequired }},
+        {{# if attributeType.isRequired }}mandatory: true,{{/ if }}
         onChanged: (value) => targetStore.set{{ className attributeType.name }}(value),
         firstDate: DateTime(DateTime.now().year - 5), // TODO: revisit this line
         lastDate: DateTime(DateTime.now().year + 5), // TODO: revisit this line

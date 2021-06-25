@@ -18,10 +18,10 @@ Observer(builder: (_) {
         case FutureStatus.fulfilled:
             var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{ disabled }});
             return JudoTable(
-                disabled: {{ disabled }},
+                {{# if disabled }}disabled: true,{{/ if }}
                 col: {{ col }},
-                row: {{ row }} - 1,
-                inCard: {{ isInCard }},
+                {{# neq row 2.0 }}row: {{ row }} - 1,{{/ neq }}
+                {{# if isInCard }}inCard: true,{{/ if }}
                 dataInfo: dataInfo,
                 rowList: {{# if relation.isAccess }}{{# if relation.isCollection }}pageStore.{{ fqVariable relation.name }}StoreList.asObservable(){{ else }}[pageStore.store].asObservable(){{/ if }}{{ else }}{{# if relation.isCollection }}ownerStore.{{ variable relation.name }}{{ else }}[ownerStore.{{ variable relation.name }}].asObservable(){{/ if }}{{/ if }},
                 {{# if relation.isCollection }}

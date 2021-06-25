@@ -7,15 +7,19 @@ Observer(
         errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         {{/ if }}
         col: {{ col }},
-        row: {{ row }},
+        {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
         {{# if this.isIconVisible }}
         icon: Icon(getIconByString('{{ this.icon.name }}')),
         {{/ if }}
         {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
         {{/ if }}
-        inCard: {{ isInCard }},
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        {{# if isInCard }}inCard: true,{{/ if }}
+        {{# if disabled }}
+            disabled: true,
+        {{ else if enabledBy }}
+            disabled: !((targetStore?.{{ variable enabledBy.name }}) ?? false),
+        {{/ if }}
         items: {{ className attributeType.dataType.name }}.values,
         value: targetStore.{{ variable attributeType.name }},
         {{# unless (isViewTypePage page) }}

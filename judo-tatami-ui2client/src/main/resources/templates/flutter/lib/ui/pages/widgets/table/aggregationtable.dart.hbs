@@ -4,10 +4,10 @@
 Observer(builder: (_) {
     var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{ disabled }});
     return JudoTable(
-        disabled: {{ disabled }},
+        {{# if disabled }}disabled: true,{{/ if }}
         col: {{ col }},
-        row: {{ row }} - 1,
-        inCard: {{ isInCard }},
+        {{# neq row 2.0 }}row: {{ row }} - 1,{{/ neq }}
+        {{# if isInCard }}inCard: true,{{/ if }}
         dataInfo: dataInfo,
         rowList: {{# if relation.isCollection }}pageStore.{{ variable relation.name }}TablePagingList{{ else }}[targetStore.{{ variable relation.name }}].asObservable(){{/ if }},
         {{# if relation.isCollection }}

@@ -5,7 +5,7 @@
         {{# if action.isFilterAction }}
         key: addFilterButtonKey,
         {{/ if }}
-        row: {{ row }},
+        {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
         col: {{ col }},
         disabled: {{# if action.isBackAction }}navigation.stack.length == 0{{ else }}{{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }}{{/ if }},
     {{# unless disabled }}
@@ -289,7 +289,6 @@
     {{# if this.isIconVisible }}
         icon: Icon(getIconByString('{{ this.icon.name }}')),
     {{/ if }}
-        rounded: true,
     ){{# if (isObserverButton this page.dataElement action) }}
 ){{/ if }},
 {{# if addDebugToTemplate }}//END instanceAction.dart.hbs-----{{ page.dataElement.target.name }}-------------------------------------------------------------------------{{/ if }}

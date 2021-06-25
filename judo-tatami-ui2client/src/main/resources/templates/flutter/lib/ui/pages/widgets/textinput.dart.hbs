@@ -7,20 +7,24 @@ Observer(
         errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable attributeType.name }}'].message,
         {{/ if }}
         col: {{ col }},
-        row: {{ row }},
+        {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
         maxLength: {{ attributeType.dataType.maxLength }} ?? 250,
-        disabled: {{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
+        {{# if disabled }}
+            disabled: true,
+        {{ else if enabledBy }}
+            disabled: !((targetStore?.{{ variable enabledBy.name }}) ?? false),
+        {{/ if }}
         {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
         {{/ if }}
         {{# if this.isIconVisible }}
         icon: Icon(getIconByString('{{ this.icon.name }}')),
         {{/ if }}
-        inCard: {{ isInCard }},
+        {{# if isInCard }}inCard: true,{{/ if }}
         initialValue: targetStore.{{ variable attributeType.name }},
         readOnly: {{# if (isViewTypePage page) }}true{{ else }}{{ attributeType.isReadOnly }}{{/ if }},
         {{# unless (isViewTypePage page) }}
-        mandatory: {{ attributeType.isRequired }},
+        {{# if attributeType.isRequired }}mandatory: true,{{/ if }}
         onChanged: (value) => targetStore.set{{ className attributeType.name }}(value.toString()),
         {{/ unless }}
     )

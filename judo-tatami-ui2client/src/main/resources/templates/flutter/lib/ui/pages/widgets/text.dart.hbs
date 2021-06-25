@@ -2,7 +2,7 @@
 {{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" text.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}
 JudoText(
     col: {{ col }},
-    row: {{ row }},
+    {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
     text: AppLocalizations.of(context).lookUpValue(context, '{{ text }}'),
 ),
 {{# if addDebugToTemplate }}//END text.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------------------{{/ if }}

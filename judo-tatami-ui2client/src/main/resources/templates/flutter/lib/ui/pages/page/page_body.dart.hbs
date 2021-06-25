@@ -80,7 +80,6 @@ Widget get{{ pageBodyClassName page container.layoutType.name }}(BuildContext co
                             builder: (_) => {{/ if }}JudoColumn(
                                 col: {{ col }},
                                 row: {{ row }}{{# if (isRefreshTableTypePage page) }} + pageStore.getPlusRowSize{{/ if }},
-                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                 {{# each this.children as |child| }}
                                     {{# if child }}

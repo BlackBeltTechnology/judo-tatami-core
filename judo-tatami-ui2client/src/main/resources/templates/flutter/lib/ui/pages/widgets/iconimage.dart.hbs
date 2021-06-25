@@ -2,7 +2,7 @@
 {{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" iconimage.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------{{/ if }}
 JudoIcon(
     col: {{ col }},
-    row: {{ row }},
+    {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
     icon: Icon(getIconByString('{{ icon.name }}')),
 ),
 {{# if addDebugToTemplate }}//END iconimage.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------{{/ if }}

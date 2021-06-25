@@ -39,7 +39,7 @@ target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
 {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
 JudoText(
     col: {{ col }},
-    row: {{ row }},
+    {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
     {{# if isLabelVisible }}
     label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
     {{/ if }}

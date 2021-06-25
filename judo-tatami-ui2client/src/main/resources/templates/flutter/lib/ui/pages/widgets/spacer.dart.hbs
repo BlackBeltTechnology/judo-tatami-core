@@ -2,6 +2,6 @@
 {{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" spacer.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}
 JudoSpacer(
     col: {{ col }},
-    row: {{ row }},
+    {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
 ),
 {{# if addDebugToTemplate }}//END spacer.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}

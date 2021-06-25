@@ -2,10 +2,10 @@
 {{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" label.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}
 JudoLabel(
     col: {{ col }},
-    row: {{ row }},
+    {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
   {{# if isLabelVisible }}
     label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
-    labelMargin: {{ labelMargin.left }},
+    {{# neq labelMargin.left 4.0 }}labelMargin: {{ labelMargin.left }},{{/ neq }}
   {{/ if }}
   {{# if isIconVisible }}
     icon: Icon(getIconByString('{{ icon.name }}')),

@@ -12,8 +12,8 @@ Observer(builder: (_) {
       {{# if link.isIconVisible }}
         icon: Icon(getIconByString('{{ link.icon.name }}')),
       {{/ if }}
-        inCard: {{ isInCard }},
-        disabled: {{ disabled }},
+        {{# if isInCard }}inCard: true,{{/ if }}
+        {{# if disabled }}disabled: true,{{/ if }}
         {{# if page.isPageTypeView }}
         readOnly: true,
         {{ else }}
@@ -24,7 +24,7 @@ Observer(builder: (_) {
             {{/ if }}
         {{/ if }}
         col: {{ col }},
-        row: {{ row }},
+        {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
         formatter: (element) {
             if (element == null) return '';
             var ret = '';
