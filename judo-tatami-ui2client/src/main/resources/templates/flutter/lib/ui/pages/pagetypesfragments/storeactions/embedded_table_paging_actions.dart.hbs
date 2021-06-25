@@ -1,5 +1,5 @@
 {{log 'Embedded table paging actions generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug'}}
-//START embedded_table_paging_actions.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START embedded_table_paging_actions.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------{{/ if }}
 // {{ className relation.name }} embedded table paging
 
 {{# if relation.isCollection}}
@@ -47,4 +47,4 @@ List<{{ storeClassName relation.target }}> get {{ variable relation.name }}Table
 {{/ if }}
 
 
-//END embedded_table_paging_actions.dart.hbs-----{{relaltion.name}}-----------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END embedded_table_paging_actions.dart.hbs-----{{relaltion.name}}-----------------------------------------------------------------------------------{{/ if }}

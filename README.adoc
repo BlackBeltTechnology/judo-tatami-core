@@ -85,3 +85,10 @@ package "LSM" {
 }
 
 ----
+
+[[parameters]]
+
+*-DclientTemplateDebug*
+Default: `false`
+
+If provided, renders additional debug info about templates into the code.

@@ -1,5 +1,5 @@
 {{~ log 'Tab generation for' (variable application.name) '-' (fqClass page.name)'page' (variable name) level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" tabcontroller.dart.hbs-----{{ name }}------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" tabcontroller.dart.hbs-----{{ name }}------------------------------------------------------------------------------------------------{{/ if }}
 JudoTab(
     col: {{ col }},
     row: {{ row }},
@@ -25,4 +25,4 @@ JudoTab(
     {{/ each }}
     ]
 ),
-//END tabcontroller.dart.hbs-----{{ name }}--------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END tabcontroller.dart.hbs-----{{ name }}----------------------------------------------------------------------------------------------------{{/ if }}

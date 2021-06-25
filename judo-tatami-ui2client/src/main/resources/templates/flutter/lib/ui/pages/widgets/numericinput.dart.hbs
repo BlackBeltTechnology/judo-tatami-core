@@ -1,5 +1,5 @@
 {{~ log 'Numeric field generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" numericinput.dart.hbs-----{{ page.dataElement.target.name }}-------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" numericinput.dart.hbs-----{{ page.dataElement.target.name }}-------------------------------------------------------------------------{{/ if }}
 Observer(
     builder: (_) => JudoNumericInput(
         key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
@@ -24,4 +24,4 @@ Observer(
         {{/ unless }}
     )
 ),
-//END numericinput.dart.hbs-----{{ page.dataElement.target.name }}---------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END numericinput.dart.hbs-----{{ page.dataElement.target.name }}---------------------------------------------------------------------------{{/ if }}

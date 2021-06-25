@@ -1,5 +1,5 @@
 {{~ log 'Flex generation for' (variable application.name) '-' (fqClass page.name)'page' (variable name) level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" -----flex.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" -----flex.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}
 {{# if isDirectionHorizontal }}
 JudoRow(
 {{ else }}
@@ -28,4 +28,4 @@ JudoRow(
         ],
     ),{{# unless isDirectionHorizontal }}{{# if (isRefreshTableTypePage page) }}
 ),{{/ if }}{{/ unless }}
-//END flex.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END flex.dart.hbs-----{{ page.name }}------------------------------------------------------------------------------------------------------{{/ if }}

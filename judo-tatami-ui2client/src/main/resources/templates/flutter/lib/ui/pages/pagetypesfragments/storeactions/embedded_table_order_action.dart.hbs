@@ -1,5 +1,5 @@
 {{log 'Embedded table collaction order action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug'}}
-//START embedded_table_order_action.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START embedded_table_order_action.dart.hbs-----{{relaltion.name}}---------------------------------------------------------------------------------{{/ if }}
 // {{ className relation.name }} embedded table order
 {{# if relation.isCollection }}
 
@@ -30,4 +30,4 @@ void {{ fqVariable relation.name }}SetSort(BuildContext context, String sortColu
 }
 {{/if}}
 
-//END embedded_table_order_action.dart.hbs-----{{relaltion.name}}-----------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END embedded_table_order_action.dart.hbs-----{{relaltion.name}}-----------------------------------------------------------------------------------{{/ if }}

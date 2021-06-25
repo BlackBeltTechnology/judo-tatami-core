@@ -1,5 +1,5 @@
 {{ log 'Instance action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) level='debug' ~}}
-//START instanceAction.dart.hbs-----{{ page.dataElement.target.name }}-----------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START instanceAction.dart.hbs-----{{ page.dataElement.target.name }}-----------------------------------------------------------------------{{/ if }}
 {{# if (isObserverButton this page.dataElement action) }}Observer(
     builder: (_) => {{/ if }}JudoButton(
         {{# if action.isFilterAction }}
@@ -292,4 +292,4 @@
         rounded: true,
     ){{# if (isObserverButton this page.dataElement action) }}
 ){{/ if }},
-//END instanceAction.dart.hbs-----{{ page.dataElement.target.name }}-------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END instanceAction.dart.hbs-----{{ page.dataElement.target.name }}-------------------------------------------------------------------------{{/ if }}

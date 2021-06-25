@@ -1,4 +1,4 @@
-//START createpagefragment.dart.hbs-----{{ page.name }}--------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START createpagefragment.dart.hbs-----{{ page.name }}--------------------------------------------------------------------------------------{{/ if }}
     {{# unless page.dataElement.isAccess }}
     final {{ storeClassName page.dataElement.owner }} ownerStore;
     {{/ unless }}
@@ -54,4 +54,4 @@ class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
         }
     {{/ if }}
     }
-//END createpagefragment.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------
+    {{# if addDebugToTemplate }}//END createpagefragment.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------{{/ if }}

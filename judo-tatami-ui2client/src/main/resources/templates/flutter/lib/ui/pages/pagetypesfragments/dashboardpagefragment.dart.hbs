@@ -1,4 +1,4 @@
-//START dashboardpagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START dashboardpagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------{{/ if }}
     @override
     State<StatefulWidget> createState() => _{{ pageStateClassName page }}();
 }
@@ -40,4 +40,4 @@ class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
                 .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
     {{/ if }}
         }
-//END dashboardpagefragment.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------
+        {{# if addDebugToTemplate }}//END dashboardpagefragment.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------{{/ if }}

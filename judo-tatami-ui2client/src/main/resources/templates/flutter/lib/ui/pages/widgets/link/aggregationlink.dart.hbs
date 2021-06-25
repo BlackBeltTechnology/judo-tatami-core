@@ -1,5 +1,5 @@
 {{~ log 'Link generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" aggregationlink.dart.hbs-----{{ dataElement.name }}----------------------------------------------------------------------------------
+{{# if addDebugToTemplate}}//START xmi:id="{{ getXMIID this }}" aggregationlink.dart.hbs-----{{ dataElement.name }}----------------------------------------------------------------------------------{{/if}}
 {{# with dataElement as |relation| }}
 Observer(builder: (_) {
     return JudoLink(
@@ -179,4 +179,4 @@ Observer(builder: (_) {
     );
 }),
 {{/ with }}
-//END aggregationlink.dart.hbs-----{{ dataElement.name }}------------------------------------------------------------------------------------
+{{# if addDebugToTemplate}}//END aggregationlink.dart.hbs-----{{ dataElement.name }}------------------------------------------------------------------------------------{{/ if }}

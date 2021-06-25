@@ -1,4 +1,4 @@
-//START dashboardlayoutbuilder.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START dashboardlayoutbuilder.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------{{/ if }}
 // ignore: missing_return
 return Observer(builder: (_) {
         switch(pageStore.getterStatus){
@@ -53,4 +53,4 @@ return Observer(builder: (_) {
                 });
         }
 });
-//END dashboardlayoutbuilder.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END dashboardlayoutbuilder.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------{{/ if }}

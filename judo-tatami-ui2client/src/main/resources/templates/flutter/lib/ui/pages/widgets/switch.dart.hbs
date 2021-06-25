@@ -1,5 +1,5 @@
 {{ log 'Switch generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" switch.dart.hbs-----{{ page.name }}--------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" switch.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}
 Observer(
     builder: (_) => JudoSwitch(
         col: {{ col }},
@@ -22,4 +22,4 @@ Observer(
         {{/ unless }}
     ),
 ),
-//END switch.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END switch.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}

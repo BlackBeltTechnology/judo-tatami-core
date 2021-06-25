@@ -1,5 +1,5 @@
 {{ log 'Select dialog generation for' (variable application.name) '-' (fqClass page.name)'page' (fqClass container.layoutType.name) (variable relation.name) level='debug' ~}}
-//START dialog.dart.hbs-----{{ relation.name }}----------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START dialog.dart.hbs-----{{ relation.name }}----------------------------------------------------------------------------------------------{{/ if }}
 await judoSelect{{ dialogClassName page relation.name }}(
     context: context,
     ownerStore: {{~# if page.isPageTypeTable ~}}{{~# unless page.dataElement.isAccess ~}}owner{{ else }}target{{/ unless }}{{ else }}target{{/ if }}Store,
@@ -8,4 +8,4 @@ await judoSelect{{ dialogClassName page relation.name }}(
     dialogTypeAdder: true,
     {{/ if }}
 );
-//END dialog.dart.hbs-----{{ relation.name }}----------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END dialog.dart.hbs-----{{ relation.name }}----------------------------------------------------------------------------------------------{{/ if }}

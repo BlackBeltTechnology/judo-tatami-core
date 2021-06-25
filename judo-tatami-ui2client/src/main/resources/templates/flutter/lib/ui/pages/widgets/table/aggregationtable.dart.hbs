@@ -1,5 +1,5 @@
 {{~ log 'Table generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
-//START aggregationtable.dart.hbs-----{{ dataElement.name }}---------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START aggregationtable.dart.hbs-----{{ dataElement.name }}---------------------------------------------------------------------------------{{/ if }}
 {{# with dataElement as |relation| }}
 Observer(builder: (_) {
     var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{ disabled }});
@@ -134,4 +134,4 @@ Row(
     ],
 ),
 {{/ with }}
-//END aggregationtable.dart.hbs-----{{ dataElement.name }}-----------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END aggregationtable.dart.hbs-----{{ dataElement.name }}-----------------------------------------------------------------------------------{{/ if }}

@@ -1,4 +1,4 @@
-//START xmi:id="{{ getXMIID this }}" table.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" table.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}
 // {{ dataElement.relationKind }} TABLE
 {{# if dataElement.isRelationKindStatic }}
 {{> flutter/lib/ui/pages/widgets/table/associationtable.dart.hbs table=this }}
@@ -12,4 +12,4 @@
 {{# if dataElement.isRelationKindComposition }}
 {{> flutter/lib/ui/pages/widgets/table/aggregationtable.dart.hbs table=this }}
 {{/ if }}
-//END table.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END table.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------------{{/ if }}

@@ -1,5 +1,5 @@
 {{ log 'Pagestore generation for' (variable application.name) '-' (fqClass page.name) level='debug' }}
-//START editpagestore.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START editpagestore.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------------{{/ if }}
 class {{ pageStoreClassName page }} extends _{{ pageStoreClassName page }} with _${{ pageStoreClassName page }} {}
 
 abstract class _{{ pageStoreClassName page }} with Store {
@@ -85,4 +85,4 @@ abstract class _{{ pageStoreClassName page }} with Store {
     {{/ unless }}
 {{/ each }}
 }
-//END editpagestore.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END editpagestore.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------------{{/ if }}

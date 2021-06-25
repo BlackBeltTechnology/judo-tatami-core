@@ -1,5 +1,5 @@
 {{ log 'Label generation for' (variable application.name) '-' (fqClass page.name)'page' label level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" label.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" label.dart.hbs-----{{ page.name }}----------------------------------------------------------------------------------------------------{{/ if }}
 JudoLabel(
     col: {{ col }},
     row: {{ row }},
@@ -12,4 +12,4 @@ JudoLabel(
     iconMargin: {{ iconMargin.right }},
   {{/ if }}
 ),
-//END label.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END label.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------------{{/ if }}

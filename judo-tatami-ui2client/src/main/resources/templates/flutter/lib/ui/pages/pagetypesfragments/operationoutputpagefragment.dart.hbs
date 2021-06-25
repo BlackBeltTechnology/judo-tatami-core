@@ -1,4 +1,4 @@
-//START operationoutputpagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START operationoutputpagefragment.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------{{/ if }}
     final {{ storeClassName page.dataElement.target }} targetStore;
 
     const {{ pageClassName page }}({Key key, @required this.targetStore}) : super(key: key);
@@ -20,4 +20,4 @@ class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
             navigation.setCurrentTitle(AppLocalizations.of(context).lookUpValue(context, {{ pageClassName page }}.title){{# if page.dataElement.target.representation }} + ' - ${targetStore.{{ variable page.dataElement.target.representation.name }} }'{{/ if }});
         });
     }
-//END operationoutputpagefragment.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------
+        {{# if addDebugToTemplate }}//END operationoutputpagefragment.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------{{/ if }}

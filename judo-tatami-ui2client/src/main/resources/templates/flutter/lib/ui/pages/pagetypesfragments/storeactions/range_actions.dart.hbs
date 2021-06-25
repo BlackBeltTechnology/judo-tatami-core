@@ -1,5 +1,5 @@
 {{ log 'Range action generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' }}
-//START range_actions.dart.hbs-----{{ relaltion.name }}---------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START range_actions.dart.hbs-----{{ relaltion.name }}---------------------------------------------------------------------------------{{/ if }}
 // {{ className relation.name }} range actions
 {{# if relation.isRelationBehaviourTypeRangeable }}
 @observable
@@ -101,4 +101,4 @@ Future<List<{{ storeClassName relation.target }}>> getRangeFor{{ fqClass relatio
     }
 }
 {{/ if }}
-//END range_actions.dart.hbs-----{{ relaltion.name }}-----------------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END range_actions.dart.hbs-----{{ relaltion.name }}-----------------------------------------------------------------------------------{{/ if }}

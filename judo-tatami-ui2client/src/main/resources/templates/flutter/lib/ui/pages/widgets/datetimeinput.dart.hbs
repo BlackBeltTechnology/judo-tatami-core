@@ -1,5 +1,5 @@
 {{~ log 'Date time field generation for' (variable application.name) '-' (fqClass page.name)'page'(fqClass page.dataElement.target.name) attributeType.name level='debug' ~}}
-//START xmi:id="{{ getXMIID this }}" datetimeinput.dart.hbs-----{{ page.dataElement.target.name }}------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" datetimeinput.dart.hbs-----{{ page.dataElement.target.name }}------------------------------------------------------------------------{{/ if }}
 Observer(
     builder: (_) => JudoDateTimeInput(
         key: {{# if (isViewTypePage page) }}UniqueKey(){{ else }}inputWidgetKeyMap['{{ name }}']{{/ if }},
@@ -27,4 +27,4 @@ Observer(
         readOnly: {{# if (isViewTypePage page) }}true{{ else }}{{ attributeType.isReadOnly }}{{/ if }},
     ),
 ),
-//END datetimeinput.dart.hbs-----{{ page.dataElement.target.name }}--------------------------------------------------------------------------
+{{# if addDebugToTemplate }}//END datetimeinput.dart.hbs-----{{ page.dataElement.target.name }}--------------------------------------------------------------------------{{/ if }}
