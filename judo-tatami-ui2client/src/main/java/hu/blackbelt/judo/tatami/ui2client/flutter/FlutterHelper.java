@@ -421,8 +421,7 @@ public class FlutterHelper {
     }
 
     public static String baseUrl(String fqName) {
-        String[] splitted = fqName.split("::");
-        return stream(splitted).findFirst().get();
+        return fqName.replaceAll("::","/");
     }
 
     public static String modelName(String fqName) {
