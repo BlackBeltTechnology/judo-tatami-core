@@ -14,21 +14,21 @@ import java.util.Set;
 import java.util.TreeMap;
 
 @ApplicationPath("[%= restPath %]")
-public class ApplicationConfig extends Application {
+public class [%= className %] extends Application {
 
     private final Map<String, Object> properties = new TreeMap();
 
-	[% for (name : String in serviceInstances.keySet()) { %]
-	[%= serviceInstances.get(name) %] [%= name %];
-	[% } %]
-	
+    [% for (name : String in serviceInstances.keySet()) { %]
+    [%= serviceInstances.get(name) %] [%= name %];
+    [% } %]
+    
     @Override
     public Set getSingletons() {
         return new HashSet(Arrays.asList(
-			[% for (name : String in serviceInstances.keySet()) { %]
-				[%= name %][% if (hasMore) { %],
-				[% } %]
-			[% } %]
+            [% for (name : String in serviceInstances.keySet()) { %]
+                [%= name %][% if (hasMore) { %],
+                [% } %]
+            [% } %]
 
         ));
     }

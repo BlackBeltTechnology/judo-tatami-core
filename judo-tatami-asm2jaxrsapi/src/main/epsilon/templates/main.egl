@@ -7,8 +7,13 @@ var outputScrXmls = new Set();
 executionContext.getContext().put("outputJavaClasses", outputJavaClasses);
 executionContext.getContext().put("outputScrXmls", outputScrXmls);
 
+var actors = ASM!EClass.all.select(c | asmUtils.isActorType(c));
+var actorToApServiceInstances : Map = new Map();
 
-var apServiceInstances : Map = new Map();
+for (actor in actors) {
+    actorToApServiceInstances.put(actor, new Map());
+}
+
 for (clazz in ASM!EOperation.all.select(op | not asmUtils.getActorTypesOfOperation(op).isEmpty()).collect(op | op.eContainingClass).asSet()) {
     var operationsOfClazz = clazz.eOperations.select(op | not asmUtils.getActorTypesOfOperation(op).isEmpty());
 
@@ -34,13 +39,19 @@ for (clazz in ASM!EOperation.all.select(op | not asmUtils.getActorTypesOfOperati
     outputJavaClasses.add(clazz.getExposedJavaFileName());
     outputScrXmls.add(clazz.getExposedScrXmlFileName());
 
-    apServiceInstances.put((clazz.getExposedPackageName() + "." + clazz.name).normalizeName().replaceAll("\\.", "_"),
+    var actorsOfClass = asmUtils.getExtensionAnnotationListByName(clazz, "exposedBy").collect(a | a.details.get("value")).asSet();
+
+    for (actor in actors.select(a | actorsOfClass.contains(asmUtils.getClassifierFQName(a)) ) ) {
+        actorToApServiceInstances.get(actor).put((clazz.getExposedPackageName() + "." + clazz.name).normalizeName().replaceAll("\\.", "_"),
                 (clazz.getExposedPackageName() + "." + clazz.name).normalizeName());
+    }
 }
 
-// Generate ApplicationConfigs
-genApplication(apServiceInstances);
-outputJavaClasses.add(getApplicationConfigJavaFileName());
-outputScrXmls.add(getApplicationConfigScrXmlFileName());
+for (actor in actors) {
+    // Generate ApplicationConfigs
+    genApplication(actor, actorToApServiceInstances.get(actor));
+    outputJavaClasses.add(actor.getApplicationConfigJavaFileName());
+    outputScrXmls.add(actor.getApplicationConfigScrXmlFileName());
+}
 
 %]

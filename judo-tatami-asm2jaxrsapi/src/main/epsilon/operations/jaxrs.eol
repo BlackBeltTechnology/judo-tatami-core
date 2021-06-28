@@ -1,6 +1,6 @@
 @cached
 operation String normalizeName() : String {
-	return self.replace("__", "\\$");
+    return self.replace("__", "\\$");
 }
 
 @cached
@@ -59,53 +59,64 @@ operation getRestPackagePrefix() : String {
 }
 
 @cached
-operation getApplicationPackageName() : String {
-	return asmUtils.getModel().get().name;
+operation ASM!EClass getApplicationPackageName() : String {
+    return asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached
-operation getApplicationConfigJavaFileName() : String {
-	return getApplicationPackageName().replaceAll("\\.", "/") + "/ApplicationConfig.java";
+operation ASM!EClass getApplicationConfigJavaFileName() : String {
+    return self.getApplicationPackageName().replaceAll("\\.", "/") + "/" + self.name.normalizeName() + "ApplicationConfig.java";
+}
+
+operation ASM!EClass getApplicationConfigScrXmlFileName() : String {
+    return "OSGI-INF/" + self.getApplicationPackageName() + "." + self.name.normalizeName() + "ApplicationConfig.xml";
 }
 
 @cached
-operation getApplicationConfigScrXmlFileName() : String {
-	return "OSGI-INF/" + getApplicationPackageName() + ".ApplicationConfig.xml";
+operation ASM!EClass getApplicationConfigClassName() : String {
+    return self.name.normalizeName() + "ApplicationConfig";
+}
+
+@cached
+operation ASM!EClass getApplicationConfigRestPathName() : String {
+    return asmUtils.getClassifierFQName(self).replace("[#\\.]", "/").replace("[^0-9a-zA-Z_~/]", "_");
 }
 
 /*
  Application Config
  */
-operation genApplication(serviceInstances : Map) {
-	var t = TemplateFactory.load("ApplicationConfig.java.egl");
-	t.populate("className", "ApplicationConfig");
-	t.populate("packagePath", getApplicationPackageName());
-	t.populate("restPath", "/" + asmUtils.getModel().get().name);
-	t.populate("serviceInstances", serviceInstances);
-	t.generate(getApplicationConfigJavaFileName());
-	t.reset();
+operation genApplication(actor: ASM!EClass, serviceInstances : Map) {
+    var t = TemplateFactory.load("ApplicationConfig.java.egl");
+    t.populate("className", actor.getApplicationConfigClassName());
+    t.populate("packagePath", actor.getApplicationPackageName());
+    t.populate("restPath", "/" + actor.getApplicationConfigRestPathName());
+    t.populate("serviceInstances", serviceInstances);
+    t.generate(actor.getApplicationConfigJavaFileName());
+    t.reset();
 
-	var t = TemplateFactory.load("ApplicationConfig.scr.xml.egl");
-	t.populate("className", "ApplicationConfig");
-	t.populate("packagePath", getApplicationPackageName());
-	t.populate("restPath", "/" + asmUtils.getModel().get().name);
-	t.populate("serviceInstances", serviceInstances);
-	t.generate(getApplicationConfigScrXmlFileName());
-	t.reset();
+    var t = TemplateFactory.load("ApplicationConfig.scr.xml.egl");
+    t.populate("className", actor.getApplicationConfigClassName());
+    t.populate("modelName", asmUtils.getModel().get().getName());
+    t.populate("applicationName", asmUtils.getClassifierFQName(actor));
+    t.populate("packagePath", actor.getApplicationPackageName());
+    t.populate("restPath", "/" + actor.getApplicationConfigRestPathName());
+    t.populate("serviceInstances", serviceInstances);
+    t.generate(actor.getApplicationConfigScrXmlFileName());
+    t.reset();
 }
 
 @cached
 operation ASM!EClass getExposedPackageName() : String {
-	return getRestPackagePrefix() + "." + asmUtils.getPackageFQName(self.ePackage);
+    return getRestPackagePrefix() + "." + asmUtils.getPackageFQName(self.ePackage);
 }
 
 @cached
 operation ASM!EClass getExposedScrXmlFileName() : String {
-	return "OSGI-INF/" + self.getExposedPackageName() + "." + self.name.normalizeName() + ".xml";
+    return "OSGI-INF/" + self.getExposedPackageName() + "." + self.name.normalizeName() + ".xml";
 }
 
 @cached
 operation ASM!EClass getExposedJavaFileName() : String {
-	return self.getExposedPackageName()
-		.replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
+    return self.getExposedPackageName()
+        .replaceAll("\\.", "/") + "/" + self.name.normalizeName() + ".java";
 }

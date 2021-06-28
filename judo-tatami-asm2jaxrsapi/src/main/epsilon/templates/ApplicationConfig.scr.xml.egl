@@ -3,10 +3,10 @@
 %]
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="[%= packagePath %].[%= className %]" immediate="true">
-    <implementation class="[%= packagePath %].ApplicationConfig"/>
-    <property name="judo.model.name" value="[%= packagePath %]"/>
+    <implementation class="[%= packagePath %].[%= className %]"/>
+    <property name="judo.model.name" value="[%= modelName %]"/>
     <property name="applicationPath" value="[%= restPath %]"/>
-    <property name="jaxrs.application.name" value="[%= packagePath %]"/>
+    <property name="jaxrs.application.name" value="[%= applicationName %]"/>
     <service>
         <provide interface="javax.ws.rs.core.Application"/>
     </service>
