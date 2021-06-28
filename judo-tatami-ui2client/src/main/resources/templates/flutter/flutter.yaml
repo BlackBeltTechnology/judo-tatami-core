@@ -688,3 +688,9 @@
   pathExpression: "'lib/' + #path(#application.actor.name) + '/utilities/package.dart'"
   templateName: flutter/lib/utilities/package.dart
   copy: true
+
+- overwriteExpression: true
+  factoryExpression: "{#application}"
+  pathExpression: "'lib/' + #path(#application.actor.name) + '/ui/utilities/page_state.dart'"
+  templateName: flutter/lib/ui/utilities/page_state.dart
+  copy: true

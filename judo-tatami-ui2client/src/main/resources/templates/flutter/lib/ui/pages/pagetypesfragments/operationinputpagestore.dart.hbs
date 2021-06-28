@@ -5,6 +5,17 @@ class {{ pageStoreClassName page }} extends _{{ pageStoreClassName page }} with 
 abstract class _{{ pageStoreClassName page }} with Store {
     {{ repositoryClassName application.actor }} _actorRepository = locator<{{ repositoryClassName application.actor }}>();
 
+    PageState pageState = PageState();
+    {{# each (getButtonWidgets page.containers.[0]) as |button| }}
+        LoadingState {{ variable button.name }}LoadingState;
+    {{/ each }}
+
+    _{{ pageStoreClassName page }}(){
+        {{# each (getButtonWidgets page.containers.[0]) as |button| }}
+            {{ variable button.name }}LoadingState = LoadingState(pageState.setDisabledByLoading);
+        {{/ each }}
+    }
+
     Function operationCall;
 
     @observable
