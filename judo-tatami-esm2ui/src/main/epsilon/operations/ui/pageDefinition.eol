@@ -83,10 +83,10 @@ operation UI!ui::PageDefinition calculateActions(application : UI!ui::Applicatio
             }
             
             if (relationType.getIsRelationBehaviourTypeSetable()) {
-                buttonGroup.children.add(createGeneratedActionButton("set", "Set", new UI!ui::SetAction()));
+                buttonGroup.children.add(createGeneratedActionButton("set", "Select", new UI!ui::SetAction()));
             }
             if (relationType.getIsRelationBehaviourTypeUnsetable()) {
-                buttonGroup.children.add(createGeneratedActionButton("unset", "Unset", new UI!ui::UnsetAction()));
+                buttonGroup.children.add(createGeneratedActionButton("unset", "Unselect", new UI!ui::UnsetAction()));
             }
             if (relationType.getIsRelationBehaviourTypeAddable()) {
                 buttonGroup.children.add(createGeneratedActionButton("add", "Add", new UI!ui::AddAction()));

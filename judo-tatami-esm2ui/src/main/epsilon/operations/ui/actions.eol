@@ -274,7 +274,7 @@ operation UI!ui::DeleteAction setLabel() {
 operation UI!ui::SetAction setLabel() {
     self.showLabel = true;
     if (self.label.isUndefined()) {
-        self.label = 'Set';
+        self.label = 'Select';
     }
     if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
         self.eContainer.label = self.label;
@@ -285,7 +285,7 @@ operation UI!ui::SetAction setLabel() {
 operation UI!ui::UnsetAction setLabel() {
     self.showLabel = true;
     if (self.label.isUndefined()) {
-        self.label = 'Unset';
+        self.label = 'Unselect';
     }
     if (self.eContainer.isKindOf(UI!ui::Button) and (self.eContainer.label.isUndefined() or self.eContainer.label.trim().length() == 0)) {
         self.eContainer.label = self.label;

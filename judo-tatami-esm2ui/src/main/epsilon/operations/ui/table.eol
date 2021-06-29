@@ -95,7 +95,7 @@ operation UI!ui::Table createRemoveAction() {
 
 //adding set action to table
 operation UI!ui::Table createSetAction(relationType : UI!ui::data::RelationType, buttonGroup : UI!ui::Flex) {
-    var button : UI!ui::Button = createGeneratedActionButton("set", "Set", new UI!ui::SetAction());
+    var button : UI!ui::Button = createGeneratedActionButton("set", "Select", new UI!ui::SetAction());
     button.action.dataElement = relationType;
     buttonGroup.children.add(button);
 }
