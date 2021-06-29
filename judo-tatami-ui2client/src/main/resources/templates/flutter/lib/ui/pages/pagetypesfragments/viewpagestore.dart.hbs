@@ -6,6 +6,17 @@ abstract class _{{ pageStoreClassName page }} with Store {
     {{# with page.relationType as |relation| }}
     {{ repositoryClassName application.actor }} _actorRepository = locator<{{ repositoryClassName application.actor }}>();
 
+    PageState pageState = PageState();
+    {{# each (getButtonWidgets page.containers.[0]) as |button| }}
+        LoadingState {{ variable button.name }}LoadingState;
+    {{/ each }}
+
+    _{{ pageStoreClassName page }}(){
+        {{# each (getButtonWidgets page.containers.[0]) as |button| }}
+            {{ variable button.name }}LoadingState = LoadingState(pageState.setDisabledByLoading);
+        {{/ each }}
+    }
+
     @observable
     String errorMessage;
 

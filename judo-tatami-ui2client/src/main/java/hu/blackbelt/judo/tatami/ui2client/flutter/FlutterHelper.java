@@ -153,11 +153,13 @@ public class FlutterHelper {
         context.registerFunction("isAccessTablePage", FlutterHelper.class.getDeclaredMethod("isAccessTablePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isPageWithIdParam", FlutterHelper.class.getDeclaredMethod("isPageWithIdParam", new Class[]{PageDefinition.class, Application.class}));
         context.registerFunction("isPageValidatable", FlutterHelper.class.getDeclaredMethod("isPageValidatable", new Class[]{PageDefinition.class}));
+        context.registerFunction("isActionNotNavigateToPage", FlutterHelper.class.getDeclaredMethod("isActionNotNavigateToPage", new Class[]{Action.class}));
         context.registerFunction("isRefreshViewTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshViewTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isRefreshTableTypePage", FlutterHelper.class.getDeclaredMethod("isRefreshTableTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isViewTypePage", FlutterHelper.class.getDeclaredMethod("isViewTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("isCreateTypePage", FlutterHelper.class.getDeclaredMethod("isCreateTypePage", new Class[]{PageDefinition.class}));
         context.registerFunction("getInputWidgets", FlutterHelper.class.getDeclaredMethod("getInputWidgets", new Class[]{Container.class}));
+        context.registerFunction("getButtonWidgets", FlutterHelper.class.getDeclaredMethod("getButtonWidgets", new Class[]{Container.class}));
         context.registerFunction("getPagesByRelation", FlutterHelper.class.getDeclaredMethod("getPagesByRelation", new Class[]{EList.class, DataElement.class}));
         context.registerFunction("safe", FlutterHelper.class.getDeclaredMethod("safe", new Class[]{String.class, String.class}));
         context.registerFunction("dart", FlutterHelper.class.getDeclaredMethod("dart", new Class[]{String.class}));
@@ -566,26 +568,71 @@ public class FlutterHelper {
     public static List<VisualElement> getInputWidgets(Container container) {
         List<VisualElement> inputList = new ArrayList<VisualElement>();
 
-        getInputWidgetsFromContainers(container, inputList);
+        addInputWidgetsFromContainers(container, inputList);
 
         return inputList;
     }
 
 
-    public static void getInputWidgetsFromContainers(Container container, List<VisualElement> inputList) {
-        List<VisualElement> children = container.getChildren();
+    public static void addInputWidgetsFromContainers(VisualElement container, List<VisualElement> inputList) {
+        List<VisualElement> children = new ArrayList<VisualElement>();
+        if (container instanceof Container) {
+            children = ((Container) container).getChildren();
+        } else {
+            return;
+        }
 
-        for (VisualElement element : children ) {
-            if (element instanceof Container ) {
-                getInputWidgetsFromContainers((Container) element, inputList);
+        for (VisualElement element : children) {
+            if (element instanceof Container) {
+                addInputWidgetsFromContainers(element, inputList);
+            } else if (element instanceof TabController) {
+                for (Tab tab : ((TabController) element).getTabs()) {
+                    addInputWidgetsFromContainers(tab.getElement(), inputList);
+                }
             } else if (element instanceof Input) {
                 inputList.add(element);
             }
         }
     }
 
+    public static List<VisualElement> getButtonWidgets(Container container) {
+        List<VisualElement> buttonList = new ArrayList<VisualElement>();
+
+        addButtonWidgetsFromContainers(container, buttonList);
+
+        return buttonList;
+    }
+
+    public static void addButtonWidgetsFromContainers(VisualElement container, List<VisualElement> buttonList) {
+        List<VisualElement> children = new ArrayList<VisualElement>();
+        if (container instanceof Container) {
+            children = ((Container) container).getChildren();
+        } else {
+            return;
+        }
+
+        for (VisualElement element : children) {
+            if (element instanceof Container) {
+                addButtonWidgetsFromContainers(element, buttonList);
+            } else if (element instanceof TabController) {
+                for (Tab tab : ((TabController) element).getTabs()) {
+                    addButtonWidgetsFromContainers(tab.getElement(), buttonList);
+                }
+            } else if (element instanceof Button) {
+                if (isActionNotNavigateToPage(((Button) element).getAction())) {
+                    buttonList.add(element);
+                }
+            }
+        }
+    }
+
     public static boolean isPageValidatable(PageDefinition page){
-        return page.getIsPageTypeCreate() || page.getIsPageTypeUpdate();
+        return page.getIsPageTypeCreate() || page.getIsPageTypeUpdate() || page.getIsPageTypeOperationInput();
+    }
+
+    public static boolean isActionNotNavigateToPage(Action action) {
+        return action.getIsCallOperationAction()|| action.getIsSaveAction()
+                || action.getIsRefreshAction() || action.getIsDeleteAction();
     }
 
     public static boolean isValidateHere(PageDefinition page){
@@ -717,12 +764,12 @@ public class FlutterHelper {
 
         List<String> inputList = new ArrayList<>();
 
-        getAttributeTypeNames(container, inputList);
+        attributeTypeNames(container, inputList);
 
         return inputList;
     }
 
-    public static void getAttributeTypeNames(Container container, List<String> inputList) {
+    public static void attributeTypeNames(Container container, List<String> inputList) {
         List<VisualElement> children = container.getChildren();
 
         for (VisualElement element : children ) {
@@ -732,7 +779,7 @@ public class FlutterHelper {
                 }
             }
             if (element instanceof Container ) {
-                getAttributeTypeNames((Container) element, inputList);
+                attributeTypeNames((Container) element, inputList);
             } else if (element instanceof Input ) {
                 if(!inputList.contains(((Input) element).getAttributeType().getName())) {
                     inputList.add(((Input) element).getAttributeType().getName());

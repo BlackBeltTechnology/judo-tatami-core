@@ -1,13 +1,13 @@
 {{ log 'Aggregation action button generation for' (variable application.name) '-' (fqClass page.name)'page'(variable relation.name)'relation' level='debug' ~}}
 {{# if addDebugToTemplate }}//START aggregationAction.dart.hbs-----{{ relation.name }}-----------------------------------------------------------------------------------{{/ if }}
-{{# if (isObserverButton this page.dataElement action) }}Observer(
-    builder: (_) => {{/ if }}JudoButton(
+Observer(
+    builder: (_) => JudoButton(
         col: {{ col }},
         {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
         {{# if disabled }}
             disabled: true,
-        {{ else if enabledBy }}
-            disabled: !((targetStore?.{{ variable enabledBy.name }}) ?? false),
+        {{ else }}
+            disabled: pageStore.pageState.disabledByLoading{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         {{/if}}
     {{# if action.isBackAction }}
         onPressed: () => navigation.close(),
@@ -70,6 +70,6 @@
     {{# if this.isIconVisible }}
         icon: Icon(getIconByString('{{ this.icon.name }}')),
     {{/ if }}
-    ){{# if (isObserverButton this page.dataElement action) }}
-){{/ if }},
+    )
+),
 {{# if addDebugToTemplate }}//END aggregationAction.dart.hbs-----{{ relation.name }}-------------------------------------------------------------------------------------{{/ if }}

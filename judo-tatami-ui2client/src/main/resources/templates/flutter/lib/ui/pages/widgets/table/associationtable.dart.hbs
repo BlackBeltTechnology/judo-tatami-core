@@ -18,7 +18,7 @@ Observer(builder: (_) {
         case FutureStatus.fulfilled:
             var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{ disabled }});
             return JudoTable(
-                {{# if disabled }}disabled: true,{{/ if }}
+                disabled: {{# if disabled }}true{{ else }}pageStore.pageState.disabledByLoading{{/ if }},
                 col: {{ col }},
                 {{# neq row 2.0 }}row: {{ row }} - 1,{{/ neq }}
                 {{# if isInCard }}inCard: true,{{/ if }}
@@ -116,9 +116,10 @@ Row(
             builder: (_) => Padding(
                 padding: JudoComponentCustomizer.get().getDefaultPadding(),
                 child: ElevatedButton(
-                    onPressed: pageStore.previousButtonEnable ? () async {
-                        await pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore, {{/ unless }}isNext: false);
-                    } : null,
+                    onPressed: pageStore.previousButtonEnable && !pageStore.pageState.disabledByLoading ?
+                        () async {
+                            await pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore, {{/ unless }}isNext: false);
+                        } : null,
                     child: Text(AppLocalizations.of(context).lookUpValue(context, 'Previous')),
                 ),
             ),
@@ -127,9 +128,10 @@ Row(
             builder: (_) => Padding(
                 padding: JudoComponentCustomizer.get().getDefaultPadding(),
                 child: ElevatedButton(
-                    onPressed: pageStore.nextButtonEnable ? () async {
-                        await pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore, {{/ unless }}isNext: true);
-                    } : null,
+                    onPressed: pageStore.nextButtonEnable && !pageStore.pageState.disabledByLoading ?
+                        () async {
+                            await pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore, {{/ unless }}isNext: true);
+                        } : null,
                     child: Text(AppLocalizations.of(context).lookUpValue(context, 'Next')),
                 ),
             ),

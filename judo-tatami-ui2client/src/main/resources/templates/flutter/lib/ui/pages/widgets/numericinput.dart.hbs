@@ -20,7 +20,7 @@ Observer(
         {{# if this.isIconVisible }}
         icon: Icon(getIconByString('{{ this.icon.name }}')),
         {{/ if }}
-        initialValue: targetStore.{{ variable attributeType.name }}.toString(),
+        initialValue: targetStore.{{ variable attributeType.name }}?.toString(),
         readOnly: {{# if (isViewTypePage page) }}true{{ else }}{{ attributeType.isReadOnly }}{{/ if }},
         {{# unless (isViewTypePage page) }}
         {{# if attributeType.isRequired }}mandatory: true,{{/ if }}

@@ -4,7 +4,7 @@
 Observer(builder: (_) {
     var dataInfo = {{ fqClass pageDefinition.name }}{{ fqClass table.name }}{{ fqClass pageContainer.layoutType.name }}Table(context, disabled: {{ disabled }});
     return JudoTable(
-        {{# if disabled }}disabled: true,{{/ if }}
+        disabled: {{# if disabled }}true{{ else }}pageStore.pageState.disabledByLoading{{/ if }},
         col: {{ col }},
         {{# neq row 2.0 }}row: {{ row }} - 1,{{/ neq }}
         {{# if isInCard }}inCard: true,{{/ if }}

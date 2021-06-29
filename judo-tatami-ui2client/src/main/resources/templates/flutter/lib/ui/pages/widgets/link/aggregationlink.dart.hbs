@@ -13,7 +13,7 @@ Observer(builder: (_) {
         icon: Icon(getIconByString('{{ link.icon.name }}')),
       {{/ if }}
         {{# if isInCard }}inCard: true,{{/ if }}
-        {{# if disabled }}disabled: true,{{/ if }}
+        disabled: {{# if disabled }}true{{ else }}pageStore.pageState.disabledByLoading{{/ if }},
         {{# if page.isPageTypeView }}
         readOnly: true,
         {{ else }}
