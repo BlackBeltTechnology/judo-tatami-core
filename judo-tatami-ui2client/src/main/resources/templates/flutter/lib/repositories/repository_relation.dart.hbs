@@ -36,7 +36,7 @@ class {{ repositoryRelationName relation }} {
 
     // Sort Attributes
     if (sortColumn != null) {
-      orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.values.firstWhere((element) => element.toString().split('.').last == sortColumn);
+      orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.values.firstWhere((element) => element.toString().split('.').last == sortColumn, orElse: () => null);
       if (orderBy.attribute != null) {
         orderBy.descending = sortAscending == null ? false : !sortAscending;
         queryCustomizer.orderBy = [orderBy];
@@ -89,7 +89,7 @@ class {{ repositoryRelationName relation }} {
 
     // Sort Attributes
     if (sortColumn != null) {
-      orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.values.firstWhere((element) => element.toString().split('.').last == sortColumn);
+      orderBy.attribute = {{ modelName relation.target.name }}Extension{{ packageName relation.target.name }}OrderingType{{ className relation.target.name }}AttributeEnum.values.firstWhere((element) => element.toString().split('.').last == sortColumn, orElse: () => null);
       if (orderBy.attribute != null) {
         orderBy.descending = sortAscending == null ? false : !sortAscending;
         queryCustomizer.orderBy = [orderBy];
