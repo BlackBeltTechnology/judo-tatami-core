@@ -1,0 +1,10 @@
+@action
+Future<{{ storeClassName relation.target }}> update{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore) async {
+    try {
+        errorMessage = null;
+        return await _actorRepository.{{ fqVariable relation.target.name }}Update(targetStore);
+    } on ApiException catch (error) {
+        errorMessage = "Could not update {{ relation.target.name }}";
+        throw error;
+    }
+}

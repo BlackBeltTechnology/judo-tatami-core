@@ -1,49 +1,29 @@
 {{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" formatted.dart.hbs-----{{ page.name }}-----------------------------------------------------------------------------------------------{{/ if }}
 {{# if column }}
-{{ log 'Formatted text generation for' (variable application.name) '-' (fqClass table.name)'table' (variable dataName) (variable column.attributeType.name) level='debug' ~}}
-{{# if (isNumericType column.attributeType.dataType) }}
-target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Align(alignment: Alignment.centerRight, child: Text(
-    target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? target{{ dataName }}.{{ variable column.attributeType.name }}.toString() : '',
-)) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
-{{ else }}
-{{# if (isEnumType column.attributeType.dataType) }}
-target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
-    AppLocalizations.of(context).lookUpValue(context, target{{ dataName }}.{{ variable column.attributeType.name }}.toString().split('.').last),
-) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
-{{ else }}
-{{# if (isTimestampType column.attributeType.dataType) }}
-target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
-    DateFormat('yyyy-MM-dd HH:mm').format(target{{ dataName }}.{{ variable column.attributeType.name }}),
-) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
-{{ else }}
-{{# if (isDateType column.attributeType.dataType) }}
-target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
-    DateFormat('yyyy-MM-dd').format(target{{ dataName }}.{{ variable column.attributeType.name }}),
-) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
-{{ else }}
-{{# if (isBooleanDataType column.attributeType.dataType) }}
-Center(child: Icon(
-    target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? (target{{ dataName }}?.{{ variable column.attributeType.name }} ? Icons.check_circle : Icons.cancel) : Icons.block,
-    color: target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? (target{{ dataName }}?.{{ variable column.attributeType.name }} ? Colors.green.shade500.withOpacity(0.7) : Colors.red.shade500.withOpacity(0.7)) : Theme.of(context).colorScheme.background,
-)),
-{{ else }}
-target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? Text(
-    target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? target{{ dataName }}.{{ variable column.attributeType.name }}.toString() : '',
-) : Center(child: Icon(Icons.block, color: Theme.of(context).colorScheme.background,)),
-{{/ if }}
-{{/ if }}
-{{/ if }}
-{{/ if }}
-{{/ if }}
-{{ else }}
-{{ log 'Formatted text generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
-JudoText(
-    col: {{ col }},
-    {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
-    {{# if isLabelVisible }}
-    label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
+    {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass table.name)'table' (variable dataName) (variable column.attributeType.name) level='debug' ~}}
+    {{# if (isNumericType column.attributeType.dataType) }}
+        {{> flutter/lib/ui/pages/widgets/formatted/table/numeric.dart.hbs column=column dataName=dataName page=page attributeType=attributeType }}
+    {{ else }}
+    {{# if (isEnumType column.attributeType.dataType) }}
+        {{> flutter/lib/ui/pages/widgets/formatted/table/enum.dart.hbs column=column dataName=dataName page=page attributeType=attributeType }}
+    {{ else }}
+    {{# if (isTimestampType column.attributeType.dataType) }}
+        {{> flutter/lib/ui/pages/widgets/formatted/table/timestamp.dart.hbs column=column dataName=dataName page=page attributeType=attributeType }}
+    {{ else }}
+    {{# if (isDateType column.attributeType.dataType) }}
+        {{> flutter/lib/ui/pages/widgets/formatted/table/date.dart.hbs column=column dataName=dataName page=page attributeType=attributeType }}
+    {{ else }}
+    {{# if (isBooleanDataType column.attributeType.dataType) }}
+        {{> flutter/lib/ui/pages/widgets/formatted/table/boolean.dart.hbs column=column dataName=dataName page=page attributeType=attributeType }}
+    {{ else }}
+        {{> flutter/lib/ui/pages/widgets/formatted/table/other.dart.hbs column=column dataName=dataName page=page attributeType=attributeType }}
     {{/ if }}
-    text: targetStore.{{ variable attributeType.name }}.toString(),
-),
+    {{/ if }}
+    {{/ if }}
+    {{/ if }}
+    {{/ if }}
+{{ else }}
+    {{ log 'Formatted text generation for' (variable application.name) '-' (fqClass page.name)'page'(variable page.dataElement.target.name) attributeType.name level='debug' ~}}
+    {{> flutter/lib/ui/pages/widgets/formatted/text.dart.hbs column=column dataName=dataName col=col row=row isLabelVisible=isLabelVisible attributeType=attributeType label=label }}
 {{/ if }}
 {{# if addDebugToTemplate }}//END formatted.dart.hbs-----{{ page.name }}-------------------------------------------------------------------------------------------------{{/ if }}

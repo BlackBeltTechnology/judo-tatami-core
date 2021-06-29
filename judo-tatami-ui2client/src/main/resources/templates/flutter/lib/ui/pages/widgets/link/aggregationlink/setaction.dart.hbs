@@ -1,0 +1,15 @@
+{{# unless page.isPageTypeView }}
+    {{# unless attributeType.isReadOnly }}
+        setAction: targetStore.internal__updatable ? () async {
+            var selected = {{> flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation }}
+            if (selected != null) {
+                {{# if relation.isRelationBehaviourTypeSetable }}
+                    pageStore.set{{ fqClass relation.name }}(targetStore, selected)
+                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                {{ else }}
+                    targetStore.set{{ fqClass relation.name }}(selected);
+                {{/ if }}
+            }
+        } : null,
+    {{/ unless }}
+{{/ unless }}

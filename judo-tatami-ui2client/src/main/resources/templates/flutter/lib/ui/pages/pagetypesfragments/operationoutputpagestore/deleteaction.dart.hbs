@@ -1,0 +1,10 @@
+@action
+Future<void> delete{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore) async {
+    try {
+        errorMessage = null;
+        await _actorRepository.{{ fqVariable relation.target.name }}Delete(targetStore);
+    } on ApiException catch (error) {
+        errorMessage = "Could not delete {{ variable relation.name }}";
+        throw error;
+    }
+}

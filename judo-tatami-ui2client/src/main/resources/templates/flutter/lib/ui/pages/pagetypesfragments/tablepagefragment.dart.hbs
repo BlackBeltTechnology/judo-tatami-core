@@ -1,11 +1,11 @@
 {{# if addDebugToTemplate }}//START tablepagefragment.dart.hbs-----{{ page.name }}---------------------------------------------------------------------------------------{{/ if }}
 {{# with page.relationType as |relation| }}
     {{# unless page.dataElement.isAccess }}
-    final {{ storeClassName page.dataElement.owner }} ownerStore;
+        final {{ storeClassName page.dataElement.owner }} ownerStore;
     {{/ unless }}
 
     {{# unless page.dataElement.isAccess }}
-    const {{ pageClassName page }}({Key key, @required this.ownerStore}) : super(key: key);
+        const {{ pageClassName page }}({Key key, @required this.ownerStore}) : super(key: key);
     {{/ unless }}
 
     @override
@@ -14,7 +14,7 @@
 
 class _{{ pageStateClassName page }} extends State<{{ pageClassName page }}> {
     {{# unless page.dataElement.isAccess }}
-    final {{ storeClassName page.dataElement.owner }} ownerStore;
+        final {{ storeClassName page.dataElement.owner }} ownerStore;
     {{/ unless }}
 
     final {{ pageStoreClassName page }} pageStore = {{ pageStoreClassName page }}();

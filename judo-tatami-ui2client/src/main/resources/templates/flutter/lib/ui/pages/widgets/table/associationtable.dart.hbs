@@ -25,77 +25,45 @@ Observer(builder: (_) {
                 dataInfo: dataInfo,
                 rowList: {{# if relation.isAccess }}{{# if relation.isCollection }}pageStore.{{ fqVariable relation.name }}StoreList.asObservable(){{ else }}[pageStore.store].asObservable(){{/ if }}{{ else }}{{# if relation.isCollection }}ownerStore.{{ variable relation.name }}{{ else }}[ownerStore.{{ variable relation.name }}].asObservable(){{/ if }}{{/ if }},
                 {{# if relation.isCollection }}
-                sortAscending: pageStore.{{ fqVariable relation.name }}SortAsc,
-                sortColumnIndex: pageStore.{{ fqVariable relation.name }}SortColumnIndex,
-                onSort: (int columnIndex, bool asc) {
-                    pageStore.{{ fqVariable relation.name }}SetSort(
-                        {{# unless relation.isAccess }}
-                        ownerStore,
-                        {{/ unless }}
-                        context,
-                        dataInfo.getColumnFieldByIndex(columnIndex, asc),
-                        columnIndex,
-                        asc,
-                        dataInfo.getSortComparator(columnIndex, asc)
-                    );
-                },
+                    sortAscending: pageStore.{{ fqVariable relation.name }}SortAsc,
+                    sortColumnIndex: pageStore.{{ fqVariable relation.name }}SortColumnIndex,
+                    onSort: (int columnIndex, bool asc) {
+                        pageStore.{{ fqVariable relation.name }}SetSort(
+                            {{# unless relation.isAccess }}
+                            ownerStore,
+                            {{/ unless }}
+                            context,
+                            dataInfo.getColumnFieldByIndex(columnIndex, asc),
+                            columnIndex,
+                            asc,
+                            dataInfo.getSortComparator(columnIndex, asc)
+                        );
+                    },
                 {{/ if }}
                 {{# each table.rowActions as |action| }}
-                {{# if action.isViewAction }}
-                navigateToViewPageAction: (element) async {
-                    if (element != null) {
-                        await navigation.open(Routes.{{ pageClassVariableName action.target }}{{# if (tableNavigateToViewHasIdParam page) }}(id: element.internal__signedIdentifier){{/ if }},
-                            arguments: {{ pageArgumentsClassName action.target }}({{# unless relation.isAccess}}ownerStore: ownerStore, targetStore: element{{/ unless}}));
-                        {{# unless relation.isMemberTypeTransient }}
-                        pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore{{/ unless }})
-                            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        {{/ unless }}
-                    }
-                },
-                {{/ if }}
-                {{# if action.isCreateAction }}
-                // TODO: not sure this rowAction needed
-                navigateToCreatePageAction:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} (element) async {
-                    var created = await navigation.open(Routes.{{ pageClassVariableName action.target }});
-                    if (created != null) {
-                        pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore ,{{/ unless }}created)
-                            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                    }
-                }{{# unless relation.isAccess }} : null{{/ unless }},
-                {{/ if }}
-                {{# if action.isEditAction }}
-                navigateToEditPageAction:{{# unless relation.isAccess }} ownerStore.internal__updatable ?{{/ unless }} (element) async {
-                    {{ storeClassName relationType.target }} cloned = {{ storeClassName relationType.target }}();
-                    cloned.updateWith(element);
-                    var res = await navigation.open(Routes.{{ pageClassVariableName action.target }},
-                        arguments: {{ pageArgumentsClassName action.target }}(targetStore: cloned));
-                    if (res != null) {
-                        element.updateWith(cloned);
-                        var updated = await pageStore.update{{ className relation.target.name }}(element)
-                            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        if (updated != null) {
-                            element.updateWith(updated);
-                            pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore{{/ unless }})
-                                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        }
-                    }
-                }{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
-                {{/ if }}
-                {{# if action.isRemoveAction }}
-                removeAction:{{# unless relation.isAccess }} ownerStore.internal__updatable ?{{/ unless }} (element) => pageStore.remove{{ fqClass relation.name }}(ownerStore, element){{# unless relation.isAccess }} : null{{/ unless }},
-                {{/ if }}
-                {{# if relationAction.isUnsetAction }}
-                unsetAction:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-                    pageStore.unset{{ fqClass relation.name }}(targetStore)
-                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                }{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
-                {{/ if }}
-                {{# if action.isDeleteAction }}
-                deleteAction:{{# unless relation.isAccess }} ownerStore.internal__updatable ?{{/ unless }} (element) async {
-                    pageStore.delete{{ className relation.target.name }}(element{{# unless relation.isAccess }}, ownerStore{{/ unless }})
-                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                }{{# unless relation.isAccess }} : null{{/ unless }},
-                {{/ if }}
+                    {{# if action.isViewAction }}
+                        {{> flutter/lib/ui/pages/widgets/table/associationtable/viewaction.dart.hbs relation=relation page=page action=action }}
+                    {{/ if }}
+
+                    {{# if action.isCreateAction }}
+                        {{> flutter/lib/ui/pages/widgets/table/associationtable/createaction.dart.hbs relation=relation page=page action=action }}
+                    {{/ if }}
+
+                    {{# if action.isEditAction }}
+                        {{> flutter/lib/ui/pages/widgets/table/associationtable/editaction.dart.hbs relation=relation page=page action=action relationType=relationType }}
+                    {{/ if }}
+
+                    {{# if action.isRemoveAction }}
+                        {{> flutter/lib/ui/pages/widgets/table/associationtable/removeaction.dart.hbs relation=relation page=page action=action }}
+                    {{/ if }}
+
+                    {{# if relationAction.isUnsetAction }}
+                        {{> flutter/lib/ui/pages/widgets/table/associationtable/unsetaction.dart.hbs relation=relation page=page action=action }}
+                    {{/ if }}
+
+                    {{# if action.isDeleteAction }}
+                        {{> flutter/lib/ui/pages/widgets/table/associationtable/deleteaction.dart.hbs relation=relation page=page action=action }}
+                    {{/ if }}
                 {{/ each }}
             );
     }

@@ -1,0 +1,8 @@
+// TODO: not sure this rowAction needed
+navigateToCreatePageAction:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} (element) async {
+    var created = await navigation.open(Routes.{{ pageClassVariableName action.target }});
+    if (created != null) {
+        pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore ,{{/ unless }}created)
+            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+    }
+}{{# unless relation.isAccess }} : null{{/ unless }},

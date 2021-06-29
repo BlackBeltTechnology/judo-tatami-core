@@ -1,0 +1,6 @@
+Center(
+    child: Icon(
+        target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? (target{{ dataName }}?.{{ variable column.attributeType.name }} ? Icons.check_circle : Icons.cancel) : Icons.block,
+        color: target{{ dataName }}?.{{ variable column.attributeType.name }} != null ? (target{{ dataName }}?.{{ variable column.attributeType.name }} ? Colors.green.shade500.withOpacity(0.7) : Colors.red.shade500.withOpacity(0.7)) : Theme.of(context).colorScheme.background,
+    )
+),

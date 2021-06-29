@@ -1,0 +1,23 @@
+@action
+{{# if relation.isCollection }}Future<List<{{ storeClassName relation.target }}>>{{ else }}Future<{{ storeClassName relation.target }}>{{/ if }} get{{ fqClass relation.name }}({{# unless relation.isAccess }}{{ storeClassName relation.owner }} ownerStore{{/ unless }}) async {
+    try {
+        errorMessage = null;
+        {{# if relation.isAccess }}
+            {{ variable relation.name }}StoreList.clear();
+            {{ variable relation.name }}StoreList.addAll(await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List());
+            return {{ variable relation.name }}StoreList;
+        {{ else }}
+            {{# if relation.isCollection }}
+                ownerStore.{{ variable relation.name }}.clear();
+                ownerStore.{{ variable relation.name }}.addAll(await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(ownerStore));
+                return ownerStore.{{ variable relation.name }};
+            {{ else }}
+                ownerStore.{{ variable relation.name }} = await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(ownerStore);
+                return ownerStore.{{ variable relation.name }};
+            {{/ if }}
+        {{/ if }}
+    } on ApiException catch (error) {
+        errorMessage = "Could not load {{ relation.name }}";
+        throw error;
+    }
+}

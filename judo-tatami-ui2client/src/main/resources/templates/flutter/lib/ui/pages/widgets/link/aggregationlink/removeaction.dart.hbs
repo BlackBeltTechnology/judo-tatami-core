@@ -1,0 +1,7 @@
+(targetStore.internal__updatable && targetStore.{{ variable relation.name }} != null) ?
+    IconButton(
+        icon: Icon(
+            Icons.{{ action.icon.name }},
+        ),
+        onPressed: {{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async => pageStore.remove{{ fqClass relation.name }}(targetStore, targetStore.{{ variable relation.name }}){{# unless relation.isAccess }} : null{{/ unless }}
+    ) : null,

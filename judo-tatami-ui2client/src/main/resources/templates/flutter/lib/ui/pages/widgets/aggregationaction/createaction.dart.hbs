@@ -1,0 +1,8 @@
+onPressed:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
+    var created = await navigation.open(Routes.{{ pageClassVariableName action.target }}{{# unless relation.isAccess }},
+        arguments: {{ pageArgumentsClassName action.target }}(ownerStore: targetStore, validatable: pageStore.validatable){{~/ unless }});
+    if (created != null) {
+        pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
+            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+    }
+}{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},

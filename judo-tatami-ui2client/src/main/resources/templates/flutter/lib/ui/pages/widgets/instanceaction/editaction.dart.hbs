@@ -1,0 +1,14 @@
+onPressed:{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} ownerStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
+    {{ storeClassName page.dataElement.target }} cloned = {{ storeClassName page.dataElement.target }}();
+    cloned.updateWith(targetStore);
+    var ret = await navigation.open(Routes.{{ pageClassVariableName action.target }},
+    arguments: {{ pageArgumentsClassName action.target }}(targetStore: cloned));
+    if (ret != null) {
+        targetStore.updateWith(cloned);
+        var updated = await pageStore.update{{ className page.relationType.target.name }}(targetStore)
+            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+        if (updated != null) {
+            targetStore.updateWith(updated);
+        }
+    }
+}{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},

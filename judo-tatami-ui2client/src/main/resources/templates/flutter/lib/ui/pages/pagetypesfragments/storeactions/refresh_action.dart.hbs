@@ -1,0 +1,37 @@
+@action
+Future<void> refresh{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore) async {
+    try {
+        errorMessage = null;
+        targetStore.updateWith(await _actorRepository.{{ fqVariable relation.target.name }}GetByIdentifier(
+            targetStore,
+            // mask: '{
+                {{~# with page.containers.[0] as |container| ~}}
+                    {{~# each (getAttributeTypeNamesFromWidgets container) as |attributeName| ~}}
+                        {{~ variable attributeName }}{{# unless @last }},{{/ unless ~}}
+                    {{~/ each ~}}
+                    {{~# unless (isEmptyList container.tables) }},{{/ unless ~}}
+                    {{~# each container.tables as |table| ~}}
+                        {{ variable table.dataElement.name ~}}
+                        {
+                        {{~# each table.columns as |column| ~}}
+                            {{~ variable column.attributeType.name }}{{# unless @last }},{{/ unless ~}}
+                        {{~/ each ~}}
+                        }{{# unless @last }},{{/ unless ~}}
+                    {{~/ each ~}}
+                    {{~# unless (isEmptyList container.links) }},{{/ unless ~}}
+                    {{~# each container.links as |link| ~}}
+                        {{ variable link.dataElement.name ~}}
+                        {
+                        {{~# each link.columns as |column| ~}}
+                            {{~ variable column.attributeType.name }}{{# unless @last }},{{/ unless ~}}
+                        {{~/ each ~}}
+                        }{{# unless @last }},{{/ unless ~}}
+                    {{~/ each ~}}
+                {{~/ with ~}}
+            }',
+        ));
+    } on ApiException catch (error) {
+        errorMessage = "Could not refresh {{ relation.target.name }}";
+        throw error;
+    }
+}

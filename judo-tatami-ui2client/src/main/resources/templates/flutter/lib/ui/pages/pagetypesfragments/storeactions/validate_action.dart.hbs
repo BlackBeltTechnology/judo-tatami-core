@@ -1,0 +1,10 @@
+@action
+Future<{{ storeClassName relation.target }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{{ storeClassName relation.target }} targetStore) async {
+    try {
+        errorMessage = null;
+        return await _actorRepository.{{ fqVariable relation.target.name }}ValidateForUpdate(targetStore);
+    } on ApiException catch (error) {
+        errorMessage = "Could not validate {{ relation.target.name }}";
+        throw error;
+    }
+}

@@ -1,0 +1,11 @@
+onPressed: () async {
+    FilterStore selectedAttribute = await judoShowMenu<FilterStore>(
+        buttonKey: addFilterButtonKey,
+        items: getPopupMenuAttributeItems(context, pageStore.stringFilterStoreMap.values.toList()),
+        context: context,
+    );
+    if (selectedAttribute != null) {
+        selectedAttribute.setWidgetLabel(context);
+        pageStore.addNewFilter(selectedAttribute);
+    }
+},

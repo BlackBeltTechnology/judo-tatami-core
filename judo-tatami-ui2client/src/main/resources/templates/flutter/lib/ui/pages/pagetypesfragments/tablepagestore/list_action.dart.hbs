@@ -1,0 +1,116 @@
+@action
+{{# if relation.isCollection }}Future<List<{{ storeClassName relation.target }}>>{{ else }}Future<{{ storeClassName relation.target }}>{{/ if }} get{{ fqClass relation.name }}({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{ int queryLimit, bool isNext }) async {
+    try {
+        errorMessage = null;
+        {{# if relation.isCollection }}
+        if(isNext == null) {
+            nextPageCounter = 0;
+        }
+
+        {{/ if }}
+        {{# if page.dataElement.isAccess }}
+            {{# if relation.isCollection }}
+                {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
+                sortColumn: {{ fqVariable relation.name }}SortColumnName,
+                sortAscending: {{ fqVariable relation.name }}SortAsc,
+                {{# if relation.isFilterable }}
+                    filterStoreList: availableFilterList,
+                {{/ if }}
+                queryLimit: queryLimit ?? {{ fqVariable relation.name }}QueryLimit,
+                // mask: mask,
+                lastItem: isNext != null ?
+                    (isNext ? {{ fqVariable relation.name }}StoreList.last : {{ fqVariable relation.name }}StoreList.first)
+                    : null,
+                reverse: isNext != null ?
+                    !isNext
+                    : null,
+                ));
+
+                List<{{ storeClassName relation.target }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
+                if (nextItemsList.isEmpty && isNext != null) {
+                    nextPageIsEmpty = true;
+                    return {{ fqVariable relation.name }}StoreList;
+                }
+
+                nextPageIsEmpty = false;
+                if (isNext != null) {
+                    if (isNext) {
+                        nextPageCounter++;
+                    } else {
+                        nextPageCounter--;
+                    }
+                }
+
+                {{ fqVariable relation.name }}StoreList.clear();
+                {{ fqVariable relation.name }}StoreList.addAll(nextItemsList);
+
+                {{# unless relation.isOrderable }}
+                    if ({{ fqVariable relation.name }}SortCompare != null) {
+                        {{ fqVariable relation.name }}StoreList.sort({{ fqVariable relation.name }}SortCompare);
+                    }
+                {{/ unless }}
+
+                return {{ fqVariable relation.name }}StoreList;
+            {{ else }}
+                {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
+                    // mask: mask,
+                ));
+                store = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
+                return store;
+            {{/ if }}
+        {{ else }}
+            {{# if relation.isCollection }}
+                {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(
+                ownerStore,
+                sortColumn: {{ fqVariable relation.name }}SortColumnName,
+                sortAscending: {{ fqVariable relation.name }}SortAsc,
+                {{# if relation.isFilterable }}
+                    filterStoreList: availableFilterList,
+                    queryLimit: queryLimit ?? {{ fqVariable relation.name }}QueryLimit,
+                    // mask: mask,
+                    lastItem: isNext != null ?
+                        (isNext ? ownerStore.{{ variable relation.name }}.last : ownerStore.{{ variable relation.name }}.first)
+                        : null,
+                    reverse: isNext != null ?
+                        !isNext
+                        : null,
+                {{/ if }}
+                ));
+
+                List<{{ storeClassName relation.target }}> nextItemsList = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
+                if (nextItemsList.isEmpty && isNext != null) {
+                    nextButtonEnable = false;
+                    return ownerStore.{{ variable relation.name }};
+                }
+
+                nextButtonEnable = true && nextItemsList.length >= {{ fqVariable relation.name }}QueryLimit;
+                if(isNext != null) {
+                    if (isNext) {
+                        nextPageCounter++;
+                    } else {
+                        nextPageCounter--;
+                    }
+                }
+
+                ownerStore.{{ variable relation.name }}.clear();
+                ownerStore.{{ variable relation.name }}.addAll(nextItemsList);
+                {{# unless relation.isOrderable }}
+                    if ({{ fqVariable relation.name }}SortCompare != null) {
+                        ownerStore.{{ variable relation.name }}.sort({{ fqVariable relation.name }}SortCompare);
+                    }
+                {{/ unless }}
+                return ownerStore.{{ variable relation.name }};
+            {{ else }}
+                {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(
+                ownerStore,
+                // mask: mask,
+                ));
+                ownerStore.{{ variable relation.name }} = await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
+                return ownerStore.{{ variable relation.name }};
+            {{/ if }}
+        {{/ if }}
+    } on ApiException catch (error) {
+        errorMessage = "Could not load {{ relation.name }}";
+        throw error;
+    }
+}

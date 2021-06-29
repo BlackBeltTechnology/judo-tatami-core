@@ -1,0 +1,12 @@
+@action
+Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, {{ storeClassName relation.target }} selectedStore) async {
+    try {
+        errorMessage = null;
+        {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture = ObservableFuture(_actorRepository.{{ fqVariable relation.owner.name }}Remove{{ fqClass relation.name }}(ownerStore, [selectedStore]));
+        await {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
+        ownerStore.{{ variable relation.name }}.remove(selectedStore); // TODO: fix with remove more than 1 element
+    } on ApiException catch (error) {
+        errorMessage = "Could not remove {{ relation.name }}";
+        throw error;
+    }
+}

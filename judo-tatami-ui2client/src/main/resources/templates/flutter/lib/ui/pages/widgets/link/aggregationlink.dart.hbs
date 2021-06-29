@@ -1,28 +1,36 @@
 {{~ log 'Link generation for' (variable application.name) '-' (fqClass page.name) (variable dataElement.name) level='debug' ~}}
-{{# if addDebugToTemplate}}//START xmi:id="{{ getXMIID this }}" aggregationlink.dart.hbs-----{{ dataElement.name }}----------------------------------------------------------------------------------{{/if}}
+{{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" aggregationlink.dart.hbs-----{{ dataElement.name }}----------------------------------------------------------------------------------{{/ if }}
 {{# with dataElement as |relation| }}
 Observer(builder: (_) {
     return JudoLink(
-      {{# unless (isViewTypePage page) }}
-        errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable relation.name }}'].message,
-      {{/ unless }}
-      {{# if link.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ link.label }}'),
-      {{/ if }}
-      {{# if link.isIconVisible }}
-        icon: Icon(getIconByString('{{ link.icon.name }}')),
-      {{/ if }}
-        {{# if isInCard }}inCard: true,{{/ if }}
+        {{# unless (isViewTypePage page) }}
+            errorMessage: pageStore.validationAttributeErrorMessageMap['{{ variable relation.name }}'].message,
+        {{/ unless }}
+
+        {{# if link.isLabelVisible }}
+            label: AppLocalizations.of(context).lookUpValue(context, '{{ link.label }}'),
+        {{/ if }}
+
+        {{# if link.isIconVisible }}
+            icon: Icon(getIconByString('{{ link.icon.name }}')),
+        {{/ if }}
+
+        {{# if isInCard }}
+            inCard: true,
+        {{/ if }}
+
         disabled: {{# if disabled }}true{{ else }}pageStore.pageState.disabledByLoading{{/ if }},
+
         {{# if page.isPageTypeView }}
-        readOnly: true,
+            readOnly: true,
         {{ else }}
             {{# if attributeType.isReadOnly }}
-        readOnly: true,
+                readOnly: true,
             {{ else }}
-        readOnly: false,
+                readOnly: false,
             {{/ if }}
         {{/ if }}
+
         col: {{ col }},
         {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
         formatter: (element) {
@@ -30,10 +38,10 @@ Observer(builder: (_) {
             var ret = '';
             {{# each link.parts as |part| }}
                 {{# if part }}
-            if (element.{{ variable part.attributeType.name }} != null) {
-                if (ret.length > 0) ret = ret + ' - ';
-                ret = ret + ({{> flutter/lib/ui/pages/widgets/link/linkformatter.dart.hbs part=part dataName=(className link.dataElement.target.name) parameterVariable='element' }});
-            }
+                    if (element.{{ variable part.attributeType.name }} != null) {
+                        if (ret.length > 0) ret = ret + ' - ';
+                        ret = ret + ({{> flutter/lib/ui/pages/widgets/link/linkformatter.dart.hbs part=part dataName=(className link.dataElement.target.name) parameterVariable='element' }});
+                    }
                 {{/ if }}
             {{/ each }}
             return ret;
@@ -42,141 +50,37 @@ Observer(builder: (_) {
         data: targetStore.{{ variable relation.name }},
         {{# each link.actions as |action| }}
             {{# if action.isSetAction }}
-                {{# unless page.isPageTypeView }}
-                    {{# unless attributeType.isReadOnly }}
-        setAction: targetStore.internal__updatable ? () async {
-            var selected =
-            {{> flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation }}
-            if (selected != null) {
-                        {{# if relation.isRelationBehaviourTypeSetable }}
-                pageStore.set{{ fqClass relation.name }}(targetStore, selected)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        {{ else }}
-                targetStore.set{{ fqClass relation.name }}(selected);
-                        {{/ if }}
-            }
-        } : null,
-                    {{/ unless }}
-                {{/ unless }}
-        {{/ if }}
+                {{> flutter/lib/ui/pages/widgets/link/aggregationlink/setaction.dart.hbs relation=relation page=page action=action attributeType=attributeType }}
+            {{/ if }}
         {{/ each }}
         actions: [
-        {{# each link.actions as |action| }}
-        {{# if action.isViewAction }}
-            targetStore.{{ variable relation.name }} != null ?
-            IconButton(
-                icon: Icon(
-                    Icons.{{ action.icon.name }},
-                ),
-                onPressed: () async {
-                    var response = await navigation.open(Routes.{{ pageClassVariableName action.target }},
-                    arguments: {{ pageArgumentsClassName action.target }}({{# unless relation.isAccess }}ownerStore: targetStore, {{/ unless }}targetStore: targetStore.{{ variable relation.name }}));
-                    {{# unless relation.isMemberTypeTransient }}
-                        {{# unless page.isPageTypeOperationOutput }}
-                    if (response != null) {
-                        pageStore.refresh{{ className relation.owner.name }}(targetStore)
-                            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                    }
-                        {{/ unless }}
-                    {{/ unless }}
-                }
-            ) : null,
-        {{/ if }}
-        {{# if action.isEditAction }}
-            (targetStore.internal__updatable && targetStore.{{ variable relation.name }} != null) ?
-            IconButton(
-                icon: Icon(
-                    Icons.{{ action.icon.name }},
-                ),
-                onPressed:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async {
-                    {{ storeClassName relationType.target }} cloned = {{ storeClassName relationType.target }}();
-                    cloned.updateWith(targetStore.{{ variable relation.name }});
-                    var res = await navigation.open(Routes.{{ pageClassVariableName action.target }},
-                    arguments: {{ pageArgumentsClassName action.target }}(targetStore: cloned, validatable: pageStore.validatable));
-                    if (res != null) {
-                        targetStore.{{ variable relation.name }}.updateWith(cloned);
-                        var updated = await pageStore.update{{ className relation.name }}{{ className relation.target.name }}(targetStore.{{ variable relation.name }}, targetStore)
-                            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        {{# if (isValidateHere page) }}
-                            {{# unless page.dataElement.isRelationKindAggregation }}
-                                {{# unless page.dataElement.isRelationKindComposition }}
-                                    {{# unless relation.isMemberTypeTransient }}
-                        var validate = await pageStore.validate({{# unless page.dataElement.isAccess }}targetStore, {{/ unless }}targetStore)
-                            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        if (validate != null) {
-                            targetStore.updateWith(validate);
-                        }
-                                    {{/ unless }}
-                                {{/ unless }}
-                            {{/ unless }}
-                        {{ else }}
-                        if (updated != null) {
-                            targetStore.{{ variable relation.name }}.updateWith(updated);
-                            pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore{{/ unless }})
-                                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                        }
-                        {{/ if }}
-                    }
-                }{{# unless relation.isAccess }} : null{{/ unless }}
-            ) : null,
-        {{/ if }}
-        {{# if action.isCreateAction }}
-            targetStore.internal__updatable && targetStore.{{ variable relation.name }} == null ?
-            IconButton(
-                icon: Icon(
-                    Icons.{{ action.icon.name }},
-                ),
-                onPressed:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async {
-                    var created = await navigation.open(Routes.{{ pageClassVariableName action.target }}{{# unless relation.isAccess }},
-                        arguments: {{ pageArgumentsClassName action.target }}(ownerStore: targetStore, validatable: pageStore.validatable){{~/ unless }});
-                    if (created != null) {
-                        pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
-                            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                    }
-                }{{# unless relation.isAccess }} : null{{/ unless }}
-            ) : null,
-        {{/ if }}
-        {{# if action.isRemoveAction }}
-            (targetStore.internal__updatable && targetStore.{{ variable relation.name }} != null) ?
-            IconButton(
-                icon: Icon(
-                    Icons.{{ action.icon.name }},
-                ),
-                onPressed: {{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async => pageStore.remove{{ fqClass relation.name }}(targetStore, targetStore.{{ variable relation.name }}){{# unless relation.isAccess }} : null{{/ unless }}
-            ) : null,
+            {{# each link.actions as |action| }}
+                {{# if action.isViewAction }}
+                    {{> flutter/lib/ui/pages/widgets/link/aggregationlink/viewaction.dart.hbs relation=relation page=page action=action attributeType=attributeType }}
                 {{/ if }}
-                {{# if action.isDeleteAction }}
-            (targetStore.internal__updatable && targetStore.{{ variable relation.name }} != null) ?
-            IconButton(
-                icon: Icon(
-                    Icons.{{ action.icon.name }},
-                ),
-                onPressed:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} () async {
-                    pageStore.delete{{ className relation.name }}{{ className relation.target.name }}(targetStore.{{ variable relation.name }}{{# unless relation.isAccess }}, targetStore{{/ unless }})
-                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                }{{# unless relation.isAccess }} : null{{/ unless }}
-            ) : null,
-                {{/ if }}
-                {{# if action.isUnsetAction }}
-            (targetStore.internal__updatable && targetStore.{{ variable relation.name }} != null) ?
-            IconButton(
-                icon: Icon(
-                Icons.{{ action.icon.name }},
-                ),
-                onPressed: {{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-                    {{# if relation.isRelationBehaviourTypeUnsetable }}
-                    pageStore.unset{{ fqClass relation.name }}(targetStore)
-                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                    {{ else }}
-                    targetStore.set{{ fqClass relation.name }}(null);
-                    {{/ if }}
-                }{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }}: null{{/ unless }}{{/ unless }}
-            ) : null,
-        {{/ if }}
 
-        {{/ each }}
+                {{# if action.isEditAction }}
+                    {{> flutter/lib/ui/pages/widgets/link/aggregationlink/editaction.dart.hbs relation=relation page=page action=action attributeType=attributeType }}
+                {{/ if }}
+
+                {{# if action.isCreateAction }}
+                    {{> flutter/lib/ui/pages/widgets/link/aggregationlink/createaction.dart.hbs relation=relation page=page action=action attributeType=attributeType }}
+                {{/ if }}
+
+                {{# if action.isRemoveAction }}
+                    {{> flutter/lib/ui/pages/widgets/link/aggregationlink/removeaction.dart.hbs relation=relation page=page action=action attributeType=attributeType }}
+                {{/ if }}
+
+                {{# if action.isDeleteAction }}
+                    {{> flutter/lib/ui/pages/widgets/link/aggregationlink/deleteaction.dart.hbs relation=relation page=page action=action attributeType=attributeType }}
+                {{/ if }}
+
+                {{# if action.isUnsetAction }}
+                    {{> flutter/lib/ui/pages/widgets/link/aggregationlink/unsetaction.dart.hbs relation=relation page=page action=action attributeType=attributeType }}
+                {{/ if }}
+            {{/ each }}
         ],
     );
 }),
 {{/ with }}
-{{# if addDebugToTemplate}}//END aggregationlink.dart.hbs-----{{ dataElement.name }}------------------------------------------------------------------------------------{{/ if }}
+{{# if addDebugToTemplate }}//END aggregationlink.dart.hbs-----{{ dataElement.name }}------------------------------------------------------------------------------------{{/ if }}

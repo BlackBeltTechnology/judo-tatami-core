@@ -1,0 +1,11 @@
+@action
+Future<List<{{ storeClassName relation.target }}>> add{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, List<{{ storeClassName relation.target }}> selectedStore) async {
+    try {
+        await _actorRepository.{{ fqVariable relation.owner.name }}Add{{ fqClass relation.name }}(ownerStore, selectedStore);
+        ownerStore.{{ variable relation.name }}.addAll(selectedStore);
+        return ownerStore.{{ variable relation.name }};
+    } on ApiException catch (error) {
+        errorMessage = "Could not add {{ relation.name }}";
+        throw error;
+    }
+}

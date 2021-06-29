@@ -13,278 +13,53 @@ Observer(
         disabled: pageStore.pageState.disabledByLoading || {{# if action.isBackAction }}navigation.stack.length == 0{{ else }}{{ disabled }}{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }}{{/ if }},
     {{# unless disabled }}
         {{# if action.isSaveAction }}
-        onPressed: () async {
-        {{# if page.isPageTypeUpdate }}
-            {{# unless page.dataElement.isRelationKindAggregation }}
-                {{# unless page.dataElement.isRelationKindComposition }}
-            var res = await pageStore.validate(targetStore)
-                .catchError((error) => ErrorHandler.showErrorSnack(
-                    context,
-                    error.message,
-                    validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
-                ));
-            if (res != null) {
-                navigation.close(targetStore);
-            }
-                {{/ unless }}
-            {{/ unless }}
-            {{# if page.dataElement.isRelationKindAggregation }}
-                {{# if page.dataElement.isRelationBehaviourTypeUpdateValidatable }}
-            if (pageStore.validatable){
-                var res = await pageStore.validate(targetStore)
-                    .catchError((error) => ErrorHandler.showErrorSnack(
-                        context,
-                        error.message,
-                        validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
-                    ));
-                if (res != null) {
-                    navigation.close(targetStore);
-                }
-            } else {
-                navigation.close(targetStore);
-            }
-                {{/ if }}
-            {{/ if }}
-            {{# if page.dataElement.isRelationKindComposition }}
-                {{# if page.dataElement.isRelationBehaviourTypeUpdateValidatable }}
-            if (pageStore.validatable){
-                var res = await pageStore.validate(targetStore)
-                    .catchError((error) => ErrorHandler.showErrorSnack(
-                        context,
-                        error.message,
-                        validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
-                    ));
-                if (res != null) {
-                    navigation.close(targetStore);
-                }
-            } else {
-                navigation.close(targetStore);
-            }
-                {{/ if }}
-            {{/ if }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/saveaction.dart.hbs navigation=navigation action=action page=page }}
         {{/ if }}
-        {{# if page.isPageTypeCreate }}
-            {{# unless page.dataElement.isRelationKindAggregation }}
-                {{# unless page.dataElement.isRelationKindComposition }}
-            var res = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
-                .catchError((error) => ErrorHandler.showErrorSnack(
-                    context,
-                    error.message,
-                    validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
-                ));
-            if (res != null) {
-                navigation.close(targetStore);
-            }
-                {{/ unless }}
-            {{/ unless }}
-            {{# if page.dataElement.isRelationKindAggregation }}
-                {{# if page.dataElement.isRelationBehaviourTypeCreateValidatable }}
-            if (pageStore.validatable){
-                var res = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
-                    .catchError((error) => ErrorHandler.showErrorSnack(
-                        context,
-                        error.message,
-                        validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
-                    ));
-                if (res != null) {
-                    navigation.close(targetStore);
-                }
-            } else {
-                navigation.close(targetStore);
-            }
-                {{ else }}
-            navigation.close(targetStore);
-                {{/ if }}
-            {{/ if }}
-            {{# if page.dataElement.isRelationKindComposition }}
-                {{# if page.dataElement.isRelationBehaviourTypeCreateValidatable }}
-            if (pageStore.validatable){
-                var res = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
-                    .catchError((error) => ErrorHandler.showErrorSnack(
-                        context,
-                        error.message,
-                        validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
-                    ));
-                if (res != null) {
-                    navigation.close(targetStore);
-                }
-            } else {
-                navigation.close(targetStore);
-            }
-                {{ else }}
-            navigation.close(targetStore);
-                {{/ if }}
-            {{/ if }}
+
+        {{# if action.isBackAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/backaction.dart.hbs navigation=navigation action=action page=page }}
         {{/ if }}
-        {{# if page.isPageTypeOperationInput }}
-            bool success = await pageStore.operationCall(targetStore, pageStore);
-            if (success){
-               navigation.close(true); // must send back true to view page to trigger refresh if the operation call is successful
-            }
+
+        {{# if action.isRefreshAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/refreshaction.dart.hbs navigation=navigation action=action page=page }}
         {{/ if }}
-        },
-    {{/ if }}
-    {{# if action.isBackAction }}
-        onPressed: () => navigation.close(),
-    {{/ if }}
-    {{# if action.isRefreshAction }}
-        {{# if page.dataElement.isRelationBehaviourTypeRefreshable }}
-            {{# if (isRefreshViewTypePage page) }}
-        onPressed: () async {
-            await pageStore.refresh{{ className page.relationType.target.name }}(targetStore);
-        },
-            {{/ if }}
-            {{# if (isRefreshTableTypePage page) }}
-        onPressed: () async {
-            await pageStore.get{{ className page.relationType.name }}({{# unless page.dataElement.isAccess }}ownerStore{{/ unless }});
-        },
-            {{/ if }}
+
+        {{# if action.isFilterAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/filteraction.dart.hbs navigation=navigation action=action page=page }}
         {{/ if }}
-    {{/ if }}
-    {{# if action.isFilterAction }}
-        onPressed: () async {
-            FilterStore selectedAttribute = await judoShowMenu<FilterStore>(
-                buttonKey: addFilterButtonKey,
-                items: getPopupMenuAttributeItems(context, pageStore.stringFilterStoreMap.values.toList()),
-                context: context,
-            );
-            if (selectedAttribute != null) {
-                selectedAttribute.setWidgetLabel(context);
-                pageStore.addNewFilter(selectedAttribute);
-            }
-        },
-    {{/ if }}
-    {{# if action.isCreateAction }}
-        onPressed:{{# unless page.dataElement.isCollection }} ownerStore.{{ variable page.dataElement.name }} == null{{/ unless }}{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }}{{# unless page.dataElement.isCollection }} &&{{/ unless }} ownerStore.internal__updatable ?{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }}{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }} () async {
-            var created = await navigation.open(Routes.{{ pageClassVariableName action.target }}{{# unless page.dataElement.isAccess }},
-                arguments: {{ pageArgumentsClassName action.target }}(ownerStore: ownerStore){{~/ unless }});
-            if (created != null) {
-                pageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess }}ownerStore ,{{/ unless }}created)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-            }
-        }{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} : null{{ else }}{{# unless page.dataElement.isCollection }} : null{{/ unless }}{{/ unless }}{{ else }}{{# unless page.dataElement.isCollection }} : null{{/ unless }}{{/ unless }},
-    {{/ if }}
-    {{# if action.isDeleteAction }}
-        onPressed:{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} ownerStore.internal__updatable &&{{/ unless }}{{/ unless }} targetStore.internal__deletable ? () async {
-            await pageStore.delete{{ className page.relationType.target.name }}(targetStore)
-                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-            navigation.close(targetStore);
-        } : null,
-    {{/ if }}
-    {{# if  action.isEditAction }}
-        onPressed:{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} ownerStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            {{ storeClassName page.dataElement.target }} cloned = {{ storeClassName page.dataElement.target }}();
-            cloned.updateWith(targetStore);
-            var ret = await navigation.open(Routes.{{ pageClassVariableName action.target }},
-            arguments: {{ pageArgumentsClassName action.target }}(targetStore: cloned));
-            if (ret != null) {
-                targetStore.updateWith(cloned);
-                var updated = await pageStore.update{{ className page.relationType.target.name }}(targetStore)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                if (updated != null) {
-                    targetStore.updateWith(updated);
-                }
-            }
-        }{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
-    {{/ if }}
-    {{# if action.isAddAction }}
-        onPressed:{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} ownerStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            var selected =
-                {{> flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement addDialog=true }}
-            if (selected != null) {
-                pageStore.add{{ fqClass page.relationType.name }}(ownerStore, selected)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-            }
-        }{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
-    {{/ if }}
-    {{# if action.isSetAction }}
-        onPressed:{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} ownerStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            var selected =
-                {{> flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement }}
-            if (selected != null) {
-                pageStore.set{{ fqClass page.relationType.name }}(ownerStore, selected)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-            }
-        }{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
-    {{/ if }}
-    {{# if action.isUnsetAction }}
-        onPressed:{{# unless page.dataElement.isCollection }} ownerStore.{{ variable page.dataElement.name }} != null{{/ unless }}{{# unless page.relationType.isAccess }}{{# unless page.relationType.isRelationKindStatic }}{{# unless page.dataElement.isCollection }} &&{{/ unless }} ownerStore.internal__updatable ?{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }}{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }} () async {
-            pageStore.unset{{ fqClass page.relationType.name }}(ownerStore)
-                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-        }{{# unless page.relationType.isAccess }}{{# unless page.relationType.isRelationKindStatic }} : null{{ else }}{{# unless page.dataElement.isCollection }} : null{{/ unless }}{{/ unless }}{{ else }}{{# unless page.dataElement.isCollection }} : null{{/ unless }}{{/ unless }},
-    {{/ if }}
-    {{# if action.isNavigationToPageAction }}
-        onPressed: () async {
-            await navigation.open(Routes.{{ pageClassVariableName action.target }},
-                arguments: {{ pageArgumentsClassName action.target }}(ownerStore: targetStore));
-        },
-    {{/ if }}
-    {{# if action.isCallOperationAction }}
-        onPressed: () async {
-            {{# if action.operation.input }}
-            {{# if action.operation.output }}{{ storeClassName action.operation.output.target }} store;{{/ if }}
-            var ret = await navigation.open(Routes.{{ pageClassVariableName action.inputParameterPage }},
-                arguments: {{ pageArgumentsClassName action.inputParameterPage }}(
-                    operationCall: ({{ storeClassName action.operation.input.target }} input, {{ pageStoreClassName action.inputParameterPage }} inputPageStore) async {
-                        bool callSuccessful = true;
-                {{# if action.isConfirmationTypeMandatory }}
-                        {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
-                {{/ if }}
-                {{# if action.isConfirmationTypeConditional }}
-                        {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
-                {{/ if }}
-                        {{# if action.operation.output }}store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}(input, {{# if action.operation.isMapped }}targetStore{{/ if }})
-                            .catchError((error) {
-                                ErrorHandler.showErrorSnack(
-                                    context,
-                                    error.message,
-                                    validationAttributeErrorMessageMap: inputPageStore.validationAttributeErrorMessageMap
-                                );
-                                callSuccessful = false;
-                            });
-                        return callSuccessful;
-                    }
-                )
-            );
-                {{# if action.operation.output }}
-            if (store != null) {
-                await navigation.open(Routes.{{ pageClassVariableName action.outputParameterPage }},
-                    arguments: {{ pageArgumentsClassName action.outputParameterPage }}(targetStore: store));
-            }
-                {{/ if }}
-                {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
-            if (ret != null) {
-                    await pageStore.refresh{{ className page.relationType.target.name }}(targetStore);
-            }
-                {{/ if }}
-            {{ else }}
-                {{# if action.isConfirmationTypeMandatory }}
-                    {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
-                {{/ if }}
-                {{# if action.isConfirmationTypeConditional }}
-                    {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
-                {{/ if }}
-                {{# if action.operation.output }}
-                    {{# if action.operation.output }}{{ storeClassName action.operation.output.target }} store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
-                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                    if (store != null) {
-                        await navigation.open(Routes.{{ pageClassVariableName action.outputParameterPage }},
-                            arguments: {{ pageArgumentsClassName action.outputParameterPage }}(targetStore: store));
-                    }
-                    {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
-                    await pageStore.refresh{{ className page.relationType.target.name }}(targetStore);
-                    {{/ if }}
-                {{ else }}
-            {{# if action.operation.output }}{{ storeClassName action.operation.output.target }} store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
-                .whenComplete(() => judoAlert(context: context, title: 'Successful operation', text: '{{ this.label }} called successfully.'))
-                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-                    {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
-            await pageStore.refresh{{ className page.relationType.target.name }}(targetStore);
-                    {{/ if }}
-                {{/ if }}
-            {{/ if }}
-        },
+
+        {{# if action.isCreateAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/createaction.dart.hbs navigation=navigation action=action page=page }}
         {{/ if }}
+
+        {{# if action.isDeleteAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/deleteaction.dart.hbs navigation=navigation action=action page=page }}
+        {{/ if }}
+
+        {{# if action.isEditAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/editaction.dart.hbs navigation=navigation action=action page=page }}
+        {{/ if }}
+
+        {{# if action.isAddAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/addaction.dart.hbs navigation=navigation action=action page=page }}
+        {{/ if }}
+
+        {{# if action.isSetAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/setaction.dart.hbs navigation=navigation action=action page=page }}
+        {{/ if }}
+
+        {{# if action.isUnsetAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/unsetaction.dart.hbs navigation=navigation action=action page=page }}
+        {{/ if }}
+
+        {{# if action.isNavigationToPageAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/navigationtopageaction.dart.hbs navigation=navigation action=action page=page }}
+        {{/ if }}
+
+        {{# if action.isCallOperationAction }}
+            {{> flutter/lib/ui/pages/widgets/instanceaction/calloperationaction.dart.hbs navigation=navigation action=action page=page }}
+        {{/ if }}
+
     {{/ unless }}
     {{# if this.isLabelVisible }}
         label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),

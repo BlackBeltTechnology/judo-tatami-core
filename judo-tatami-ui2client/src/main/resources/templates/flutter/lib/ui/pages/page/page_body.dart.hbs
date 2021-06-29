@@ -11,7 +11,7 @@
 
 part of {{ pageLibraryName page }};
 
-// Container xmi:id="{{ getXMIID this }}"
+{{# if addDebugToTemplate }}// Container xmi:id="{{ getXMIID this }}"{{/ if }}
 Widget get{{ pageBodyClassName page container.layoutType.name }}(BuildContext context
 
         {{~# if page.isPageTypeDashboard ~}}

@@ -1,0 +1,8 @@
+JudoText(
+    col: {{ col }},
+    {{# neq row 1.0 }}row: {{ row }},{{/ neq }}
+    {{# if isLabelVisible }}
+        label: AppLocalizations.of(context).lookUpValue(context, '{{ label }}'),
+    {{/ if }}
+    text: targetStore.{{ variable attributeType.name }}.toString(),
+),

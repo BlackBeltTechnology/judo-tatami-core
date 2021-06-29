@@ -1,0 +1,9 @@
+removeAction:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} (element) {
+    {{# if relation.isRelationBehaviourTypeRemovable }}
+        pageStore.remove{{ fqClass relation.name }}(targetStore, element);
+    {{ else }}
+        var temporaryList = List<{{ storeClassName relation.target }}>.from(targetStore.{{ variable relation.name }})
+            ..remove(element);
+        targetStore.set{{ fqClass relation.name }}(temporaryList);
+    {{/ if }}
+}{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},

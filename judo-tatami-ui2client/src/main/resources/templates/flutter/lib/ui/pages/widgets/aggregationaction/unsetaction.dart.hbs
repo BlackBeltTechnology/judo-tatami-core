@@ -1,0 +1,4 @@
+onPressed:{{# unless page.relationType.isAccess }}{{# unless page.relationType.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
+pageStore.unset{{ fqClass page.relationType.name }}(targetStore)
+    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+}{{# unless page.relationType.isAccess }}{{# unless page.relationType.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},

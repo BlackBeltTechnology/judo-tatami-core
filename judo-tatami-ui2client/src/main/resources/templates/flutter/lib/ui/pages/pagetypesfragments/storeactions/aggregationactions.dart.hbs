@@ -6,154 +6,34 @@
 ObservableFuture {{ variable relation.owner.name }}{{ fqClass relation.name }}StoreFuture;
 
 {{# if relation.isRelationBehaviourTypeCreatable }}
-@action
-Future<void> create{{ fqClass relation.name }}({{# unless relation.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{{ storeClassName relation.target }} targetStore) async {
-    try {
-        errorMessage = null;
-        {{# if page.isPageTypeView }}
-        await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Create({{# unless relation.isAccess }}ownerStore, {{/ unless }}targetStore);
-        refresh{{ className relation.owner.name }}(ownerStore);
-        {{ else }}
-        ownerStore.{{ variable relation.name }}{{# if relation.isCollection }}.add(targetStore){{ else }} = targetStore{{/ if }};
-        {{/ if }}
-    } on ApiException catch (error) {
-        errorMessage = "Could not create {{ relation.name }}";
-        throw error;
-    }
-}
-
+    {{> flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions/create_action.dart.hbs page=page relation=relation }}
 {{/ if }}
+
 {{# if relation.isRelationBehaviourTypeAddable }}
-@action
-Future<List<{{ storeClassName relation.target }}>> add{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, List<{{ storeClassName relation.target }}> selectedStore) async {
-    try {
-        {{# if page.isPageTypeView }}
-        await _actorRepository.{{ fqVariable relation.owner.name }}Add{{ fqClass relation.name }}(ownerStore, selectedStore);
-        refresh{{ className relation.owner.name }}(ownerStore);
-        {{ else }}
-        ownerStore.{{ variable relation.name }}.addAll(selectedStore);
-        {{/ if }}
-        return ownerStore.{{ variable relation.name }};
-    } on ApiException catch (error) {
-        errorMessage = "Could not add {{ relation.name }}";
-        throw error;
-    }
-}
-
+    {{> flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions/add_action.dart.hbs page=page relation=relation }}
 {{/ if }}
+
 {{# if relation.isRelationBehaviourTypeRemovable }}
-@action
-Future<void> remove{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, {{ storeClassName relation.target }} selectedStore) async {
-    try {
-        errorMessage = null;
-        {{# if page.isPageTypeView }}
-        await _actorRepository.{{ fqVariable relation.owner.name }}Remove{{ fqClass relation.name }}(ownerStore, [selectedStore]);
-        refresh{{ className relation.owner.name }}(ownerStore);
-        {{ else }}
-        ownerStore.{{ variable relation.name }}.remove(selectedStore); // TODO: fix with remove more than 1 element
-        {{/ if }}
-    } on ApiException catch (error) {
-        errorMessage = "Could not remove {{ relation.name }}";
-        throw error;
-    }
-}
-
+    {{> flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions/remove_action.dart.hbs page=page relation=relation }}
 {{/ if }}
+
 {{# if relation.isRelationBehaviourTypeListable }}
-@action
-{{# if relation.isCollection }}Future<List<{{ storeClassName relation.target }}>>{{ else }}Future<{{ storeClassName relation.target }}>{{/ if }} get{{ fqClass relation.name }}({{# unless relation.isAccess }}{{ storeClassName relation.owner }} ownerStore{{/ unless }}) async {
-    try {
-        errorMessage = null;
-    {{# if relation.isAccess }}
-        {{ variable relation.name }}StoreList.clear();
-        {{ variable relation.name }}StoreList.addAll(await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List());
-        return {{ variable relation.name }}StoreList;
-    {{ else }}
-    {{# if relation.isCollection }}
-        ownerStore.{{ variable relation.name }}.clear();
-        ownerStore.{{ variable relation.name }}.addAll(await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}List(ownerStore));
-        return ownerStore.{{ variable relation.name }};
-    {{ else }}
-        ownerStore.{{ variable relation.name }} = await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}Get(ownerStore);
-        return ownerStore.{{ variable relation.name }};
-    {{/ if }}
-    {{/ if }}
-    } on ApiException catch (error) {
-        errorMessage = "Could not load {{ relation.name }}";
-        throw error;
-    }
-}
-
+    {{> flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions/list_action.dart.hbs page=page relation=relation }}
 {{/ if }}
+
 {{# if relation.isRelationBehaviourTypeSetable }}
-@action
-Future<void> set{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore, {{# if relation.isCollection }}List<{{ storeClassName relation.target }}>{{ else }}{{ storeClassName relation.target }}{{/ if }} selectedStore) async {
-    try {
-        {{# if page.isPageTypeView }}
-        await _actorRepository.{{ fqVariable relation.owner.name }}Set{{ fqClass relation.name }}(ownerStore, selectedStore);
-        refresh{{ className relation.owner.name }}(ownerStore);
-        {{ else }}
-        ownerStore.{{ variable relation.name }} = {{# if relation.isCollection }}selectedStore.asObservable(){{ else }}selectedStore{{/ if }};
-        {{/ if }}
-    } on ApiException catch (error) {
-        errorMessage = "Could not set {{ relation.name }}";
-        throw error;
-    }
-}
-
+    {{> flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions/set_action.dart.hbs page=page relation=relation }}
 {{/ if }}
+
 {{# if relation.isRelationBehaviourTypeUnsetable }}
-@action
-Future<void> unset{{ fqClass relation.name }}({{ storeClassName relation.owner }} ownerStore) async {
-    try {
-    {{# if page.isPageTypeView }}
-        await _actorRepository.{{ fqVariable relation.owner.name }}Unset{{ fqClass relation.name }}(ownerStore);
-        refresh{{ className relation.owner.name }}(ownerStore);
-    {{ else }}
-        ownerStore.{{ variable relation.name }} = null;
-    {{/ if }}
-    } on ApiException catch (error) {
-        errorMessage = "Could not unset {{ relation.name }}";
-        throw error;
-    }
-}
-
+    {{> flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions/unset_action.dart.hbs page=page relation=relation }}
 {{/ if }}
+
 {{# if relation.isRelationBehaviourTypeDeletable }}
-@action
-Future<void> delete{{ className relation.name }}{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore, {{ storeClassName relation.owner }} ownerStore) async {
-    try {
-        errorMessage = null;
-    {{# if page.isPageTypeView }}
-        await _actorRepository.{{ fqVariable relation.target.name }}Delete(targetStore);
-        refresh{{ className relation.owner.name }}(ownerStore);
-    {{ else }}
-        {{# if relation.isCollection }}ownerStore.{{ variable relation.name }}.remove(targetStore){{ else }}ownerStore.{{ variable relation.name }} = null{{/ if }};
-    {{/ if }}
-    } on ApiException catch (error) {
-        errorMessage = "Could not delete {{ variable relation.target.name }}";
-        throw error;
-    }
-}
-
+    {{> flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions/delete_action.dart.hbs page=page relation=relation }}
 {{/ if }}
-{{# if relation.isRelationBehaviourTypeUpdatable }}
-@action
-Future<{{ storeClassName relation.target }}> update{{ className relation.name }}{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore, {{ storeClassName relation.owner }} ownerStore) async {
-    try {
-        errorMessage = null;
-    {{# if page.isPageTypeView }}
-        var result = await _actorRepository.{{ fqVariable relation.target.name }}Update(targetStore);
-        refresh{{ className relation.owner.name }}(ownerStore);
-        return result;
-    {{ else }}
-        return targetStore;
-    {{/ if }}
-    } on ApiException catch (error) {
-        errorMessage = "Could not update {{ variable relation.target.name }}";
-        throw error;
-    }
-}
 
+{{# if relation.isRelationBehaviourTypeUpdatable }}
+    {{> flutter/lib/ui/pages/pagetypesfragments/storeactions/aggregationactions/update_action.dart.hbs page=page relation=relation }}
 {{/ if }}
 {{# if addDebugToTemplate }}//END aggregationactions.dart.hbs-----{{ relaltion.name }}-----------------------------------------------------------------------------------{{/ if }}

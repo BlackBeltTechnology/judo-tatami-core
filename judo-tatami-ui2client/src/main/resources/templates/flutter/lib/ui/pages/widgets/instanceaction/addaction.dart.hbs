@@ -1,0 +1,8 @@
+onPressed:{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} ownerStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
+    var selected =
+        {{> flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=page.dataElement addDialog=true }}
+    if (selected != null) {
+        pageStore.add{{ fqClass page.relationType.name }}(ownerStore, selected)
+            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+    }
+}{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},

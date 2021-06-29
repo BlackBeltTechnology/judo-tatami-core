@@ -1,0 +1,10 @@
+navigateToViewPageAction: (element) async {
+    if (element != null) {
+        await navigation.open(Routes.{{ pageClassVariableName action.target }}{{# if (tableNavigateToViewHasIdParam page) }}(id: element.internal__signedIdentifier){{/ if }},
+            arguments: {{ pageArgumentsClassName action.target }}({{# unless relation.isAccess}}ownerStore: ownerStore, targetStore: element{{/ unless}}));
+        {{# unless relation.isMemberTypeTransient }}
+            pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}ownerStore{{/ unless }})
+                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+        {{/ unless }}
+    }
+},

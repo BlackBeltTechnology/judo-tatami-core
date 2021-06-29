@@ -30,56 +30,19 @@ abstract class _{{ pageStoreClassName page }} with Store {
     bool validatable = false;
 
     {{# if relation.isRelationBehaviourTypeRefreshable }}
-    @action
-    Future<void> refresh{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore) async {
-        try {
-            errorMessage = null;
-            targetStore.updateWith(await _actorRepository.{{ fqVariable relation.target.name }}GetByIdentifier(targetStore));
-        } on ApiException catch (error) {
-            errorMessage = "Could not refresh {{ variable relation.target.name }}";
-            throw error;
-        }
-    }
-
+        {{> flutter/lib/ui/pages/pagetypesfragments/operationoutputpagestore/refreshaction.dart.hbs page=page relation=relation }}
     {{/ if }}
+
     {{# if relation.isRelationBehaviourTypeUpdatable }}
-    @action
-    Future<{{ storeClassName relation.target }}> update{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore) async {
-        try {
-            errorMessage = null;
-            return await _actorRepository.{{ fqVariable relation.target.name }}Update(targetStore);
-        } on ApiException catch (error) {
-            errorMessage = "Could not update {{ variable relation.target.name }}";
-            throw error;
-        }
-    }
-
+        {{> flutter/lib/ui/pages/pagetypesfragments/operationoutputpagestore/updateaction.dart.hbs page=page relation=relation }}
     {{/ if }}
+
     {{# if relation.isRelationBehaviourTypeDeletable }}
-    @action
-    Future<void> delete{{ className relation.target.name }}({{ storeClassName relation.target }} targetStore) async {
-        try {
-            errorMessage = null;
-            await _actorRepository.{{ fqVariable relation.target.name }}Delete(targetStore);
-        } on ApiException catch (error) {
-            errorMessage = "Could not delete {{ variable relation.name }}";
-            throw error;
-        }
-    }
-
+        {{> flutter/lib/ui/pages/pagetypesfragments/operationoutputpagestore/deleteaction.dart.hbs page=page relation=relation }}
     {{/ if }}
-    {{# if relation.isRelationBehaviourTypeCreateValidatable }}
-    @action
-    Future<{{ storeClassName relation.target }}> validate({{# unless page.dataElement.isAccess }}{{ storeClassName relation.owner }} ownerStore, {{/ unless }}{{ storeClassName relation.target }} targetStore) async {
-        try {
-            errorMessage = null;
-            return await _actorRepository.{{ fqVariable relation.owner.name }}{{ fqClass relation.name }}ValidateForCreate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore);
-        } on ApiException catch (error) {
-            errorMessage = "Could not validate {{ relation.name }}";
-            throw error;
-        }
-    }
 
+    {{# if relation.isRelationBehaviourTypeCreateValidatable }}
+        {{> flutter/lib/ui/pages/pagetypesfragments/operationoutputpagestore/validateaction.dart.hbs page=page relation=relation }}
     {{/ if }}
 {{/ with }}
 

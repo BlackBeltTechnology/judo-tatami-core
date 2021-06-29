@@ -1,0 +1,53 @@
+{{# unless page.dataElement.isRelationKindAggregation }}
+    {{# unless page.dataElement.isRelationKindComposition }}
+        var res = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
+            .catchError((error) => ErrorHandler.showErrorSnack(
+                context,
+                error.message,
+                validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
+            ));
+        if (res != null) {
+            navigation.close(targetStore);
+        }
+    {{/ unless }}
+{{/ unless }}
+
+{{# if page.dataElement.isRelationKindAggregation }}
+    {{# if page.dataElement.isRelationBehaviourTypeCreateValidatable }}
+        if (pageStore.validatable){
+            var res = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
+                .catchError((error) => ErrorHandler.showErrorSnack(
+                    context,
+                    error.message,
+                    validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
+                ));
+            if (res != null) {
+                navigation.close(targetStore);
+            }
+        } else {
+            navigation.close(targetStore);
+        }
+    {{ else }}
+        navigation.close(targetStore);
+    {{/ if }}
+{{/ if }}
+
+{{# if page.dataElement.isRelationKindComposition }}
+    {{# if page.dataElement.isRelationBehaviourTypeCreateValidatable }}
+        if (pageStore.validatable){
+            var res = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
+                .catchError((error) => ErrorHandler.showErrorSnack(
+                    context,
+                    error.message,
+                    validationAttributeErrorMessageMap: pageStore.validationAttributeErrorMessageMap
+                ));
+            if (res != null) {
+                navigation.close(targetStore);
+            }
+        } else {
+            navigation.close(targetStore);
+        }
+    {{ else }}
+        navigation.close(targetStore);
+    {{/ if }}
+{{/ if }}

@@ -1,0 +1,30 @@
+navigateToEditPageAction:{{# unless relation.isAccess }} targetStore.internal__updatable ?{{/ unless }} (element) async {
+    {{ storeClassName relationType.target }} cloned = {{ storeClassName relationType.target }}();
+    cloned.updateWith(element);
+    var res = await navigation.open(Routes.{{ pageClassVariableName rowAction.target }},
+        arguments: {{ pageArgumentsClassName rowAction.target }}(targetStore: cloned, validatable: pageStore.validatable));
+    if (res != null) {
+        element.updateWith(cloned);
+        var updated = await pageStore.update{{ className relation.name }}{{ className relation.target.name }}(element, targetStore)
+            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+        {{# if (isValidateHere page) }}
+            {{# unless page.dataElement.isRelationKindAggregation }}
+                {{# unless page.dataElement.isRelationKindComposition }}
+                    {{# unless relation.isMemberTypeTransient }}
+                        var validate = await pageStore.validate({{# unless page.dataElement.isAccess }}ownerStore, {{/ unless }}targetStore)
+                        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+                        if (validate != null) {
+                        targetStore.updateWith(validate);
+                        }
+                    {{/ unless }}
+                {{/ unless }}
+            {{/ unless }}
+        {{ else }}
+            if (updated != null) {
+                element.updateWith(updated);
+                pageStore.get{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore{{/ unless }})
+                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+            }
+        {{/ if }}
+    }
+}{{# unless relation.isAccess }} : null{{/ unless }},

@@ -1,0 +1,13 @@
+onPressed:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
+    var selected = {{> flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation addDialog=true }}
+    if (selected != null) {
+        {{# if relation.isRelationBehaviourTypeAddable }}
+            pageStore.add{{ fqClass relation.name }}(targetStore, selected)
+                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+        {{ else }}
+            var temporaryList = List<{{ storeClassName relation.target }}>.from(targetStore.{{ variable relation.name }})
+                ..addAll(selected);
+            targetStore.set{{ fqClass relation.name }}(temporaryList);
+        {{/ if }}
+    }
+}{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},

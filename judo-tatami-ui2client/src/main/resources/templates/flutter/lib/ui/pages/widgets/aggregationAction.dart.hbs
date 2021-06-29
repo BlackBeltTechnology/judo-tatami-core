@@ -9,67 +9,37 @@ Observer(
         {{ else }}
             disabled: pageStore.pageState.disabledByLoading{{# if enabledBy }} || !((targetStore?.{{ variable enabledBy.name }}) ?? false){{/ if }},
         {{/if}}
-    {{# if action.isBackAction }}
-        onPressed: () => navigation.close(),
-    {{/ if }}
-    {{# if action.isCreateAction }}
-        onPressed:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            var created = await navigation.open(Routes.{{ pageClassVariableName action.target }}{{# unless relation.isAccess }},
-            arguments: {{ pageArgumentsClassName action.target }}(ownerStore: targetStore, validatable: pageStore.validatable){{~/ unless }});
-            if (created != null) {
-                pageStore.create{{ fqClass relation.name }}({{# unless relation.isAccess }}targetStore ,{{/ unless }}created)
-                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-            }
-        }{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
-    {{/ if }}
-    {{# if action.isAddAction }}
-        onPressed:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            var selected =
-            {{> flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation addDialog=true }}
-            if (selected != null) {
-        {{# if relation.isRelationBehaviourTypeAddable }}
-                pageStore.add{{ fqClass relation.name }}(targetStore, selected)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-        {{ else }}
-            var temporaryList = List<{{ storeClassName relation.target }}>.from(targetStore.{{ variable relation.name }})
-                ..addAll(selected);
-            targetStore.set{{ fqClass relation.name }}(temporaryList);
+        {{# if action.isBackAction }}
+            {{> flutter/lib/ui/pages/widgets/aggregationaction/backaction.dart.hbs action=action page=page relation=relation }}
         {{/ if }}
-            }
-        }{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
-    {{/ if }}
-    {{# if action.isSetAction }}
-        onPressed:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            var selected =
-            {{> flutter/lib/ui/pages/widgets/dialog.dart.hbs relation=relation }}
-            if (selected != null) {
-        {{# if relation.isRelationBehaviourTypeSetable }}
-                pageStore.set{{ fqClass relation.name }}(targetStore, selected)
-                    .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-        {{ else }}
-                targetStore.set{{ fqClass relation.name }}(selected);
+
+        {{# if action.isCreateAction }}
+            {{> flutter/lib/ui/pages/widgets/aggregationaction/createaction.dart.hbs action=action page=page relation=relation }}
         {{/ if }}
-            }
-        }{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
-    {{/ if }}
-    {{# if action.isUnsetAction }}
-        onPressed:{{# unless page.relationType.isAccess }}{{# unless page.relationType.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-            pageStore.unset{{ fqClass page.relationType.name }}(targetStore)
-                .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-        }{{# unless page.relationType.isAccess }}{{# unless page.relationType.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},
-    {{/ if }}
-    {{# if action.isNavigationToPageAction }}
-        onPressed: () async {
-            await navigation.open(Routes.{{ pageClassVariableName action.target }},
-            arguments: {{ pageArgumentsClassName action.target }}(ownerStore: targetStore));
-        },
-    {{/ if }}
-    {{# if this.isLabelVisible }}
-        label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
-    {{/ if }}
-    {{# if this.isIconVisible }}
-        icon: Icon(getIconByString('{{ this.icon.name }}')),
-    {{/ if }}
+
+        {{# if action.isAddAction }}
+            {{> flutter/lib/ui/pages/widgets/aggregationaction/addaction.dart.hbs action=action page=page relation=relation }}
+        {{/ if }}
+
+        {{# if action.isSetAction }}
+            {{> flutter/lib/ui/pages/widgets/aggregationaction/setaction.dart.hbs action=action page=page relation=relation }}
+        {{/ if }}
+
+        {{# if action.isUnsetAction }}
+            {{> flutter/lib/ui/pages/widgets/aggregationaction/unsetaction.dart.hbs action=action page=page relation=relation }}
+        {{/ if }}
+
+        {{# if action.isNavigationToPageAction }}
+            {{> flutter/lib/ui/pages/widgets/aggregationaction/navigationtopageaction.dart.hbs action=action page=page relation=relation }}
+        {{/ if }}
+
+        {{# if this.isLabelVisible }}
+            label: AppLocalizations.of(context).lookUpValue(context, '{{ this.label }}'),
+        {{/ if }}
+
+        {{# if this.isIconVisible }}
+            icon: Icon(getIconByString('{{ this.icon.name }}')),
+        {{/ if }}
     )
 ),
 {{# if addDebugToTemplate }}//END aggregationAction.dart.hbs-----{{ relation.name }}-------------------------------------------------------------------------------------{{/ if }}

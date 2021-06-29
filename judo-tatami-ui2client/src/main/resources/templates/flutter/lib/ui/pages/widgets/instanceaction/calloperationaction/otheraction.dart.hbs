@@ -1,0 +1,26 @@
+{{# if action.isConfirmationTypeMandatory }}
+    {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
+{{/ if }}
+
+{{# if action.isConfirmationTypeConditional }}
+    {{> flutter/lib/ui/pages/widgets/confirmationDialog.dart.hbs }}
+{{/ if }}
+
+{{# if action.operation.output }}
+    {{# if action.operation.output }}{{ storeClassName action.operation.output.target }} store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
+        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+        if (store != null) {
+            await navigation.open(Routes.{{ pageClassVariableName action.outputParameterPage }},
+                arguments: {{ pageArgumentsClassName action.outputParameterPage }}(targetStore: store));
+        }
+    {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
+        await pageStore.refresh{{ className page.relationType.target.name }}(targetStore);
+    {{/ if }}
+{{ else }}
+    {{# if action.operation.output }}{{ storeClassName action.operation.output.target }} store = {{/ if }}await pageStore.{{ fqVariable action.operation.owner.name }}{{ className action.operation.name }}({{# if action.operation.input }}ret, {{/ if }}{{# if action.operation.isMapped }}targetStore{{/ if }})
+        .whenComplete(() => judoAlert(context: context, title: 'Successful operation', text: '{{ this.label }} called successfully.'))
+        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
+    {{# if page.relationType.isRelationBehaviourTypeRefreshable }}
+        await pageStore.refresh{{ className page.relationType.target.name }}(targetStore);
+    {{/ if }}
+{{/ if }}

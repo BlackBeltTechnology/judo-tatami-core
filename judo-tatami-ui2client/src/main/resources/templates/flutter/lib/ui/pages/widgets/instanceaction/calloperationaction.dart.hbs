@@ -1,0 +1,7 @@
+onPressed: () async {
+    {{# if action.operation.input }}
+        {{> flutter/lib/ui/pages/widgets/instanceaction/calloperationaction/inputaction.dart.hbs navigation=navigation action=action page=page }}
+    {{ else }}
+        {{> flutter/lib/ui/pages/widgets/instanceaction/calloperationaction/otheraction.dart.hbs navigation=navigation action=action page=page }}
+    {{/ if }}
+},

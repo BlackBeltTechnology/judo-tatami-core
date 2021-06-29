@@ -1,11 +1,11 @@
 {{# if addDebugToTemplate }}//START xmi:id="{{ getXMIID this }}" button.dart.hbs-----{{ action.dataElement.name }}------------------------------------------------------------------------------------{{/ if }}
 {{# if this.action.dataElement.isRelationKindComposition }}
-{{> flutter/lib/ui/pages/widgets/aggregationAction.dart.hbs button = this action = this.action relation = this.action.dataElement col = this.col }}
+    {{> flutter/lib/ui/pages/widgets/aggregationAction.dart.hbs button=this action=action relation=action.dataElement col=col }}
 {{ else }}
-{{# if this.action.dataElement.isRelationKindAggregation }}
-{{> flutter/lib/ui/pages/widgets/aggregationAction.dart.hbs button = this action = this.action relation = this.action.dataElement col = this.col }}
-{{ else }}
-{{> flutter/lib/ui/pages/widgets/instanceAction.dart.hbs button = this action = this.action col = this.col }}
-{{/ if }}
+    {{# if this.action.dataElement.isRelationKindAggregation }}
+        {{> flutter/lib/ui/pages/widgets/aggregationAction.dart.hbs button=this action=action relation=action.dataElement col=col }}
+    {{ else }}
+        {{> flutter/lib/ui/pages/widgets/instanceAction.dart.hbs button=this action=action col=col }}
+    {{/ if }}
 {{/ if }}
 {{# if addDebugToTemplate }}//END button.dart.hbs-----{{ action.dataElement.name }}--------------------------------------------------------------------------------------{{/ if }}
