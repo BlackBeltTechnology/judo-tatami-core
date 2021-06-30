@@ -11,7 +11,7 @@
         <provide interface="javax.ws.rs.core.Application"/>
     </service>
 
-    <reference name="cxf.context" interface="hu.blackbelt.jaxrs.CxfContext" policy-option="greedy" cardinality="0..1" target="(judo.model.name=[%= packagePath %])" bind="setContext"/>
+    <reference name="cxf.context" interface="hu.blackbelt.jaxrs.CxfContext" policy-option="greedy" cardinality="0..1" target="(judo.model.name=[%= modelName %])" bind="setContext"/>
     [% for (name : String in serviceInstances.keySet()) { %]
     <reference name="[%= name %]" interface="[%= serviceInstances.get(name) %]" field="[%= name %]"/>
     [% } %]
