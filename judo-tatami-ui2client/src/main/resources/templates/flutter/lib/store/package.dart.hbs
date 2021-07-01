@@ -9,6 +9,8 @@
 
 library {{ variable ap.name }}.store;
 
+{{> flutter/lib/store/package_extra.dart.hbs ap=ap application=application }}
+
 import 'package:mobx/mobx.dart';
 import 'package:uuid/uuid.dart';
 import 'package:quiver/core.dart' show hash3;

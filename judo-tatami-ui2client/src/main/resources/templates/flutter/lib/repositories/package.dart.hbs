@@ -9,6 +9,8 @@
 
 library {{ variable ap.name }}.repository;
 
+{{> flutter/lib/repositories/package_extra.dart.hbs ap=ap application=application }}
+
 import 'dart:async';
 import 'package:injectable/injectable.dart';
 
