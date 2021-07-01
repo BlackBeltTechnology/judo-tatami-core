@@ -1,5 +1,0 @@
-onPressed:{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} ownerStore.internal__updatable &&{{/ unless }}{{/ unless }} targetStore.internal__deletable ? () async {
-    await pageStore.delete{{ className page.relationType.target.name }}(targetStore)
-        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-    navigation.close(targetStore);
-} : null,

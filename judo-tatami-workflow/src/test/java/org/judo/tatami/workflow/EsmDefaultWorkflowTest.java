@@ -42,7 +42,6 @@ public class EsmDefaultWorkflowTest {
     private WorkReport workReport;
 
 	private File psmModel;
-	private File uiModel;
 	private File asmModel;
     private File measureModel;
     private List<File> rdbmsModels = new ArrayList<>();
@@ -63,8 +62,6 @@ public class EsmDefaultWorkflowTest {
 
 		psmModel = new File(TARGET_CLASSES, MODEL_NAME + "-psm.model");
 		psmModel.delete();
-		uiModel = new File(TARGET_CLASSES, MODEL_NAME + "-ui.model");
-		uiModel.delete();
 
 		asmModel = new File(TARGET_CLASSES, MODEL_NAME + "-asm.model");
 		asmModel.delete();
@@ -105,7 +102,6 @@ public class EsmDefaultWorkflowTest {
 		assertThat(workReport.getStatus(), equalTo(WorkStatus.COMPLETED));
 
 		assertTrue(psmModel.exists());
-		assertTrue(uiModel.exists());
 		assertTrue(asmModel.exists());
 		assertTrue(measureModel.exists());
 		rdbmsModels.forEach(rdbmsModel -> assertTrue(rdbmsModel.exists()));

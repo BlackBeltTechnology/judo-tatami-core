@@ -1,4 +1,0 @@
-unsetAction:{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} targetStore.internal__updatable ?{{/ unless }}{{/ unless }} () async {
-    pageStore.unset{{ fqClass relation.name }}(targetStore)
-        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-}{{# unless relation.isAccess }}{{# unless relation.isRelationKindStatic }} : null{{/ unless }}{{/ unless }},

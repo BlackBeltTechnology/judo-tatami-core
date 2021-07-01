@@ -69,7 +69,6 @@
         <judo-meta-measure-version>1.0.0.20210518_100915_a009a81_develop</judo-meta-measure-version>
         <judo-meta-liquibase-version>1.0.0.20210518_093403_d9d15ce_develop</judo-meta-liquibase-version>
         <judo-meta-openapi-version>1.0.0.20210518_094315_bf3a0a8_develop</judo-meta-openapi-version>
-        <judo-meta-ui-version>1.0.0.20210623_040501_fa9a28d_feature_JNG_2774_UiListOrder</judo-meta-ui-version>
         <judo-meta-keycloak-version>1.0.0.20210518_100326_ff22cde_develop</judo-meta-keycloak-version>
         <judo-dao-api-version>1.0.2.20210527_134635_7144d73_develop</judo-dao-api-version>
         <judo-dispatcher-api-version>1.0.2.20210302_135850_a9b5c54_develop</judo-dispatcher-api-version>
@@ -545,12 +544,6 @@
 
             <dependency>
                 <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-esm2ui</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
-            </dependency>
-
-            <dependency>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
                 <artifactId>judo-tatami-psm2asm</artifactId>
                 <version>1.1.0-SNAPSHOT</version>
             </dependency>
@@ -773,7 +766,6 @@
             <modules>
                 <module>judo-tatami-core</module>
                 <module>judo-tatami-esm2psm</module>
-                <module>judo-tatami-esm2ui</module>
                 <module>judo-tatami-psm2asm</module>
                 <module>judo-tatami-psm2measure</module>
                 <module>judo-tatami-asm2rdbms</module>
@@ -784,7 +776,6 @@
                 <module>judo-tatami-asm2expression</module>
                 <module>judo-tatami-asm2script</module>
                 <module>judo-tatami-asm2sdk</module>
-                <module>judo-tatami-ui2client</module>
                 <module>judo-tatami-script2operation</module>
                 <module>judo-tatami-openapi2restclient</module>
                 <module>judo-tatami-esm-validation</module>

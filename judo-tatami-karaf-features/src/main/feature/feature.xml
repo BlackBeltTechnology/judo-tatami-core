@@ -121,13 +121,6 @@
         <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.script.builder.jcl.asm/${judo-meta-script-version}</bundle>
     </feature>
 
-    <feature name="judo-tatami-meta-ui" version="${project.version}" description="JUDO Tatami, UI Model " install="false">
-        <feature dependency="true">epsilon-runtime</feature>
-        <feature dependency="true">osgi-utils</feature>
-        <feature dependency="true">guava-27</feature>
-        <bundle>mvn:hu.blackbelt.judo.meta/hu.blackbelt.judo.meta.ui.osgi/${judo-meta-ui-version}</bundle>
-    </feature>
-
     <feature name="judo-tatami-meta" version="${project.version}" description="JUDO Tatami, meta types" install="false">
         <feature>judo-tatami-meta-asm</feature>
         <feature>judo-tatami-meta-psm</feature>
@@ -165,16 +158,6 @@
         <feature>judo-tatami-core</feature>
         <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-esm2psm/${project.version}</bundle>
     </feature>
-
-    <feature name="judo-tatami-esm2ui" version="${project.version}" description="JUDO Tatami, ESM to UI Transformation" install="false">
-        <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.ui.runtime.UiModel</capability>
-        <feature>cxf-jackson</feature>
-        <feature>judo-tatami-meta-esm</feature>
-        <feature>judo-tatami-meta-ui</feature>
-        <feature>judo-tatami-core</feature>
-        <bundle>mvn:hu.blackbelt.judo.tatami/judo-tatami-esm2ui/${project.version}</bundle>
-    </feature>
-
 
     <feature name="judo-tatami-psm2asm" version="${project.version}" description="JUDO Tatami, PSM to ASM Transformation" install="false">
         <capability>osgi.service;effective:=active;objectClass=hu.blackbelt.judo.meta.asm.runtime.AsmModel</capability>
@@ -343,7 +326,6 @@
         <feature>judo-tatami-meta-esm</feature>
 
         <feature>judo-tatami-esm2psm</feature>
-        <feature>judo-tatami-esm2ui</feature>
         <feature>judo-tatami-psm2asm</feature>
         <feature>judo-tatami-psm2measure</feature>
         <feature>judo-tatami-asm2jaxrsapi</feature>

@@ -1,4 +1,0 @@
-deleteAction:{{# unless relation.isAccess }} ownerStore.internal__updatable ?{{/ unless }} (element) async {
-    pageStore.delete{{ className relation.target.name }}(element{{# unless relation.isAccess }}, ownerStore{{/ unless }})
-        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-}{{# unless relation.isAccess }} : null{{/ unless }},

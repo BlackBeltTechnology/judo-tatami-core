@@ -14,7 +14,6 @@ import hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
-import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakTransformationTrace;
 import hu.blackbelt.judo.tatami.asm2openapi.Asm2OpenAPITransformationTrace;
 import hu.blackbelt.judo.tatami.asm2rdbms.Asm2RdbmsTransformationTrace;
@@ -39,7 +38,6 @@ import static hu.blackbelt.judo.meta.openapi.runtime.exporter.OpenAPIExporter.co
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments.psmSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel.SaveArguments.rdbmsSaveArgumentsBuilder;
 import static hu.blackbelt.judo.meta.script.runtime.ScriptModel.SaveArguments.scriptSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.ui.runtime.UiModel.SaveArguments.uiSaveArgumentsBuilder;
 import static hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork.JAXRSAPI_OUTPUT;
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT;
 import static hu.blackbelt.judo.tatami.asm2sdk.Asm2SDKWork.SDK_OUTPUT_INTERNAL;
@@ -68,9 +66,6 @@ public class DefaultWorkflowSave {
 
 		transformationContext.getByClass(PsmModel.class).ifPresent(executeWrapper(catchError, (m) ->
 				m.savePsmModel(psmSaveArgumentsBuilder().validateModel(VALIDATE_MODELS_ON_SAVE).file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-psm.model"))))));
-
-		transformationContext.getByClass(UiModel.class).ifPresent(executeWrapper(catchError, (m) ->
-				m.saveUiModel(uiSaveArgumentsBuilder().validateModel(VALIDATE_MODELS_ON_SAVE).file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-ui.model"))))));
 
 		transformationContext.getByClass(AsmModel.class).ifPresent(executeWrapper(catchError, (m) ->
 			m.saveAsmModel(asmSaveArgumentsBuilder().validateModel(VALIDATE_MODELS_ON_SAVE).file(deleteFileIfExists(new File(dest, transformationContext.getModelName() + "-asm.model"))))));

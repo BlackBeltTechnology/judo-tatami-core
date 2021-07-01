@@ -1,1 +1,0 @@
-removeAction:{{# unless relation.isAccess }} ownerStore.internal__updatable ?{{/ unless }} (element) => pageStore.remove{{ fqClass relation.name }}(ownerStore, element){{# unless relation.isAccess }} : null{{/ unless }},

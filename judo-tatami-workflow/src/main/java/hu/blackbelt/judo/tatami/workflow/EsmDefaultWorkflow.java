@@ -10,7 +10,6 @@ import hu.blackbelt.judo.meta.openapi.runtime.OpenapiModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.rdbms.runtime.RdbmsModel;
 import hu.blackbelt.judo.meta.script.runtime.ScriptModel;
-import hu.blackbelt.judo.meta.ui.runtime.UiModel;
 import hu.blackbelt.judo.tatami.asm2expression.Asm2ExpressionWork;
 import hu.blackbelt.judo.tatami.asm2jaxrsapi.Asm2JAXRSAPIWork;
 import hu.blackbelt.judo.tatami.asm2keycloak.Asm2KeycloakWork;
@@ -28,7 +27,6 @@ import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkStatus;
 import hu.blackbelt.judo.tatami.esm.validation.EsmValidationWork;
 import hu.blackbelt.judo.tatami.esm2psm.Esm2PsmWork;
-import hu.blackbelt.judo.tatami.esm2ui.Esm2UiWork;
 import hu.blackbelt.judo.tatami.expression.asm.validation.ExpressionValidationOnAsmWork;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmTransformationTrace;
 import hu.blackbelt.judo.tatami.psm2asm.Psm2AsmWork;
@@ -103,9 +101,6 @@ public class EsmDefaultWorkflow {
 		Optional<Work> createPsmWork = parameters.getIgnoreEsm2Psm() ? Optional.empty() :
 				Optional.of(new Esm2PsmWork(transformationContext).withMetricsCollector(metrics));
 
-		Optional<Work> createUiWork = parameters.getIgnoreEsm2Ui() ? Optional.empty() :
-				Optional.of(new Esm2UiWork(transformationContext).withMetricsCollector(metrics));
-
 		Optional<Work> createMeasure = (parameters.getIgnorePsm2Measure() || !createPsmWork.isPresent()) ? Optional.empty() :
 				Optional.of(new Psm2MeasureWork(transformationContext).withMetricsCollector(metrics));
 
@@ -161,7 +156,7 @@ public class EsmDefaultWorkflow {
 							Optional.of(
 									aNewParallelFlow()
 											.named("Parallel ESM Transformations")
-											.execute(Stream.of(createPsmWork, createUiWork))
+											.execute(Stream.of(createPsmWork))
 											.build()),
 							Optional.of(
 									aNewParallelFlow()
@@ -183,7 +178,7 @@ public class EsmDefaultWorkflow {
 					.named("Run all transformations sequentially")
 					.execute(
 							Stream.concat(
-									Stream.of(validateEsmWork, createPsmWork, createUiWork,
+									Stream.of(validateEsmWork, createPsmWork,
 											createAsmWork, createMeasure,
 											createExpressionWork, createKeycloakWork, createJAXRSAPIWork, createSDKWork, createScriptWork, createOperationWork, createOpenAPIWork),
 									createRdbmsWorks
@@ -202,10 +197,6 @@ public class EsmDefaultWorkflow {
 
 		if (createPsmWork.isPresent()) {
 			verifier.isClassExists(PsmModel.class);
-		}
-
-		if (createUiWork.isPresent()) {
-			verifier.isClassExists(UiModel.class);
 		}
 
 		if (createMeasure.isPresent()) {

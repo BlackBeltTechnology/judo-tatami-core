@@ -1,4 +1,0 @@
-onPressed:{{# unless page.dataElement.isCollection }} ownerStore.{{ variable page.dataElement.name }} != null{{/ unless }}{{# unless page.relationType.isAccess }}{{# unless page.relationType.isRelationKindStatic }}{{# unless page.dataElement.isCollection }} &&{{/ unless }} ownerStore.internal__updatable ?{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }}{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }} () async {
-    pageStore.unset{{ fqClass page.relationType.name }}(ownerStore)
-        .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-}{{# unless page.relationType.isAccess }}{{# unless page.relationType.isRelationKindStatic }} : null{{ else }}{{# unless page.dataElement.isCollection }} : null{{/ unless }}{{/ unless }}{{ else }}{{# unless page.dataElement.isCollection }} : null{{/ unless }}{{/ unless }},

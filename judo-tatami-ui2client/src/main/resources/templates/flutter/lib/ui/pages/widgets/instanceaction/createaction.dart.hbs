@@ -1,8 +1,0 @@
-onPressed:{{# unless page.dataElement.isCollection }} ownerStore.{{ variable page.dataElement.name }} == null{{/ unless }}{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }}{{# unless page.dataElement.isCollection }} &&{{/ unless }} ownerStore.internal__updatable ?{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }}{{ else }}{{# unless page.dataElement.isCollection }} ?{{/ unless }}{{/ unless }} () async {
-    var created = await navigation.open(Routes.{{ pageClassVariableName action.target }}{{# unless page.dataElement.isAccess }},
-        arguments: {{ pageArgumentsClassName action.target }}(ownerStore: ownerStore){{~/ unless }});
-    if (created != null) {
-        pageStore.create{{ fqClass page.relationType.name }}({{# unless page.dataElement.isAccess }}ownerStore ,{{/ unless }}created)
-            .catchError((error) => ErrorHandler.showErrorSnack(context, error.message));
-    }
-}{{# unless page.dataElement.isAccess }}{{# unless page.dataElement.isRelationKindStatic }} : null{{ else }}{{# unless page.dataElement.isCollection }} : null{{/ unless }}{{/ unless }}{{ else }}{{# unless page.dataElement.isCollection }} : null{{/ unless }}{{/ unless }},

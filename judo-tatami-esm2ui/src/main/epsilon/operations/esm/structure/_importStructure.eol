@@ -1,4 +1,0 @@
-import "relationFeature.eol";
-import "referenceTypedElement.eol";
-import "dataFeature.eol";
-import "class.eol";
