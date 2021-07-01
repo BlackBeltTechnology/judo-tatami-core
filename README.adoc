@@ -86,9 +86,28 @@ package "LSM" {
 
 ----
 
-[[parameters]]
 
-*-DclientTemplateDebug*
-Default: `false`
+== Parameters
+
+=== -DclientTemplateDebug
+> Default: `false`
 
 If provided, renders additional debug info about templates into the code.
+
+== Client Template Overrides
+
+=== Simple (redundant way)
+By placing a template file on the same path as it's in Tatami, but inside the
+project's `client-generator-overrides/templates` folder, one can completely
+replace what the generator will use.
+
+This is the simplest way of overriding, but will result in developers copy-pasting
+tons of code potentially, given they need to implement a template fully.
+
+=== Override Template File (unstable)
+The other way of overriding is similar to the one above, but in this case
+developers can place a template override file on the same path as above, but with
+a `.override.hbs` extension. The generator can pick these
+files up instead of the default ones, and if inside these templates one would
+like to fall back to the original template in a condition, he/she can, by loading
+the original partial (don't forget to provide all params!).

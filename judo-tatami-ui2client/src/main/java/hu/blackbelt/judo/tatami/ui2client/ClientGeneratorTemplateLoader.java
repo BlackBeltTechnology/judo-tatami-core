@@ -8,13 +8,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
+import java.util.Stack;
 
 @Slf4j
 public class ClientGeneratorTemplateLoader extends URLTemplateLoader {
     final URI root;
     final ClientGeneratorTemplateLoader parent;
     final String contextPath;
+    private final ThreadLocal<Stack<String>> pathOrder = ThreadLocal.withInitial(Stack::new);
+
     /**
      * Creates a new {@link ClientGeneratorTemplateLoader}.
      *
@@ -72,6 +77,15 @@ public class ClientGeneratorTemplateLoader extends URLTemplateLoader {
         this(parent, root, UriHelper.lastPart(root.toString()), "/", DEFAULT_SUFFIX);
     }
 
+    private String getOverriddenLocationRelativePath(String loc) {
+        return loc.replace(getSuffix(), ".override" + getSuffix());
+    }
+
+    @Override
+    public String getSuffix() {
+        String original = super.getSuffix();
+        return !Objects.equals(original, "") ? original : DEFAULT_SUFFIX;
+    }
 
     @Override
     public TemplateSource sourceAt(final String location) throws IOException {
@@ -79,16 +93,42 @@ public class ClientGeneratorTemplateLoader extends URLTemplateLoader {
         if (location.startsWith(contextPath + "/")) {
             loc = location.substring(contextPath.length() + 1);
         }
+        String overrideRelativePath = getOverriddenLocationRelativePath(loc);
+
+        // Need to make sure:
+        // - prevent infinite loops for normal flows where override falls back internally to original template
+        // - devs can explicitly load overrides, e.g. recurse with override
+        if (!loc.equals(overrideRelativePath) && loc.endsWith(getSuffix()) && pathOrder.get().size() > 0 && !pathOrder.get().lastElement().equals(overrideRelativePath)) {
+            pathOrder.get().push(overrideRelativePath);
+            try {
+                URL overrideFullPath = new URI(this.root.toString() + overrideRelativePath).normalize().toURL();
+                try (InputStream is = overrideFullPath.openStream()) {
+                    if (is != null && is.available() > 0) {
+                        return sourceAtInternal(overrideRelativePath, location);
+                    }
+                    return sourceAtInternal(loc, location);
+                } catch (Exception e) {
+                    return sourceAtInternal(loc, location);
+                }
+            } catch (URISyntaxException e) {
+                return sourceAtInternal(loc, location);
+            }
+        }
+        pathOrder.get().push(loc);
+        return sourceAtInternal(loc, location);
+    }
+
+    public TemplateSource sourceAtInternal(final String loc, final String originalLoc) throws IOException {
         try {
             return super.sourceAt(loc);
         } catch (IOException ex) {
             // try next loader in the chain.
-            log.trace("Unable to resolve: {}, trying next loader in the chain.", location);
+            log.trace("Unable to resolve: {}, trying next loader in the chain.", originalLoc);
         }
         if (parent != null) {
             return parent.sourceAt(loc);
         } else {
-            throw new FileNotFoundException(location);
+            throw new FileNotFoundException(originalLoc);
         }
     }
 
