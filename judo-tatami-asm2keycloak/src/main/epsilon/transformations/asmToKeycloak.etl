@@ -1,2 +1,0 @@
-import "keycloak/modules/realm.etl";
-import "keycloak/modules/client.etl";
