@@ -1,3 +1,0 @@
-operation ESM!TwoWayRelationMember getPSMEquivalent(): JUDOPSM!AssociationEnd {
-    return self.equivalent("CreateAssociationEndWithPartner");
-}

@@ -1,9 +1,0 @@
-@cached
-operation ASM!EOperation isCreateOrUpdateBehaviour() : Boolean {
-    var behaviour = asmUtils.getBehaviour(self);
-    return behaviour.present and 
-        (behaviour.get().toString() == "CREATE_INSTANCE" or
-        behaviour.get().toString() == "VALIDATE_CREATE" or
-        behaviour.get().toString() == "UPDATE_INSTANCE" or
-        behaviour.get().toString() == "VALIDATE_UPDATE");
-}

@@ -1,3 +1,0 @@
-import "operation.eol";
-import "transferObjectRelation.eol";
-import "transferObjectType.eol";
