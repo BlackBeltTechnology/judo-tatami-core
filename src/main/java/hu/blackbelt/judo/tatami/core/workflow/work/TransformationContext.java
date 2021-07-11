@@ -53,61 +53,34 @@ public class TransformationContext {
     }
     
     public class TransformationContextVerifier {
-		boolean allExists = true;
 		TransformationContext transformationContext;
 
 		public TransformationContextVerifier(TransformationContext transformationContext) {
 			this.transformationContext = transformationContext;
 		}
 
-		private <T> boolean verifyClassPresent(Class<T> c) {
+		public  <T> boolean verifyClassPresent(Class<T> c) {
 			if (!transformationContext.getByClass(c).isPresent()) {
 				log.error("Missing from transformation context: " + c.getName());
 				return false;
 			}
 			return true;
 		}
-		
-		private <T> boolean verifyKeyPresent(Object key) {
+
+		public <T> boolean verifyKeyPresent(Object key) {
 			if (!transformationContext.get(key).isPresent()) {
 				log.error("Missing from transformation context: " + String.valueOf(key));
 				return false;
 			}
 			return true;
 		}
-		
-		private <T> boolean verifyKeyPresent(Class<T> valueType, Object key) {
+
+		public <T> boolean verifyKeyPresent(Class<T> valueType, Object key) {
 			if (!transformationContext.get(valueType, key).isPresent()) {
 				log.error("Missing from transformation context: " + valueType.getName()+ " " + String.valueOf(key));
 				return false;
 			}
 			return true;
-		}
-
-		public <T> TransformationContextVerifier isClassExists(Class<T> c) {
-			allExists = allExists && verifyClassPresent(c);
-			return this;
-		}
-		
-		public <T> TransformationContextVerifier isKeyExists(Object key) {
-			allExists = allExists && verifyKeyPresent(key);
-			return this;
-		}
-		
-		public <T> TransformationContextVerifier isKeyExists(Class<T> valueType, Object key)  {
-			allExists = allExists && verifyKeyPresent(valueType, key);
-			return this;
-		}
-		
-		public <T> TransformationContextVerifier isMultipleKeyExists(Class<T> valueType, Object... keys) {
-			for (Object key : keys) {
-				allExists = allExists && verifyKeyPresent(valueType, key);
-			}
-			return this;
-		}
-
-		public boolean isAllExists() {
-			return allExists;
 		}
 	}
 }
