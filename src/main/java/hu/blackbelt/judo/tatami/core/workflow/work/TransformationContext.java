@@ -60,27 +60,15 @@ public class TransformationContext {
 		}
 
 		public  <T> boolean verifyClassPresent(Class<T> c) {
-			if (!transformationContext.getByClass(c).isPresent()) {
-				log.error("Missing from transformation context: " + c.getName());
-				return false;
-			}
-			return true;
+			return transformationContext.getByClass(c).isPresent();
 		}
 
 		public <T> boolean verifyKeyPresent(Object key) {
-			if (!transformationContext.get(key).isPresent()) {
-				log.error("Missing from transformation context: " + String.valueOf(key));
-				return false;
-			}
-			return true;
+			return transformationContext.get(key).isPresent();
 		}
 
 		public <T> boolean verifyKeyPresent(Class<T> valueType, Object key) {
-			if (!transformationContext.get(valueType, key).isPresent()) {
-				log.error("Missing from transformation context: " + valueType.getName()+ " " + String.valueOf(key));
-				return false;
-			}
-			return true;
+			return transformationContext.get(valueType, key).isPresent();
 		}
 	}
 }
