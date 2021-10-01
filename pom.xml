@@ -103,12 +103,6 @@
             <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.pivovarit</groupId>
-            <artifactId>throwing-function</artifactId>
-            <version>1.5.0</version>
-        </dependency>
-
         <!--
         <dependency>
             <groupId>hu.blackbelt.osgi.utils</groupId>
@@ -121,34 +115,29 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
             <version>6.0.0</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>osgi.cmpn</artifactId>
             <version>6.0.0</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.annotation</artifactId>
             <version>6.0.0</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -301,7 +290,6 @@
                             ${osgi-default-import},
                             *
                         </Import-Package>
-                        <Embed-Dependency>throwing-function;inline=true</Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>
@@ -507,6 +495,7 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
@@ -518,6 +507,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
