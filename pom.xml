@@ -59,8 +59,8 @@
         <emf-version>2.21.0</emf-version>
         <emf-common-version>2.18.0</emf-common-version>
 
-        <epsilon-runtime-version>1.4.0.20210919_103207_8f2ef01_develop</epsilon-runtime-version>
-        <emf-genmodel-generator-version>1.0.1</emf-genmodel-generator-version>
+        <epsilon-runtime-version>1.4.0.20211022_072214_ed58056d_develop</epsilon-runtime-version>
+        <emf-genmodel-generator-version>1.0.2.20211021_110357_261394e2_develop</emf-genmodel-generator-version>
 
         <log4j.configuration>log4j.properties</log4j.configuration>
     </properties>
