@@ -45,10 +45,10 @@ public class ConditionalFlow extends AbstractWorkFlow {
         if (predicate.apply(jobReport)) {
             jobReport = nextOnPredicateSuccess.call();
         } else {
-            //log.info("Call work {} - Predicate {} unmatched, and  '{}' FAILED", new String[] {getName(), jobReport.getStatus().name()});
+            log.debug("Call work {} - Predicate {} unmatched, and  '{}' FAILED", new String[] {getName(), jobReport.getStatus().name()});
             if (nextOnPredicateFailure != null && !(nextOnPredicateFailure instanceof NoOpWork)) { // else is optional
-                //log.info("Call work {} - Predicate {} unmatched, and  '{}' - Call work: {}", new String[] {getName(), jobReport.getStatus().name(),
-                //        toExecute.getName(), nextOnPredicateFailure.getName()});
+                log.debug("Call work {} - Predicate {} unmatched, and  '{}' - Call work: {}", new String[] {getName(), jobReport.getStatus().name(),
+                        toExecute.getName(), nextOnPredicateFailure.getName()});
                 jobReport = nextOnPredicateFailure.call();
             }
         }
