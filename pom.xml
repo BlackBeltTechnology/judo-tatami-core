@@ -58,11 +58,18 @@
         <emf-ecore-xmi-version>2.16.0</emf-ecore-xmi-version>
         <emf-version>2.21.0</emf-version>
         <emf-common-version>2.18.0</emf-common-version>
+        <sonar-maven-plugin-version>3.7.0.1746</sonar-maven-plugin-version>
 
         <epsilon-runtime-version>1.4.0.20211025_234532_02f4b628_develop</epsilon-runtime-version>
         <emf-genmodel-generator-version>1.0.2.20211021_110357_261394e2_develop</emf-genmodel-generator-version>
 
         <log4j.configuration>log4j.properties</log4j.configuration>
+
+        <!-- Code Quality-->
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.language>java</sonar.language>
+        <sonar.java.source>${maven.compiler.source}</sonar.java.source>
     </properties>
 
     <url>http://github.com/${project-repositoryId}</url>
@@ -424,6 +431,11 @@
                     <version>1.6.8</version>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${sonar-maven-plugin-version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
