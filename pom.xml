@@ -52,7 +52,6 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <slf4j-version>1.6.6</slf4j-version>
-        <tycho-version>1.4.0</tycho-version>
         <emf-codegen-version>2.19.0</emf-codegen-version>
         <emf-codegen-ecore-version>2.21.0</emf-codegen-ecore-version>
         <emf-ecore-xmi-version>2.16.0</emf-ecore-xmi-version>
