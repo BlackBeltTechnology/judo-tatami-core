@@ -60,7 +60,7 @@
         <sonar-maven-plugin-version>3.7.0.1746</sonar-maven-plugin-version>
 
         <epsilon-runtime-version>1.4.0.20220616_093846_72efef9e_develop</epsilon-runtime-version>
-        <emf-genmodel-generator-version>1.0.2.20220330_082302_0cadb6da_develop</emf-genmodel-generator-version>
+        <emf-genmodel-generator-version>1.0.2.20220618_215944_95bc4477_develop</emf-genmodel-generator-version>
 
         <log4j.configuration>log4j.properties</log4j.configuration>
 
