@@ -51,7 +51,9 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <slf4j-version>1.6.6</slf4j-version>
+        <surefire-version>3.0.0-M5</surefire-version>
+        <logback-test-config>${maven.multiModuleProjectDirectory}/logback-test.xml</logback-test-config>
+        <slf4j-version>1.7.36</slf4j-version>
         <emf-codegen-version>2.19.0</emf-codegen-version>
         <emf-codegen-ecore-version>2.21.0</emf-codegen-ecore-version>
         <emf-ecore-xmi-version>2.16.0</emf-ecore-xmi-version>
@@ -61,8 +63,6 @@
 
         <epsilon-runtime-version>1.4.0.20220616_093846_72efef9e_develop</epsilon-runtime-version>
         <emf-genmodel-generator-version>1.0.2.20220618_225039_158d46f1_develop</emf-genmodel-generator-version>
-
-        <log4j.configuration>log4j.properties</log4j.configuration>
 
         <!-- Code Quality-->
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -170,11 +170,6 @@
             <version>3.0.0</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -205,16 +200,6 @@
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>${slf4j-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
                 <version>${slf4j-version}</version>
             </dependency>
@@ -222,6 +207,11 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.2.11</version>
             </dependency>
 
             <dependency>
@@ -351,13 +341,20 @@
 
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M4</version>
+                    <version>${surefire-version}</version>
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                         <trimStackTrace>false</trimStackTrace>
                         <systemPropertyVariables>
-                            <log4j.configuration>${log4j.configuration}</log4j.configuration>
+                            <logback.configurationFile>${logback-test-config}</logback.configurationFile>
                         </systemPropertyVariables>
+                        <argLine>
+                            -Dfile.encoding=UTF-8
+                            --add-opens java.base/java.lang=ALL-UNNAMED
+                            --add-opens java.base/java.util=ALL-UNNAMED
+                            --add-opens java.base/java.time=ALL-UNNAMED
+                        </argLine>
+                        <trimStackTrace>false</trimStackTrace>
                     </configuration>
                 </plugin>
 
