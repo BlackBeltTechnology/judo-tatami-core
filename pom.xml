@@ -52,6 +52,7 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <surefire-version>3.0.0-M5</surefire-version>
+        <!--suppress UnresolvedMavenProperty -->
         <logback-test-config>${maven.multiModuleProjectDirectory}/logback-test.xml</logback-test-config>
         <slf4j-version>1.7.36</slf4j-version>
         <emf-codegen-version>2.19.0</emf-codegen-version>
