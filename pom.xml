@@ -63,7 +63,7 @@
         <sonar-maven-plugin-version>3.7.0.1746</sonar-maven-plugin-version>
 
         <epsilon-runtime-version>1.5.0</epsilon-runtime-version>
-        <emf-genmodel-generator-version>1.0.2.20220618_225039_158d46f1_develop</emf-genmodel-generator-version>
+        <emf-genmodel-generator-version>1.0.2.20220916_082646</emf-genmodel-generator-version>
 
         <!-- Code Quality-->
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
