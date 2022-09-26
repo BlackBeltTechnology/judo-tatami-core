@@ -1,5 +1,25 @@
 package hu.blackbelt.judo.tatami.core.workflow.flow;
 
+/*-
+ * #%L
+ * Judo :: Tatami :: Core
+ * %%
+ * Copyright (C) 2018 - 2022 BlackBelt Technology
+ * %%
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
+ * with the GNU Classpath Exception which is
+ * available at https://www.gnu.org/software/classpath/license.html.
+ * 
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ * #L%
+ */
+
 import hu.blackbelt.judo.tatami.core.workflow.work.NoOpWork;
 import hu.blackbelt.judo.tatami.core.workflow.work.Work;
 import hu.blackbelt.judo.tatami.core.workflow.work.WorkReport;
@@ -45,10 +65,16 @@ public class ConditionalFlow extends AbstractWorkFlow {
         if (predicate.apply(jobReport)) {
             jobReport = nextOnPredicateSuccess.call();
         } else {
-            //log.info("Call work {} - Predicate {} unmatched, and  '{}' FAILED", new String[] {getName(), jobReport.getStatus().name()});
+            log.debug("Call work {} - Predicate {} unmatched, and  '{}' FAILED", new String[] {
+                    getName(), jobReport == null ? "" :
+                    (jobReport.getStatus() == null ? "" : jobReport.getStatus().name())
+            });
             if (nextOnPredicateFailure != null && !(nextOnPredicateFailure instanceof NoOpWork)) { // else is optional
-                //log.info("Call work {} - Predicate {} unmatched, and  '{}' - Call work: {}", new String[] {getName(), jobReport.getStatus().name(),
-                //        toExecute.getName(), nextOnPredicateFailure.getName()});
+                log.debug("Call work {} - Predicate {} unmatched, and  '{}' - Call work: {}", new String[] {
+                        getName(), jobReport == null ? "" :
+                        (jobReport.getStatus() == null ? "" : jobReport.getStatus().name()),
+                        toExecute.getName(), nextOnPredicateFailure.getName()
+                });
                 jobReport = nextOnPredicateFailure.call();
             }
         }
