@@ -1,5 +1,25 @@
 package hu.blackbelt.judo.tatami.core.workflow.work;
 
+/*-
+ * #%L
+ * Judo :: Tatami :: Core
+ * %%
+ * Copyright (C) 2018 - 2022 BlackBelt Technology
+ * %%
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ * 
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
+ * with the GNU Classpath Exception which is
+ * available at https://www.gnu.org/software/classpath/license.html.
+ * 
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ * #L%
+ */
+
 import com.google.common.collect.Maps;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -53,61 +73,22 @@ public class TransformationContext {
     }
     
     public class TransformationContextVerifier {
-		boolean allExists = true;
 		TransformationContext transformationContext;
 
 		public TransformationContextVerifier(TransformationContext transformationContext) {
 			this.transformationContext = transformationContext;
 		}
 
-		private <T> boolean verifyClassPresent(Class<T> c) {
-			if (!transformationContext.getByClass(c).isPresent()) {
-				log.error("Missing from transformation context: " + c.getName());
-				return false;
-			}
-			return true;
-		}
-		
-		private <T> boolean verifyKeyPresent(Object key) {
-			if (!transformationContext.get(key).isPresent()) {
-				log.error("Missing from transformation context: " + String.valueOf(key));
-				return false;
-			}
-			return true;
-		}
-		
-		private <T> boolean verifyKeyPresent(Class<T> valueType, Object key) {
-			if (!transformationContext.get(valueType, key).isPresent()) {
-				log.error("Missing from transformation context: " + valueType.getName()+ " " + String.valueOf(key));
-				return false;
-			}
-			return true;
+		public  <T> boolean verifyClassPresent(Class<T> c) {
+			return transformationContext.getByClass(c).isPresent();
 		}
 
-		public <T> TransformationContextVerifier isClassExists(Class<T> c) {
-			allExists = allExists && verifyClassPresent(c);
-			return this;
-		}
-		
-		public <T> TransformationContextVerifier isKeyExists(Object key) {
-			allExists = allExists && verifyKeyPresent(key);
-			return this;
-		}
-		
-		public <T> TransformationContextVerifier isKeyExists(Class<T> valueType, Object key)  {
-			allExists = allExists && verifyKeyPresent(valueType, key);
-			return this;
-		}
-		
-		public <T> TransformationContextVerifier isMultipleKeyExists(Class<T> valueType, Object... keys) {
-			for (Object key : keys) {
-				allExists = allExists && verifyKeyPresent(valueType, key);
-			}
-			return this;
+		public <T> boolean verifyKeyPresent(Object key) {
+			return transformationContext.get(key).isPresent();
 		}
 
-		public boolean isAllExists() {
-			return allExists;
+		public <T> boolean verifyKeyPresent(Class<T> valueType, Object key) {
+			return transformationContext.get(valueType, key).isPresent();
 		}
 	}
 }
