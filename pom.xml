@@ -252,8 +252,7 @@
                     <obrRepository>NONE</obrRepository>
                     <instructions>
                         <Export-Package>
-                            hu.blackbelt.judo.tatami.core.*;version=${project.version},
-                            com.pivovarit.function;version:=1.5.0
+                            hu.blackbelt.judo.tatami.core.*
                         </Export-Package>
 
                         <Import-Package>
