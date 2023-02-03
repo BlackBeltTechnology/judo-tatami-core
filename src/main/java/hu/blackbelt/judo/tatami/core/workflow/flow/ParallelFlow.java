@@ -56,13 +56,13 @@ public class ParallelFlow extends AbstractWorkFlow {
      * {@inheritDoc}
      */
     public ParallelFlowReport call() {
-        log.info("Call work '{}' - Call work:  '{}' ", new String[] {getName(),
+        log.debug("Call work '{}' - Call work:  '{}' ", new String[] {getName(),
                 works.stream().map(w -> w.getName()).collect(Collectors.joining(", "))});
 
         ParallelFlowReport workFlowReport = new ParallelFlowReport();
         List<WorkReport> workReports = workExecutor.executeInParallel(works);
         workFlowReport.addAll(workReports);
-        log.info("Work {} Returns: {} ", getName(), workReports.stream().map(wr -> wr.toString()).collect(Collectors.joining(", ")));
+        log.debug("Work {} Returns: {} ", getName(), workReports.stream().map(wr -> wr.toString()).collect(Collectors.joining(", ")));
         return workFlowReport;
     }
 

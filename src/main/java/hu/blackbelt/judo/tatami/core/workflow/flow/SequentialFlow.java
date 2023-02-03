@@ -58,7 +58,7 @@ public class SequentialFlow extends AbstractWorkFlow {
     public WorkReport call() {
         WorkReport workReport = null;
 
-        log.info("Call work '{}' - Call work:  '{}' ", new String[] {getName(),
+        log.debug("Call work '{}' - Call work:  '{}' ", new String[] {getName(),
                 works.stream().map(w -> w.getName()).collect(Collectors.joining(", "))});
 
         if (works.size() == 0) {
@@ -67,11 +67,11 @@ public class SequentialFlow extends AbstractWorkFlow {
         for (Work work : works) {
             workReport = work.call();
             if (workReport != null && WorkReportPredicate.FAILED.apply(workReport)) {
-                log.error(String.format("Work '%s' has failed, skipping subsequent works", work.getName()));
+                log.error(String.format("Work '%s' has failed, skipping subsequent works", work.getName(), workReport.getError()));
                 break;
             }
         }
-        log.info("Work {} Returns: {} ", getName(), workReport);
+        log.debug("Work {} Returns: {} ", getName(), workReport);
         return workReport;
     }
 

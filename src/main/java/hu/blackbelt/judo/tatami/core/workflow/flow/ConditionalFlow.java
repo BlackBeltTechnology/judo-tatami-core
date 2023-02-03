@@ -59,7 +59,7 @@ public class ConditionalFlow extends AbstractWorkFlow {
      * {@inheritDoc}
      */
     public WorkReport call() {
-        log.info("Call work '{}' - Call work: '{}'", new String[] {getName(), toExecute.getName()});
+        log.debug("Call work '{}' - Call work: '{}'", new String[] {getName(), toExecute.getName()});
         WorkReport jobReport = toExecute.call();
 
         if (predicate.apply(jobReport)) {
@@ -78,7 +78,12 @@ public class ConditionalFlow extends AbstractWorkFlow {
                 jobReport = nextOnPredicateFailure.call();
             }
         }
-        log.info("Work {} Returns: {} ", getName(), jobReport);
+        log.debug("Work {} Returns: {} ", getName(), jobReport);
+
+        if (jobReport != null && WorkReportPredicate.FAILED.apply(jobReport)) {
+            log.error(String.format("Work '%s' has failed", toExecute.getName(), jobReport.getError()));
+        }
+
         return jobReport;
     }
 
