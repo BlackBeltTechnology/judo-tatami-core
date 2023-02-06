@@ -49,11 +49,16 @@ public class RepeatFlow extends AbstractWorkFlow {
      */
     public WorkReport call() {
         WorkReport workReport;
-        log.info("Call work '{}' - Call work:  '{}'", new String[] {getName(), work.getName()});
+        log.debug("Call work '{}' - Call work:  '{}'", new String[] {getName(), work.getName()});
         do {
             workReport = work.call();
+
+            if (workReport != null && WorkReportPredicate.FAILED.apply(workReport)) {
+                log.error(String.format("Work '%s' has failed", work.getName(), workReport.getError()));
+            }
+
         } while (predicate.apply(workReport));
-        log.info("Work {} Returns: {} ", getName(), workReport);
+        log.debug("Work {} Returns: {} ", getName(), workReport);
         return workReport;
     }
 
