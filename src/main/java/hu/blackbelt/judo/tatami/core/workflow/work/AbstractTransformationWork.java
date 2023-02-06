@@ -50,7 +50,7 @@ public abstract class AbstractTransformationWork implements Work {
 
     public WorkReport call() {
         if (metricsCollector != null) {
-            metricsCollector.invokedTransformation(getClass().getName());
+            metricsCollector.invokedTransformation(this.getClass().getSimpleName());
         }
         final Long startTs = System.nanoTime();
         boolean failed = false;
@@ -62,7 +62,7 @@ public abstract class AbstractTransformationWork implements Work {
             return new DefaultWorkReport(WorkStatus.FAILED, e);
         } finally {
             if (metricsCollector != null) {
-                metricsCollector.stoppedTransformation(getClass().getName(), System.nanoTime() - startTs, failed);
+                metricsCollector.stoppedTransformation(getClass().getSimpleName(), System.nanoTime() - startTs, failed);
             }
         }
     }
