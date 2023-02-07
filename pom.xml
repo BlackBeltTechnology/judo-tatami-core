@@ -51,7 +51,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <epsilon-runtime-version>1.5.1.20230206_072506_d82eb27f_feature_JNG_3932_LogVerbosity</epsilon-runtime-version>
+        <epsilon-runtime-version>1.5.1.20230206_213546_3ade0dbb_develop</epsilon-runtime-version>
         <emf-genmodel-generator-version>1.1.1.20230120_152641_f8d06d79_develop</emf-genmodel-generator-version>
 
         <slf4j-version>1.7.32</slf4j-version>
