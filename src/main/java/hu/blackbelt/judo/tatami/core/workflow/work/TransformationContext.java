@@ -27,11 +27,16 @@ import static java.util.Optional.ofNullable;
 
 import java.util.Map;
 import java.util.Optional;
+
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class TransformationContext {
 
+    @Setter
+    @Getter
     String modelName;
     Map<Object, Object> variables = Maps.newConcurrentMap();
     public TransformationContextVerifier transformationContextVerifier;
@@ -68,10 +73,6 @@ public class TransformationContext {
     }
 
 
-    public String getModelName() {
-        return this.modelName;
-    }
-    
     public class TransformationContextVerifier {
 		TransformationContext transformationContext;
 
