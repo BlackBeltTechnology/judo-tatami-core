@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.core;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -42,7 +42,7 @@ public class ZipUtil {
 
     /**
      * Compresses a collection of files to a destination zip file.
-     * 
+     *
      * @param listFiles A collection of files and directories
      * @param destZipFile The path of the destination zip file
      * @throws FileNotFoundException if file not found
@@ -67,7 +67,7 @@ public class ZipUtil {
 
     /**
      * Adds a directory to the current zip output stream.
-     * 
+     *
      * @param folder the directory to be added
      * @param parentFolder the path of parent directory
      * @param zos the current zip output stream
@@ -99,7 +99,7 @@ public class ZipUtil {
 
     /**
      * Adds a file to the current zip output stream.
-     * 
+     *
      * @param file the file to be added
      * @param zos the current zip output stream
      * @throws FileNotFoundException if file not found
