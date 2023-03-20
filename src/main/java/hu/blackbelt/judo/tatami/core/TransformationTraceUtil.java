@@ -9,13 +9,13 @@ package hu.blackbelt.judo.tatami.core;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -49,15 +49,15 @@ import java.util.stream.Stream;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 
 /**
- * This utility class helps to manage model transformation traces. By default Epsilon trace can be used, but to trace 
+ * This utility class helps to manage model transformation traces. By default Epsilon trace can be used, but to trace
  * map possible add extra entites by code.
  *
  * The trace meta model is a pseudo meta model which are created on the fly with the structure below.
  * It is an model entries which represents the URI's of source and target map. THe model contains trace entries which
  * have one source {@link URI} and several target {@link URI}. The {@link URI} are represented as {@link String}.
- * The {@link URI} based on the source and target {@link URI}, so to be able to resolve the trace later the resource 
+ * The {@link URI} based on the source and target {@link URI}, so to be able to resolve the trace later the resource
  * have to be available with the same {@link URI}.
- * 
+ *
  * <pre>
  * {@code
  * <?xml version="1.0" encoding="UTF-8"?>
@@ -74,7 +74,7 @@ import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
  * </pre>
  *
  * Example of trace model:
- * 
+ *
  * <pre>
  * {@code
  *    <?xml version="1.0" encoding="ASCII"?>
@@ -103,7 +103,7 @@ import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
  * }
  * </pre>
  *
- * So to resolve map have to be one or more {@link ResourceSet} presented which contains {@link Resource}  
+ * So to resolve map have to be one or more {@link ResourceSet} presented which contains {@link Resource}
  * with asm:northwind  and psm:northwind {@link URI}. If there is no {@link URI} with that {@link URIHandler} can
  * be used for resolve.
  */
@@ -310,7 +310,7 @@ public class TransformationTraceUtil {
 
     /**
      * Save the trace object map. It convert it to pseudo trace model.
-     * 
+     *
      * @param traceEObjectMap the source -> target trace object map
      * @param nameSpace the name of trace. (usually source 2 target)
      * @param modelUri the model {@link URI} of the trace.
@@ -327,7 +327,7 @@ public class TransformationTraceUtil {
 
     /**
      * Save trace list.
-     * 
+     *
      * @param trace list of trace:Trace entries
      * @param nameSpace the name of trace. (usually source 2 target)
      * @param modelUri the model {@link URI} of the trace.
