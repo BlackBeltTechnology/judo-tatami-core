@@ -52,7 +52,7 @@
         <maven.compiler.target>17</maven.compiler.target>
 
         <epsilon-runtime-version>1.5.1.20230914_115155_8ab2f00c_develop</epsilon-runtime-version>
-        <emf-genmodel-generator-version>1.1.1.20230911_125256_b2d4aa28_develop</emf-genmodel-generator-version>
+        <emf-genmodel-generator-version>1.1.1.20231106_151954_7fd1b3f5_develop</emf-genmodel-generator-version>
 
         <slf4j-version>2.0.7</slf4j-version>
         <lombok-version>1.18.24</lombok-version>
