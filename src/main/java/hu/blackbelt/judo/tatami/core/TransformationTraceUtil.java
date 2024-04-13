@@ -41,6 +41,7 @@ import org.eclipse.epsilon.etl.EtlModule;
 import org.eclipse.epsilon.etl.trace.TransformationTrace;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -130,6 +131,8 @@ public class TransformationTraceUtil {
 
         EMap<EObject, List<EObject>> ret = ECollections.asEMap(Maps.newHashMap());
 
+        Map<URI, EObject> cache = new HashMap<>();
+
         for (EObject tr : traceEntries) {
 
             EClass traceClass = tr.eClass();
@@ -153,15 +156,19 @@ public class TransformationTraceUtil {
                 EObject target = null;
                 URI targetURI = URI.createURI(t);
                 for (ResourceSet rs : resourcesToResolve) {
-
-                    try {
-                        target = rs.getEObject(targetURI, false);
-                    } catch (IllegalArgumentException ex) {
-                        // TODO - fix invalid feature exception (JNG-1760)
-                        log.warn("Unable to get object by URI: {}", targetURI, ex);
-                    }
-                    if (target != null) {
-                        break;
+                    if (cache.containsKey(targetURI)) {
+                        target = cache.get(targetURI);
+                    } else {
+                        try {
+                            target = rs.getEObject(targetURI, false);
+                        } catch (IllegalArgumentException ex) {
+                            // TODO - fix invalid feature exception (JNG-1760)
+                            log.warn("Unable to get object by URI: {}", targetURI, ex);
+                        }
+                        if (target != null) {
+                            cache.put(targetURI, target);
+                            break;
+                        }
                     }
                 }
                 if (target == null) {
