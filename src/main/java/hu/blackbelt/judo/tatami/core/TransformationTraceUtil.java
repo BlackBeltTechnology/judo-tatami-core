@@ -23,11 +23,14 @@ package hu.blackbelt.judo.tatami.core;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import hu.blackbelt.epsilon.runtime.execution.EmfUtils;
 import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EMap;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.EClassImpl;
@@ -37,6 +40,7 @@ import org.eclipse.emf.ecore.resource.URIHandler;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
+import org.eclipse.epsilon.emc.emf.EmfUtil;
 import org.eclipse.epsilon.etl.EtlModule;
 import org.eclipse.epsilon.etl.trace.TransformationTrace;
 
@@ -130,22 +134,28 @@ public class TransformationTraceUtil {
     public static Map<EObject, List<EObject>> resolveTransformationTraceAsEObjectMap(List<EObject> traceEntries, List<ResourceSet> resourcesToResolve) {
 
         EMap<EObject, List<EObject>> ret = ECollections.asEMap(Maps.newHashMap());
+        //Map<String, EObject> cache = new HashMap<>();
+        Map<String, EObject> cache = new HashMap<>();
 
-        Map<URI, EObject> cache = new HashMap<>();
+        for (ResourceSet rs : resourcesToResolve) {
+            for (TreeIterator<Notifier> it = rs.getAllContents(); it.hasNext(); ) {
+                Notifier notifier = it.next();
+                if (notifier instanceof EObject) {
+                    EObject eObject = (EObject) notifier;
+                    cache.put(EcoreUtil.getURI(eObject).toString(), eObject);
+                }
+            }
+        }
 
         for (EObject tr : traceEntries) {
-
             EClass traceClass = tr.eClass();
             EAttribute srcUriAttribute = (EAttribute) traceClass.getEStructuralFeature(SOURCE_URI);
             EAttribute targetUriAttributes = (EAttribute) traceClass.getEStructuralFeature(TARRGET_URIS);
 
             EObject source = null;
             URI sourceURI = URI.createURI((String) tr.eGet(srcUriAttribute, false));
-            for (ResourceSet rs : resourcesToResolve) {
-                source = rs.getEObject(sourceURI, false);
-                if (source != null) {
-                    break;
-                }
+            if (cache.containsKey(sourceURI.toString())) {
+                source = cache.get(sourceURI.toString());
             }
             if (source == null) {
                 throw new RuntimeException("Source entry not found on the given resources: " + sourceURI);
@@ -155,22 +165,7 @@ public class TransformationTraceUtil {
             for (String t : (Collection<String>) tr.eGet(targetUriAttributes, false)) {
                 EObject target = null;
                 URI targetURI = URI.createURI(t);
-                for (ResourceSet rs : resourcesToResolve) {
-                    if (cache.containsKey(targetURI)) {
-                        target = cache.get(targetURI);
-                    } else {
-                        try {
-                            target = rs.getEObject(targetURI, false);
-                        } catch (IllegalArgumentException ex) {
-                            // TODO - fix invalid feature exception (JNG-1760)
-                            log.warn("Unable to get object by URI: {}", targetURI, ex);
-                        }
-                        if (target != null) {
-                            cache.put(targetURI, target);
-                            break;
-                        }
-                    }
-                }
+                target = cache.get(targetURI.toString());
                 if (target == null) {
                     throw new RuntimeException("Target entry not found on the given resources: " + t);
                 }
