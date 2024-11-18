@@ -142,7 +142,7 @@ public class TransformationTraceUtil {
                 Notifier notifier = it.next();
                 if (notifier instanceof EObject) {
                     EObject eObject = (EObject) notifier;
-                    cache.put(EcoreUtil.getURI(eObject).toString(), eObject);
+                    cache.put(EcoreUtil.getURI(eObject).fragment(), eObject);
                 }
             }
         }
@@ -154,8 +154,8 @@ public class TransformationTraceUtil {
 
             EObject source = null;
             URI sourceURI = URI.createURI((String) tr.eGet(srcUriAttribute, false));
-            if (cache.containsKey(sourceURI.toString())) {
-                source = cache.get(sourceURI.toString());
+            if (cache.containsKey(sourceURI.fragment())) {
+                source = cache.get(sourceURI.fragment());
             }
             if (source == null) {
                 throw new RuntimeException("Source entry not found on the given resources: " + sourceURI);
@@ -165,7 +165,7 @@ public class TransformationTraceUtil {
             for (String t : (Collection<String>) tr.eGet(targetUriAttributes, false)) {
                 EObject target = null;
                 URI targetURI = URI.createURI(t);
-                target = cache.get(targetURI.toString());
+                target = cache.get(targetURI.fragment());
                 if (target == null) {
                     throw new RuntimeException("Target entry not found on the given resources: " + t);
                 }
