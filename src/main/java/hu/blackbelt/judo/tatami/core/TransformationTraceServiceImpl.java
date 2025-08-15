@@ -142,9 +142,9 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
                     return current;
                 }
                 current = getTraceSourceElementObjectByTargetElement(constructor, current);
-//                if (constructor.getSourceModelTypes().contains(modelType)) {
-//                    return current;
-//                }
+                if (current != null && constructor.getSourceModelTypes().contains(modelType)) {
+                    return current;
+                }
             } else {
                 if (modelType == null) {
                     return current;
