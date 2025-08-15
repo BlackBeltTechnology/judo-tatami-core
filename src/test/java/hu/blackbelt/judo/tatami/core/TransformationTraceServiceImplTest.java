@@ -187,6 +187,76 @@ public class TransformationTraceServiceImplTest {
         assertEquals(ImmutableList.of(level3Model1Holder.getObjectByIndex(2), level3Model1Holder.getObjectByIndex(1)), transformationTraceService.getDescendantOfInstanceByModelType(TEST_1, Level3Model1.class, rootModelHolder.getFirstObject()));
     }
 
+    @Test
+    public void testBuildGraphSimple() {
+        transformationTraceService = new TransformationTraceServiceImpl();
+
+
+        RootModel rootModel = new RootModel();
+        ModelHolder rootModelHolder = createTestClassesAndInstances("root", "Root", 1, 1);
+
+        Level1Model1 level1Model1 = new Level1Model1();
+        ModelHolder level1Model1Holder = createTestClassesAndInstances("level1model1", "Level1Model1", 1, 1);
+
+//        Level1Model2 level1Model2 = new Level1Model2();
+//        ModelHolder level1Model2Holder = createTestClassesAndInstances("level1model2", "Level1Model2", 1, 1);
+//
+//        Level1Model3 level1Model3 = new Level1Model3();
+//        ModelHolder level1Model3Holder = createTestClassesAndInstances("level1model3", "Level1Model3", 1, 1);
+
+
+        //Map<EObject, List<EObject>> root_to_level1model1_map = ImmutableMap.of(rootModelO1, ImmutableList.of(level1Model1O1));
+        TransformationTraceTest root_to_level1model1 = TransformationTraceTest.builder()
+                .modelName(TEST_1)
+                .name("root_to_level1model1")
+                .source(ImmutableList.of(rootModel))
+                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelHolder.getResourceSet()))
+                .sourceURIS(ImmutableMap.of(rootModel, rootModelHolder.getUri()))
+                .target(level1Model1)
+                .targetResourceSet(level1Model1Holder.getResourceSet())
+                .targetURI(level1Model1Holder.getUri())
+                .trace(ImmutableMap.of(rootModelHolder.getFirstObject(), ImmutableList.of(level1Model1Holder.getFirstObject())))
+                .build();
+
+//        TransformationTraceTest root_to_level1model2 = TransformationTraceTest.builder()
+//                .modelName(TEST_1)
+//                .name("root_to_level1model2")
+//                .source(ImmutableList.of(rootModel))
+//                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelHolder.getResourceSet()))
+//                .sourceURIS(ImmutableMap.of(rootModel, rootModelHolder.getUri()))
+//                .target(level1Model2)
+//                .targetResourceSet(level1Model2Holder.getResourceSet())
+//                .targetURI(level1Model2Holder.getUri())
+//                .trace(ImmutableMap.of(rootModelHolder.getFirstObject(), ImmutableList.of(level1Model2Holder.getFirstObject())))
+//                .build();
+//
+//        TransformationTraceTest root_to_level1model3 = TransformationTraceTest.builder()
+//                .modelName(TEST_1)
+//                .name("root_to_level1model3")
+//                .source(ImmutableList.of(rootModel))
+//                .sourceResourceSet(ImmutableMap.of(rootModel, rootModelHolder.getResourceSet()))
+//                .sourceURIS(ImmutableMap.of(rootModel, rootModelHolder.getUri()))
+//                .target(level1Model3)
+//                .targetResourceSet(level1Model3Holder.getResourceSet())
+//                .targetURI(level1Model3Holder.getUri())
+//                .trace(ImmutableMap.of(rootModelHolder.getFirstObject(), ImmutableList.of(level1Model3Holder.getFirstObject())))
+//                .build();
+//
+
+        transformationTraceService.add(root_to_level1model1);
+//        transformationTraceService.add(root_to_level1model2);
+//        transformationTraceService.add(root_to_level1model3);
+
+        assertEquals(rootModelHolder.getFirstObject(), transformationTraceService.getAscendantOfInstanceByModelType(TEST_1, RootModel.class, level1Model1Holder.getFirstObject()));
+
+        assertEquals(ImmutableMap.builder()
+                        .put(root_to_level1model1, ImmutableList.of(level1Model1Holder.getFirstObject()))
+//                        .put(root_to_level1model2, ImmutableList.of(level1Model2Holder.getFirstObject()))
+//                        .put(root_to_level1model3, ImmutableList.of(level1Model3Holder.getFirstObject()))
+                        .build(),
+                transformationTraceService.getAllDescendantOfInstance(TEST_1, rootModelHolder.getFirstObject())
+        );
+    }
 
     public ResourceSet createTestResourceSet(String modelTypeName, String... className) {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
