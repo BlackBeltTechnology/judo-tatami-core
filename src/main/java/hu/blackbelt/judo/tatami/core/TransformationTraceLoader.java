@@ -2,7 +2,7 @@ package hu.blackbelt.judo.tatami.core;
 
 /*-
  * #%L
- * Judo :: Tatami :: Core
+ * Judo :: Tatami :: Loader
  * %%
  * Copyright (C) 2018 - 2022 BlackBelt Technology
  * %%
@@ -20,12 +20,8 @@ package hu.blackbelt.judo.tatami.core;
  * #L%
  */
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import hu.blackbelt.epsilon.runtime.execution.EmfUtils;
-import hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext;
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
@@ -40,16 +36,11 @@ import org.eclipse.emf.ecore.resource.URIHandler;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
-import org.eclipse.epsilon.emc.emf.EmfUtil;
-import org.eclipse.epsilon.etl.EtlModule;
-import org.eclipse.epsilon.etl.trace.TransformationTrace;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 
@@ -113,7 +104,7 @@ import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
  * be used for resolve.
  */
 @Slf4j
-public class TransformationTraceUtil {
+public class TransformationTraceLoader {
 
     private static final String HTTP_WWW_BLACKBELT_HU_META_TRASFORMATION_TRACE = "http:///www.blackbelt.hu/meta/trasformation/trace/";
     private static final String TRACE_CLASS = "Trace";
@@ -178,45 +169,6 @@ public class TransformationTraceUtil {
     }
 
 
-    /**
-     * Get list of trace:Trace entries from an Epsilon {@link EtlExecutionContext} which contains information
-     * about a model to model transformation.
-     *
-     * @param nameSpace the logical name of trace. Its a postfix for NSUri too.
-     * @param etlExecutionContext the {@link EtlExecutionContext} which represents a transformation execution.
-     * @return List of trace:Trace EObjects which contain source : targets mapping
-     */
-    public static List<EObject> getTransformationTraceFromEtlExecutionContext(String nameSpace, EtlExecutionContext etlExecutionContext) {
-        return getTransformationTraceFromEtlExecutionContext(nameSpace, getTraceEObjectMapFromEtlExecutionContext(etlExecutionContext));
-    }
-
-    /**
-     * Get flattened EObject trace map from Epsilon {@link EtlExecutionContext}.
-     * @param etlExecutionContext the {@link EtlExecutionContext} which represents a transformation execution.
-     * @return trace {@link EObject} map
-     */
-    @SuppressWarnings("WeakerAccess")
-    public static Map<EObject, List<EObject>> getTraceEObjectMapFromEtlExecutionContext(EtlExecutionContext etlExecutionContext) {
-        try {
-            TransformationTrace transformationTrace = ((EtlModule) etlExecutionContext
-                    .getModule(ImmutableMap.of()))
-                    .getContext()
-                    .getTransformationTrace();
-
-            return transformationTrace.getTransformations().stream()
-                    .filter(tr -> tr.getSource() instanceof EObject)
-                    .collect(Collectors.toMap(
-                            tr -> (EObject) tr.getSource(),
-                            tr -> tr.getTargets().stream()
-                                    .filter(EObject.class :: isInstance)
-                                    .map(EObject.class :: cast)
-                                    .collect(Collectors.toList()),
-                            (ls1, ls2) -> Stream.concat(ls1.stream(), ls2.stream()).collect(Collectors.toList())));
-        } catch (ScriptExecutionException ignore) {
-            // Never happening in this context
-            throw new IllegalStateException("It is a serious bug. In theory it can never happen.");
-        }
-    }
 
     /**
      * Get list of trace:Trace entries for trace {@link EObject} map. This utils converts physical {@link EObject}
@@ -226,7 +178,7 @@ public class TransformationTraceUtil {
      * @param traceEObjectMap the source and target {@link EObject} mao
      * @return trace:Trace {@link EObject} entries.
      */
-    public static List<EObject> getTransformationTraceFromEtlExecutionContext(String nameSpace, Map<EObject, List<EObject>> traceEObjectMap) {
+    public static List<EObject> getTransformationTraceFromTraceMap(String nameSpace, Map<EObject, List<EObject>> traceEObjectMap) {
         ResourceSet resourceSet = createTraceResourceSet(nameSpace);
         EPackage tracePackage = resourceSet.getPackageRegistry().getEPackage(HTTP_WWW_BLACKBELT_HU_META_TRASFORMATION_TRACE + nameSpace);
         EClassImpl traceClass = (EClassImpl) tracePackage.getEClassifier(TRACE_CLASS);
@@ -324,7 +276,7 @@ public class TransformationTraceUtil {
                                                                   URI modelUri,
                                                                   URIHandler uriHandler) {
         return createTraceModelResourceFromTraceList(
-                getTransformationTraceFromEtlExecutionContext(nameSpace, traceEObjectMap), nameSpace, modelUri, uriHandler);
+                getTransformationTraceFromTraceMap(nameSpace, traceEObjectMap), nameSpace, modelUri, uriHandler);
     }
 
     /**
