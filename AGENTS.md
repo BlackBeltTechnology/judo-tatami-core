@@ -49,23 +49,70 @@ judo-tatami-util/
 
 ## Core Components
 
-### TransformationTraceExtractor
+### TransformationTraceLoader (New Unified API)
 
-The main utility class (`src/main/java/hu/blackbelt/judo/tatami/util/TransformationTraceExtractor.java`) provides:
+The primary utility class for loading and saving transformation traces (`src/main/java/hu/blackbelt/judo/tatami/core/TransformationTraceLoader.java`):
 
 | Method | Purpose |
 |--------|---------|
-| `resolveTransformationTraceAsEObjectMap()` | Resolves trace entries from trace model to EObject map |
-| `getTransformationTraceFromEtlExecutionContext()` | Extracts trace entries from Epsilon ETL execution |
-| `getTraceEObjectMapFromEtlExecutionContext()` | Gets flattened EObject trace map from ETL context |
-| `createTraceResourceSet()` | Creates ResourceSet for handling pseudo trace models |
-| `createTraceModelResourceFromEObjectMap()` | Saves trace object map as pseudo trace model |
-| `createTraceModelResourceFromTraceList()` | Saves trace list to Resource |
-| `createTraceModelResource()` | Creates empty trace model Resource |
+| `loadTrace(File, List<ResourceSet>)` | Load traces with auto-format detection (JSON/XMI) |
+| `loadTrace(File, TraceFormat, List<ResourceSet>)` | Load traces with explicit format |
+| `saveTrace(List<TraceEntry>, File)` | Save traces with auto-format detection |
+| `saveTrace(List<TraceEntry>, File, TraceFormat)` | Save traces with explicit format |
+| `toLegacyFormat(List<TraceEntry>)` | Convert to legacy Map<EObject, List<EObject>> format |
+| `fromLegacyFormat(Map<EObject, List<EObject>>)` | Convert from legacy format |
+| `toMultiSourceFormat(List<TraceEntry>)` | Convert to multi-source format |
 
-### Trace Model Structure
+### TraceEntry Data Model
 
-The trace metamodel is a pseudo metamodel created on-the-fly with this structure:
+The `TraceEntry` class represents a trace mapping with multi-source support:
+
+```java
+TraceEntry.builder()
+    .source(sourceEObject1)      // Single source
+    .source(sourceEObject2)      // Multiple sources supported
+    .target(targetEObject1)      // Single target
+    .targets(targetList)         // Multiple targets
+    .ruleName("Entity2Table")    // Transformation rule name
+    .discriminator("type1")      // Optional discriminator
+    .primary(true)               // Primary mapping flag
+    .build();
+```
+
+### Supported Trace Formats
+
+| Format | Extension | Loader Class | Description |
+|--------|-----------|--------------|-------------|
+| Zeta JSON | `.json` | `ZetaTraceLoader` | JSON format with id-based resolution |
+| ETL XMI | `.xmi` | `EtlTraceLoader` | XMI format with URI fragment resolution |
+
+### TransformationTraceService Multi-Source API
+
+New methods in `TransformationTraceService` for multi-source trace support:
+
+| Method | Purpose |
+|--------|---------|
+| `getAscendantsOfInstanceByModelType()` | Get all source ascendants of given type |
+| `getRootAscendantsOfInstance()` | Get all root ascendants |
+| `getAllAscendantsOfInstanceMultiSource()` | Get ascendant map with multi-source support |
+| `getDescendantsOfInstancesByModelType()` | Get descendants from multiple sources |
+| `getAllDescendantsOfInstancesMultiSource()` | Get descendant map with multi-source support |
+| `getTraceEntriesForInstance()` | Get trace entries containing an instance |
+
+### Legacy API (Deprecated)
+
+The following methods in `TransformationTraceLoader` are deprecated:
+
+| Method | Replacement |
+|--------|-------------|
+| `resolveTransformationTraceAsEObjectMap()` | Use `loadTrace()` + `toLegacyFormat()` |
+| `getTransformationTraceFromTraceMap()` | Use `saveTrace()` |
+| `createTraceResourceSet()` | No longer needed |
+| `createTraceModelResourceFromEObjectMap()` | Use `saveTrace()` |
+
+### Trace Model Structure (Legacy XMI Format)
+
+The legacy trace metamodel (pseudo metamodel created on-the-fly):
 
 ```xml
 <ecore:EPackage name="trace" nsURI="http:///www.blackbelt.hu/meta/trasformation/trace/{namespace}">
