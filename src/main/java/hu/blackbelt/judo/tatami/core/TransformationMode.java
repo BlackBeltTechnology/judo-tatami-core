@@ -30,22 +30,22 @@ package hu.blackbelt.judo.tatami.core;
  *
  * <strong>Usage Examples:</strong>
  *
- * Default behavior (uses ETL):
+ * Default behavior (uses ZETA):
  * <pre>{@code
  * Psm2AsmWork work = new Psm2AsmWork(context);
- * work.execute(); // Uses ETL by default
+ * work.execute(); // Uses ZETA by default
  * }</pre>
  *
- * Override to use ZETA:
+ * Override to use ETL (legacy):
  * <pre>{@code
  * context.put(Psm2AsmWorkParameter.psm2AsmWorkParameter()
- *         .transformationMode(TransformationMode.ZETA)
+ *         .transformationMode(TransformationMode.ETL)
  *         .build());
  * }</pre>
  *
  * System property override:
  * <pre>{@code
- * // Set via -Djudo.transformation.mode=ZETA
+ * // Set via -Djudo.transformation.mode=ETL
  * TransformationMode mode = TransformationMode.fromSystemProperty();
  * }</pre>
  */
@@ -77,9 +77,10 @@ public enum TransformationMode {
 
     /**
      * The default transformation mode.
-     * Currently ETL is the default until Zeta transformations are fully validated.
+     * ZETA is the default. Use ETL for backward compatibility or when debugging
+     * transformation differences.
      */
-    public static final TransformationMode DEFAULT = ETL;
+    public static final TransformationMode DEFAULT = ZETA;
 
     /**
      * Gets the transformation mode from system property, or returns the default.
