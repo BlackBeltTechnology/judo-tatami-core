@@ -374,18 +374,20 @@ public class MyTransformationWork extends AbstractTransformationWork {
 
 ### TransformationMode
 
-Switch between ETL (Epsilon) and ZETA (Java) transformation engines:
+Switch between ZETA (Java) and ETL (Epsilon) transformation engines:
 
 ```java
 public enum TransformationMode {
     ETL,   // Legacy Epsilon ETL scripts
-    ZETA;  // New Java-based transformations
+    ZETA;  // Java-based transformations (default)
 }
 
-// Override via system property
-// -Djudo.transformation.mode=ZETA
+// Default is ZETA. Override to ETL via system property:
+// -Djudo.transformation.mode=ETL
 TransformationMode mode = TransformationMode.fromSystemProperty();
 ```
+
+**Migration Note:** As of this version, the default transformation mode is `ZETA`. Users who require the legacy ETL behavior should explicitly set `TransformationMode.ETL` in their work parameters or use the `-Djudo.transformation.mode=ETL` system property.
 
 ## EMF/Ecore Patterns
 
