@@ -68,7 +68,17 @@ public enum TransformationMode {
      * type safety with compile-time checking, improved performance,
      * and standard JUnit testing patterns.
      */
-    ZETA;
+    ZETA,
+
+    /**
+     * Run both ETL and ZETA transformation engines.
+     * <p>
+     * This mode executes both transformation engines and compares their outputs
+     * for validation purposes. Useful for verifying Zeta transformation correctness
+     * against the reference ETL implementation during migration or testing.
+     * </p>
+     */
+    DUAL;
 
     /**
      * System property name for overriding transformation mode.
@@ -107,18 +117,27 @@ public enum TransformationMode {
     /**
      * Checks if this mode uses the Zeta (Java-based) transformation engine.
      *
-     * @return true if this is ZETA mode
+     * @return true if this is ZETA or DUAL mode
      */
     public boolean isZeta() {
-        return this == ZETA;
+        return this == ZETA || this == DUAL;
     }
 
     /**
      * Checks if this mode uses the ETL (Epsilon) transformation engine.
      *
-     * @return true if this is ETL mode
+     * @return true if this is ETL or DUAL mode
      */
     public boolean isEtl() {
-        return this == ETL;
+        return this == ETL || this == DUAL;
+    }
+
+    /**
+     * Checks if this mode runs both transformation engines.
+     *
+     * @return true if this is DUAL mode
+     */
+    public boolean isDual() {
+        return this == DUAL;
     }
 }
