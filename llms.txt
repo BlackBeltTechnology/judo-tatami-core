@@ -18,6 +18,22 @@ Key facts:
 - [CONTRIBUTING.md](CONTRIBUTING.md): Contribution guidelines and code structure
 - [documentation/workflow.md](documentation/workflow.md): Workflow engine API guide with tutorial and examples
 
+## Depends on
+
+- [emf-genmodel-generator](../../eclipse/emf-genmodel-generator): eclipse/emf-genmodel-generator
+
+## Used by
+
+- [judo-platform](../judo-platform): runtime/judo-platform
+- [judo-runtime-core](../judo-runtime-core): runtime/judo-runtime-core
+- [judo-runtime-core-esm-itest](../judo-runtime-core-esm-itest): runtime/judo-runtime-core-esm-itest
+- [judo-services](../judo-services): runtime/judo-services
+- [judo-tatami](../judo-tatami): runtime/judo-tatami
+- [judo-tatami-base](../judo-tatami-base): runtime/judo-tatami-base
+- [judo-tatami-client](../judo-tatami-client): runtime/judo-tatami-client
+- [judo-tatami-jsl](../judo-tatami-jsl): runtime/judo-tatami-jsl
+- [judo-tatami-util](../judo-tatami-util): runtime/judo-tatami-util
+
 ## Optional
 
 - [.github/CIFLOW.md](.github/CIFLOW.md): CI/CD flow documentation with diagrams
