@@ -1,0 +1,26 @@
+# judo-tatami-core
+
+> Foundational library for the JUDO platform providing EMF-based transformation trace tracking and a composable workflow engine for orchestrating model-to-model transformations.
+
+Key facts:
+- Java 21, Maven 3.9.4+ (single-module project, OSGi bundle packaging)
+- EMF-based tracing framework recording source-to-target EObject mappings across multi-step transformation pipelines
+- Lightweight workflow engine with sequential, parallel, conditional, and repeat flow types that nest arbitrarily
+- OSGi Declarative Services for dynamic model service binding and trace management
+- Core dependencies: Eclipse EMF 4.22, OSGi 6.0.0, Google Guava, SLF4J, Lombok
+- Part of the [judo-community](https://github.com/BlackBeltTechnology/judo-community) aggregator ecosystem
+- License: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+## Docs
+
+- [README.md](README.md): Project overview, architecture diagrams, usage examples, and build instructions
+- [AGENTS.md](AGENTS.md): Full developer guide with class tables, build commands, technology stack, and coding conventions
+- [CONTRIBUTING.md](CONTRIBUTING.md): Contribution guidelines and code structure
+- [documentation/workflow.md](documentation/workflow.md): Workflow engine API guide with tutorial and examples
+
+## Optional
+
+- [.github/CIFLOW.md](.github/CIFLOW.md): CI/CD flow documentation with diagrams
+- [.github/workflows/build.yml](.github/workflows/build.yml): Main CI pipeline (build, test, deploy, tag, release)
+- [.github/workflows/release.yml](.github/workflows/release.yml): Manual release trigger
+- [LICENSE.txt](LICENSE.txt): License text
