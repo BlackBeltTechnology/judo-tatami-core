@@ -20,19 +20,19 @@ Key facts:
 
 ## Depends on
 
-- [emf-genmodel-generator](../../eclipse/emf-genmodel-generator): eclipse/emf-genmodel-generator
+- [emf-genmodel-generator](../../eclipse/emf-genmodel-generator): Generates Builder pattern classes and helpers from EMF GenModel files
 
 ## Used by
 
-- [judo-platform](../judo-platform): runtime/judo-platform
-- [judo-runtime-core](../judo-runtime-core): runtime/judo-runtime-core
-- [judo-runtime-core-esm-itest](../judo-runtime-core-esm-itest): runtime/judo-runtime-core-esm-itest
-- [judo-services](../judo-services): runtime/judo-services
-- [judo-tatami](../judo-tatami): runtime/judo-tatami
-- [judo-tatami-base](../judo-tatami-base): runtime/judo-tatami-base
-- [judo-tatami-client](../judo-tatami-client): runtime/judo-tatami-client
-- [judo-tatami-jsl](../judo-tatami-jsl): runtime/judo-tatami-jsl
-- [judo-tatami-util](../judo-tatami-util): runtime/judo-tatami-util
+- [judo-platform](../judo-platform): Model-driven OSGi runtime platform with REST APIs and Karaf deployment
+- [judo-runtime-core](../judo-runtime-core): Multi-module runtime engine — data access, business logic, REST, and security
+- [judo-runtime-core-esm-itest](../judo-runtime-core-esm-itest): Integration tests for ESM-to-RDBMS transformation pipeline
+- [judo-services](../judo-services): OSGi runtime services enabling multiple data models in a single Karaf container
+- [judo-tatami](../judo-tatami): Model transformation pipeline — ESM/PSM to deployable application artifacts
+- [judo-tatami-base](../judo-tatami-base): PSM transformation pipeline — models to schemas, expressions, and configurations
+- [judo-tatami-client](../judo-tatami-client): ESM-to-UI model transformation using Eclipse Epsilon ETL
+- [judo-tatami-jsl](../judo-tatami-jsl): JSL-to-runtime model transformation engine (PSM, ASM, UI, RDBMS, etc.)
+- [judo-tatami-util](../judo-tatami-util): Utility facade for EMF model transformation traces
 
 ## Optional
 
