@@ -23,9 +23,13 @@ package hu.blackbelt.judo.tatami.core;
 import static org.eclipse.emf.common.util.ECollections.asEList;
 import static org.eclipse.emf.common.util.ECollections.newBasicEList;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -295,5 +299,203 @@ public class TransformationTraceServiceImpl implements TransformationTraceServic
         } else {
             return EcoreUtil.equals(o1, o2);
         }
+    }
+
+    // ==================== NEW MULTI-SOURCE API IMPLEMENTATIONS ====================
+
+    @Override
+    public List<EObject> getAscendantsOfInstanceByModelType(String modelName, Class sourceModelType, EObject targetElement) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model defined: " + modelName);
+        }
+
+        Set<EObject> result = new HashSet<>();
+        List<EObject> currentElements = new ArrayList<>();
+        currentElements.add(targetElement);
+
+        while (!currentElements.isEmpty()) {
+            List<EObject> nextElements = new ArrayList<>();
+            for (EObject current : currentElements) {
+                TransformationTrace constructor = getParentTransformationTraceByInstance(modelName, current);
+                if (constructor != null) {
+                    if (sourceModelType == null || constructor.getSourceModelTypes().contains(sourceModelType)) {
+                        // Get all sources for this target using TraceEntry API
+                        List<EObject> sources = getTraceSourceElementsByTargetElement(constructor, current);
+                        if (sourceModelType == null) {
+                            result.addAll(sources);
+                        } else if (constructor.getSourceModelTypes().contains(sourceModelType)) {
+                            result.addAll(sources);
+                        }
+                    }
+                    // Continue traversing up through all sources
+                    List<EObject> sources = getTraceSourceElementsByTargetElement(constructor, current);
+                    nextElements.addAll(sources);
+                }
+            }
+            currentElements = nextElements;
+        }
+        return new ArrayList<>(result);
+    }
+
+    @Override
+    public List<EObject> getRootAscendantsOfInstance(String modelName, EObject targetElement) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model defined: " + modelName);
+        }
+
+        Set<EObject> result = new HashSet<>();
+        List<EObject> currentElements = new ArrayList<>();
+        currentElements.add(targetElement);
+
+        while (!currentElements.isEmpty()) {
+            List<EObject> nextElements = new ArrayList<>();
+            for (EObject current : currentElements) {
+                TransformationTrace constructor = getParentTransformationTraceByInstance(modelName, current);
+                if (constructor != null) {
+                    List<EObject> sources = getTraceSourceElementsByTargetElement(constructor, current);
+                    nextElements.addAll(sources);
+                } else {
+                    // No parent trace, this is a root
+                    result.add(current);
+                }
+            }
+            currentElements = nextElements;
+        }
+        return new ArrayList<>(result);
+    }
+
+    @Override
+    public Map<TransformationTrace, List<EObject>> getAllAscendantsOfInstanceMultiSource(String modelName, EObject targetElement) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model defined: " + modelName);
+        }
+
+        Map<TransformationTrace, List<EObject>> result = Maps.newLinkedHashMap();
+        List<EObject> currentElements = new ArrayList<>();
+        currentElements.add(targetElement);
+
+        while (!currentElements.isEmpty()) {
+            List<EObject> nextElements = new ArrayList<>();
+            for (EObject current : currentElements) {
+                TransformationTrace constructor = getParentTransformationTraceByInstance(modelName, current);
+                if (constructor != null) {
+                    List<EObject> sources = getTraceSourceElementsByTargetElement(constructor, current);
+                    if (!sources.isEmpty()) {
+                        result.computeIfAbsent(constructor, k -> new ArrayList<>()).addAll(sources);
+                        nextElements.addAll(sources);
+                    }
+                }
+            }
+            currentElements = nextElements;
+        }
+        return result;
+    }
+
+    @Override
+    public List<EObject> getDescendantsOfInstancesByModelType(String modelName, Class modelType, EObject... sourceInstances) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model defined: " + modelName);
+        }
+
+        List<EObject> currentList = new ArrayList<>(Arrays.asList(sourceInstances));
+        List<EObject> result = new ArrayList<>();
+
+        while (!currentList.isEmpty()) {
+            List<EObject> childs = new ArrayList<>();
+            for (EObject current : currentList) {
+                List<TransformationTrace> transformationTraceList = getChildTransformationTracesByInstance(modelName, current);
+                for (TransformationTrace tr : transformationTraceList) {
+                    List<EObject> elements = getTraceTargetElementObjectBySourceElement(tr, current);
+                    if (elements != null) {
+                        if (tr.getTargetModelType().equals(modelType)) {
+                            result.addAll(elements);
+                        }
+                        childs.addAll(elements);
+                    }
+                }
+            }
+            currentList = childs;
+        }
+        return result;
+    }
+
+    @Override
+    public Map<TransformationTrace, List<EObject>> getAllDescendantsOfInstancesMultiSource(String modelName, EObject... sourceInstances) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model defined: " + modelName);
+        }
+
+        List<EObject> currentList = new ArrayList<>(Arrays.asList(sourceInstances));
+        Map<TransformationTrace, List<EObject>> result = Maps.newLinkedHashMap();
+
+        while (!currentList.isEmpty()) {
+            List<EObject> childs = new ArrayList<>();
+            for (EObject current : currentList) {
+                List<TransformationTrace> transformationTraceList = getChildTransformationTracesByInstance(modelName, current);
+                for (TransformationTrace tr : transformationTraceList) {
+                    List<EObject> elements = getTraceTargetElementObjectBySourceElement(tr, current);
+                    if (elements != null && !elements.isEmpty()) {
+                        result.computeIfAbsent(tr, k -> new ArrayList<>()).addAll(elements);
+                        childs.addAll(elements);
+                    }
+                }
+            }
+            currentList = childs;
+        }
+
+        // Remove all entries with empty lists
+        for (TransformationTrace k : ImmutableSet.copyOf(result.keySet())) {
+            if (result.get(k).isEmpty()) {
+                result.remove(k);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<TraceEntry> getTraceEntriesForInstance(String modelName, EObject instance) {
+        if (!modelNameCache.containsKey(modelName)) {
+            throw new IllegalArgumentException("No model defined: " + modelName);
+        }
+
+        List<TraceEntry> result = new ArrayList<>();
+        for (TransformationTrace trace : modelNameCache.get(modelName)) {
+            for (TraceEntry entry : trace.getTraceEntries()) {
+                boolean containsInstance = false;
+                // Check if instance is in sources
+                for (EObject source : entry.getSources()) {
+                    if (equals(source, instance)) {
+                        containsInstance = true;
+                        break;
+                    }
+                }
+                // Check if instance is in targets
+                if (!containsInstance) {
+                    for (EObject target : entry.getTargets()) {
+                        if (equals(target, instance)) {
+                            containsInstance = true;
+                            break;
+                        }
+                    }
+                }
+                if (containsInstance) {
+                    result.add(entry);
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<EObject> getTraceSourceElementsByTargetElement(TransformationTrace constructor, EObject targetElement) {
+        List<EObject> result = new ArrayList<>();
+        for (TraceEntry entry : constructor.getTraceEntries()) {
+            for (EObject target : entry.getTargets()) {
+                if (equals(target, targetElement)) {
+                    result.addAll(entry.getSources());
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }
