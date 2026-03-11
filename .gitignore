@@ -60,3 +60,8 @@ wercker.env
 .vscode
 .release
 /build.log
+.claude/commands/opsx
+.claude/skills/openspec-*.md
+.gemini
+.opencode
+.agent
