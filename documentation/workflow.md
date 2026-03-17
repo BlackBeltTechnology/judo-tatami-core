@@ -1,8 +1,29 @@
-# Workflow Documentation
+# Workflow Engine Guide
 
-## The `WorkFlowEngine` API
+This document provides a comprehensive guide to the Workflow Engine API, covering the core abstractions, built-in flow types, and how to compose them into complex workflows.
 
-The `WorkFlowEngine` interface represents a workflow engine:
+---
+
+## Table of Contents
+
+- [WorkFlowEngine API](#workflowengine-api)
+- [WorkFlow API](#workflow-api)
+- [Type Hierarchy](#type-hierarchy)
+- [Built-in Flows](#built-in-flows)
+  - [ConditionalFlow](#conditional-flow)
+  - [SequentialFlow](#sequential-flow)
+  - [ParallelFlow](#parallel-flow)
+  - [RepeatFlow](#repeat-flow)
+- [Creating Custom Flows](#creating-custom-flows)
+- [The Work Abstraction](#the-work-abstraction)
+- [Execution Sequence](#execution-sequence)
+- [Tutorial](#tutorial)
+
+---
+
+## WorkFlowEngine API
+
+The `WorkFlowEngine` interface represents the entry point for executing workflows:
 
 ```java
 public interface WorkFlowEngine {
@@ -12,7 +33,7 @@ public interface WorkFlowEngine {
 }
 ```
 
-Workflow provides an implementation of this interface that you can get using the `WorkFlowEngineBuilder`:
+An implementation of this interface is obtained through the `WorkFlowEngineBuilder`:
 
 ```java
 WorkFlowEngine workFlowEngine = aNewWorkFlowEngine().build();
@@ -22,14 +43,16 @@ You can then execute a `WorkFlow` by invoking the `run` method:
 
 ```java
 WorkFlow workFlow = ... // create work flow
-WorkReport workReport = workFlowEngine.run(workflow);
+WorkReport workReport = workFlowEngine.run(workFlow);
 ```
 
-At the end of execution, a `WorkReport` is returned.
+At the end of execution, a `WorkReport` is returned containing the status of the workflow run.
 
-## The `WorkFlow` API
+---
 
-A work flow in Easy Flows is represented by the `WorkFlow` interface:
+## WorkFlow API
+
+A workflow is represented by the `WorkFlow` interface:
 
 ```java
 public interface WorkFlow extends Work {
@@ -37,68 +60,97 @@ public interface WorkFlow extends Work {
 }
 ```
 
-A workflow is also a work. This what makes workflows composable.
+A workflow is also a work. This is what makes workflows **composable** -- any workflow can be used as a unit of work inside another workflow.
 
-## Built-in flows
+---
 
-Easy Flows comes with 4 implementations of the `WorkFlow` interface:
+## Type Hierarchy
 
-### Conditional flow
-
-```mermaid
-flowchart TD
-    Start([Start]) --> W1[w1]
-    W1 --> Decision{condition}
-    Decision -->|true| W2[w2]
-    Decision -->|false| W3[w3]
-```
-
-### Sequential flow
+The following class diagram shows the relationships between the core types in the Workflow Engine:
 
 ```mermaid
-flowchart TD
-    Start([Start]) --> W1[w1]
-    W1 --> W2[w2]
-    W2 --> W3[w3]
-    W3 --> Stop([Stop])
+classDiagram
+    class Work {
+        <<interface>>
+        +getName() String
+        +call() WorkReport
+    }
+
+    class WorkFlow {
+        <<interface>>
+    }
+
+    class SequentialFlow {
+        +call() WorkReport
+    }
+
+    class ParallelFlow {
+        +call() WorkReport
+    }
+
+    class ConditionalFlow {
+        +call() WorkReport
+    }
+
+    class RepeatFlow {
+        +call() WorkReport
+    }
+
+    class WorkReport {
+        <<interface>>
+        +getStatus() WorkStatus
+        +getError() Throwable
+    }
+
+    class WorkReportPredicate {
+        <<interface>>
+        +apply(WorkReport) boolean
+    }
+
+    Work <|-- WorkFlow
+    WorkFlow <|.. SequentialFlow
+    WorkFlow <|.. ParallelFlow
+    WorkFlow <|.. ConditionalFlow
+    WorkFlow <|.. RepeatFlow
+    Work ..> WorkReport : returns
+    WorkReportPredicate ..> WorkReport : evaluates
 ```
 
-### Repeat flow
+---
 
-```mermaid
-flowchart TD
-    Start([Start]) --> W1[w1]
-    W1 --> Decision{repeat?}
-    Decision -->|yes| W1
-    Decision -->|no| Stop([Stop])
-```
+## Built-in Flows
 
-### Parallel flow
+The Workflow Engine comes with four implementations of the `WorkFlow` interface:
 
-```mermaid
-flowchart TD
-    Start([Start]) --> Fork
-    Fork --> W1[w1]
-    Fork --> W2[w2]
-    Fork --> W3[w3]
-    W1 --> Join
-    W2 --> Join
-    W3 --> Join
-    Join --> End([End])
-```
+| Flow Type         | Description                                                        |
+|-------------------|--------------------------------------------------------------------|
+| `ConditionalFlow` | Executes work, then branches based on a predicate                  |
+| `SequentialFlow`  | Executes a series of works one after another                       |
+| `ParallelFlow`    | Executes a set of works concurrently                               |
+| `RepeatFlow`      | Loops a unit of work until a condition is met or a count is reached |
 
-### Conditional flow details
+### Conditional Flow
 
-A conditional flow is defined by 4 artifacts:
+A conditional flow is defined by four artifacts:
 
 - The work to execute first
 - A `WorkReportPredicate` for the conditional logic
-- The work to execute if the predicate is satisfied
-- The work to execute if the predicate is not satisfied (optional)
+- The work to execute if the predicate is satisfied (`then`)
+- The work to execute if the predicate is not satisfied (`otherwise`, optional)
 
-When the `WorkReportPredicate` not satisfied and the not satisfied artifact is not defined the flow execution become failed.
+When the `WorkReportPredicate` is not satisfied and the `otherwise` work is not defined, the flow execution becomes **failed**.
 
-To create a `ConditionalFlow`, you can use the `ConditionalFlow.Builder`:
+```mermaid
+flowchart TD
+    Start([Start]) --> W1[Execute work1]
+    W1 --> Predicate{Predicate\nsatisfied?}
+    Predicate -- Yes --> W2[Execute work2\nthen]
+    Predicate -- No --> W3[Execute work3\notherwise]
+    W2 --> End([End])
+    W3 --> End
+```
+
+To create a `ConditionalFlow`, use the `ConditionalFlow.Builder`:
 
 ```java
 ConditionalFlow conditionalFlow = ConditionalFlow.Builder.aNewConditionalFlow()
@@ -110,9 +162,23 @@ ConditionalFlow conditionalFlow = ConditionalFlow.Builder.aNewConditionalFlow()
         .build();
 ```
 
-### Sequential flow details
+### Sequential Flow
 
-A `SequentialFlow`, as its name implies, executes a set of work units in sequence. If a work fails, next works in the pipeline will be skipped. To create a `SequentialFlow`, you can use the `SequentialFlow.Builder`:
+A `SequentialFlow` executes a set of work units in sequence. If a work fails, the remaining works in the pipeline are skipped.
+
+```mermaid
+flowchart TD
+    Start([Start]) --> W1[Execute work1]
+    W1 --> Check1{Succeeded?}
+    Check1 -- Yes --> W2[Execute work2]
+    Check1 -- No --> Failed([FAILED])
+    W2 --> Check2{Succeeded?}
+    Check2 -- Yes --> W3[Execute work3]
+    Check2 -- No --> Failed
+    W3 --> Stop([Stop])
+```
+
+To create a `SequentialFlow`, use the `SequentialFlow.Builder`:
 
 ```java
 SequentialFlow sequentialFlow = SequentialFlow.Builder.aNewSequentialFlow()
@@ -123,14 +189,28 @@ SequentialFlow sequentialFlow = SequentialFlow.Builder.aNewSequentialFlow()
         .build();
 ```
 
-### Parallel flow details
+### Parallel Flow
 
-A parallel flow executes a set of works in parallel. The status of a parallel flow execution is defined as:
+A parallel flow executes a set of works concurrently. The status of a parallel flow execution is defined as follows:
 
-- `WorkStatus#COMPLETED`: If all works have successfully completed
-- `WorkStatus#FAILED`: If one of the works has failed
+| Condition             | Resulting Status         |
+|-----------------------|--------------------------|
+| All works completed   | `WorkStatus.COMPLETED`   |
+| Any work failed       | `WorkStatus.FAILED`      |
 
-To create a `ParallelFlow`, you can use the `ParallelFlow.Builder`:
+```mermaid
+flowchart TD
+    Start([Start]) --> Fork
+    Fork --> W1[Execute work1]
+    Fork --> W2[Execute work2]
+    Fork --> W3[Execute work3]
+    W1 --> Join
+    W2 --> Join
+    W3 --> Join
+    Join --> End([End])
+```
+
+To create a `ParallelFlow`, use the `ParallelFlow.Builder`:
 
 ```java
 ParallelFlow parallelFlow = ParallelFlow.Builder.aNewParallelFlow()
@@ -139,19 +219,29 @@ ParallelFlow parallelFlow = ParallelFlow.Builder.aNewParallelFlow()
         .build();
 ```
 
-### Repeat flow details
+### Repeat Flow
 
-A `RepeatFlow` executes a given work in loop until a condition becomes `true` or for a fixed number of times. The condition is expressed using a `WorkReportPredicate`. To create a `RepeatFlow`, you can use the `RepeatFlow.Builder`:
+A `RepeatFlow` executes a given work in a loop until a condition becomes `true` or for a fixed number of times. The condition is expressed using a `WorkReportPredicate`.
+
+```mermaid
+flowchart TD
+    Start([Start]) --> W1[Execute work]
+    W1 --> Check{Condition met\nor count reached?}
+    Check -- No --> W1
+    Check -- Yes --> Stop([Stop])
+```
+
+To create a `RepeatFlow`, use the `RepeatFlow.Builder`:
 
 ```java
+// Repeat a fixed number of times
 RepeatFlow repeatFlow = RepeatFlow.Builder.aNewRepeatFlow()
         .named("execute work 3 times")
         .repeat(work)
         .times(3)
         .build();
 
-// or
-
+// or repeat until a predicate is satisfied
 RepeatFlow repeatFlow = RepeatFlow.Builder.aNewRepeatFlow()
         .named("execute work forever!")
         .repeat(work)
@@ -159,15 +249,35 @@ RepeatFlow repeatFlow = RepeatFlow.Builder.aNewRepeatFlow()
         .build();
 ```
 
-Those are the basic flows you need to know to start creating workflows with Easy Flows. You don't need to learn a complex notation or concepts, just a few natural APIs that are easy to think about.
+These are the basic flows you need to know to start creating workflows. You don't need to learn a complex notation or concepts -- just a few natural APIs that are easy to think about.
 
-## Creating custom flows
+---
 
-You can create your own flows by implementing the `WorkFlow` interface. The `WorkFlowEngine` works against interfaces, so your implementation should be interoperable with built-in flows without any issue.
+## Creating Custom Flows
 
-## The `Work` abstraction and its related APIs
+You can create your own flows by implementing the `WorkFlow` interface. The `WorkFlowEngine` works against interfaces, so your custom implementation will be interoperable with the built-in flows without any issue.
 
-A unit of work in Easy Flows is represented by the `Work` interface:
+```java
+public class MyCustomFlow implements WorkFlow {
+
+    @Override
+    public String getName() {
+        return "my custom flow";
+    }
+
+    @Override
+    public WorkReport call() {
+        // Custom execution logic here
+        return new DefaultWorkReport(WorkStatus.COMPLETED);
+    }
+}
+```
+
+---
+
+## The Work Abstraction
+
+A unit of work is represented by the `Work` interface:
 
 ```java
 public interface Work extends Callable<WorkReport> {
@@ -178,16 +288,50 @@ public interface Work extends Callable<WorkReport> {
 }
 ```
 
-Implementations of this interface must:
+Implementations of this interface must adhere to the following rules:
 
-- catch exceptions and return `WorkStatus#FAILED` in the `WorkReport`
-- make sure the work in finished in a finite amount of time
+| Rule | Description |
+|------|-------------|
+| Exception handling | Catch all exceptions and return `WorkStatus.FAILED` in the `WorkReport` |
+| Finite execution | The work must finish in a finite amount of time |
+| Unique naming | A work name must be unique within a workflow |
 
-A work name must be unique within a workflow. Each work must return a `WorkReport` at the end of execution. This report may serve as a condition to the next work in the workflow through a `WorkReportPredicate`.
+Each work must return a `WorkReport` at the end of execution. This report may serve as a condition to the next work in the workflow through a `WorkReportPredicate`.
+
+---
+
+## Execution Sequence
+
+The following sequence diagram illustrates how the `WorkFlowEngine` executes a `SequentialFlow` containing two work units:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Engine as WorkFlowEngine
+    participant SF as SequentialFlow
+    participant W1 as Work1
+    participant W2 as Work2
+
+    Client->>Engine: run(sequentialFlow)
+    Engine->>SF: call()
+    SF->>W1: call()
+    W1-->>SF: WorkReport [COMPLETED]
+    SF->>SF: Evaluate report
+    SF->>W2: call()
+    W2-->>SF: WorkReport [COMPLETED]
+    SF-->>Engine: WorkReport [COMPLETED]
+    Engine-->>Client: WorkReport [COMPLETED]
+```
+
+---
 
 ## Tutorial
 
-This a simple tutorial about Workflow key APIs. First let's write some work:
+This tutorial walks through composing all four built-in flow types into a single workflow.
+
+### Step 1: Define a Work Unit
+
+First, create a simple unit of work that prints a message:
 
 ```java
 class PrintMessageWork implements Work {
@@ -209,39 +353,57 @@ class PrintMessageWork implements Work {
 }
 ```
 
-This unit of work prints a given message to the standard output. Now let's suppose we want to create the following workflow:
+### Step 2: Design the Workflow
 
-1. print "foo" three times
-2. then print "hello" and "world" in parallel
-3. then if both "hello" and "world" have been successfully printed to the console, print "ok", otherwise print "nok"
+The goal is to create the following workflow:
 
-This workflow can be illustrated as follows:
+1. Print "foo" three times
+2. Then print "hello" and "world" in parallel
+3. Then, if both "hello" and "world" have been successfully printed, print "ok"; otherwise print "nok"
 
-### Tutorial flow
+### Step 3: Visualize the Composite Workflow
 
 ```mermaid
 flowchart TD
-    Start([Start]) --> W1[w1: print 'foo']
-    W1 --> Repeat{repeat 3x?}
-    Repeat -->|yes| W1
-    Repeat -->|no| Fork
-    Fork --> W2[w2: print 'hello']
-    Fork --> W3[w3: print 'world']
-    W2 --> Join
-    W3 --> Join
-    Join --> Decision{completed?}
-    Decision -->|yes| W4[w4: print 'ok']
-    Decision -->|no| W5[w5: print 'nok']
+    Start([Start]) --> RepeatBlock
+
+    subgraph flow1 ["flow1: RepeatFlow"]
+        RepeatBlock[Execute work1\nprint 'foo'] --> RepeatCheck{Repeated\n3 times?}
+        RepeatCheck -- No --> RepeatBlock
+        RepeatCheck -- Yes --> ExitRepeat[Done]
+    end
+
+    ExitRepeat --> ParallelBlock
+
+    subgraph flow3 ["flow3: ConditionalFlow"]
+        subgraph flow2 ["flow2: ParallelFlow"]
+            ParallelBlock --> W2[Execute work2\nprint 'hello']
+            ParallelBlock --> W3[Execute work3\nprint 'world']
+            W2 --> ParallelJoin[Join]
+            W3 --> ParallelJoin
+        end
+
+        ParallelJoin --> CondCheck{flow2\nCOMPLETED?}
+        CondCheck -- Yes --> W4[Execute work4\nprint 'ok']
+        CondCheck -- No --> W5[Execute work5\nprint 'nok']
+    end
+
     W4 --> End([End])
     W5 --> End
 ```
 
-- `flow1` is a `RepeatFlow` of `work1` which is printing "foo" three times
-- `flow2` is a `ParallelFlow` of `work2` and `work3` which respectively print "hello" and "world" in parallel
-- `flow3` is a `ConditionalFlow`. It first executes `flow2` (a workflow is a also a work), then if `flow2` is completed, it executes `work4`, otherwise `work5` which respectively print "ok" and "nok"
-- `flow4` is a `SequentialFlow`. It executes `flow1` then `flow3` in sequence.
+### Step 4: Understand the Flow Composition
 
-This workflow can be implemented with the following snippet:
+| Flow   | Type              | Description                                                                 |
+|--------|-------------------|-----------------------------------------------------------------------------|
+| `flow1` | `RepeatFlow`     | Repeats `work1` (prints "foo") three times                                  |
+| `flow2` | `ParallelFlow`   | Executes `work2` (prints "hello") and `work3` (prints "world") in parallel  |
+| `flow3` | `ConditionalFlow` | Executes `flow2`, then runs `work4` ("ok") or `work5` ("nok") based on result |
+| `flow4` | `SequentialFlow`  | Executes `flow1` followed by `flow3` in sequence                            |
+
+Note that `flow3` takes `flow2` as its initial work -- this demonstrates the composability of workflows, since a `WorkFlow` is also a `Work`.
+
+### Step 5: Implement the Workflow
 
 ```java
 PrintMessageWork work1 = new PrintMessageWork("foo");

@@ -1,215 +1,197 @@
-<!-- OPENSPEC:START -->
-# OpenSpec Instructions
-
-These instructions are for AI assistants working in this project.
-
-Always open `@/openspec/AGENTS.md` when the request:
-- Mentions planning or proposals (words like proposal, spec, change, plan)
-- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
-- Sounds ambiguous and you need the authoritative spec before coding
-
-Use `@/openspec/AGENTS.md` to learn:
-- How to create and apply change proposals
-- Spec format and conventions
-- Project structure and guidelines
-
-Keep this managed block so 'openspec update' can refresh the instructions.
-
-<!-- OPENSPEC:END -->
-
-# Judo Tatami Util - Project Documentation
+# Judo Tatami Core - Project Documentation
 
 ## Project Overview
 
-**Repository:** BlackBeltTechnology/judo-tatami-util  
-**License:** Eclipse Public License 2.0 (EPL-2.0)  
-**Java Version:** 21  
-**Build System:** Maven with OSGi Bundle Plugin
 
-This is a utility library for the JUDO Tatami transformation framework that provides:
-1. **Transformation trace management** - Tools for handling model transformation traces
-2. **Epsilon ETL integration** - Utilities for working with Epsilon transformation traces
-3. **EMF model utilities** - Helpers for EMF/Ecore model operations
+**Repository:** BlackBeltTechnology/judo-tatami-core
+**License:** Eclipse Public License 2.0 (EPL-2.0)
+**Java Version:** 21
+**Build System:** Maven 3.9.4+ with Maven Wrapper (`mvnw`)
+
+1. Provides **transformation trace tracking** for model-to-model conversions in the JUDO platform, backed by Eclipse EMF and managed via OSGi Declarative Services
+2. Implements a **composable workflow engine** with sequential, parallel, conditional, and repeat flow types that can be nested arbitrarily
+3. Includes OSGi **service tracker abstractions** (`AbstractModelTracker`, `AbstractModelPairTracker`) for dynamic model service binding
+4. Offers **utility classes** for EMF pretty-printing, ZIP compression, ANSI terminal coloring, EMap wrapping, and caching input streams
+5. Part of the [judo-community](https://github.com/BlackBeltTechnology/judo-community) aggregator ecosystem — consumed by other "tatami" modules
+
+## Code Instructions
+
+1. First think through the problem, read the codebase for relevant files.
+2. Before you make any major changes, check in with me and I will verify the plan.
+3. Please every step of the way just give me a high level explanation of what changes you made.
+4. Make every task and code change you do as simple as possible. We want to avoid making any massive or complex changes. Every change should impact as little code as possible. Everything is about simplicity.
+5. Maintain a documentation file that describes how the architecture of the app works inside and out.
+6. Never speculate about code you have not opened. If the user references a specific file, you MUST read the file before answering. Make sure to investigate and read relevant files BEFORE answering questions about the codebase. Never make any claims about code before investigating unless you are certain of the correct answer - give grounded and hallucination-free answers.
+7. For implementation use TDD (Test-Driven Development): write or update tests first to define the expected behaviour, verify they fail, then write the minimal implementation to make them pass.
+8. Use DRY (Don't Repeat Yourself): extract reusable logic into separate classes, utilities, or components. If the same pattern appears in multiple places, refactor it into a shared helper.
 
 ## Directory Structure
 
 ```
-judo-tatami-util/
+judo-tatami-core/
 ├── src/
-│   └── main/
-│       └── java/
-│           └── hu/blackbelt/judo/tatami/util/
-│               └── TransformationTraceExtractor.java
-├── pom.xml                         # Maven build configuration
-├── logback-test.xml               # Test logging configuration
-├── .mvn/                          # Maven wrapper configuration
-├── .github/                       # GitHub issue templates
-└── openspec/                      # OpenSpec change management
+│   ├── main/java/hu/blackbelt/judo/tatami/core/
+│   │   ├── *.java                          # Transformation trace + utilities
+│   │   └── workflow/
+│   │       ├── engine/                     # WorkFlowEngine, builder
+│   │       ├── flow/                       # SequentialFlow, ParallelFlow, ConditionalFlow, RepeatFlow
+│   │       └── work/                       # Work, WorkReport, TransformationContext, predicates
+│   └── test/java/hu/blackbelt/judo/tatami/core/
+│       ├── TransformationTraceServiceImplTest.java
+│       └── workflow/flow/                  # Flow tests (SequentialFlowTest, ParallelFlowTest, etc.)
+├── documentation/
+│   └── workflow.md                         # Workflow engine API guide with examples
+├── .github/
+│   ├── workflows/                          # CI/CD GitHub Actions
+│   └── CIFLOW.md                           # CI/CD flow documentation
+├── pom.xml                                 # Single-module OSGi bundle POM
+├── mvnw / mvnw.cmd                        # Maven wrapper
+└── logback-test.xml                        # Test logging configuration
 ```
 
-## Core Components
+## Core Modules
 
-### TransformationTraceLoader (New Unified API)
+This is a **single-module project** (no Maven submodules). The code is organized into two functional areas:
 
-The primary utility class for loading and saving transformation traces (`src/main/java/hu/blackbelt/judo/tatami/core/TransformationTraceLoader.java`):
+### Transformation Trace
 
-| Method | Purpose |
-|--------|---------|
-| `loadTrace(File, List<ResourceSet>)` | Load traces with auto-format detection (JSON/XMI) |
-| `loadTrace(File, TraceFormat, List<ResourceSet>)` | Load traces with explicit format |
-| `saveTrace(List<TraceEntry>, File)` | Save traces with auto-format detection |
-| `saveTrace(List<TraceEntry>, File, TraceFormat)` | Save traces with explicit format |
-| `toLegacyFormat(List<TraceEntry>)` | Convert to legacy Map<EObject, List<EObject>> format |
-| `fromLegacyFormat(Map<EObject, List<EObject>>)` | Convert from legacy format |
-| `toMultiSourceFormat(List<TraceEntry>)` | Convert to multi-source format |
+| Class / Interface | Type | Purpose |
+|---|---|---|
+| `TransformationTrace` | Interface | Represents a model conversion event with source/target models, URIs, and trace maps |
+| `TransformationTraceService` | Interface | API for querying trace hierarchies — ascendant/descendant lookups by model name and EObject |
+| `TransformationTraceServiceImpl` | OSGi @Component | Implementation using ConcurrentMap caching and `TransformationTraceTracker` |
+| `TransformationTraceLoader` | Utility | Creates and resolves EMF-based trace models with pseudo trace meta models |
+| `TransformationTraceTreeElement` | Decorator | Wraps `TransformationTrace` with hierarchical parent relationships |
+| `AbstractModelTracker<T>` | Abstract | OSGi ServiceTracker base for tracking model service registrations |
+| `AbstractModelPairTracker<T1,T2>` | Abstract | Tracks paired model services, calling `install(T1,T2)` when both arrive |
+| `TransformationTraceTracker` | ServiceTracker | Tracks `TransformationTrace` services and delegates to `TransformationTraceService` |
 
-### TraceEntry Data Model
+### Workflow Engine
 
-The `TraceEntry` class represents a trace mapping with multi-source support:
+| Class / Interface | Type | Purpose |
+|---|---|---|
+| `Work` | Interface | Unit of work — extends `Callable<WorkReport>`, has `getName()` and `call()` |
+| `WorkReport` / `DefaultWorkReport` | Interface / Class | Execution result with `WorkStatus` (COMPLETED or FAILED) and optional error |
+| `WorkReportPredicate` | @FunctionalInterface | Decision logic for conditional/repeat flows; includes COMPLETED, FAILED, ALWAYS_TRUE, ALWAYS_FALSE constants and `TimesPredicate` |
+| `WorkFlow` | Interface | Extends `Work` — makes workflows composable (a workflow is also a work unit) |
+| `AbstractWorkFlow` | Abstract | Base class providing `name` field for all flow implementations |
+| `SequentialFlow` | Flow | Executes works in order; stops on first failure |
+| `ParallelFlow` | Flow | Executes works concurrently via `ParallelFlowExecutor`; returns `ParallelFlowReport` |
+| `ConditionalFlow` | Flow | Branches on `WorkReportPredicate` — then/otherwise paths |
+| `RepeatFlow` | Flow | Loops work a fixed number of times or until a predicate is satisfied |
+| `WorkFlowEngine` / `WorkFlowEngineImpl` | Interface / Class | Top-level entry point: `run(WorkFlow) → WorkReport` |
+| `WorkFlowEngineBuilder` | Builder | `aNewWorkFlowEngine().build()` factory |
+| `AbstractTransformationWork` | Abstract | Template method: wraps `execute()` with metrics collection and error handling |
+| `TransformationContext` | Context | Shared key-value store for transformation workflows with type-safe `get(Class<T>)` |
+| `MetricsCollector` | Interface | Callbacks for `invokedTransformation()` and `stoppedTransformation()` timing |
 
-```java
-TraceEntry.builder()
-    .source(sourceEObject1)      // Single source
-    .source(sourceEObject2)      // Multiple sources supported
-    .target(targetEObject1)      // Single target
-    .targets(targetList)         // Multiple targets
-    .ruleName("Entity2Table")    // Transformation rule name
-    .discriminator("type1")      // Optional discriminator
-    .primary(true)               // Primary mapping flag
-    .build();
-```
+### Utilities
 
-### Supported Trace Formats
-
-| Format | Extension | Loader Class | Description |
-|--------|-----------|--------------|-------------|
-| Zeta JSON | `.json` | `ZetaTraceLoader` | JSON format with id-based resolution |
-| ETL XMI | `.xmi` | `EtlTraceLoader` | XMI format with URI fragment resolution |
-
-### TransformationTraceService Multi-Source API
-
-New methods in `TransformationTraceService` for multi-source trace support:
-
-| Method | Purpose |
-|--------|---------|
-| `getAscendantsOfInstanceByModelType()` | Get all source ascendants of given type |
-| `getRootAscendantsOfInstance()` | Get all root ascendants |
-| `getAllAscendantsOfInstanceMultiSource()` | Get ascendant map with multi-source support |
-| `getDescendantsOfInstancesByModelType()` | Get descendants from multiple sources |
-| `getAllDescendantsOfInstancesMultiSource()` | Get descendant map with multi-source support |
-| `getTraceEntriesForInstance()` | Get trace entries containing an instance |
-
-### Legacy API (Deprecated)
-
-The following methods in `TransformationTraceLoader` are deprecated:
-
-| Method | Replacement |
-|--------|-------------|
-| `resolveTransformationTraceAsEObjectMap()` | Use `loadTrace()` + `toLegacyFormat()` |
-| `getTransformationTraceFromTraceMap()` | Use `saveTrace()` |
-| `createTraceResourceSet()` | No longer needed |
-| `createTraceModelResourceFromEObjectMap()` | Use `saveTrace()` |
-
-### Trace Model Structure (Legacy XMI Format)
-
-The legacy trace metamodel (pseudo metamodel created on-the-fly):
-
-```xml
-<ecore:EPackage name="trace" nsURI="http:///www.blackbelt.hu/meta/trasformation/trace/{namespace}">
-  <eClassifiers xsi:type="ecore:EClass" name="Trace">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sourceUri" eType="EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetUri" upperBound="-1" eType="EString"/>
-  </eClassifiers>
-</ecore:EPackage>
-```
+| Class | Purpose |
+|---|---|
+| `ZipUtil` | Recursively compresses files into ZIP archives |
+| `EMapWrapper<K,V>` | Adapts EMF `EMap` to standard `java.util.Map` interface |
+| `PrettyPrinter` | Recursively pretty-prints EMF `EObject` hierarchies |
+| `AnsiColor` | ANSI terminal color utilities (respects `disableJudoAnsiColors` system property) |
+| `CachingInputStream` | `BufferedInputStream` subclass that allows reading after close via reset |
 
 ## Technology Stack
 
 ### Core Technologies
-- **Eclipse Modeling Framework (EMF)** - Model foundation
-- **Ecore** - Model definition language  
-- **Epsilon Runtime** 2.8.0 - ETL transformation support
-- **Judo Tatami Core** - Core transformation framework
-
-### Runtime
-- **OSGi Bundle** - Packaged as OSGi bundle via Apache Felix Bundle Plugin
-- **SLF4J** 2.0.16 - Logging facade
+- **Eclipse EMF 4.22** — EObject, ResourceSet, EPackage, URI for model handling
+- **OSGi 6.0.0** — Declarative Services (@Component, @Activate, @Deactivate), ServiceTracker
+- **Lombok 1.18.34** — @Slf4j, @Getter, @Setter, @Builder, @RequiredArgsConstructor
+- **Google Guava 30.0-jre** — Collection utilities
+- **SLF4J 2.0.16** — Logging facade (Logback 1.5.12 for tests)
 
 ### Build & Quality
-- **Maven** 3.9.4+
-- **JaCoCo** 0.8.12 - Code coverage
-- **SonarQube** 3.9.1 - Code quality
-- **Lombok** 1.18.34 - Annotation processing
+- **Maven 3.9.4+** with Maven Wrapper
+- **Apache Felix Maven Bundle Plugin 5.1.8** — OSGi bundle packaging
+- **JUnit Jupiter 5.9.1** — Unit testing
+- **Mockito 4.8.0** — Mocking
+- **Hamcrest 2.2** — Assertion matchers
+- **JaCoCo 0.8.12** — Code coverage
+- **SonarQube** (via sonar-maven-plugin 3.9.1.2184) — Code quality analysis on `develop`
+- **Surefire 3.5.1** — Test runner with `--add-opens` for Java 21
 
 ## Build Commands
 
 ```bash
-# Standard build
-mvn clean install
-
-# With Maven wrapper
+# Full build with tests
 ./mvnw clean install
+
+# Tests only
+./mvnw clean test
+
+# Single test class
+./mvnw test -Dtest=SequentialFlowTest
+
+# Single test method
+./mvnw test -Dtest=SequentialFlowTest#testSequentialFlowExecution
+
+# Skip tests
+./mvnw clean install -DskipTests
+
+# Generate JaCoCo coverage report (available at target/site/jacoco/)
+./mvnw clean test jacoco:report
 ```
 
 ### Maven Profiles
 
 | Profile | Purpose |
-|---------|---------|
-| `sign-artifacts` | GPG signing for release |
-| `release-central` | Maven Central deployment |
-| `release-judong` | Internal Judo repository |
-| `release-dummy` | Local file system deployment for testing |
-| `generate-github-asciidoc-diagrams` | Generate documentation diagrams |
-| `update-source-code-license` | Update license headers |
-
-## Dependencies
-
-### Main Dependencies
-- `hu.blackbelt.judo.tatami:judo-tatami-core` - Core Tatami framework
-- `hu.blackbelt.epsilon:epsilon-runtime-execution` - Epsilon runtime
-- `org.eclipse.emf:org.eclipse.emf.ecore` - EMF Ecore
-- `org.eclipse.emf:org.eclipse.emf.common` - EMF Common
-- `org.eclipse.emf:org.eclipse.emf.ecore.xmi` - EMF XMI support
-- `com.google.guava:guava` - Google Guava utilities
-
-### Test Dependencies
-- JUnit Jupiter 5.9.1
-- Hamcrest 2.2
-- Mockito 4.8.0
-
-## OSGi Bundle Configuration
-
-The project exports the following package:
-```
-hu.blackbelt.judo.tatami.util.*
-```
+|---|---|
+| `sign-artifacts` | GPG artifact signing via sign-maven-plugin |
+| `release-dummy` | Deploy to local `/tmp/` filesystem (testing) |
+| `release-judong` | Deploy to JudoNG Nexus (`nexus.judo.technology`) |
+| `release-central` | Deploy to Maven Central via OSSRH |
+| `generate-github-asciidoc-diagrams` | Generate HTML docs with PlantUML diagrams |
+| `update-source-code-license` | Update EPL-2.0 license headers in source files |
 
 ## Key Configuration Files
 
 | File | Purpose |
-|------|---------|
-| `pom.xml` | Maven build configuration with bundle plugin |
-| `logback-test.xml` | Test logging configuration |
-| `.mvn/extensions.xml` | Maven extensions |
+|---|---|
+| `pom.xml` | Single-module POM with OSGi bundle packaging, all dependency and plugin config |
+| `logback-test.xml` | Logback configuration for test execution |
+| `.mvn/extensions.xml` | Maven extensions: wagon-file, wagon-webdav-jackrabbit, buildtime, profile-activator |
+| `.github/workflows/build.yml` | Main CI pipeline: build, test, deploy, tag, release |
+| `.github/workflows/release.yml` | Manual release trigger creating PRs to master and develop |
+| `.github/workflows/merge-pr-tagged.yml` | Merges tagged PRs to master or squashes to develop |
 
 ## Development Environment
 
 **Required:**
-- Java 21 JDK
-- Maven 3.9.4+
+- Java 21 JDK (Zulu distribution used in CI)
+- Maven 3.9.4+ (or use the included `./mvnw` wrapper)
+- Git
+
+**Recommended:**
+- IDE with Lombok plugin support
+- EMF tooling for Ecore model navigation
 
 ## Git Workflow
 
 - **Main Branch:** `develop`
-- **Versioning:** SNAPSHOT-based development (currently 1.0.0-SNAPSHOT)
+- **Versioning:** `${revision}` property, currently `1.1.4-SNAPSHOT`
+- **Branch naming:** GitFlow — `feature/JNG-xxx_description`, `bugfix/JNG-xxx_description`, `release/x.y.z`
+- **Commit rule:** Every commit must reference a JIRA ticket (`JNG-xxx`)
+- **CI trigger:** Push to `develop` or PR to `develop`/`master`/`increment/*`/`release/*`
+- **Build timeout:** 30 minutes
 
 ## Important Notes
 
-1. **Understand EMF/Ecore patterns** before modifying trace handling code
-2. **Trace URIs** are based on source and target model URIs - resources must be available with the same URI for trace resolution
-3. **Use OpenSpec for significant changes** - See `openspec/AGENTS.md` for proposal workflow
+1. All flows use the **Builder pattern** with static factory methods (e.g., `SequentialFlow.Builder.aNewSequentialFlow()`) — never use constructors directly
+2. `WorkFlow extends Work` — this is the key design decision enabling **arbitrary nesting** of workflows within workflows
+3. `TransformationTraceServiceImpl` uses **URI fragment comparison** (not object identity) for EObject equality checks
+4. The `AbstractTransformationWork.call()` method is a **template method** — subclasses implement `execute()` while `call()` handles metrics and error wrapping
+5. `TransformationContext` uses a `ConcurrentHashMap` — it is thread-safe for parallel flows
+6. Work names **must be unique** within a workflow
+7. Work implementations **must catch exceptions** and return `WorkStatus.FAILED` — uncaught exceptions break the flow contract
+8. OSGi bundle exports `hu.blackbelt.judo.tatami.core.*` — all packages are public
 
-## Related Projects
+## Related Documentation
 
-- `judo-tatami-core` - Core transformation framework this utility depends on
-- `epsilon-runtime` - Epsilon execution runtime
+- [README.md](README.md) — Project overview and architecture diagrams
+- [CONTRIBUTING.md](CONTRIBUTING.md) — Build commands, code structure, submission guidelines
+- [documentation/workflow.md](documentation/workflow.md) — Workflow engine API guide with tutorial
+- [.github/CIFLOW.md](.github/CIFLOW.md) — CI/CD flow documentation with diagrams

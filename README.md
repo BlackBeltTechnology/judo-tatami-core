@@ -1,524 +1,351 @@
 # judo-tatami-core
 
-[![Build](https://github.com/BlackBeltTechnology/judo-tatami-core/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/BlackBeltTechnology/judo-tatami-core/actions/workflows/build.yml)
+[![Build Status](https://github.com/BlackBeltTechnology/judo-tatami-core/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/BlackBeltTechnology/judo-tatami-core/actions/workflows/build.yml)
+
+| Property       | Value                                |
+|----------------|--------------------------------------|
+| **Group ID**   | `hu.blackbelt.judo.tatami`           |
+| **Artifact**   | `judo-tatami-core`                   |
+| **Version**    | `1.1.4-SNAPSHOT`                     |
+| **Packaging**  | OSGi `bundle`                        |
+| **Java**       | 21                                   |
+| **License**    | EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 |
 
 ## Introduction
 
-JUDO Tatami Core provides the foundational API and utilities for the JUDO Tatami transformation framework. It includes:
+**judo-tatami-core** provides the foundational utilities consumed by all Tatami transformation modules in the JUDO ecosystem. It ships two main subsystems:
 
-- **Transformation Trace System** - Track model transformations through a pipeline
-- **Workflow Engine** - Compose and execute transformation workflows
-- **OSGi Integration** - Service tracking and bundle management
-- **EMF/Ecore Utilities** - Helpers for model operations
+1. **Transformation Trace** -- an EMF-based tracing framework that records which source `EObject` instances produced which target `EObject` instances across a multi-step model transformation pipeline.
+2. **Workflow Engine** -- a lightweight, composable work/flow execution engine used to orchestrate those transformations as sequential, parallel, conditional, or repeating flows.
 
-## Project Details
-
-| Attribute | Value |
-|-----------|-------|
-| **Artifact** | `hu.blackbelt.judo.tatami:judo-tatami-core` |
-| **Java Version** | 21 |
-| **Packaging** | OSGi Bundle |
-| **License** | EPL-2.0 |
-
-## Architecture
-
-```
-hu.blackbelt.judo.tatami.core/
-├── TransformationTrace              # Core interface for trace events
-├── TransformationTraceService       # API for trace pipeline management
-├── TransformationTraceServiceImpl   # OSGi service implementation
-├── TransformationTraceTracker       # OSGi ServiceTracker for traces
-├── TransformationTraceLoader        # Utility for trace persistence
-├── TransformationMode               # ETL vs ZETA engine selector
-├── AbstractModelTracker<T>          # Generic OSGi model tracker
-├── PrettyPrinter                    # EObject debug printing
-├── ZipUtil                          # File compression utility
-└── workflow/
-    ├── engine/
-    │   ├── WorkFlowEngine           # Engine interface
-    │   ├── WorkFlowEngineImpl       # Simple executor
-    │   └── WorkFlowEngineBuilder    # Builder for engine
-    ├── flow/
-    │   ├── WorkFlow                 # extends Work
-    │   ├── SequentialFlow           # Chain execution, stops on failure
-    │   ├── ParallelFlow             # Concurrent execution
-    │   ├── ConditionalFlow          # Predicate-based branching
-    │   └── RepeatFlow               # Loop execution
-    └── work/
-        ├── Work                     # Callable<WorkReport> interface
-        ├── AbstractTransformationWork # Base for transformations
-        ├── TransformationContext    # Key-value context holder
-        ├── WorkReport               # Execution result interface
-        ├── DefaultWorkReport        # Standard implementation
-        ├── WorkStatus               # COMPLETED | FAILED
-        ├── WorkReportPredicate      # Flow control predicates
-        └── MetricsCollector         # Performance tracking
-```
-
-## Core Concepts
-
-### Transformation Trace System
-
-The trace system tracks model transformations through a pipeline, enabling traceability from source to target models.
-
-#### Trace Pipeline Architecture
-
-```
-┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐
-│   PSM   │────►│   ASM   │────►│  RDBMS  │────►│  Final  │
-│  Model  │     │  Model  │     │  Model  │     │  Model  │
-└─────────┘     └─────────┘     └─────────┘     └─────────┘
-     ▲               │               │               │
-     │               ▼               ▼               ▼
-     │          ┌─────────┐    ┌─────────┐    ┌─────────┐
-     │          │ Trace 1 │    │ Trace 2 │    │ Trace 3 │
-     │          └─────────┘    └─────────┘    └─────────┘
-     │                                               │
-     │              Ascendant Traversal              │
-     └───────────────────────────────────────────────┘
-                   Descendant Traversal
-     ─────────────────────────────────────────────────►
-```
-
-#### Supported Trace Formats
-
-| Format | Extension | Description |
-|--------|-----------|-------------|
-| **ETL XMI** | `.xmi` | Legacy Epsilon ETL trace format |
-| **Zeta JSON** | `.json` | New JSON format with multi-source support |
-
-#### Loading Traces
-
-```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│  Trace File     │────►│  TraceLoader     │────►│  TraceEntry[]   │
-│  (.json/.xmi)   │     │  (auto-detect)   │     │  with EObjects  │
-└─────────────────┘     └────────┬─────────┘     └─────────────────┘
-                                 │
-                                 ▼
-                        ┌──────────────────┐
-                        │  ResourceSets    │
-                        │  (for resolution)│
-                        └──────────────────┘
-```
-
-**Unified API:**
-```java
-// Auto-detect format by file extension
-List<TraceEntry> entries = TransformationTraceLoader.loadTrace(
-    new File("trace.json"),
-    Arrays.asList(sourceResourceSet, targetResourceSet)
-);
-
-// Explicit format
-List<TraceEntry> entries = TransformationTraceLoader.loadTrace(
-    new File("trace.xmi"),
-    TraceFormat.ETL_XMI,
-    Arrays.asList(sourceResourceSet, targetResourceSet)
-);
-```
-
-**Element Resolution:**
-- **Zeta JSON**: Matches `id` field against EObject's `id` EAttribute
-- **ETL XMI**: URI fragment match first, falls back to `id` EAttribute
-
-#### TraceEntry Data Model
-
-```java
-// Single source, multiple targets
-TraceEntry entry = TraceEntry.builder()
-    .source(sourceEObject)
-    .target(targetEObject1)
-    .target(targetEObject2)
-    .ruleName("Entity2Table")
-    .build();
-
-// Multi-source (Zeta semantics)
-TraceEntry entry = TraceEntry.builder()
-    .source(sourceEObject1)
-    .source(sourceEObject2)
-    .target(mergedTargetEObject)
-    .ruleName("MergeEntities")
-    .discriminator("type1")
-    .primary(true)
-    .build();
-```
-
-#### Trace File Examples
-
-**Zeta JSON format:**
-```json
-{
-  "traceEntries": [
-    {
-      "ruleName": "Entity2Table",
-      "source": { "type": "Entity", "id": "entity-customer" },
-      "target": { "type": "Table", "id": "table-customer" },
-      "primary": true
-    },
-    {
-      "ruleName": "MergeEntities",
-      "source": { "type": "Entity", "id": "entity-order" },
-      "target": { "type": "Table", "id": "table-order" },
-      "discriminator": "order-type"
-    }
-  ],
-  "entryCount": 2,
-  "timestamp": 1699123456789
-}
-```
-
-**ETL XMI format:**
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI"
-    xmlns:trace="http:///www.blackbelt.hu/meta/trasformation/trace/psm2asm">
-  <trace:Trace sourceUri="psm:model#_abc123">
-    <targetUri>asm:model#_def456</targetUri>
-    <targetUri>asm:model#_ghi789</targetUri>
-  </trace:Trace>
-</xmi:XMI>
-```
-
-#### Saving Traces
-
-```java
-// Save with auto-detect format
-TransformationTraceLoader.saveTrace(entries, new File("trace.json"));
-
-// Save with explicit format
-TransformationTraceLoader.saveTrace(entries, new File("trace.xmi"), TraceFormat.ETL_XMI);
-```
-
-#### Format Conversion
-
-```java
-// Convert to legacy format (for backward compatibility)
-Map<EObject, List<EObject>> legacyMap = TransformationTraceLoader.toLegacyFormat(entries);
-
-// Convert from legacy format
-List<TraceEntry> entries = TransformationTraceLoader.fromLegacyFormat(legacyMap);
-
-// Convert to multi-source format
-Map<List<EObject>, List<EObject>> multiSourceMap = TransformationTraceLoader.toMultiSourceFormat(entries);
-```
-
-#### TransformationTraceService
-
-Register and query traces through the service:
-
-```java
-// Register traces
-TransformationTraceService traceService = new TransformationTraceServiceImpl();
-traceService.add(psmToAsmTrace);
-traceService.add(asmToRdbmsTrace);
-```
-
-**Single-source API (legacy):**
-```java
-// Get ancestor of specific model type
-EObject psmElement = traceService.getAscendantOfInstanceByModelType(
-    "myModel", PsmModel.class, finalElement);
-
-// Get root ancestor
-EObject root = traceService.getRootAscendantOfInstance("myModel", finalElement);
-
-// Get descendants of specific type
-List<EObject> tables = traceService.getDescendantOfInstanceByModelType(
-    "myModel", RdbmsModel.class, psmEntity);
-
-// Get full ancestor chain
-Map<TransformationTrace, EObject> ancestors =
-    traceService.getAllAscendantOfInstance("myModel", finalElement);
-```
-
-**Multi-source API (new):**
-```java
-// Get ALL source ancestors (for multi-source traces)
-List<EObject> allPsmSources = traceService.getAscendantsOfInstanceByModelType(
-    "myModel", PsmModel.class, finalElement);
-
-// Get all root ancestors
-List<EObject> allRoots = traceService.getRootAscendantsOfInstance("myModel", finalElement);
-
-// Get descendants from multiple sources
-List<EObject> descendants = traceService.getDescendantsOfInstancesByModelType(
-    "myModel", RdbmsModel.class,
-    psmEntity1, psmEntity2  // varargs
-);
-
-// Get full ancestor map with multi-source support
-Map<TransformationTrace, List<EObject>> ancestorMap =
-    traceService.getAllAscendantsOfInstanceMultiSource("myModel", finalElement);
-
-// Find trace entries for an element
-List<TraceEntry> entries = traceService.getTraceEntriesForInstance("myModel", element);
-```
-
-#### Multi-Source Scenario
-
-```
-┌─────────┐
-│ Entity1 │──┐
-└─────────┘  │     ┌─────────────┐
-             ├────►│ MergedTable │
-┌─────────┐  │     └─────────────┘
-│ Entity2 │──┘
-└─────────┘
-
-// Zeta trace with multiple sources
-{
-  "ruleName": "MergeEntities",
-  "sources": [
-    { "type": "Entity", "id": "entity1" },
-    { "type": "Entity", "id": "entity2" }
-  ],
-  "target": { "type": "Table", "id": "merged-table" }
-}
-
-// Query returns both sources
-List<EObject> sources = traceService.getAscendantsOfInstanceByModelType(
-    "myModel", EntityModel.class, mergedTable);
-// Returns: [Entity1, Entity2]
-```
-
-#### TransformationTrace Interface
-
-```java
-interface TransformationTrace {
-    // Model types
-    List<Class> getSourceModelTypes();
-    Class getTargetModelType();
-
-    // Model instances
-    List<Object> getSourceModels();
-    Object getTargetModel();
-
-    // ResourceSets
-    <T> ResourceSet getSourceResourceSet(Class<T> sourceModelType);
-    ResourceSet getTargetResourceSet();
-
-    // Legacy trace map (single source -> multiple targets)
-    Map<EObject, List<EObject>> getTransformationTrace();
-
-    // New unified API
-    default List<TraceEntry> getTraceEntries();
-    default Map<List<EObject>, List<EObject>> getMultiSourceTransformationTrace();
-
-    // Metadata
-    String getModelName();
-    String getTransformationTraceName();
-}
-```
-
-**Key features:**
-- Traces are indexed by `modelName` in `TransformationTraceServiceImpl`
-- Traces form a DAG (directed acyclic graph) from root to leaf models
-- Ascendant methods traverse up the trace chain (target → source)
-- Descendant methods traverse down the trace chain (source → target)
-- Multi-source API returns `List<EObject>` instead of single `EObject`
-
-### Workflow Engine
-
-Builder pattern for composing transformations:
-
-```java
-// Sequential execution - stops on first failure
-SequentialFlow.Builder.aNewSequentialFlow()
-    .named("pipeline")
-    .execute(work1)
-    .then(work2)
-    .then(work3)
-    .build();
-
-// Parallel execution - runs all concurrently
-ParallelFlow.Builder.aNewParallelFlow()
-    .execute(work1, work2, work3)
-    .build();
-
-// Conditional branching
-ConditionalFlow.Builder.aNewConditionalFlow()
-    .execute(checkWork)
-    .when(WorkReportPredicate.COMPLETED)
-    .then(successWork)
-    .otherwise(failureWork)
-    .build();
-```
-
-### Creating Transformation Work
-
-Extend `AbstractTransformationWork` to create transformation steps:
-
-```java
-public class MyTransformationWork extends AbstractTransformationWork {
-
-    public MyTransformationWork(TransformationContext ctx) {
-        super(ctx);
-    }
-
-    @Override
-    public void execute() throws Exception {
-        // Get inputs from context
-        MyInputModel input = transformationContext
-            .getByClass(MyInputModel.class)
-            .orElseThrow();
-
-        // Perform transformation
-        MyOutputModel output = transform(input);
-
-        // Store in context for next work
-        transformationContext.put(output);
-    }
-}
-```
-
-### TransformationMode
-
-Switch between ZETA (Java) and ETL (Epsilon) transformation engines:
-
-```java
-public enum TransformationMode {
-    ETL,   // Legacy Epsilon ETL scripts
-    ZETA;  // Java-based transformations (default)
-}
-
-// Default is ZETA. Override to ETL via system property:
-// -Djudo.transformation.mode=ETL
-TransformationMode mode = TransformationMode.fromSystemProperty();
-```
-
-**Migration Note:** As of this version, the default transformation mode is `ZETA`. Users who require the legacy ETL behavior should explicitly set `TransformationMode.ETL` in their work parameters or use the `-Djudo.transformation.mode=ETL` system property.
-
-## EMF/Ecore Patterns
-
-### EObject Equality
-
-The project uses URI-fragment based equality for performance:
-
-```java
-// Efficient equality check using URI fragments
-public static boolean equals(EObject o1, EObject o2) {
-    Resource r1 = o1.eResource();
-    Resource r2 = o2.eResource();
-
-    if (r1 != null && r2 != null && Objects.equals(r1.getURI(), r2.getURI())) {
-        return Objects.equals(r1.getURIFragment(o1), r2.getURIFragment(o2));
-    }
-    return EcoreUtil.equals(o1, o2);
-}
-```
-
-### Trace Model Structure (Legacy)
-
-The legacy ETL XMI trace format uses a pseudo-metamodel created on-the-fly. The new unified API (`TransformationTraceLoader`) handles this automatically - see [Transformation Trace System](#transformation-trace-system) for details.
-
-```xml
-<ecore:EPackage name="trace"
-    nsURI="http:///www.blackbelt.hu/meta/trasformation/trace/{namespace}">
-  <eClassifiers xsi:type="ecore:EClass" name="Trace">
-    <eStructuralFeatures name="sourceUri" eType="EString"/>
-    <eStructuralFeatures name="targetUri" upperBound="-1" eType="EString"/>
-  </eClassifiers>
-</ecore:EPackage>
-```
-
-## OSGi Integration
-
-### Service Registration
-
-```java
-@Component(service = TransformationTraceService.class)
-public class TransformationTraceServiceImpl implements TransformationTraceService {
-
-    @Activate
-    public void activate(BundleContext bundleContext) {
-        openTracker(bundleContext);
-    }
-
-    @Deactivate
-    public void deactivate() {
-        closeTracker();
-    }
-}
-```
-
-### Model Tracking Pattern
-
-```java
-public abstract class AbstractModelTracker<T> {
-    public abstract void install(T instance);
-    public abstract void uninstall(T instance);
-    public abstract Class<T> getModelClass();
-}
-```
-
-## Build
-
-```bash
-# Standard build
-mvn clean install
-
-# Skip tests
-mvn clean install -DskipTests
-
-# With Maven wrapper
-./mvnw clean install
-```
-
-### Maven Profiles
-
-| Profile | Purpose |
-|---------|---------|
-| `sign-artifacts` | GPG signing for release |
-| `release-central` | Maven Central deployment |
-| `release-judong` | Internal Judo repository |
-| `release-dummy` | Local file system deployment for testing |
-
-## Dependencies
-
-| Dependency | Purpose |
-|------------|---------|
-| `org.eclipse.emf.ecore` | EMF model foundation |
-| `org.eclipse.emf.ecore.xmi` | XMI serialization |
-| `com.google.guava` | Collections, Preconditions |
-| `com.google.code.gson` | JSON trace format parsing |
-| `org.projectlombok` | @Slf4j, @Builder, @Getter |
-| `org.osgi.core` | OSGi runtime |
-
-## Testing
-
-```java
-// JUnit 5 with Mockito
-@Test
-void testSequentialFlow() {
-    Work work1 = Mockito.mock(Work.class);
-    Work work2 = Mockito.mock(Work.class);
-
-    SequentialFlow flow = SequentialFlow.Builder.aNewSequentialFlow()
-        .execute(work1).then(work2).build();
-
-    flow.call();
-
-    InOrder inOrder = Mockito.inOrder(work1, work2);
-    inOrder.verify(work1).call();
-    inOrder.verify(work2).call();
-}
-```
-
-## Exported Package
-
-```
-hu.blackbelt.judo.tatami.core.*
-```
+The library is packaged as an OSGi bundle so it can be deployed in both OSGi containers and plain Java (Maven) environments.
 
 ## Context
 
-This project is a building block of the [judo-community](https://github.com/BlackBeltTechnology/judo-community) aggregator project. In order to better understand how this module fits into our ecosystem, please check the corresponding documentation!
+This project is a building block of the [judo-community](https://github.com/BlackBeltTechnology/judo-community) aggregator project. In order to better understand how this module fits into the ecosystem, please check the corresponding documentation.
 
-## Contributing to the project
+> **Note:** Other modules whose names contain "tatami" typically depend on this core library.
 
-Everyone is welcome to contribute to JUDO! As a starter, please read the corresponding [CONTRIBUTING](CONTRIBUTING.md) guide for details!
+## Architecture Overview
+
+### Package Map
+
+```mermaid
+graph TD
+    subgraph "hu.blackbelt.judo.tatami.core"
+        TT[Transformation Trace]
+    end
+
+    subgraph "hu.blackbelt.judo.tatami.core.workflow"
+        subgraph work
+            W[Work / WorkReport]
+        end
+        subgraph flow
+            WF[WorkFlow / Flows]
+        end
+        subgraph engine
+            WE[WorkFlowEngine]
+        end
+    end
+
+    WE -->|runs| WF
+    WF -->|extends| W
+    W -->|used by| TT
+    TT -->|AbstractTransformationWork| work
+```
+
+The **Transformation Trace** subsystem lives directly under `hu.blackbelt.judo.tatami.core`, while the **Workflow Engine** occupies three sub-packages (`work`, `flow`, `engine`) under `hu.blackbelt.judo.tatami.core.workflow`. The two subsystems are connected through `AbstractTransformationWork`, which is a `Work` implementation aware of `TransformationContext`.
+
+---
+
+### Workflow Engine -- Class Diagram
+
+```mermaid
+classDiagram
+    class Callable~WorkReport~ {
+        <<interface>>
+        +call() WorkReport
+    }
+    class Work {
+        <<interface>>
+        +getName() String
+        +call() WorkReport
+    }
+    class WorkReport {
+        <<interface>>
+        +getStatus() WorkStatus
+        +getError() Throwable
+    }
+    class WorkStatus {
+        <<enumeration>>
+        FAILED
+        COMPLETED
+    }
+    class DefaultWorkReport {
+        -WorkStatus status
+        -Throwable error
+    }
+    class FailedWork
+    class NoOpWork
+    class AbstractTransformationWork {
+        #TransformationContext ctx
+        #MetricsCollector metrics
+    }
+    class WorkReportPredicate {
+        <<interface>>
+    }
+    class TransformationContext
+    class MetricsCollector
+
+    class WorkFlow {
+        <<interface>>
+    }
+    class AbstractWorkFlow {
+        #String name
+    }
+    class SequentialFlow
+    class ParallelFlow
+    class ConditionalFlow
+    class RepeatFlow
+    class ParallelFlowExecutor
+    class ParallelFlowReport
+
+    class WorkFlowEngine {
+        <<interface>>
+        +run(WorkFlow) WorkReport
+    }
+    class WorkFlowEngineImpl
+    class WorkFlowEngineBuilder
+
+    Callable~WorkReport~ <|-- Work
+    Work <|-- WorkFlow
+    Work <|.. FailedWork
+    Work <|.. NoOpWork
+    Work <|.. AbstractTransformationWork
+    WorkReport <|.. DefaultWorkReport
+    WorkReport <|.. ParallelFlowReport
+    WorkReport --> WorkStatus
+
+    WorkFlow <|.. AbstractWorkFlow
+    AbstractWorkFlow <|-- SequentialFlow
+    AbstractWorkFlow <|-- ParallelFlow
+    AbstractWorkFlow <|-- ConditionalFlow
+    AbstractWorkFlow <|-- RepeatFlow
+    ParallelFlow --> ParallelFlowExecutor
+
+    WorkFlowEngine <|.. WorkFlowEngineImpl
+    WorkFlowEngineBuilder --> WorkFlowEngineImpl
+    WorkFlowEngine --> WorkFlow
+    WorkFlowEngine --> WorkReport
+
+    AbstractTransformationWork --> TransformationContext
+    AbstractTransformationWork --> MetricsCollector
+```
+
+Key design decisions:
+
+- `WorkFlow` extends `Work`, so workflows are **composable** -- any flow can be nested inside another flow.
+- `Work.call()` must never throw; implementations catch exceptions internally and return `WorkStatus.FAILED`.
+- Four flow types cover the most common orchestration patterns: **sequential**, **parallel**, **conditional**, and **repeat**.
+
+---
+
+### Transformation Trace -- Class Diagram
+
+```mermaid
+classDiagram
+    class TransformationTrace {
+        <<interface>>
+        +getSourceModelTypes() List~Class~
+        +getSourceModels() List~Object~
+        +getSourceModel(Class~T~) T
+        +getSourceResourceSet(Class~T~) ResourceSet
+        +getTargetModelType() Class
+        +getTargetModel() Object
+        +getTargetResourceSet() ResourceSet
+        +getTransformationTrace() Map~EObject, List~EObject~~
+        +getTransformationTraceName() String
+        +getModelName() String
+        +getModelVersion() String
+    }
+    class TransformationTraceService {
+        <<interface>>
+        +add(TransformationTrace)
+        +remove(TransformationTrace)
+        +getRootAscendantOfInstance(String, EObject) EObject
+        +getAscendantOfInstanceByModelType(String, Class, EObject) EObject
+        +getAllDescendantOfInstance(String, EObject) Map
+    }
+    class TransformationTraceServiceImpl
+    class TransformationTraceLoader
+    class TransformationTraceTreeElement
+    class TransformationTraceTracker
+    class AbstractModelTracker
+    class AbstractModelPairTracker
+    class ZipUtil
+
+    TransformationTraceService <|.. TransformationTraceServiceImpl
+    TransformationTraceServiceImpl --> TransformationTrace
+    TransformationTraceServiceImpl --> TransformationTraceTreeElement
+    TransformationTraceLoader --> TransformationTrace
+    TransformationTraceTracker --> TransformationTraceService
+    AbstractModelTracker --> TransformationTraceService
+    AbstractModelPairTracker --> TransformationTraceService
+```
+
+- `TransformationTrace` captures one step in the pipeline: source models, target model, and the `EObject`-level mapping between them.
+- `TransformationTraceService` (OSGi Declarative Services component) aggregates multiple traces and provides ancestor/descendant queries that can traverse the full transformation chain.
+- `AbstractModelTracker` and `AbstractModelPairTracker` are OSGi `ServiceTracker` helpers that react to model registrations and automatically wire up traces.
+
+---
+
+### External Dependencies
+
+```mermaid
+graph LR
+    CORE[judo-tatami-core]
+
+    EMF["Eclipse EMF 4.22"]
+    OSGI["OSGi Core 6.0.0"]
+    GUAVA["Google Guava 30.0-jre"]
+    SLF4J["SLF4J 2.0.16"]
+    LOMBOK["Lombok 1.18.34"]
+
+    CORE --> EMF
+    CORE --> OSGI
+    CORE --> GUAVA
+    CORE --> SLF4J
+    CORE -.->|compile-only| LOMBOK
+
+    subgraph Test
+        JUNIT["JUnit 5 (5.9.1)"]
+        MOCKITO["Mockito 4.8.0"]
+        HAMCREST["Hamcrest 2.2"]
+    end
+
+    CORE -.->|test| JUNIT
+    CORE -.->|test| MOCKITO
+    CORE -.->|test| HAMCREST
+```
+
+## Prerequisites
+
+| Requirement    | Version |
+|----------------|---------|
+| **JDK**        | 21+     |
+| **Maven**      | 3.9.4+  |
+
+> **Tip:** The project ships a Maven Wrapper (`mvnw`), so you do not need a global Maven installation.
+
+## Building
+
+```bash
+# Full build (compile + test + package)
+./mvnw clean install
+
+# Run tests only
+./mvnw clean test
+```
+
+The build produces an OSGi bundle JAR under `target/`.
+
+## Project Layout
+
+```
+src/
+ main/java/hu/blackbelt/judo/tatami/core/
+  |-- TransformationTrace.java            # Core tracing interface
+  |-- TransformationTraceService.java     # Service API for trace queries
+  |-- TransformationTraceServiceImpl.java # OSGi DS implementation
+  |-- TransformationTraceLoader.java      # Loads trace models from resources
+  |-- TransformationTraceTreeElement.java # Tree node for trace hierarchy
+  |-- TransformationTraceTracker.java     # OSGi service tracker for traces
+  |-- AbstractModelTracker.java           # Generic OSGi model tracker
+  |-- AbstractModelPairTracker.java       # Tracker for paired models
+  |-- ZipUtil.java                        # ZIP archive helpers
+  |-- PrettyPrinter.java                  # Debug formatting utilities
+  |-- AnsiColor.java                      # ANSI terminal colors
+  |-- EMapWrapper.java                    # EMF EMap convenience wrapper
+  |-- CachingInputStream.java             # Reusable input stream
+  |
+  +-- workflow/
+       +-- work/
+       |    |-- Work.java                     # Unit-of-work interface
+       |    |-- WorkReport.java               # Execution report interface
+       |    |-- WorkStatus.java               # FAILED | COMPLETED enum
+       |    |-- DefaultWorkReport.java         # Standard report impl
+       |    |-- FailedWork.java               # Always-failing sentinel
+       |    |-- NoOpWork.java                 # No-op sentinel
+       |    |-- WorkReportPredicate.java      # Predicate over reports
+       |    |-- AbstractTransformationWork.java # Base for transformation steps
+       |    |-- TransformationContext.java     # Shared context map
+       |    +-- MetricsCollector.java         # Timing / metrics helper
+       |
+       +-- flow/
+       |    |-- WorkFlow.java                 # Flow interface (extends Work)
+       |    |-- AbstractWorkFlow.java         # Base flow implementation
+       |    |-- SequentialFlow.java           # Execute works in order
+       |    |-- ParallelFlow.java             # Execute works concurrently
+       |    |-- ConditionalFlow.java          # Branch on predicate
+       |    |-- RepeatFlow.java               # Loop until predicate
+       |    |-- ParallelFlowExecutor.java     # Thread pool for ParallelFlow
+       |    +-- ParallelFlowReport.java       # Aggregated parallel report
+       |
+       +-- engine/
+            |-- WorkFlowEngine.java           # Engine interface
+            |-- WorkFlowEngineImpl.java       # Default engine impl
+            +-- WorkFlowEngineBuilder.java    # Fluent builder
+```
+
+## Usage Examples
+
+### Running a Sequential Workflow
+
+```java
+import hu.blackbelt.judo.tatami.core.workflow.flow.SequentialFlow;
+import hu.blackbelt.judo.tatami.core.workflow.engine.WorkFlowEngineBuilder;
+import hu.blackbelt.judo.tatami.core.workflow.work.*;
+
+Work step1 = new NoOpWork();
+Work step2 = new NoOpWork();
+
+WorkFlow flow = SequentialFlow.Builder.aNewSequentialFlow()
+        .named("my-pipeline")
+        .execute(step1)
+        .then(step2)
+        .build();
+
+WorkFlowEngine engine = WorkFlowEngineBuilder.aNewWorkFlowEngine().build();
+WorkReport report = engine.run(flow);
+
+System.out.println("Status: " + report.getStatus()); // COMPLETED
+```
+
+### Querying Transformation Traces
+
+```java
+import hu.blackbelt.judo.tatami.core.TransformationTraceService;
+import org.eclipse.emf.ecore.EObject;
+
+// Given an OSGi-injected or manually constructed service
+TransformationTraceService traceService = ...;
+
+// Find the root ancestor of a target element
+EObject root = traceService.getRootAscendantOfInstance("myModel", targetElement);
+
+// Walk all descendants from a source element
+Map<TransformationTrace, List<EObject>> descendants =
+        traceService.getAllDescendantOfInstance("myModel", sourceElement);
+```
+
+## Contributing
+
+Everyone is welcome to contribute to JUDO! As a starter, please read the [CONTRIBUTING](CONTRIBUTING.md) guide for details.
 
 ## License
 
 This project is licensed under the [Eclipse Public License - v 2.0](https://www.eclipse.org/legal/epl-2.0/).
+
+```
+SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+```
