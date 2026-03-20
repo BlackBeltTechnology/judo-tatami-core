@@ -71,7 +71,8 @@ import java.util.Objects;
  * }</pre>
  *
  * <p>Element resolution uses the 'id' EAttribute of EObjects to match against
- * the 'id' field in the JSON trace entries.</p>
+ * the 'id' field in the JSON trace entries. If no 'id' EAttribute exists,
+ * the URI fragment (XMI ID) is used as a fallback.</p>
  *
  * <p>Entries with the same source, ruleName, and discriminator are grouped
  * into a single TraceEntry with multiple targets.</p>
@@ -198,9 +199,16 @@ public class ZetaTraceLoader implements TraceLoader {
                 Notifier notifier = it.next();
                 if (notifier instanceof EObject) {
                     EObject eObject = (EObject) notifier;
+                    // Index by id EAttribute
                     String id = getIdAttribute(eObject);
                     if (id != null) {
                         index.put(id, eObject);
+                    }
+                    // Also index by URI fragment (XMI ID) as fallback,
+                    // matching what getElementId() writes during save
+                    String fragment = EcoreUtil.getURI(eObject).fragment();
+                    if (fragment != null && !index.containsKey(fragment)) {
+                        index.put(fragment, eObject);
                     }
                 }
             }
