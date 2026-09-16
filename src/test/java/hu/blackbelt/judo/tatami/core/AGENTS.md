@@ -1,0 +1,21 @@
+# AGENTS.md — `src/test/java/hu/blackbelt/judo/tatami/core`
+
+Trace-graph test fixtures and unit tests for `TransformationTraceServiceImpl` and the
+trace loader stack. Model marker types here stand in for real tatami models so trace
+graphs can be built without EMF metamodel dependencies.
+
+| File | Purpose |
+|---|---|
+| `Level1Model1.java` | Marker model type standing one hop below `RootModel` in trace-graph fixtures. Implements `TestModel`; `getName()` returns `getClass().getSimpleName()`. `@ToString` yields the simple name, which tests rely on as the graph node label. Carries no state — instances are identity keys only. |
+| `Level1Model2.java` | Second sibling model type at level 1, used to prove a single root fans out to multiple targets. Implements `TestModel`; `getName()` returns `getClass().getSimpleName()`. In `MultiSourceTraceServiceTest` it is the `source2` side of a two-source merge. |
+| `Level1Model3.java` | Third level-1 sibling, present so `testBuildGraph` has a root fan-out of three plus a direct level-2 edge. Implements `TestModel`; `getName()` returns `getClass().getSimpleName()`. Unused by the multi-source tests. |
+| `Level2Model1.java` | Model type reached both directly from `RootModel` (`root_to_level2model1`) and as the merge target of `[source1, source2]`. Implements `TestModel`; `getName()` returns `getClass().getSimpleName()`. Its dual in-edges are what make ascendant lookups return more than one path. |
+| `Level2Model2.java` | Model type reached only through `Level1Model1` (`level1_to_level2model2`), giving the graph a two-hop chain distinct from the direct root edge. Implements `TestModel`; `getName()` returns `getClass().getSimpleName()`. |
+| `Level3Model1.java` | Deepest model type; converged target of both `Level2Model1` and `Level2Model2`. Implements `TestModel`; `getName()` returns `getClass().getSimpleName()`. Its two in-edges exercise multi-path root-ascendant resolution. |
+| `MultiSourceTraceServiceTest.java` | Exercises `TransformationTraceServiceImpl` on a merge-shaped graph (`root→source1`, `root→source2`, `[source1,source2]→merged`) built in `@BeforeEach`. Covers `getAscendantsOfInstanceByModelType`, `getRootAscendantsOfInstance`, `getAllAscendantsOfInstanceMultiSource`, descendant duals, `getTraceEntriesForInstance`. Every lookup must throw `IllegalArgumentException` on an unregistered model name. |
+| `RootModel.java` | Graph-root model type; every trace fixture chain starts here. Implements `TestModel`; `getName()` returns `getClass().getSimpleName()`. `getRootAscendantsOfInstance` tests assert it is the terminal ascendant. |
+| `TestModel.java` | Contract shared by all fixture model types. Declares `String getName()`. Implementors must return a stable name — the trace service keys graph nodes by model type, so two implementors reporting the same name collapse into one node. |
+| `TraceLoaderTest.java` | Round-trip tests for `TraceFormat`, `TraceEntry`, `ZetaTraceLoader`, `EtlTraceLoader` and the unified `TransformationTraceLoader`. → see `TraceLoaderTest.AGENTS.md` |
+| `TransformationTraceServiceImplTest.java` | Builds the seven-node trace graph from `TransformationTraceTest` instances and asserts `TransformationTraceServiceImpl` resolves ascendants/descendants across it (`testBuildGraph`), plus a root-fan-out variant (`testBuildGraphSimple`). Inner `ModelHolder` pairs `ResourceSet`, `Resource`, `URI`, generated `EObject`s; `createTestClassesAndInstances` synthesizes `EClass`es per model. |
+| `TransformationTraceServiceImplTest.md` | Mermaid class diagram of the fixture graph used by `TransformationTraceServiceImplTest`. Edge labels are the `TransformationTraceTest.name` values (`root_to_level1model1`, `level2_to_level3model2`, …). Keep in sync when graph edges change — the tests name these edges verbatim. |
+| `TransformationTraceTest.java` | Lombok `@Builder` implementation of `TransformationTrace` for fixtures. Backs `getSourceModelTypes`, `getSourceModels`, `getSourceModel`, `getSourceResourceSet`, `getSourceURI`, target duals, `getTransformationTrace`. `getSourceModel`/`getSourceResourceSet`/`getSourceURI` match by exact class and throw `NoSuchElementException` when absent; `getType` and `getModelVersion` always return `null`. |
