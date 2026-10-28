@@ -37,8 +37,16 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -112,15 +120,180 @@ public class TransformationTraceLoader {
     private static final String TARRGET_URIS = "targetUri";
     private static final String TRACE_SELECTOR = "trace:";
 
+    // ==================== NEW UNIFIED API ====================
+
+    /**
+     * Loads trace entries from a file with automatic format detection.
+     *
+     * @param file the trace file to load
+     * @param resourcesToResolve ResourceSets used to resolve element references
+     * @return list of loaded trace entries
+     * @throws TraceLoadException if loading fails
+     */
+    public static List<TraceEntry> loadTrace(File file, List<ResourceSet> resourcesToResolve)
+            throws TraceLoadException {
+        TraceFormat format = TraceFormat.detect(file.getName());
+        return loadTrace(file, format, resourcesToResolve);
+    }
+
+    /**
+     * Loads trace entries from a file with specified format.
+     *
+     * @param file the trace file to load
+     * @param format the trace format
+     * @param resourcesToResolve ResourceSets used to resolve element references
+     * @return list of loaded trace entries
+     * @throws TraceLoadException if loading fails
+     */
+    public static List<TraceEntry> loadTrace(File file, TraceFormat format, List<ResourceSet> resourcesToResolve)
+            throws TraceLoadException {
+        try (InputStream input = new FileInputStream(file)) {
+            return loadTrace(input, format, resourcesToResolve);
+        } catch (IOException e) {
+            throw new TraceLoadException("Failed to read trace file: " + file.getPath(), e);
+        }
+    }
+
+    /**
+     * Loads trace entries from an input stream with specified format.
+     *
+     * @param input the input stream containing trace data
+     * @param format the trace format
+     * @param resourcesToResolve ResourceSets used to resolve element references
+     * @return list of loaded trace entries
+     * @throws TraceLoadException if loading fails
+     */
+    public static List<TraceEntry> loadTrace(InputStream input, TraceFormat format, List<ResourceSet> resourcesToResolve)
+            throws TraceLoadException {
+        TraceLoader loader = createLoader(format);
+        return loader.loadTrace(input, resourcesToResolve);
+    }
+
+    /**
+     * Saves trace entries to a file with automatic format detection.
+     *
+     * @param entries the trace entries to save
+     * @param file the output file
+     * @throws TraceSaveException if saving fails
+     */
+    public static void saveTrace(List<TraceEntry> entries, File file) throws TraceSaveException {
+        TraceFormat format = TraceFormat.detect(file.getName());
+        saveTrace(entries, file, format);
+    }
+
+    /**
+     * Saves trace entries to a file with specified format.
+     *
+     * @param entries the trace entries to save
+     * @param file the output file
+     * @param format the trace format
+     * @throws TraceSaveException if saving fails
+     */
+    public static void saveTrace(List<TraceEntry> entries, File file, TraceFormat format)
+            throws TraceSaveException {
+        try (OutputStream output = new FileOutputStream(file)) {
+            saveTrace(entries, output, format);
+        } catch (IOException e) {
+            throw new TraceSaveException("Failed to write trace file: " + file.getPath(), e);
+        }
+    }
+
+    /**
+     * Saves trace entries to an output stream with specified format.
+     *
+     * @param entries the trace entries to save
+     * @param output the output stream
+     * @param format the trace format
+     * @throws TraceSaveException if saving fails
+     */
+    public static void saveTrace(List<TraceEntry> entries, OutputStream output, TraceFormat format)
+            throws TraceSaveException {
+        TraceLoader loader = createLoader(format);
+        loader.saveTrace(entries, output);
+    }
+
+    /**
+     * Creates the appropriate loader for the given format.
+     *
+     * @param format the trace format
+     * @return the trace loader instance
+     */
+    private static TraceLoader createLoader(TraceFormat format) {
+        return format == TraceFormat.ZETA_JSON
+                ? new ZetaTraceLoader()
+                : new EtlTraceLoader();
+    }
+
+    // ==================== FORMAT CONVERSION UTILITIES ====================
+
+    /**
+     * Converts TraceEntry list to legacy single-source format.
+     *
+     * <p>For entries with multiple sources, only the first source is used as the key.</p>
+     *
+     * @param entries the trace entries to convert
+     * @return legacy format map (source → targets)
+     */
+    public static Map<EObject, List<EObject>> toLegacyFormat(List<TraceEntry> entries) {
+        Map<EObject, List<EObject>> result = new LinkedHashMap<>();
+        for (TraceEntry entry : entries) {
+            EObject source = entry.getSource();
+            if (source != null) {
+                result.computeIfAbsent(source, k -> new ArrayList<>())
+                        .addAll(entry.getTargets());
+            }
+        }
+        return new EMapWrapper<>(ECollections.asEMap(result));
+    }
+
+    /**
+     * Converts TraceEntry list to multi-source format.
+     *
+     * @param entries the trace entries to convert
+     * @return multi-source format map (sources list → targets list)
+     */
+    public static Map<List<EObject>, List<EObject>> toMultiSourceFormat(List<TraceEntry> entries) {
+        Map<List<EObject>, List<EObject>> result = new LinkedHashMap<>();
+        for (TraceEntry entry : entries) {
+            List<EObject> sources = entry.getSources();
+            if (sources != null && !sources.isEmpty()) {
+                result.put(new ArrayList<>(sources), new ArrayList<>(entry.getTargets()));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Converts legacy format to TraceEntry list.
+     *
+     * @param legacyMap the legacy format map (source → targets)
+     * @return list of TraceEntry objects
+     */
+    public static List<TraceEntry> fromLegacyFormat(Map<EObject, List<EObject>> legacyMap) {
+        List<TraceEntry> result = new ArrayList<>();
+        for (Map.Entry<EObject, List<EObject>> e : legacyMap.entrySet()) {
+            result.add(TraceEntry.builder()
+                    .source(e.getKey())
+                    .targets(e.getValue())
+                    .build());
+        }
+        return result;
+    }
+
+    // ==================== LEGACY API (DEPRECATED) ====================
+
     /**
      * Resolves trace:Trace entries from trace model and source / target model. THe model contains one source
      * {@link URI} and several target {@link URI}. This mehod returns the resolved object map,
      * where the key is a source {@link EObject} instance, the value is a {@link List} of target {@link EObject}
      * instances.
+     *
      * @param traceEntries the trace model trace:Trace entries.
      * @param resourcesToResolve the {@link ResourceSet} instances which used to resolve URI's
      * @return trace {@link EObject} map
+     * @deprecated Use {@link #loadTrace(File, List)} with {@link #toLegacyFormat(List)} instead
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public static Map<EObject, List<EObject>> resolveTransformationTraceAsEObjectMap(List<EObject> traceEntries, List<ResourceSet> resourcesToResolve) {
 
@@ -177,7 +350,9 @@ public class TransformationTraceLoader {
      * @param nameSpace the URI postfix for used schema
      * @param traceEObjectMap the source and target {@link EObject} mao
      * @return trace:Trace {@link EObject} entries.
+     * @deprecated Use {@link #saveTrace(List, File)} instead
      */
+    @Deprecated
     public static List<EObject> getTransformationTraceFromTraceMap(String nameSpace, Map<EObject, List<EObject>> traceEObjectMap) {
         ResourceSet resourceSet = createTraceResourceSet(nameSpace);
         EPackage tracePackage = resourceSet.getPackageRegistry().getEPackage(HTTP_WWW_BLACKBELT_HU_META_TRASFORMATION_TRACE + nameSpace);
@@ -213,7 +388,9 @@ public class TransformationTraceLoader {
      * Create {@link ResourceSet} which can handle pseudo trace models. It created and register pseudo namespace.
      * @param nameSpace pseudo namespace URI postfix
      * @return the {@link ResourceSet} which can handle pseudo trace model
+     * @deprecated No longer needed - use {@link #loadTrace(File, List)} or {@link #saveTrace(List, File)} instead
      */
+    @Deprecated
     public static ResourceSet createTraceResourceSet(String nameSpace) {
         return createTraceResourceSet(nameSpace, null);
     }
@@ -223,7 +400,9 @@ public class TransformationTraceLoader {
      * @param nameSpace pseudo namespace URI postfix
      * @param uriHandler {@link URIHandler} which helps resolve virtual {@link URI}
      * @return the {@link ResourceSet} which can handle pseudo trace model
+     * @deprecated No longer needed - use {@link #loadTrace(File, List)} or {@link #saveTrace(List, File)} instead
      */
+    @Deprecated
     @SuppressWarnings("WeakerAccess")
     public static ResourceSet createTraceResourceSet(String nameSpace, URIHandler uriHandler) {
         final EcorePackage ecore = EcorePackage.eINSTANCE;
@@ -270,7 +449,9 @@ public class TransformationTraceLoader {
      * @param modelUri the model {@link URI} of the trace.
      * @param uriHandler optional {@link URIHandler} which helps resolve virtual {@link URI}
      * @return the {@link Resource} which contain the translated trace {@link EObject} map
+     * @deprecated Use {@link #saveTrace(List, File)} instead
      */
+    @Deprecated
     public static Resource createTraceModelResourceFromEObjectMap(Map<EObject, List<EObject>> traceEObjectMap,
                                                                   String nameSpace,
                                                                   URI modelUri,
@@ -287,7 +468,9 @@ public class TransformationTraceLoader {
      * @param modelUri the model {@link URI} of the trace.
      * @param uriHandler optional {@link URIHandler} which helps resolve virtual {@link URI}
      * @return the {@link Resource} which contain the trace entries
+     * @deprecated Use {@link #saveTrace(List, File)} instead
      */
+    @Deprecated
     @SuppressWarnings("WeakerAccess")
     public static Resource createTraceModelResourceFromTraceList(List<EObject> trace,
                                                                  String nameSpace,
@@ -304,7 +487,9 @@ public class TransformationTraceLoader {
      * @param modelUri the model {@link URI} of the trace.
      * @param uriHandler optional {@link URIHandler} which helps resolve virtual {@link URI}
      * @return the empty {@link Resource} which used to add entries.
+     * @deprecated Use {@link #saveTrace(List, File)} instead
      */
+    @Deprecated
     @SuppressWarnings("WeakerAccess")
     public static Resource createTraceModelResource(String nameSpace, URI modelUri,
                                                     URIHandler uriHandler) {

@@ -119,4 +119,79 @@ public interface TransformationTraceService {
      */
     List<EObject> getDescendantOfInstanceByModelType(String modelName, Class modelType, EObject instance);
 
+    // ==================== NEW MULTI-SOURCE API ====================
+
+    /**
+     * Get all source ascendants of an instance by model type.
+     *
+     * <p>Unlike {@link #getAscendantOfInstanceByModelType(String, Class, EObject)} which returns
+     * a single EObject, this method returns all sources when a trace entry has multiple sources.</p>
+     *
+     * @param modelName the model name
+     * @param sourceModelType the source model type to filter by
+     * @param targetElement the target element to find ascendants for
+     * @return list of all source ascendants of the given type, empty list if none found
+     */
+    List<EObject> getAscendantsOfInstanceByModelType(String modelName, Class sourceModelType, EObject targetElement);
+
+    /**
+     * Get all root ascendants of an instance.
+     *
+     * <p>Unlike {@link #getRootAscendantOfInstance(String, EObject)} which returns a single
+     * EObject, this method returns all root sources when trace chains involve multi-source entries.</p>
+     *
+     * @param modelName the model name
+     * @param targetElement the target element to find root ascendants for
+     * @return list of all root ascendants, empty list if none found
+     */
+    List<EObject> getRootAscendantsOfInstance(String modelName, EObject targetElement);
+
+    /**
+     * Get all ascendants with multi-source support.
+     *
+     * <p>Similar to {@link #getAllAscendantOfInstance(String, EObject)} but returns lists
+     * of EObjects to support trace entries with multiple sources.</p>
+     *
+     * @param modelName the model name
+     * @param targetElement the target element
+     * @return map of TransformationTrace to list of source EObjects
+     */
+    Map<TransformationTrace, List<EObject>> getAllAscendantsOfInstanceMultiSource(String modelName, EObject targetElement);
+
+    /**
+     * Get descendants from multiple source instances.
+     *
+     * <p>Finds all descendants that were created from any of the given source instances.</p>
+     *
+     * @param modelName the model name
+     * @param modelType the target model type to filter by
+     * @param sourceInstances the source instances to find descendants for
+     * @return list of descendant EObjects of the given type
+     */
+    List<EObject> getDescendantsOfInstancesByModelType(String modelName, Class modelType, EObject... sourceInstances);
+
+    /**
+     * Get all descendants with multi-source support.
+     *
+     * <p>Similar to {@link #getAllDescendantOfInstance(String, EObject)} but accepts multiple
+     * source instances and handles multi-source trace entries.</p>
+     *
+     * @param modelName the model name
+     * @param sourceInstances the source instances to find descendants for
+     * @return map of TransformationTrace to list of target EObjects
+     */
+    Map<TransformationTrace, List<EObject>> getAllDescendantsOfInstancesMultiSource(String modelName, EObject... sourceInstances);
+
+    /**
+     * Get trace entries for a specific instance.
+     *
+     * <p>Returns all TraceEntry objects where the given instance appears
+     * either as a source or as a target.</p>
+     *
+     * @param modelName the model name
+     * @param instance the instance to search for
+     * @return list of TraceEntry objects containing the instance
+     */
+    List<TraceEntry> getTraceEntriesForInstance(String modelName, EObject instance);
+
 }
