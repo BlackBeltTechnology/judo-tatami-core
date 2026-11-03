@@ -93,25 +93,56 @@ public enum TransformationMode {
     public static final TransformationMode DEFAULT = ZETA;
 
     /**
-     * Gets the transformation mode from system property, or returns the default.
-     * <p>
-     * This method reads the system property {@value #SYSTEM_PROPERTY} and
-     * returns the corresponding mode. If the property is not set or contains
-     * an invalid value, {@link #DEFAULT} (ZETA) is returned.
-     * </p>
-     *
-     * @return the transformation mode from system property, or DEFAULT
+     * Karaf / Config Admin PID that sets the mode for a container (key {@value #CONFIG_KEY}), e.g.
+     * {@code etc/hu.blackbelt.judo.tatami.transformation.cfg} with {@code mode = ETL}. Read by
+     * {@link TransformationModeConfiguration}. See change: split-etl-artifacts.
      */
-    public static TransformationMode fromSystemProperty() {
-        String value = System.getProperty(SYSTEM_PROPERTY);
+    public static final String CONFIG_PID = "hu.blackbelt.judo.tatami.transformation";
+
+    /** Configuration key of {@link #CONFIG_PID}. */
+    public static final String CONFIG_KEY = "mode";
+
+    /** Container-wide default set from {@link #CONFIG_PID}; {@code null} when not configured. */
+    private static volatile TransformationMode configuredDefault;
+
+    /**
+     * Sets (or clears with {@code null}) the container-wide default used when {@value #SYSTEM_PROPERTY} is not set.
+     * Called by {@link TransformationModeConfiguration} (OSGi); tests may call it directly.
+     */
+    public static void setConfiguredDefault(TransformationMode mode) {
+        configuredDefault = mode;
+    }
+
+    /** The container-wide default from {@link #CONFIG_PID}, if configured. */
+    public static java.util.Optional<TransformationMode> getConfiguredDefault() {
+        return java.util.Optional.ofNullable(configuredDefault);
+    }
+
+    /**
+     * Parses a mode name case-insensitively; empty for {@code null}, blank or unknown values.
+     */
+    public static java.util.Optional<TransformationMode> parse(String value) {
         if (value == null || value.trim().isEmpty()) {
-            return DEFAULT;
+            return java.util.Optional.empty();
         }
         try {
-            return TransformationMode.valueOf(value.toUpperCase().trim());
+            return java.util.Optional.of(TransformationMode.valueOf(value.trim().toUpperCase(java.util.Locale.ROOT)));
         } catch (IllegalArgumentException e) {
-            return DEFAULT;
+            return java.util.Optional.empty();
         }
+    }
+
+    /**
+     * Resolves the effective mode. Precedence: the system property {@value #SYSTEM_PROPERTY} (when set to a valid
+     * value), then the container default from {@link #CONFIG_PID} (Karaf), then {@link #DEFAULT} (ZETA). An invalid
+     * property value is ignored, as if unset.
+     *
+     * @return the effective transformation mode
+     */
+    public static TransformationMode fromSystemProperty() {
+        return parse(System.getProperty(SYSTEM_PROPERTY))
+                .or(TransformationMode::getConfiguredDefault)
+                .orElse(DEFAULT);
     }
 
     /**

@@ -14,7 +14,7 @@ implementations) that records which source EObject produced which target
 EObject so a runtime error in a generated model can be walked back to the PSM
 element that caused it.
 
-It defines no concrete transformation of its own. Concrete transformation
+It defines no concrete transformation of its own. It also hosts the Epsilon-free ETL add-on lookup (`core/etl`: `EtlEngineRegistry`, `EtlEngineMissingException`) and Epsilon-free helpers (`EmfPackages`, `UriResolver`) so dual-mode stages can ship Zeta-only core artifacts with ETL as an optional `-etl` add-on (change `split-etl-artifacts`). Concrete transformation
 modules — `judo-tatami-base`, `judo-tatami-jsl`, `judo-tatami-client`,
 `judo-tatami-util` — extend `AbstractTransformationWork` and compose their works
 through this module's flows; `judo-tatami-pipeline` wires those works into an
