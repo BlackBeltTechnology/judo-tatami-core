@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -129,5 +130,40 @@ public interface TransformationTrace {
      * Only the transformed instances are presented, not all of the source instances.
      */
     Map<EObject, List<EObject>> getTransformationTrace();
+
+    // ==================== NEW MULTI-SOURCE API ====================
+
+    /**
+     * Get trace entries as a list of TraceEntry objects.
+     *
+     * <p>This method provides access to the trace data in the new unified format
+     * that supports multiple sources and additional metadata like rule names.</p>
+     *
+     * <p>Default implementation converts from legacy format using
+     * {@link TransformationTraceLoader#fromLegacyFormat(Map)}.</p>
+     *
+     * @return list of TraceEntry objects representing the transformation trace
+     */
+    default List<TraceEntry> getTraceEntries() {
+        Map<EObject, List<EObject>> legacyTrace = getTransformationTrace();
+        if (legacyTrace == null) {
+            return new ArrayList<>();
+        }
+        return TransformationTraceLoader.fromLegacyFormat(legacyTrace);
+    }
+
+    /**
+     * Get transformation trace in multi-source format.
+     *
+     * <p>Returns a map where keys are lists of source EObjects and values
+     * are lists of target EObjects, supporting M:N mappings.</p>
+     *
+     * <p>Default implementation converts from trace entries.</p>
+     *
+     * @return multi-source format map (sources list → targets list)
+     */
+    default Map<List<EObject>, List<EObject>> getMultiSourceTransformationTrace() {
+        return TransformationTraceLoader.toMultiSourceFormat(getTraceEntries());
+    }
 
 }
