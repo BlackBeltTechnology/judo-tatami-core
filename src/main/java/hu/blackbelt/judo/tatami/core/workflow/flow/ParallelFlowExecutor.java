@@ -67,18 +67,9 @@ class ParallelFlowExecutor {
             reportFutures.put(work, reportFuture);
         }
 
-        // poll for work completion
-        int finishedWorks = works.size();
-        // FIXME polling futures for completion, not sure this is the best way to run callables in parallel and wait them for completion (use CompletionService??)
-        while (finishedWorks > 0) {
-            for (Future<WorkReport> future : reportFutures.values()) {
-                if (future != null && future.isDone()) {
-                        finishedWorks--;
-                }
-            }
-        }
-
-        // gather reports
+        // gather reports: Future.get() blocks until the work is done. The former loop polled isDone() in a busy spin
+        // (one CPU core at 100 % while the phase ran) and counted a finished work once per pass, so it left early
+        // anyway and relied on get() below.
         List<WorkReport> workReports = new ArrayList<>();
         for (Map.Entry<Work, Future<WorkReport>> entry : reportFutures.entrySet()) {
             try {
